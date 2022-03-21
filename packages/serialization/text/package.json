@@ -1,6 +1,6 @@
 {
     "name": "@microsoft/kiota-serialization-text",
-    "version": "1.0.1",
+    "version": "1.0.0-preview.1",
     "description": "Implementation of Kiota Serialization interfaces for text",
     "main": "dist/cjs/index.js",
     "module": "dist/es/index.js",
@@ -16,7 +16,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git://github.com/microsoft/kiota.git"
+        "url": "git://github.com/microsoft-typescript/kiota.git"
     },
     "keywords": [
         "kiota",
@@ -28,9 +28,9 @@
     "author": "Microsoft",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/microsoft/kiota/issues"
+        "url": "https://github.com/microsoft/kiota-typescript/issues"
     },
-    "homepage": "https://github.com/microsoft/kiota#readme",
+    "homepage": "https://github.com/microsoft/kiota-typescript#readme",
     "devDependencies": {
         "@types/node": "^17.0.21",
         "typescript": "^4.6.2",
@@ -42,11 +42,8 @@
         "eslint-plugin-simple-import-sort": "^7.0.0",
         "prettier": "^2.6.0"
     },
-    "publishConfig": {
-        "registry": "https://npm.pkg.github.com"
-    },
     "dependencies": {
         "tslib": "^2.3.1",
-        "@microsoft/kiota-abstractions": "^1.0.32"
+        "@microsoft/kiota-abstractions": "^1.0.0-preview.1"
     }
 }

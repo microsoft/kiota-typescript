@@ -16,7 +16,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git://github.com/microsoft/kiota.git"
+        "url": "git://github.com/microsoft/kiota-typescript.git"
     },
     "keywords": [
         "kiota",
@@ -28,9 +28,9 @@
     "author": "Microsoft",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/microsoft/kiota/issues"
+        "url": "https://github.com/microsoft/kiota-typescript/issues"
     },
-    "homepage": "https://github.com/microsoft/kiota#readme",
+    "homepage": "https://github.com/microsoft/kiota-typescript#readme",
     "devDependencies": {
         "@types/node": "^17.0.22",
         "@typescript-eslint/eslint-plugin": "^5.16.0",
@@ -42,11 +42,8 @@
         "prettier": "^2.6.0",
         "typescript": "^4.6.2"
     },
-    "publishConfig": {
-        "registry": "https://npm.pkg.github.com"
-    },
     "dependencies": {
-        "@microsoft/kiota-abstractions": "^1.0.33",
+        "@microsoft/kiota-abstractions": "^1.0.0-preview.1",
         "tslib": "^2.3.1"
     }
 }

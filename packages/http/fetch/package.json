@@ -1,6 +1,6 @@
 {
     "name": "@microsoft/kiota-http-fetchlibrary",
-    "version": "1.0.19",
+    "version": "1.0.0-preview.1",
     "description": "Kiota request adapter implementation with fetch",
     "keywords": [
         "Kiota",
@@ -8,13 +8,13 @@
         "HTTP",
         "fetch"
     ],
-    "homepage": "https://github.com/microsoft/kiota#readme",
+    "homepage": "https://github.com/microsoft/kiota-typescript#readme",
     "bugs": {
-        "url": "https://github.com/microsoft/kiota/issues"
+        "url": "https://github.com/microsoft/kiota-typescript/issues"
     },
     "repository": {
         "type": "git",
-        "url": "git://github.com/microsoft/kiota.git"
+        "url": "git://github.com/microsoft/kiota-typescript.git"
     },
     "license": "MIT",
     "author": "Microsoft",
@@ -44,7 +44,7 @@
         "test:es": "tsc -b tsconfig.es.test.json && mocha 'dist/es/test/common/**/*.js'  --require  esm && mocha 'dist/es/test/node/**/*.js'  --require  esm"
     },
     "dependencies": {
-        "@microsoft/kiota-abstractions": "1.0.31",
+        "@microsoft/kiota-abstractions": "1.0.0-preview.1",
         "node-fetch": "^2.6.5",
         "tslib": "^2.3.1"
     },
@@ -76,8 +76,5 @@
         "rollup-plugin-terser": "^7.0.2",
         "sinon": "^13.0.1",
         "typescript": "^4.6.2"
-    },
-    "publishConfig": {
-        "registry": "https://npm.pkg.github.com"
     }
 }
