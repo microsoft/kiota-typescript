@@ -3,7 +3,7 @@
 name: Build and publish Kiota abstractions package
     
 on:
-  workflow_dispatch
+  workflow_dispatch:
   push:
     branches: [ main ]
     paths: ['packages/abstractions/**', '.github/workflows/**']

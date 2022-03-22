@@ -2,7 +2,13 @@
 
 name: Build and publish Kiota serialization json package
     
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths: ['packages/serialization/json/**', '.github/workflows/**']
+  pull_request:
+    paths: ['packages/serialization/json/**', '.github/workflows/**']
 
 jobs:
     build:
@@ -21,7 +27,10 @@ jobs:
           working-directory: packages/serialization/json
             
     publish-npm:
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         needs: build
+        environment:
+          name: production_feed
         runs-on: ubuntu-latest
         steps:
           - uses: actions/checkout@v2
@@ -30,6 +39,7 @@ jobs:
               node-version: 16
               registry-url: https://registry.npmjs.org/
           - run: npm ci
+          - run: npm run build
           - run: npm publish --access public
             working-directory: packages/serialization/json
             env:

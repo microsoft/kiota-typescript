@@ -2,7 +2,13 @@
 
 name: Build and publish Kiota serialization text package
     
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths: ['packages/abstractions/**', '.github/workflows/**']
+  pull_request:
+    paths: ['packages/abstractions/**', '.github/workflows/**']
 
 jobs:
     build:
@@ -18,11 +24,13 @@ jobs:
             node-version: ${{ matrix.node-version }}
         - run: npm ci
         - run: npm run build
-        - run: npm run test
           working-directory: packages/serialization/text
             
     publish-npm:
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         needs: build
+        environment:
+          name: production_feed
         runs-on: ubuntu-latest
         steps:
           - uses: actions/checkout@v2
@@ -31,6 +39,7 @@ jobs:
               node-version: 16
               registry-url: https://registry.npmjs.org/
           - run: npm ci
+          - run: npm run build
           - run: npm publish --access public
             working-directory: packages/serialization/text
             env:
