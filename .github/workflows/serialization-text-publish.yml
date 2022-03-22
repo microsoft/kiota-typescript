@@ -1,0 +1,37 @@
+# Pipeline for the first npm publish for kiota serialization text package.
+
+name: Build and publish Kiota serialization text package
+    
+on: workflow_dispatch
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            node-version: [14.x, 16.x, 17.x]
+        steps:
+        - uses: actions/checkout@v3
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+        - run: npm ci
+        - run: npm run build
+        - run: npm run test
+          working-directory: packages/serialization/text
+            
+    publish-npm:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v2
+          - uses: actions/setup-node@v2
+            with:
+              node-version: 16
+              registry-url: https://registry.npmjs.org/
+          - run: npm ci
+          - run: npm publish --access public
+            working-directory: packages/serialization/text
+            env:
+              NODE_AUTH_TOKEN: ${{secrets.npm_token}}
