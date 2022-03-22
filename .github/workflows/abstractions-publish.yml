@@ -2,7 +2,13 @@
 
 name: Build and publish Kiota abstractions package
     
-on: workflow_dispatch
+on:
+  workflow_dispatch
+  push:
+    branches: [ main ]
+    paths: ['packages/abstractions/**', '.github/workflows/**']
+  pull_request:
+    paths: ['packages/abstractions/**', '.github/workflows/**']
 
 jobs:
     build:
@@ -21,15 +27,19 @@ jobs:
           working-directory: packages/abstractions
             
     publish-npm:
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         needs: build
+        environment:
+          name: production_feed
         runs-on: ubuntu-latest
         steps:
-          - uses: actions/checkout@v2
-          - uses: actions/setup-node@v2
+          - uses: actions/checkout@v3
+          - uses: actions/setup-node@v3
             with:
               node-version: 16
               registry-url: https://registry.npmjs.org/
           - run: npm ci
+          - run: npm run build
           - run: npm publish --access public
             working-directory: packages/abstractions
             env:
