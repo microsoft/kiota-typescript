@@ -13,6 +13,9 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
+        defaults:
+          run:
+            working-directory: packages/serialization/json
         strategy:
           matrix:
             node-version: [14.x, 16.x, 17.x]
@@ -24,7 +27,6 @@ jobs:
             node-version: ${{ matrix.node-version }}
         - run: npm ci
         - run: npm run build
-          working-directory: packages/serialization/json
             
     publish-npm:
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
@@ -32,6 +34,9 @@ jobs:
         environment:
           name: production_feed
         runs-on: ubuntu-latest
+        defaults:
+          run:
+            working-directory: packages/serialization/json
         steps:
           - uses: actions/checkout@v3
           - uses: actions/setup-node@v3
@@ -41,6 +46,5 @@ jobs:
           - run: npm ci
           - run: npm run build
           - run: npm publish --access public
-            working-directory: packages/serialization/json
             env:
               NODE_AUTH_TOKEN: ${{secrets.npm_token}}

@@ -13,6 +13,9 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
+        defaults:
+          run:
+            working-directory: packages/http/fetch
         strategy:
           matrix:
             node-version: [14.x, 16.x, 17.x]
@@ -25,14 +28,16 @@ jobs:
         - run: npm ci
         - run: npm run build
         - run: npm run test
-          working-directory: packages/http/fetch
-            
+          
     publish-npm:
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         needs: build
         environment:
           name: production_feed
         runs-on: ubuntu-latest
+        defaults:
+          run:
+            working-directory: packages/http/fetch
         steps:
           - uses: actions/checkout@v3
           - uses: actions/setup-node@v3
