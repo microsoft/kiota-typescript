@@ -1,3 +1,6 @@
 tsconfig.json
 dist/cjs/test
 dist/es/test
+test/
+tsconfig.**.json
+.eslint**
