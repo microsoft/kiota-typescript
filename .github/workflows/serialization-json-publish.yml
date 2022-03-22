@@ -18,7 +18,7 @@ jobs:
             node-version: ${{ matrix.node-version }}
         - run: npm ci
         - run: npm run build
-          working-directory: packages/abstractions
+          working-directory: packages/serialization/json
             
     publish-npm:
         needs: build
@@ -31,6 +31,6 @@ jobs:
               registry-url: https://registry.npmjs.org/
           - run: npm ci
           - run: npm publish --access public
-            working-directory: packages/abstractions
+            working-directory: packages/serialization/json
             env:
               NODE_AUTH_TOKEN: ${{secrets.npm_token}}
