@@ -13,6 +13,9 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
+        defaults:
+          run:
+            working-directory: packages/authentication/azure
         strategy:
           matrix:
             node-version: [14.x, 16.x, 17.x]
@@ -24,7 +27,6 @@ jobs:
             node-version: ${{ matrix.node-version }}
         - run: npm ci
         - run: npm run build
-          working-directory: packages/authentication/azure
             
     publish-npm:
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
@@ -32,6 +34,9 @@ jobs:
         environment:
           name: production_feed
         runs-on: ubuntu-latest
+        defaults:
+          run:
+            working-directory: packages/authentication/azure
         steps:
           - uses: actions/checkout@v3
           - uses: actions/setup-node@v3
