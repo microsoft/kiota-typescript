@@ -1,6 +1,6 @@
-# Pipeline for the first npm publish for abstractions.
+# Pipeline for the first npm publish for authentication azure.
 
-name: Build and publish Kiota abstractions package
+name: Build and publish Kiota authentication azure package
     
 on: 
   workflow_dispatch:
@@ -33,8 +33,8 @@ jobs:
           name: production_feed
         runs-on: ubuntu-latest
         steps:
-          - uses: actions/checkout@v2
-          - uses: actions/setup-node@v2
+          - uses: actions/checkout@v3
+          - uses: actions/setup-node@v3
             with:
               node-version: 16
               registry-url: https://registry.npmjs.org/
