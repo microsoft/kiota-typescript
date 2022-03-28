@@ -44,34 +44,39 @@ export class FetchRequestAdapter implements RequestAdapter {
 		if (responseHandler) {
 			return await responseHandler.handleResponseAsync(response, errorMappings);
 		} else {
-			await this.throwFailedResponses(response, errorMappings);
-			switch (responseType) {
-				case "string":
-				case "number":
-				case "boolean":
-				case "Date":
-					const rootNode = await this.getRootParseNode(response);
-					if (responseType === "string") {
-						return rootNode.getCollectionOfPrimitiveValues<string>() as unknown as ResponseType[];
-					} else if (responseType === "number") {
-						return rootNode.getCollectionOfPrimitiveValues<number>() as unknown as ResponseType[];
-					} else if (responseType === "boolean") {
-						return rootNode.getCollectionOfPrimitiveValues<boolean>() as unknown as ResponseType[];
-					} else if (responseType === "Date") {
-						return rootNode.getCollectionOfPrimitiveValues<Date>() as unknown as ResponseType[];
-					} else if (responseType === "Duration") {
-						return rootNode.getCollectionOfPrimitiveValues<Duration>() as unknown as ResponseType[];
-					} else if (responseType === "DateOnly") {
-						return rootNode.getCollectionOfPrimitiveValues<DateOnly>() as unknown as ResponseType[];
-					} else if (responseType === "TimeOnly") {
-						return rootNode.getCollectionOfPrimitiveValues<TimeOnly>() as unknown as ResponseType[];
-					} else {
-						throw new Error("unexpected type to deserialize");
-					}
+			try {
+				await this.throwFailedResponses(response, errorMappings);
+				if (this.shouldReturnUndefined(response)) return undefined;
+				switch (responseType) {
+					case "string":
+					case "number":
+					case "boolean":
+					case "Date":
+						const rootNode = await this.getRootParseNode(response);
+						if (responseType === "string") {
+							return rootNode.getCollectionOfPrimitiveValues<string>() as unknown as ResponseType[];
+						} else if (responseType === "number") {
+							return rootNode.getCollectionOfPrimitiveValues<number>() as unknown as ResponseType[];
+						} else if (responseType === "boolean") {
+							return rootNode.getCollectionOfPrimitiveValues<boolean>() as unknown as ResponseType[];
+						} else if (responseType === "Date") {
+							return rootNode.getCollectionOfPrimitiveValues<Date>() as unknown as ResponseType[];
+						} else if (responseType === "Duration") {
+							return rootNode.getCollectionOfPrimitiveValues<Duration>() as unknown as ResponseType[];
+						} else if (responseType === "DateOnly") {
+							return rootNode.getCollectionOfPrimitiveValues<DateOnly>() as unknown as ResponseType[];
+						} else if (responseType === "TimeOnly") {
+							return rootNode.getCollectionOfPrimitiveValues<TimeOnly>() as unknown as ResponseType[];
+						} else {
+							throw new Error("unexpected type to deserialize");
+						}
+				}
+			} finally {
+				await this.purge(response);
 			}
 		}
 	};
-	public sendCollectionAsync = async <ModelType extends Parsable>(requestInfo: RequestInformation, type: ParsableFactory<ModelType>, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType[]> => {
+	public sendCollectionAsync = async <ModelType extends Parsable>(requestInfo: RequestInformation, type: ParsableFactory<ModelType>, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType[] | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
@@ -79,13 +84,18 @@ export class FetchRequestAdapter implements RequestAdapter {
 		if (responseHandler) {
 			return await responseHandler.handleResponseAsync(response, errorMappings);
 		} else {
-			await this.throwFailedResponses(response, errorMappings);
-			const rootNode = await this.getRootParseNode(response);
-			const result = rootNode.getCollectionOfObjectValues(type);
-			return result as unknown as ModelType[];
+			try {
+				await this.throwFailedResponses(response, errorMappings);
+				if (this.shouldReturnUndefined(response)) return undefined;
+				const rootNode = await this.getRootParseNode(response);
+				const result = rootNode.getCollectionOfObjectValues(type);
+				return result as unknown as ModelType[];
+			} finally {
+				await this.purge(response);
+			}
 		}
 	};
-	public sendAsync = async <ModelType extends Parsable>(requestInfo: RequestInformation, type: ParsableFactory<ModelType>, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType> => {
+	public sendAsync = async <ModelType extends Parsable>(requestInfo: RequestInformation, type: ParsableFactory<ModelType>, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
@@ -93,13 +103,18 @@ export class FetchRequestAdapter implements RequestAdapter {
 		if (responseHandler) {
 			return await responseHandler.handleResponseAsync(response, errorMappings);
 		} else {
-			await this.throwFailedResponses(response, errorMappings);
-			const rootNode = await this.getRootParseNode(response);
-			const result = rootNode.getObjectValue(type);
-			return result as unknown as ModelType;
+			try {
+				await this.throwFailedResponses(response, errorMappings);
+				if (this.shouldReturnUndefined(response)) return undefined;
+				const rootNode = await this.getRootParseNode(response);
+				const result = rootNode.getObjectValue(type);
+				return result as unknown as ModelType;
+			} finally {
+				await this.purge(response);
+			}
 		}
 	};
-	public sendPrimitiveAsync = async <ResponseType>(requestInfo: RequestInformation, responseType: "string" | "number" | "boolean" | "Date" | "ArrayBuffer", responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType> => {
+	public sendPrimitiveAsync = async <ResponseType>(requestInfo: RequestInformation, responseType: "string" | "number" | "boolean" | "Date" | "ArrayBuffer", responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
@@ -107,32 +122,37 @@ export class FetchRequestAdapter implements RequestAdapter {
 		if (responseHandler) {
 			return await responseHandler.handleResponseAsync(response, errorMappings);
 		} else {
-			await this.throwFailedResponses(response, errorMappings);
-			switch (responseType) {
-				case "ArrayBuffer":
-					return (await response.arrayBuffer()) as unknown as ResponseType;
-				case "string":
-				case "number":
-				case "boolean":
-				case "Date":
-					const rootNode = await this.getRootParseNode(response);
-					if (responseType === "string") {
-						return rootNode.getStringValue() as unknown as ResponseType;
-					} else if (responseType === "number") {
-						return rootNode.getNumberValue() as unknown as ResponseType;
-					} else if (responseType === "boolean") {
-						return rootNode.getBooleanValue() as unknown as ResponseType;
-					} else if (responseType === "Date") {
-						return rootNode.getDateValue() as unknown as ResponseType;
-					} else if (responseType === "Duration") {
-						return rootNode.getDurationValue() as unknown as ResponseType;
-					} else if (responseType === "DateOnly") {
-						return rootNode.getDateOnlyValue() as unknown as ResponseType;
-					} else if (responseType === "TimeOnly") {
-						return rootNode.getTimeOnlyValue() as unknown as ResponseType;
-					} else {
-						throw new Error("unexpected type to deserialize");
-					}
+			try {
+				await this.throwFailedResponses(response, errorMappings);
+				if (this.shouldReturnUndefined(response)) return undefined;
+				switch (responseType) {
+					case "ArrayBuffer":
+						return (await response.arrayBuffer()) as unknown as ResponseType;
+					case "string":
+					case "number":
+					case "boolean":
+					case "Date":
+						const rootNode = await this.getRootParseNode(response);
+						if (responseType === "string") {
+							return rootNode.getStringValue() as unknown as ResponseType;
+						} else if (responseType === "number") {
+							return rootNode.getNumberValue() as unknown as ResponseType;
+						} else if (responseType === "boolean") {
+							return rootNode.getBooleanValue() as unknown as ResponseType;
+						} else if (responseType === "Date") {
+							return rootNode.getDateValue() as unknown as ResponseType;
+						} else if (responseType === "Duration") {
+							return rootNode.getDurationValue() as unknown as ResponseType;
+						} else if (responseType === "DateOnly") {
+							return rootNode.getDateOnlyValue() as unknown as ResponseType;
+						} else if (responseType === "TimeOnly") {
+							return rootNode.getTimeOnlyValue() as unknown as ResponseType;
+						} else {
+							throw new Error("unexpected type to deserialize");
+						}
+				}
+			} finally {
+				await this.purge(response);
 			}
 		}
 	};
@@ -144,7 +164,11 @@ export class FetchRequestAdapter implements RequestAdapter {
 		if (responseHandler) {
 			return await responseHandler.handleResponseAsync(response, errorMappings);
 		}
-		await this.throwFailedResponses(response, errorMappings);
+		try {
+			await this.throwFailedResponses(response, errorMappings);
+		} finally {
+			await this.purge(response);
+		}
 	};
 	public enableBackingStore = (backingStoreFactory?: BackingStoreFactory | undefined): void => {
 		this.parseNodeFactory = enableBackingStoreForParseNodeFactory(this.parseNodeFactory);
@@ -160,6 +184,15 @@ export class FetchRequestAdapter implements RequestAdapter {
 		if (!responseContentType) throw new Error("no response content type found for deserialization");
 
 		return this.parseNodeFactory.getRootParseNode(responseContentType, payload);
+	};
+	private shouldReturnUndefined = (response: Response) : boolean => {
+		return response.status === 204;
+	};
+	/** purges the response body if it hasn't been read to release the connection to the server */
+	private purge = async(response: Response): Promise<void> => {
+		if(!response.bodyUsed && response.body){
+			const _ = await response.arrayBuffer();
+		}
 	};
 	private throwFailedResponses = async (response: Response, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<void> => {
 		if (response.ok) return;
