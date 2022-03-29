@@ -1,19 +1,12 @@
-# To-do
+[![npm version badge](https://img.shields.io/npm/v/@microsoft/kiota-serialization-text?color=blue)](https://www.npmjs.com/package/@microsoft/kiota-serialization-text)
 
-![TypeScript](https://github.com/microsoft/kiota/actions/workflows/serialization-typescript-text.yml/badge.svg)
 
-- [ ] browserlist configuration for compat
-- [ ] eslint configuration for linting
-- [ ] unit tests (chai + mocha + chai as promised + some coverage reporter)
-- [ ] doc comments
+The Text Serialization Library is an implementation to handle text/plain payloads.
+
+A [Kiota](https://github.com/microsoft/kiota) generated project will need a reference to a Text serialization package to handle text/plain payloads from an API endpoint.
+
+Read more about Kiota [here](https://github.com/microsoft/kiota/blob/main/README.md).
 
 ## Using the Serialization text implementations
 
-1. Add a `.npmrc` file with the following content
-
-    ```Config
-    @microsoft:registry=https://npm.pkg.github.com/
-    ```
-
-1. `npm login --scope=@microsoft --registry=https://npm.pkg.github.com` (use a token with package:read, repo and SSO enabled for the Microsoft organization as the password)
-1. `npm i @microsoft/kiota-serialization-text -S`.
+1. `npm i @microsoft/kiota-serialization-text`.
