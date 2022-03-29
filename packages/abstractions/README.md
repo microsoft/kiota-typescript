@@ -1,19 +1,13 @@
-# To-do
+[![npm version badge](https://img.shields.io/npm/v/@microsoft/kiota-abstractions
+?color=blue)](https://www.npmjs.com/package/@microsoft/kiota-abstractions)
 
-![TypeScript](https://github.com/microsoft/kiota/actions/workflows/abstractions-typescript.yml/badge.svg)
+The Kiota abstractions Library is the javascript library defining the basic constructs the Kiota projects need once an SDK has been generated from an OpenAPI definition.
 
-- [ ] browserlist configuration for compat
-- [ ] eslint configuration for linting
-- [ ] unit tests (chai + mocha + chai as promised + some coverage reporter)
-- [ ] doc comments
+A Kiota generated project will need a reference to the abstraction package to build and run.
+
+Read more about Kiota here.
+
 
 ## Using the abstractions
 
-1. Add a `.npmrc` file with the following content
-
-    ```Config
-    @microsoft:registry=https://npm.pkg.github.com/
-    ```
-
-1. `npm login --scope=@microsoft --registry=https://npm.pkg.github.com` (use a token with package:read, repo and SSO enabled for the Microsoft organization as the password)
-1. `npm i @microsoft/kiota-abstractions -S`.
+`npm i @microsoft/kiota-abstractions`
