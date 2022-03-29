@@ -1,19 +1,11 @@
-# To-do
+[![npm version badge](https://img.shields.io/npm/v/@microsoft/kiota-authentication-azure?color=blue)](https://www.npmjs.com/package/@microsoft/kiota-authentication-azure)
 
-![TypeScript](https://github.com/microsoft/kiota/actions/workflows/authentication-typescript-azure.yml/badge.svg)
+The Kiota Authentication Azure Library is an implementation to authenticate HTTP requests using @azure/identity.
 
-- [ ] browserlist configuration for compat
-- [ ] eslint configuration for linting
-- [ ] unit tests (chai + mocha + chai as promised + some coverage reporter)
-- [ ] doc comments
+A [Kiota](https://github.com/microsoft/kiota) generated project will need a reference to an authentication provider to make calls to an API endpoint.
 
-## Using the core implementations
+Read more about Kiota [here](https://github.com/microsoft/kiota/blob/main/README.md).
 
-1. Add a `.npmrc` file with the following content
+## Using the Kiota Authentication Azure
 
-    ```Config
-    @microsoft:registry=https://npm.pkg.github.com/
-    ```
-
-1. `npm login --scope=@microsoft --registry=https://npm.pkg.github.com` (use a token with package:read, repo and SSO enabled for the Microsoft organization as the password)
 1. `npm i @microsoft/kiota-authentication-azure -S`.
