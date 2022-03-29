@@ -72,7 +72,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 						}
 				}
 			} finally {
-				await this.purge(response);
+				await this.purgeResponseBody(response);
 			}
 		}
 	};
@@ -91,7 +91,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				const result = rootNode.getCollectionOfObjectValues(type);
 				return result as unknown as ModelType[];
 			} finally {
-				await this.purge(response);
+				await this.purgeResponseBody(response);
 			}
 		}
 	};
@@ -110,7 +110,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				const result = rootNode.getObjectValue(type);
 				return result as unknown as ModelType;
 			} finally {
-				await this.purge(response);
+				await this.purgeResponseBody(response);
 			}
 		}
 	};
@@ -152,7 +152,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 						}
 				}
 			} finally {
-				await this.purge(response);
+				await this.purgeResponseBody(response);
 			}
 		}
 	};
@@ -167,7 +167,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		try {
 			await this.throwFailedResponses(response, errorMappings);
 		} finally {
-			await this.purge(response);
+			await this.purgeResponseBody(response);
 		}
 	};
 	public enableBackingStore = (backingStoreFactory?: BackingStoreFactory | undefined): void => {
@@ -185,13 +185,13 @@ export class FetchRequestAdapter implements RequestAdapter {
 
 		return this.parseNodeFactory.getRootParseNode(responseContentType, payload);
 	};
-	private shouldReturnUndefined = (response: Response) : boolean => {
+	private shouldReturnUndefined = (response: Response): boolean => {
 		return response.status === 204;
 	};
 	/** purges the response body if it hasn't been read to release the connection to the server */
-	private purge = async(response: Response): Promise<void> => {
-		if(!response.bodyUsed && response.body){
-			const _ = await response.arrayBuffer();
+	private purgeResponseBody = async (response: Response): Promise<void> => {
+		if (!response.bodyUsed && response.body) {
+			await response.arrayBuffer();
 		}
 	};
 	private throwFailedResponses = async (response: Response, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<void> => {
