@@ -1,0 +1,23 @@
+{
+  "name": "test-kiota-typescript-libraries",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@azure/identity": "2.0.1",
+    "@microsoft/kiota-abstractions": "*",
+    "@microsoft/kiota-authentication-azure": "*",
+    "@microsoft/kiota-http-fetchlibrary": "*",
+    "@microsoft/kiota-serialization-json": "*",
+    "@microsoft/kiota-serialization-text": "*",
+    "@types/chai": "^4.3.0",
+    "chai": "^4.3.6",
+    "mocha": "^9.2.2"
+  },
+  "devDependencies": {
+    "@types/mocha": "^9.1.0"
+  }
+}
