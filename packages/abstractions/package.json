@@ -2,13 +2,13 @@
 	"name": "@microsoft/kiota-abstractions",
 	"version": "1.0.0-preview.1",
 	"description": "Core abstractions for kiota generated libraries in TypeScript and JavaScript",
-	"main": "dist/cjs/index.js",
+	"main": "dist/cjs/src/index.js",
 	"files": [
 		"src",
 		"dist"
 	],
-	"module": "dist/es/index.js",
-	"types": "dist/cjs/index.d.ts",
+	"module": "dist/es/src/index.js",
+	"types": "dist/cjs/src/index.d.ts",
 	"scripts": {
 		"build": "npm run build:cjs && npm run build:esm",
 		"build:cjs": "tsc -p tsconfig.cjs.json",

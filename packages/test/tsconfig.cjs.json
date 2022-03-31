@@ -1,0 +1,39 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions":{
+        "target": "ES2017",
+        "module": "commonjs",
+        "outDir": "./dist/cjs"
+    },
+    "paths": {
+        "@microsoft/kiota-abstractions": [
+            "../abstractions"
+        ],
+        "@microsoft/kiota-serialization-json": [
+            "../serialization/json"
+        ],
+        "@microsoft/kiota-http-fetchlibrary": [
+            "../http/fetchlibrary"
+        ],
+        "@microsoft/kiota-serialization-text": [
+            "../serialization/text"
+        ],
+    },
+    "files": [],
+    "references": [
+        {
+            "path": "../abstractions/tsconfig.cjs.json"
+        },
+        {
+            "path": "../serialization/json/tsconfig.cjs.json"
+        },
+        {
+            "path": "../serialization/text/tsconfig.cjs.json"
+        },
+        {
+            "path": "../http/fetch/tsconfig.cjs.json"
+        }
+    ],
+	"exclude": ["node_modules", "dist"],
+	"include": ["./generatedCode/**/*.ts", "./tests"]
+}

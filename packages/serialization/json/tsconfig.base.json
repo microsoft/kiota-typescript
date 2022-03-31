@@ -9,6 +9,8 @@
         "strictFunctionTypes": true,
         "strictNullChecks": true,
         "forceConsistentCasingInFileNames": true,
-		"declaration": true
+		"declaration": true,
+        "declarationMap": true,
+        "composite": true
 	}
 }

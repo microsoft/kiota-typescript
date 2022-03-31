@@ -3,8 +3,18 @@
     "compilerOptions":{
         "target": "ES2017",
         "module": "commonjs",
-        "outDir": "./dist/cjs"
+        "outDir": "./dist/cjs",
+        "paths": {
+            "@microsoft/kiota-abstractions/*": [
+                "../../abstractions/*"
+            ],
+        }
     },
 	"exclude": ["node_modules", "dist"],
-	"include": ["./src/**/*.ts", "./test"]
+	"include": ["./src/**/*.ts", "./test"],
+    "references": [
+        {
+            "path": "../../abstractions/tsconfig.cjs.json"
+        },
+    ]
 }

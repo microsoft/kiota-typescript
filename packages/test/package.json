@@ -1,10 +1,11 @@
 {
   "name": "test-kiota-typescript-libraries",
   "description": "",
+  "version": "0.0.0",
   "main": "index.js",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha dist/cjs/tests/*.js"
   },
   "dependencies": {
     "@azure/identity": "2.0.1",

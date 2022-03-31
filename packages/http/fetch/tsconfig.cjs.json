@@ -4,8 +4,14 @@
         "target": "ES2015",
         "module": "commonjs",
         "outDir": "./dist/cjs",
-        "composite": true
+        "composite": true,
+        "paths": {
+            "@microsoft/kiota-abstractions": [
+                "../../abstractions/*"
+            ],
+        },
     },
+    "files": [],
 	"exclude": ["node_modules", "dist"],
 	"include": ["./src/**/*.ts"]
 }

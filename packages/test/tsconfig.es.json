@@ -1,0 +1,41 @@
+{
+	"extends": "./tsconfig.base.json",
+	"compilerOptions": {
+		"module": "ES2015",
+		"target": "ES2017",
+		"outDir": "dist/es/"
+	},
+    "references": [
+        {
+            "path": "../abstractions/tsconfig.es.json"
+        },
+        {
+            "path": "../serialization/json/tsconfig.es.json"
+        },
+        {
+            "path": "../serialization/text/tsconfig.es.json"
+        },
+        {
+            "path": "../http/fetch/tsconfig.es.json"
+        }
+    ],
+	"exclude": ["node_modules", "dist"],
+    "paths": {
+        "@microsoft/kiota-abstractions": [
+            "../abstractions"
+        ],
+        "@microsoft/kiota-serialization-json": [
+            "../serialization/json"
+        ],
+        "@microsoft/kiota-http-fetchlibrary": [
+            "../http/fetchlibrary"
+        ],
+        "@microsoft/microsoft-graph-client": [
+            "../graph"
+        ],
+        "@microsoft/kiota-serialization-text": [
+            "../serialization/text"
+        ],
+    },
+	"include": ["./src/**/*.ts", "./test/**/*.ts"]
+}
