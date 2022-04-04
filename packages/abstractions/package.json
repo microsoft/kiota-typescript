@@ -13,10 +13,14 @@
 		"build": "npm run build:cjs && npm run build:esm",
 		"build:cjs": "tsc -p tsconfig.cjs.json",
 		"build:esm": "tsc -p tsconfig.es.json",
-		"test": "echo \"Error: no test specified\" && exit 1",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
-		"clean": "rm -r ./dist"
+		"clean": "rm -r ./dist",
+        "karma": "npm run rollup && karma  start --single-run --browsers ChromeHeadless karma.conf.js",
+        "rollup": "rollup -c",
+        "test": "npm run test:cjs && npm run test:es && npm run rollup && npm run karma",
+        "test:cjs": "tsc -p tsconfig.cjs.json  && mocha  'dist/cjs/test/common/**/*.js'",
+        "test:es": "tsc -b tsconfig.es.json && mocha 'dist/es/test/common/**/*.js' --require esm"
 	},
 	"repository": "git://github.com/microsoft/kiota-typescript.git",
 	"keywords": [

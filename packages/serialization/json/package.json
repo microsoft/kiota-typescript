@@ -9,10 +9,14 @@
         "build": "npm run build:cjs && npm run build:esm",
         "build:cjs": "tsc -p tsconfig.cjs.json",
         "build:esm": "tsc -p tsconfig.es.json",
-        "test": "echo \"Error: no test specified\" && exit 1",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "clean": "rm -r ./dist"
+        "clean": "rm -r ./dist",
+        "karma": "npm run rollup && karma  start --single-run --browsers ChromeHeadless karma.conf.js",
+        "rollup": "rollup -c",
+        "test": "npm run test:cjs && npm run test:es && npm run rollup && npm run karma",
+        "test:cjs": "npm run build:cjs && mocha  'dist/cjs/test/common/**/*.js'",
+        "test:es": " npm run build:es && mocha 'dist/es/test/common/**/*.js'  --require  esm"
     },
     "repository": {
         "type": "git",
