@@ -12,6 +12,8 @@
     "packages/serialization/text/"
   ],
   "scripts": {
-      "build": "tsc -b packages/test/tsconfig.cjs.json"
+      "build": "npm run build:cjs && npm run build:es",
+      "build:cjs": "tsc -b packages/test/tsconfig.cjs.json",
+      "build:es": "tsc -b packages/test/tsconfig.es.json"
   }
 }
