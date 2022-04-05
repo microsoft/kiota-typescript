@@ -13,9 +13,6 @@ jobs:
         runs-on: ubuntu-latest
         environment:
           name: build_test
-        defaults:
-            run:
-                working-directory: packages/abstractions
         strategy:
           matrix:
             node-version: [14.x, 16.x, 17.x]
