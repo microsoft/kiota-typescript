@@ -24,7 +24,7 @@ export interface RequestAdapter {
     type: ParsableFactory<ModelType>,
     responseHandler: ResponseHandler | undefined,
     errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
-  ): Promise<ModelType>;
+  ): Promise<ModelType | undefined>;
   /**
    * Excutes the HTTP request specified by the given RequestInformation and returns the deserialized response model collection.
    * @param requestInfo the request info to execute.
@@ -39,7 +39,7 @@ export interface RequestAdapter {
     type: ParsableFactory<ModelType>,
     responseHandler: ResponseHandler | undefined,
     errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
-  ): Promise<ModelType[]>;
+  ): Promise<ModelType[] | undefined>;
   /**
    * Excutes the HTTP request specified by the given RequestInformation and returns the deserialized response model collection.
    * @param requestInfo the request info to execute.
@@ -70,7 +70,7 @@ export interface RequestAdapter {
     responseType: "string" | "number" | "boolean" | "Date" | "ArrayBuffer",
     responseHandler: ResponseHandler | undefined,
     errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
-  ): Promise<ResponseType>;
+  ): Promise<ResponseType | undefined>;
   /**
    * Excutes the HTTP request specified by the given RequestInformation and returns the deserialized primitive response model.
    * @param requestInfo the request info to execute.
