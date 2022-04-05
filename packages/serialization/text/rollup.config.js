@@ -5,24 +5,25 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
+import resolve from "@rollup/plugin-node-resolve";
 
-const config = [{
+const config = [
+  {
     input: ["dist/es/test/browser/index.js"],
     output: {
-        file: "dist/es/test/index.js",
-        format: "esm",
-        name: "BrowserTest",
+      file: "dist/es/test/index.js",
+      format: "esm",
+      name: "BrowserTest",
     },
     plugins: [
-        commonjs({ include: ["node_modules/**"] }),
-        resolve({
-            browser: true,
-            preferBuiltins: false,
-
-        })
+      commonjs(),
+      resolve({
+        browser: true,
+        preferBuiltins: false,
+      }),
     ],
-}];
+  },
+];
 
 export default config;

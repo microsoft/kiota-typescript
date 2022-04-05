@@ -1,57 +1,49 @@
 {
-	"name": "@microsoft/kiota-abstractions",
-	"version": "1.0.0-preview.1",
-	"description": "Core abstractions for kiota generated libraries in TypeScript and JavaScript",
-	"main": "dist/cjs/src/index.js",
-	"files": [
-		"src",
-		"dist"
-	],
-	"module": "dist/es/src/index.js",
-	"types": "dist/cjs/src/index.d.ts",
-	"scripts": {
-		"build": "npm run build:cjs && npm run build:esm",
-		"build:cjs": "tsc -p tsconfig.cjs.json",
-		"build:esm": "tsc -p tsconfig.es.json",
-		"lint": "eslint . --ext .ts",
-		"lint:fix": "eslint . --ext .ts --fix",
-		"clean": "rm -r ./dist",
+    "name": "@microsoft/kiota-abstractions",
+    "version": "1.0.0-preview.1",
+    "description": "Core abstractions for kiota generated libraries in TypeScript and JavaScript",
+    "main": "dist/cjs/src/index.js",
+    "files": [
+        "src",
+        "dist"
+    ],
+    "module": "dist/es/src/index.js",
+    "types": "dist/cjs/src/index.d.ts",
+    "scripts": {
+        "build": "npm run build:cjs && npm run build:esm",
+        "build:cjs": "tsc -p tsconfig.cjs.json",
+        "build:esm": "tsc -p tsconfig.es.json",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "clean": "rm -r ./dist",
         "karma": "npm run rollup && karma  start --single-run --browsers ChromeHeadless karma.conf.js",
         "rollup": "rollup -c",
         "test": "npm run test:cjs && npm run test:es && npm run rollup && npm run karma",
         "test:cjs": "tsc -p tsconfig.cjs.json  && mocha  'dist/cjs/test/common/**/*.js'",
         "test:es": "tsc -b tsconfig.es.json && mocha 'dist/es/test/common/**/*.js' --require esm"
-	},
-	"repository": "git://github.com/microsoft/kiota-typescript.git",
-	"keywords": [
-		"kiota",
-		"openAPI",
-		"Microsoft",
-		"Graph"
-	],
-	"author": "Microsoft",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/microsoft/kiota-typescript/issues"
-	},
-	"homepage": "https://github.com/microsoft/kiota#readme",
-	"devDependencies": {
-		"@types/node": "^17.0.22",
-		"@types/uri-template-lite": "^19.12.1",
-		"@types/uuid": "^8.3.4",
-		"@typescript-eslint/eslint-plugin": "^5.16.0",
-		"@typescript-eslint/parser": "^5.16.0",
-		"eslint": "^8.11.0",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-prettier": "^4.0.0",
-		"eslint-plugin-simple-import-sort": "^7.0.0",
-		"prettier": "^2.6.0",
-		"typescript": "^4.6.2"
-	},
-	"dependencies": {
-		"tinyduration": "^3.2.2",
-		"tslib": "^2.3.1",
-		"uri-template-lite": "^22.1.0",
-		"uuid": "^8.3.2"
-	}
+    },
+    "repository": "git://github.com/microsoft/kiota-typescript.git",
+    "keywords": [
+        "kiota",
+        "openAPI",
+        "Microsoft",
+        "Graph"
+    ],
+    "author": "Microsoft",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/microsoft/kiota-typescript/issues"
+    },
+    "homepage": "https://github.com/microsoft/kiota#readme",
+    "devDependencies": {
+        "@types/node": "^17.0.22",
+        "@types/uri-template-lite": "^19.12.1",
+        "@types/uuid": "^8.3.4"
+    },
+    "dependencies": {
+        "tinyduration": "^3.2.2",
+        "tslib": "^2.3.1",
+        "uri-template-lite": "^22.1.0",
+        "uuid": "^8.3.2"
+    }
 }

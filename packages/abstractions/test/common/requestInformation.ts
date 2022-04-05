@@ -5,8 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { assert } from "chai";
+import * as chai from "chai";
 import { URL } from "url";
+
+const assert = chai.assert;
 
 import { RequestInformation } from "../../src";
 

@@ -5,7 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "test": "mocha dist/cjs/tests/*.js"
+    "test:integrated": "mocha dist/cjs/tests/*.js"
   },
   "dependencies": {
     "@azure/identity": "2.0.1",
@@ -14,11 +14,5 @@
     "@microsoft/kiota-http-fetchlibrary": "1.0.0-preview.1",
     "@microsoft/kiota-serialization-json": "1.0.0-preview.1",
     "@microsoft/kiota-serialization-text": "1.0.0-preview.1"
-  },
-  "devDependencies": {
-    "@types/chai": "^4.3.0",
-    "chai": "^4.3.6",
-    "mocha": "^9.2.2",
-    "@types/mocha": "^9.1.0"
   }
 }

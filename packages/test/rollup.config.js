@@ -16,7 +16,7 @@ const config = [{
         name: "BrowserTest",
     },
     plugins: [
-        commonjs({ include: ["node_modules/**"] }),
+        commonjs(),
         resolve({
             browser: true,
             preferBuiltins: false,
