@@ -12,6 +12,7 @@ export class ApiClient {
     private readonly requestAdapter: RequestAdapter;
     /** Url template to use to build the URL for the current request builder  */
     private readonly urlTemplate: string;
+    /** The users property  */
     public get users(): UsersRequestBuilder {
         return new UsersRequestBuilder(this.pathParameters, this.requestAdapter);
     }
@@ -28,7 +29,9 @@ export class ApiClient {
         registerDefaultSerializer(TextSerializationWriterFactory);
         registerDefaultDeserializer(JsonParseNodeFactory);
         registerDefaultDeserializer(TextParseNodeFactory);
-        requestAdapter.baseUrl = "https://graph.microsoft.com/v1.0";
+        if (requestAdapter.baseUrl === undefined || requestAdapter.baseUrl === "") {
+            requestAdapter.baseUrl = "https://graph.microsoft.com/v1.0";
+        }
     };
     /**
      * Gets an item from the ApiSdk.users.item collection

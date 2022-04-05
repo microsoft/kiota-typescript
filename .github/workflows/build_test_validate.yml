@@ -23,8 +23,9 @@ jobs:
         - run: yarn install --frozen-lockfile
         - run: yarn run build
         - run: lerna run test:integrated
-        - run: lerna run test --parallel
           env:
-            TENANT_ID:  ${{secrets.tenant_id}}
-            CLIENT_ID: ${{secrets.client_id}}
-            CLIENT_SECRET: ${{secrets.client_secret}}
+              TENANT_ID:  ${{secrets.tenant_id}}
+              CLIENT_ID: ${{secrets.client_id}}
+              CLIENT_SECRET: ${{secrets.client_secret}}
+        - run: lerna run test --parallel
+          
