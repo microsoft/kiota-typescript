@@ -24,13 +24,23 @@ export class ParseNodeFactoryRegistry implements ParseNodeFactory {
     if (!content) {
       throw new Error("content cannot be undefined or empty");
     }
-    const factory = this.contentTypeAssociatedFactories.get(contentType);
+    const vendorSpecificContentType = contentType.split(";")[0];
+    let factory = this.contentTypeAssociatedFactories.get(
+      vendorSpecificContentType
+    );
     if (factory) {
-      return factory.getRootParseNode(contentType, content);
-    } else {
-      throw new Error(
-        `Content type ${contentType} does not have a factory registered to be parsed`
-      );
+      return factory.getRootParseNode(vendorSpecificContentType, content);
     }
+    const cleanedContentType = vendorSpecificContentType.replace(
+      /[^/]+\+/gi,
+      ""
+    );
+    factory = this.contentTypeAssociatedFactories.get(cleanedContentType);
+    if (factory) {
+      return factory.getRootParseNode(cleanedContentType, content);
+    }
+    throw new Error(
+      `Content type ${cleanedContentType} does not have a factory registered to be parsed`
+    );
   }
 }

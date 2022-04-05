@@ -21,13 +21,23 @@ export class SerializationWriterFactoryRegistry
     if (!contentType) {
       throw new Error("content type cannot be undefined or empty");
     }
-    const factory = this.contentTypeAssociatedFactories.get(contentType);
+    const vendorSpecificContentType = contentType.split(";")[0];
+    let factory = this.contentTypeAssociatedFactories.get(
+      vendorSpecificContentType
+    );
     if (factory) {
-      return factory.getSerializationWriter(contentType);
-    } else {
-      throw new Error(
-        `Content type ${contentType} does not have a factory registered to be serialized`
-      );
+      return factory.getSerializationWriter(vendorSpecificContentType);
     }
+    const cleanedContentType = vendorSpecificContentType.replace(
+      /[^/]+\+/gi,
+      ""
+    );
+    factory = this.contentTypeAssociatedFactories.get(cleanedContentType);
+    if (factory) {
+      return factory.getSerializationWriter(cleanedContentType);
+    }
+    throw new Error(
+      `Content type ${cleanedContentType} does not have a factory registered to be serialized`
+    );
   }
 }
