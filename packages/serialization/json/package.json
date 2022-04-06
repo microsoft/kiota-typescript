@@ -1,6 +1,6 @@
 {
     "name": "@microsoft/kiota-serialization-json",
-    "version": "1.0.0-preview.1",
+    "version": "1.0.0-preview.2",
     "description": "Implementation of Kiota Serialization interfaces for JSON",
     "main": "dist/cjs/index.js",
     "module": "dist/es/index.js",
@@ -43,7 +43,7 @@
         "typescript": "^4.6.2"
     },
     "dependencies": {
-        "@microsoft/kiota-abstractions": "^1.0.0-preview.1",
+        "@microsoft/kiota-abstractions": "^1.0.0-preview.2",
         "tslib": "^2.3.1"
     }
 }
