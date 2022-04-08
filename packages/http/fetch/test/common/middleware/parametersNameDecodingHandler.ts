@@ -9,18 +9,24 @@ import { assert } from "chai";
 
 import { Middleware } from "../../../src/middlewares/middleware";
 import { ParametersNameDecodingHandler } from "../../../src/middlewares/parametersNameDecodingHandler";
+import { getResponse } from "../../testUtils";
 import { DummyFetchHandler } from "./dummyFetchHandler";
 
+// eslint-disable-next-line no-var
+var Response = Response;
+if (typeof Response !== "object") {
+	Response = getResponse();
+}
 describe("parametersNameDecodingHandler", function () {
 	const handler = new ParametersNameDecodingHandler();
 
 	const data = [
 		{ input: "http://localhost?%24select=diplayName&api%2Dversion=2", expected: "http://localhost?$select=diplayName&api-version=2" },
-		{ input: "http://localhost?%24select=diplayName&api%7Eversion=2", expected: "http://localhost/?$select=diplayName&api~version=2" },
-		{ input: "http://localhost?%24select=diplayName&api%2Eversion=2", expected: "http://localhost/?$select=diplayName&api.version=2" },
-		{ input: "http://localhost?%24select=diplayName&api%2Eversion=2", expected: "http://localhost/?$select=diplayName&api.version=2" },
-		{ input: "http://localhost:888?%24select=diplayName&api%2Dversion=2", expected: "http://localhost:888/?$select=diplayName&api-version=2" },
-		{ input: "http://localhost", expected: "http://localhost/" },
+		{ input: "http://localhost?%24select=diplayName&api%7Eversion=2", expected: "http://localhost?$select=diplayName&api~version=2" },
+		{ input: "http://localhost?%24select=diplayName&api%2Eversion=2", expected: "http://localhost?$select=diplayName&api.version=2" },
+		{ input: "http://localhost?%24select=diplayName&api%2Eversion=2", expected: "http://localhost?$select=diplayName&api.version=2" },
+		{ input: "http://localhost:888?%24select=diplayName&api%2Dversion=2", expected: "http://localhost:888?$select=diplayName&api-version=2" },
+		{ input: "http://localhost", expected: "http://localhost" },
 	];
 	data.forEach((entry) => {
 		it(`Should decode the parameters names ${entry.expected}`, async () => {
