@@ -21,7 +21,7 @@ jobs:
           with:
             node-version: ${{ matrix.node-version }}
         - run: yarn install --frozen-lockfile
-        - run: yarn global add -g npm@latest # support 14.x
+        - run: yarn global add npm@latest # support 14.x
         - run: yarn run build
         - run: lerna run test:integrated
           env:
