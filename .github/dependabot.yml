@@ -6,6 +6,11 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
 - package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+- package-ecosystem: npm
   directory: "/packages/abstractions"
   schedule:
     interval: daily
@@ -27,6 +32,11 @@ updates:
   open-pull-requests-limit: 10
 - package-ecosystem: npm
   directory: "/packages/http/fetch"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+- package-ecosystem: npm
+  directory: "/packages/test"
   schedule:
     interval: daily
   open-pull-requests-limit: 10
