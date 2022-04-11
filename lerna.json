@@ -6,5 +6,6 @@
     "packages/serialization/json/",
     "packages/serialization/text/"
   ],
+  "npmClient": "yarn",
   "version": "independent"
 }
