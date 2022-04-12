@@ -7,14 +7,8 @@
 import { assert } from "chai";
 
 import { ParametersNameDecodingHandler } from "../../../src/middlewares/parametersNameDecodingHandler";
-import { getResponse } from "../../testUtils";
 import { TestCallBackMiddleware } from "./testCallBackMiddleware";
 
-// eslint-disable-next-line no-var
-var Response = Response;
-if (typeof Response !== "object") {
-	Response = getResponse();
-}
 describe("parametersNameDecodingHandler", function () {
 	const handler = new ParametersNameDecodingHandler();
 
