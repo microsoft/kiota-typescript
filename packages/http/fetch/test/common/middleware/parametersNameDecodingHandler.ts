@@ -4,13 +4,11 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-import { RequestOption } from "@microsoft/kiota-abstractions";
 import { assert } from "chai";
 
-import { Middleware } from "../../../src/middlewares/middleware";
 import { ParametersNameDecodingHandler } from "../../../src/middlewares/parametersNameDecodingHandler";
 import { getResponse } from "../../testUtils";
-import { DummyFetchHandler } from "./dummyFetchHandler";
+import { TestCallBackMiddleware } from "./testCallBackMiddleware";
 
 // eslint-disable-next-line no-var
 var Response = Response;
@@ -30,24 +28,17 @@ describe("parametersNameDecodingHandler", function () {
 	];
 	data.forEach((entry) => {
 		it(`Should decode the parameters names ${entry.expected}`, async () => {
+			let wasCalled = false;
 			const fetchRequestInit = {
 				method: "GET",
 			};
 			const requestInformationOptions = {};
-			handler.next = new CallBackMiddleware((url: string) => {
+			handler.next = new TestCallBackMiddleware((url: string) => {
 				assert.equal(url, entry.expected);
+				wasCalled = true;
 			});
 			await handler["execute"](entry.input, fetchRequestInit, requestInformationOptions);
+			assert.isTrue(wasCalled);
 		});
 	});
 });
-
-class CallBackMiddleware implements Middleware {
-	constructor(private callback: (url: string) => void) {}
-	next: Middleware = new DummyFetchHandler();
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	async execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
-		this.callback(url);
-		return new Response("ok", { status: 200 });
-	}
-}
