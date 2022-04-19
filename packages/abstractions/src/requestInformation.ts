@@ -131,7 +131,14 @@ export class RequestInformation {
    */
   public setQueryStringParametersFromRawObject = (q: object): void => {
     Object.entries(q).forEach(([k, v]) => {
-      this.queryParameters[k] = v;
+      let key = k;
+      if ((q as any).getQueryParameter) {
+        const serializationKey = (q as any).getQueryParameter(key) as string;
+        if (serializationKey) {
+          key = serializationKey;
+        }
+      }
+      this.queryParameters[key] = v;
     });
   };
 }
