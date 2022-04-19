@@ -5,28 +5,68 @@ updates:
   schedule:
     interval: daily
   open-pull-requests-limit: 10
+  commit-message:
+      # Prefix all commit messages with "npm"
+      prefix: "auto dependabot"
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  commit-message:
+      # Prefix all commit messages with "npm"
+      prefix: "auto dependabot"
+
 - package-ecosystem: npm
   directory: "/packages/abstractions"
   schedule:
     interval: daily
   open-pull-requests-limit: 10
+  commit-message:
+      # Prefix all commit messages with "npm"
+      prefix: "auto dependabot"
+
 - package-ecosystem: npm
   directory: "/packages/authentication/azure"
   schedule:
     interval: daily
   open-pull-requests-limit: 10
+  commit-message:
+      # Prefix all commit messages with "npm"
+      prefix: "auto dependabot"
+
 - package-ecosystem: npm
   directory: "/packages/serialization/json"
   schedule:
     interval: daily
   open-pull-requests-limit: 10
+  commit-message:
+      # Prefix all commit messages with "npm"
+      prefix: "auto dependabot"
+
 - package-ecosystem: npm
   directory: "/packages/serialization/text"
   schedule:
     interval: daily
   open-pull-requests-limit: 10
+  commit-message:
+      # Prefix all commit messages with "npm"
+      prefix: "auto dependabot"
+
 - package-ecosystem: npm
   directory: "/packages/http/fetch"
   schedule:
     interval: daily
   open-pull-requests-limit: 10
+  commit-message:
+      # Prefix all commit messages with "npm"
+      prefix: "auto dependabot"
+
+- package-ecosystem: npm
+  directory: "/packages/test"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  commit-message:
+      # Prefix all commit messages with "npm"
+      prefix: "auto dependabot"

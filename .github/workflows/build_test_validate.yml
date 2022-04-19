@@ -1,0 +1,54 @@
+
+name: Build and test all the Kiota packages
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        environment:
+          name: build_test
+        strategy:
+          matrix:
+            node-version: [ 16.x]
+        steps:
+        - uses: actions/checkout@v3
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+        - run: yarn install --frozen-lockfile
+        - run: yarn global add mocha@6.2.3
+        - run: yarn run build
+        - run: lerna run test:integrated
+          env:
+              TENANT_ID:  ${{secrets.tenant_id}}
+              CLIENT_ID: ${{secrets.client_id}}
+              CLIENT_SECRET: ${{secrets.client_secret}}
+        - run: lerna run test --parallel
+    
+    publish-npm:
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'auto dependabot')}}
+        needs: build
+        environment:
+          name: production_feed
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: packages/abstractions
+        steps:
+          - uses: actions/checkout@v3
+          - uses: actions/setup-node@v3
+            with:
+              node-version: 16
+              registry-url: https://registry.npmjs.org/
+          - run: yarn install --frozen-lockfile
+          - run: yarn global add mocha@6.2.3
+          - run: yarn run build
+          - run: lerna version prerelease --preid=preview --yes
+          - run: lerna publish from-package --yes
+            env:
+              NODE_AUTH_TOKEN: ${{secrets.npm_token}}

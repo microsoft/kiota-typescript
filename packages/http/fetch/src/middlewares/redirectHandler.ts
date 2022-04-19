@@ -73,8 +73,11 @@ export class RedirectHandler implements Middleware {
 	 * @param {RedirectHandlerOptions} [options = new RedirectHandlerOptions()] - The redirect handler options instance
 	 * @returns An instance of RedirectHandler
 	 */
-
-	public constructor(private options: RedirectHandlerOptions = new RedirectHandlerOptions()) {}
+	public constructor(private options: RedirectHandlerOptions = new RedirectHandlerOptions()) {
+		if (!options) {
+			throw new Error("The options parameter is required.");
+		}
+	}
 
 	/**
 	 * @private
@@ -144,15 +147,16 @@ export class RedirectHandler implements Middleware {
 	 * To execute the next middleware and to handle in case of redirect response returned by the server
 	 * @param {Context} context - The context object
 	 * @param {number} redirectCount - The redirect count value
-	 * @param {RedirectHandlerOptions} options - The redirect handler options instance
+	 * @param {Record<string, RequestOption>} [requestOptions = {}] - The request options
+	 * @param {RedirectHandlerOptions} currentOptions - The redirect handler options instance
 	 * @returns A promise that resolves to nothing
 	 */
-	private async executeWithRedirect(url: string, fetchRequestInit: FetchRequestInit, redirectCount: number, requestOptions?: Record<string, RequestOption>): Promise<FetchResponse> {
+	private async executeWithRedirect(url: string, fetchRequestInit: FetchRequestInit, redirectCount: number, currentOptions: RedirectHandlerOptions, requestOptions?: Record<string, RequestOption>): Promise<FetchResponse> {
 		const response = await this.next?.execute(url, fetchRequestInit as RequestInit, requestOptions);
 		if (!response) {
 			throw new Error("Response is undefined");
 		}
-		if (redirectCount < this.options.maxRedirects && this.isRedirect(response) && this.hasLocationHeader(response) && this.options.shouldRedirect(response)) {
+		if (redirectCount < currentOptions.maxRedirects && this.isRedirect(response) && this.hasLocationHeader(response) && currentOptions.shouldRedirect(response)) {
 			++redirectCount;
 			if (response.status === RedirectHandler.STATUS_CODE_SEE_OTHER) {
 				fetchRequestInit["method"] = HttpMethod.GET;
@@ -166,7 +170,7 @@ export class RedirectHandler implements Middleware {
 					url = redirectUrl;
 				}
 			}
-			return await this.executeWithRedirect(url, fetchRequestInit, redirectCount, requestOptions);
+			return await this.executeWithRedirect(url, fetchRequestInit, redirectCount, currentOptions, requestOptions);
 		} else {
 			return response;
 		}
@@ -181,10 +185,11 @@ export class RedirectHandler implements Middleware {
 	 */
 	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		const redirectCount = 0;
+		let currentOptions = this.options;
 		if (requestOptions && requestOptions[RedirectHandlerOptionKey]) {
-			this.options = requestOptions[RedirectHandlerOptionKey] as RedirectHandlerOptions;
+			currentOptions = requestOptions[RedirectHandlerOptionKey] as RedirectHandlerOptions;
 		}
 		(requestInit as FetchRequestInit).redirect = RedirectHandler.MANUAL_REDIRECT;
-		return this.executeWithRedirect(url, requestInit as FetchRequestInit, redirectCount, requestOptions);
+		return this.executeWithRedirect(url, requestInit as FetchRequestInit, redirectCount, currentOptions, requestOptions);
 	}
 }
