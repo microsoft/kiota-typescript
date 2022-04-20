@@ -41,9 +41,13 @@ describe("Test authentication using @azure/identity", () => {
     moq.expects("getToken").resolves(accessToken);
     const accessTokenProvider = new AzureIdentityAccessTokenProvider(
       clientCredential,
-      scopes
+      scopes,
+      undefined,
+      new Set<string>(["graph.microsoft.com"])
     );
-    const access = await accessTokenProvider.getAuthorizationToken();
+    const access = await accessTokenProvider.getAuthorizationToken(
+      "https://graph.microsoft.com/v1.0"
+    );
     assert.equal(access, accessToken.token);
   });
 
@@ -66,6 +70,8 @@ describe("Test authentication using @azure/identity", () => {
     const moq = sinon.mock(clientCredential);
     moq.expects("getToken").resolves(accessToken);
     const request: RequestInformation = new RequestInformation();
+    request.urlTemplate = "test";
+    request.URL = "https://graph.microsoft.com/v1.0";
     const tokenCredentialAuthenticationProvider =
       new AzureIdentityAuthenticationProvider(clientCredential, scopes);
     await tokenCredentialAuthenticationProvider.authenticateRequest(request);
@@ -94,6 +100,8 @@ describe("Test authentication using @azure/identity", () => {
     const moq = sinon.mock(clientCredential);
     moq.expects("getToken").resolves(accessToken);
     const request: RequestInformation = new RequestInformation();
+    request.urlTemplate = "test";
+    request.URL = "https://graph.microsoft.com/v1.0";
     const accessTokenProvider = new AzureIdentityAccessTokenProvider(
       clientCredential,
       scopes
