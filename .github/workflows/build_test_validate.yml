@@ -23,6 +23,16 @@ jobs:
         - run: yarn install --frozen-lockfile
         - run: yarn global add mocha@6.2.3
         - run: yarn run build
+        - name: Archive dist folders # archive dist folders to verify if the build 
+          uses: actions/upload-artifact@v3
+          with:
+            name: dist folders
+            path: |
+              packages/abstractions/dist
+              packages/serialization/json/dist
+              packages/serialization/text/dist
+              packages/http/fetch/dist
+              packages/authentication/azure/dist
         - run: lerna run test:integrated
           env:
               TENANT_ID:  ${{secrets.tenant_id}}
