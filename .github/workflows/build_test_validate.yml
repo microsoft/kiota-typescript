@@ -23,7 +23,7 @@ jobs:
         - run: yarn install --frozen-lockfile
         - run: yarn global add mocha@6.2.3
         - run: yarn run build
-        - name: Archive dist folders # archive dist folders to verify if the build 
+        - name: Archive dist folders # archive dist folders to verify if they are transpiled correctly and available for publishing
           uses: actions/upload-artifact@v3
           with:
             name: dist folders
@@ -65,8 +65,8 @@ jobs:
           - run: yarn install --frozen-lockfile
           - run: yarn global add mocha@6.2.3
           - run: yarn run build
-          - run: lerna publish from-package --yes
           - run: lerna run test --parallel
+          - run: lerna publish from-package --yes
             env:
               NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
