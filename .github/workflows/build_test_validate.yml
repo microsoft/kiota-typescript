@@ -61,7 +61,6 @@ jobs:
             env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 GITHUB_ACTOR: ${{ secrets.GIT_USERNAME }}
-          - run: lerna version prerelease --preid=preview --yes
           - run: yarn install --frozen-lockfile
           - run: yarn global add mocha@6.2.3
           - run: yarn run build
