@@ -65,7 +65,7 @@ jobs:
           - run: yarn global add mocha@6.2.3
           - run: yarn run build
           - run: lerna run test --parallel
-          - run: lerna publish from-package --yes
+          - run: lerna publish from-package --yes --no-verify-access  
             env:
               NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
