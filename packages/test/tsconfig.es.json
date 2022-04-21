@@ -17,6 +17,9 @@
         },
         {
             "path": "../http/fetch/tsconfig.es.json"
+        },
+        {
+            "path": "../authentication/azure/tsconfig.es.json"
         }
     ],
 	"exclude": ["node_modules", "dist"],
@@ -35,6 +38,9 @@
         ],
         "@microsoft/kiota-serialization-text": [
             "../serialization/text"
+        ],
+        "@microsoft/kiota-authentication-azure": [
+            "../authentication/azure"
         ],
     },
 	"include": ["./generatedCode/**/*.ts", "./tests/**/*.ts"]

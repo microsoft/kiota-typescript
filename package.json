@@ -36,7 +36,8 @@
     "packages/abstractions",
     "packages/http/*",
     "packages/serialization/json/",
-    "packages/serialization/text/"
+    "packages/serialization/text/",
+    "packages/authentication/*"
   ],
   "scripts": {
       "build": "npm run build:cjs && npm run build:es",

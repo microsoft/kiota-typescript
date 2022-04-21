@@ -23,6 +23,16 @@ jobs:
         - run: yarn install --frozen-lockfile
         - run: yarn global add mocha@6.2.3
         - run: yarn run build
+        - name: Archive dist folders # archive dist folders to verify if they are transpiled correctly and available for publishing
+          uses: actions/upload-artifact@v3
+          with:
+            name: dist folders
+            path: |
+              packages/abstractions/dist
+              packages/serialization/json/dist
+              packages/serialization/text/dist
+              packages/http/fetch/dist
+              packages/authentication/azure/dist
         - run: lerna run test:integrated
           env:
               TENANT_ID:  ${{secrets.tenant_id}}
@@ -45,9 +55,6 @@ jobs:
             with:
               node-version: 16
               registry-url: https://registry.npmjs.org/
-          - run: yarn install --frozen-lockfile
-          - run: yarn global add mocha@6.2.3
-          - run: yarn run build
           - run: |
               git config --global user.name '${GITHUB_ACTOR}'
               git config --global user.email '${GITHUB_ACTOR}@users.noreply.github.com'
@@ -55,6 +62,12 @@ jobs:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 GITHUB_ACTOR: ${{ secrets.GIT_USERNAME }}
           - run: lerna version prerelease --preid=preview --yes
+          - run: yarn install --frozen-lockfile
+          - run: yarn global add mocha@6.2.3
+          - run: yarn run build
+          - run: lerna run test --parallel
           - run: lerna publish from-package --yes
             env:
               NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+
+

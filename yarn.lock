@@ -1054,15 +1054,6 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@microsoft/kiota-authentication-azure@1.0.0-preview.1":
-  version "1.0.0-preview.1"
-  resolved "https://registry.yarnpkg.com/@microsoft/kiota-authentication-azure/-/kiota-authentication-azure-1.0.0-preview.1.tgz#dc24c19b53e4eceb576c890c49deb907d0a3be98"
-  integrity sha512-sxpiDEtoAqxJva5FQ9BDxm5tVpFDnz6fXthMzzxZJe5bC+ZhRjBo2QJgAcK6OYzl+rlg8asgCictt/3TH4YHXQ==
-  dependencies:
-    "@azure/core-auth" "^1.3.2"
-    "@microsoft/kiota-abstractions" "^1.0.0-preview.1"
-    tslib "^2.3.1"
-
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
