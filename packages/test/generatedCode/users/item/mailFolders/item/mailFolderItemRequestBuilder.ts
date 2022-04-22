@@ -2,6 +2,9 @@ import {MailFolder} from '../../../../models/microsoft/graph/';
 import {createMailFolderFromDiscriminatorValue} from '../../../../models/microsoft/graph/createMailFolderFromDiscriminatorValue';
 import {ChildFoldersRequestBuilder} from './childFolders/childFoldersRequestBuilder';
 import {MailFolderItemRequestBuilder as i8ac202ce800aee8ded612d4f0938c62b8e7a6aa154f6abe834c529e35433693a} from './childFolders/item/mailFolderItemRequestBuilder';
+import {MailFolderItemRequestBuilderDeleteRequestConfiguration} from './mailFolderItemRequestBuilderDeleteRequestConfiguration';
+import {MailFolderItemRequestBuilderGetRequestConfiguration} from './mailFolderItemRequestBuilderGetRequestConfiguration';
+import {MailFolderItemRequestBuilderPatchRequestConfiguration} from './mailFolderItemRequestBuilderPatchRequestConfiguration';
 import {MessageRuleItemRequestBuilder} from './messageRules/item/messageRuleItemRequestBuilder';
 import {MessageRulesRequestBuilder} from './messageRules/messageRulesRequestBuilder';
 import {MessageItemRequestBuilder} from './messages/item/messageItemRequestBuilder';
@@ -48,7 +51,7 @@ export class MailFolderItemRequestBuilder {
     public childFoldersById(id: string) : i8ac202ce800aee8ded612d4f0938c62b8e7a6aa154f6abe834c529e35433693a {
         if(!id) throw new Error("id cannot be undefined");
         const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["mailFolder_id1"] = id
+        urlTplParams["mailFolder%2Did1"] = id
         return new i8ac202ce800aee8ded612d4f0938c62b8e7a6aa154f6abe834c529e35433693a(urlTplParams, this.requestAdapter);
     };
     /**
@@ -59,88 +62,83 @@ export class MailFolderItemRequestBuilder {
     public constructor(pathParameters: Record<string, unknown> | string | undefined, requestAdapter: RequestAdapter) {
         if(!pathParameters) throw new Error("pathParameters cannot be undefined");
         if(!requestAdapter) throw new Error("requestAdapter cannot be undefined");
-        this.urlTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder_id}{?select}";
+        this.urlTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}{?%24select}";
         const urlTplParams = getPathParameters(pathParameters);
         this.pathParameters = urlTplParams;
         this.requestAdapter = requestAdapter;
     };
     /**
      * The user's mail folders. Read-only. Nullable.
-     * @param headers Request headers
-     * @param options Request options
+     * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
      */
-    public createDeleteRequestInformation(headers?: Record<string, string> | undefined, options?: RequestOption[] | undefined) : RequestInformation {
+    public createDeleteRequestInformation(requestConfiguration?: MailFolderItemRequestBuilderDeleteRequestConfiguration | undefined) : RequestInformation {
         const requestInfo = new RequestInformation();
         requestInfo.urlTemplate = this.urlTemplate;
         requestInfo.pathParameters = this.pathParameters;
         requestInfo.httpMethod = HttpMethod.DELETE;
-        if(headers) requestInfo.headers = headers;
-        options && requestInfo.addRequestOptions(...options);
+        if (requestConfiguration) {
+            requestInfo.addRequestHeaders(requestConfiguration.headers);
+            requestInfo.addRequestOptions(requestConfiguration.options);
+        }
         return requestInfo;
     };
     /**
      * The user's mail folders. Read-only. Nullable.
-     * @param headers Request headers
-     * @param options Request options
-     * @param queryParameters Request query parameters
+     * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
      */
-    public createGetRequestInformation(queryParameters?: {
-                    select?: string[]
-                    } | undefined, headers?: Record<string, string> | undefined, options?: RequestOption[] | undefined) : RequestInformation {
+    public createGetRequestInformation(requestConfiguration?: MailFolderItemRequestBuilderGetRequestConfiguration | undefined) : RequestInformation {
         const requestInfo = new RequestInformation();
         requestInfo.urlTemplate = this.urlTemplate;
         requestInfo.pathParameters = this.pathParameters;
         requestInfo.httpMethod = HttpMethod.GET;
-        if(headers) requestInfo.headers = headers;
-        queryParameters && requestInfo.setQueryStringParametersFromRawObject(queryParameters);
-        options && requestInfo.addRequestOptions(...options);
+        if (requestConfiguration) {
+            requestInfo.addRequestHeaders(requestConfiguration.headers);
+            requestInfo.setQueryStringParametersFromRawObject(requestConfiguration.queryParameters);
+            requestInfo.addRequestOptions(requestConfiguration.options);
+        }
         return requestInfo;
     };
     /**
      * The user's mail folders. Read-only. Nullable.
      * @param body 
-     * @param headers Request headers
-     * @param options Request options
+     * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
      */
-    public createPatchRequestInformation(body: MailFolder | undefined, headers?: Record<string, string> | undefined, options?: RequestOption[] | undefined) : RequestInformation {
+    public createPatchRequestInformation(body: MailFolder | undefined, requestConfiguration?: MailFolderItemRequestBuilderPatchRequestConfiguration | undefined) : RequestInformation {
         if(!body) throw new Error("body cannot be undefined");
         const requestInfo = new RequestInformation();
         requestInfo.urlTemplate = this.urlTemplate;
         requestInfo.pathParameters = this.pathParameters;
         requestInfo.httpMethod = HttpMethod.PATCH;
-        if(headers) requestInfo.headers = headers;
+        if (requestConfiguration) {
+            requestInfo.addRequestHeaders(requestConfiguration.headers);
+            requestInfo.addRequestOptions(requestConfiguration.options);
+        }
         requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body);
-        options && requestInfo.addRequestOptions(...options);
         return requestInfo;
     };
     /**
      * The user's mail folders. Read-only. Nullable.
-     * @param headers Request headers
-     * @param options Request options
+     * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @param responseHandler Response handler to use in place of the default response handling provided by the core service
      */
-    public delete(headers?: Record<string, string> | undefined, options?: RequestOption[] | undefined, responseHandler?: ResponseHandler | undefined) : Promise<void> {
+    public delete(requestConfiguration?: MailFolderItemRequestBuilderDeleteRequestConfiguration | undefined, responseHandler?: ResponseHandler | undefined) : Promise<void> {
         const requestInfo = this.createDeleteRequestInformation(
-            headers, options
+            requestConfiguration
         );
         return this.requestAdapter?.sendNoResponseContentAsync(requestInfo, responseHandler, undefined) ?? Promise.reject(new Error('http core is null'));
     };
     /**
      * The user's mail folders. Read-only. Nullable.
-     * @param headers Request headers
-     * @param options Request options
-     * @param queryParameters Request query parameters
+     * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @param responseHandler Response handler to use in place of the default response handling provided by the core service
      * @returns a Promise of MailFolder
      */
-    public get(queryParameters?: {
-                    select?: string[]
-                    } | undefined, headers?: Record<string, string> | undefined, options?: RequestOption[] | undefined, responseHandler?: ResponseHandler | undefined) : Promise<MailFolder | undefined> {
+    public get(requestConfiguration?: MailFolderItemRequestBuilderGetRequestConfiguration | undefined, responseHandler?: ResponseHandler | undefined) : Promise<MailFolder | undefined> {
         const requestInfo = this.createGetRequestInformation(
-            queryParameters, headers, options
+            requestConfiguration
         );
         return this.requestAdapter?.sendAsync<MailFolder>(requestInfo, createMailFolderFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('http core is null'));
     };
@@ -152,7 +150,7 @@ export class MailFolderItemRequestBuilder {
     public messageRulesById(id: string) : MessageRuleItemRequestBuilder {
         if(!id) throw new Error("id cannot be undefined");
         const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["messageRule_id"] = id
+        urlTplParams["messageRule%2Did"] = id
         return new MessageRuleItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
     /**
@@ -163,7 +161,7 @@ export class MailFolderItemRequestBuilder {
     public messagesById(id: string) : MessageItemRequestBuilder {
         if(!id) throw new Error("id cannot be undefined");
         const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["message_id"] = id
+        urlTplParams["message%2Did"] = id
         return new MessageItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
     /**
@@ -174,20 +172,19 @@ export class MailFolderItemRequestBuilder {
     public multiValueExtendedPropertiesById(id: string) : MultiValueLegacyExtendedPropertyItemRequestBuilder {
         if(!id) throw new Error("id cannot be undefined");
         const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["multiValueLegacyExtendedProperty_id"] = id
+        urlTplParams["multiValueLegacyExtendedProperty%2Did"] = id
         return new MultiValueLegacyExtendedPropertyItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
     /**
      * The user's mail folders. Read-only. Nullable.
      * @param body 
-     * @param headers Request headers
-     * @param options Request options
+     * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @param responseHandler Response handler to use in place of the default response handling provided by the core service
      */
-    public patch(body: MailFolder | undefined, headers?: Record<string, string> | undefined, options?: RequestOption[] | undefined, responseHandler?: ResponseHandler | undefined) : Promise<void> {
+    public patch(body: MailFolder | undefined, requestConfiguration?: MailFolderItemRequestBuilderPatchRequestConfiguration | undefined, responseHandler?: ResponseHandler | undefined) : Promise<void> {
         if(!body) throw new Error("body cannot be undefined");
         const requestInfo = this.createPatchRequestInformation(
-            body, headers, options
+            body, requestConfiguration
         );
         return this.requestAdapter?.sendNoResponseContentAsync(requestInfo, responseHandler, undefined) ?? Promise.reject(new Error('http core is null'));
     };
@@ -199,7 +196,7 @@ export class MailFolderItemRequestBuilder {
     public singleValueExtendedPropertiesById(id: string) : SingleValueLegacyExtendedPropertyItemRequestBuilder {
         if(!id) throw new Error("id cannot be undefined");
         const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["singleValueLegacyExtendedProperty_id"] = id
+        urlTplParams["singleValueLegacyExtendedProperty%2Did"] = id
         return new SingleValueLegacyExtendedPropertyItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
 }
