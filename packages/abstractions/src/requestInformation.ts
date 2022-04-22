@@ -69,7 +69,15 @@ export class RequestInformation {
   public getRequestOptions() {
     return this._requestOptions;
   }
-  public addRequestOptions(...options: RequestOption[]) {
+  /** Adds the headers for the request. */
+  public addRequestHeaders(source: Record<string, string> | undefined) {
+    if (!source) return;
+    for (const key in source) {
+      this.headers[key] = source[key];
+    }
+  }
+  /** Adds the request options for the request. */
+  public addRequestOptions(options: RequestOption[] | undefined) {
     if (!options || options.length === 0) return;
     options.forEach((option) => {
       this._requestOptions[option.getKey()] = option;
@@ -129,7 +137,10 @@ export class RequestInformation {
    * Sets the query string parameters from a raw object.
    * @param parameters the parameters.
    */
-  public setQueryStringParametersFromRawObject = (q: object): void => {
+  public setQueryStringParametersFromRawObject = (
+    q: object | undefined
+  ): void => {
+    if (!q) return;
     Object.entries(q).forEach(([k, v]) => {
       let key = k;
       if ((q as any).getQueryParameter) {

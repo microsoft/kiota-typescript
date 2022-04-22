@@ -2,6 +2,7 @@ export * from "./apiClientBuilder";
 export * from "./apiError";
 export * from "./authentication";
 export * from "./dateOnly";
+export * from "./commonRequestConfiguration";
 export * from "./duration";
 export * from "./getPathParameters";
 export * from "./httpMethod";

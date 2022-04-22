@@ -12,23 +12,22 @@ const assert = chai.assert;
 
 import { RequestInformation } from "../../src";
 
-class GetQueryParameters
-{
-    select?: string[];
-    count?: boolean;
-    filter?: string;
-    orderby?: string[];
-    search?: string;
-    getQueryParameter(originalName:string) : string {
-      switch(originalName.toLowerCase()) {
-        case 'select': return '%24select';
-        case 'count': return '%24count';
-        case 'filter': return '%24filter';
-        case 'orderby': return '%24orderby';
-        case 'search': return '%24search';
-        default: return originalName;
-      }
+class GetQueryParameters {
+  select?: string[];
+  count?: boolean;
+  filter?: string;
+  orderby?: string[];
+  search?: string;
+  getQueryParameter(originalName: string): string {
+    switch (originalName.toLowerCase()) {
+      case 'select': return '%24select';
+      case 'count': return '%24count';
+      case 'filter': return '%24filter';
+      case 'orderby': return '%24orderby';
+      case 'search': return '%24search';
+      default: return originalName;
     }
+  }
 }
 
 describe("RequestInformation", () => {
@@ -53,5 +52,15 @@ describe("RequestInformation", () => {
     requestInformation.setQueryStringParametersFromRawObject(qs);
     assert.equal(requestInformation.URL,
       "http://localhost/me?%24select=id,displayName");
+  });
+
+  it("Adds headers to requestInformation", () => {
+    const requestInformation = new RequestInformation();
+    requestInformation.pathParameters["baseurl"] = baseUrl;
+    requestInformation.urlTemplate = "http://localhost/me{?%24select}";
+    const headers: Record<string, string> = { ConsistencyLevel: "eventual" };
+    requestInformation.addRequestHeaders(headers);
+    assert.isNotEmpty(requestInformation.headers);
+    assert.equal("eventual", requestInformation.headers["ConsistencyLevel"]);
   });
 });
