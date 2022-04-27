@@ -11,10 +11,10 @@ describe("textParseNodeFactory", () => {
     const textParseNodeFactory = new TextParseNodeFactory();
 
     const expectedText = "hello serializer";
-    const sampleArray = new TextEncoder().encode(expectedText);
+    const sampleArrayBuffer = new TextEncoder().encode(expectedText);
 
     const outputText =
-      textParseNodeFactory["convertArrayBufferToText"](sampleArray);
+      textParseNodeFactory["convertArrayBufferToText"](sampleArrayBuffer);
 
     assert.equal(outputText, expectedText);
   });

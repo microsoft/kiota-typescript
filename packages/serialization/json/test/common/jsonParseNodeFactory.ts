@@ -11,10 +11,10 @@ describe("jsonParseNodeFactory", () => {
     const jsonParseNodeFactory = new JsonParseNodeFactory();
 
     const expectedJson = '{ "subject": "subject-value" }';
-    const sampleArray = new TextEncoder().encode(expectedJson);
+    const sampleArrayBuffer = new TextEncoder().encode(expectedJson);
 
     const outputJson =
-      jsonParseNodeFactory["convertArrayBufferToJson"](sampleArray);
+      jsonParseNodeFactory["convertArrayBufferToJson"](sampleArrayBuffer);
 
     assert.equal(outputJson.subject, JSON.parse(expectedJson).subject);
   });
