@@ -22,7 +22,7 @@ export class TextParseNodeFactory implements ParseNodeFactory {
   }
 
   private convertArrayBufferToText(arrayBuffer: ArrayBuffer) {
-    const uint16Array = new Uint16Array(arrayBuffer);
-    return String.fromCharCode.apply(null, [...uint16Array]);
+    const uint8Array = new Uint8Array(arrayBuffer);
+    return String.fromCharCode.apply(null, [...uint8Array]);
   }
 }
