@@ -1,5 +1,4 @@
 import { ParseNode, ParseNodeFactory } from "@microsoft/kiota-abstractions";
-import { TextDecoder } from "util";
 
 import { TextParseNode } from "./textParseNode";
 
@@ -19,8 +18,11 @@ export class TextParseNodeFactory implements ParseNodeFactory {
     if (!content) {
       throw new Error("content cannot be undefined of empty");
     }
-    const decoder = new TextDecoder();
-    const contentAsStr = decoder.decode(content);
-    return new TextParseNode(contentAsStr);
+    return new TextParseNode(this.convertArrayBufferToText(content));
+  }
+
+  private convertArrayBufferToText(arrayBuffer: ArrayBuffer) {
+    const uint8Array = new Uint8Array(arrayBuffer);
+    return String.fromCharCode.apply(null, [...uint8Array]);
   }
 }
