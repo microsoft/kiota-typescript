@@ -9,7 +9,7 @@
  * @module RedirectHandler
  */
 
-import { type RequestOption, HttpMethod } from "@microsoft/kiota-abstractions";
+import { RequestOption, HttpMethod } from "@microsoft/kiota-abstractions";
 
 import { FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions";
 import { Middleware } from "./middleware";

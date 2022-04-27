@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { type RequestOption } from "@microsoft/kiota-abstractions";
+import { RequestOption } from "@microsoft/kiota-abstractions";
 
 import { CustomFetchHandler } from "./middlewares/customFetchHandler";
 import { Middleware } from "./middlewares/middleware";
