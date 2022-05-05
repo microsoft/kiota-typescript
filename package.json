@@ -15,7 +15,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "prettier": "^2.6.0",
-    "rollup": "2.71.1",
+    "rollup": "2.72.0",
     "rollup-plugin-terser": "^7.0.2",
     "sinon": "^13.0.1",
     "typescript": "^4.6.2",
