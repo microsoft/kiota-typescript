@@ -1,6 +1,6 @@
 import { assert } from "chai";
 
-import { JsonParseNodeFactory } from "../../src/jsonParseNodeFactory";
+import { JsonParseNodeFactory } from "../../src/index";
 
 describe("jsonParseNodeFactory", () => {
   it("jsonParseNodeFactory", async () => {

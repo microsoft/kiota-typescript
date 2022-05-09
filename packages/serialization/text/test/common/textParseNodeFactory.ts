@@ -1,6 +1,6 @@
 import { assert } from "chai";
 
-import { TextParseNodeFactory } from "../../src/textParseNodeFactory";
+import { TextParseNodeFactory } from "../../src/index";
 
 describe("textParseNodeFactory", () => {
   it("textParseNodeFactory", async () => {
