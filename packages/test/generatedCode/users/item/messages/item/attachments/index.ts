@@ -1,1 +1,5 @@
+export * from './attachmentsResponseImpl'
+export * from './attachmentsRequestBuilderGetQueryParameters'
 export * from './attachmentsResponse'
+export * from './attachmentsRequestBuilderGetRequestConfiguration'
+export * from './attachmentsRequestBuilderPostRequestConfiguration'

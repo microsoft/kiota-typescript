@@ -1,1 +1,5 @@
+export * from './mailFoldersResponseImpl'
 export * from './mailFoldersResponse'
+export * from './mailFoldersRequestBuilderGetQueryParameters'
+export * from './mailFoldersRequestBuilderPostRequestConfiguration'
+export * from './mailFoldersRequestBuilderGetRequestConfiguration'

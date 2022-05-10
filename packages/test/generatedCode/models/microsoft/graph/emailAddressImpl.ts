@@ -1,0 +1,47 @@
+import {EmailAddress} from './emailAddress';
+import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+
+export class EmailAddressImpl implements AdditionalDataHolder, EmailAddress, Parsable {
+    /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.  */
+    additionalData: Record<string, unknown>;
+    /** The email address of the person or entity.  */
+    address?: string | undefined;
+    /** The display name of the person or entity.  */
+    name?: string | undefined;
+    /**
+     * Instantiates a new emailAddress and sets the default values.
+     * @param emailAddressParameterValue 
+     */
+    public constructor(emailAddressParameterValue?: EmailAddress | undefined) {
+        this.additionalData = {};
+        this.additionalData = emailAddressParameterValue?.additionalData ? {} : emailAddressParameterValue?.additionalData!
+        this.address = emailAddressParameterValue?.address ;
+        this.name = emailAddressParameterValue?.name ;
+    };
+    /**
+     * The deserialization information for the current model
+     * @returns a Record<string, (node: ParseNode) => void>
+     */
+    public getFieldDeserializers() : Record<string, (node: ParseNode) => void> {
+        return {
+            "address": n => { this.address = n.getStringValue(); },
+            "name": n => { this.name = n.getStringValue(); },
+        };
+    };
+    /**
+     * Serializes information the current object
+     * @param writer Serialization writer to use to serialize this model
+     */
+    public serialize(writer: SerializationWriter) : void {
+        if(!writer) throw new Error("writer cannot be undefined");
+        if(this.address){
+        if(this.address)
+        writer.writeStringValue("address", this.address);
+        }
+        if(this.name){
+        if(this.name)
+        writer.writeStringValue("name", this.name);
+        }
+        writer.writeAdditionalData(this.additionalData);
+    };
+}

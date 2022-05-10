@@ -1,12 +1,11 @@
 import {MessageRulesRequestBuilderGetQueryParameters} from './messageRulesRequestBuilderGetQueryParameters';
 import {RequestOption} from '@microsoft/kiota-abstractions';
 
-/** Configuration for the request such as headers, query parameters, and middleware options.  */
-export class MessageRulesRequestBuilderGetRequestConfiguration {
+export interface MessageRulesRequestBuilderGetRequestConfiguration{
     /** Request headers  */
-    public headers?: Record<string, string> | undefined;
+    headers?: Record<string, string> | undefined;
     /** Request options  */
-    public options?: RequestOption[] | undefined;
+    options?: RequestOption[] | undefined;
     /** Request query parameters  */
-    public queryParameters?: MessageRulesRequestBuilderGetQueryParameters | undefined;
+    queryParameters?: MessageRulesRequestBuilderGetQueryParameters | undefined;
 }

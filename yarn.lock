@@ -72,7 +72,7 @@
   dependencies:
     tslib "^2.0.0"
 
-"@azure/identity@2.0.4":
+"@azure/identity@^2.0.4":
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@azure/identity/-/identity-2.0.4.tgz#f5cfde0daf1b9ebaaff3ed6c504f50d7d7c939a5"
   integrity sha512-ZgFubAsmo7dji63NLPaot6O7pmDfceAUPY57uphSCr0hmRj+Cakqb4SUz5SohCHFtscrhcmejRU903Fowz6iXg==
