@@ -1,6 +1,6 @@
 {
     "name": "@microsoft/kiota-serialization-json",
-    "version": "1.0.0-preview.5",
+    "version": "1.0.0-preview.6",
     "description": "Implementation of Kiota Serialization interfaces for JSON",
     "main": "dist/cjs/src/index.js",
     "browser": {
