@@ -1,9 +1,12 @@
 import * as urlTpl from "uri-template-lite";
 
+import { DateOnly } from "./dateOnly";
+import { Duration } from "./duration";
 import { HttpMethod } from "./httpMethod";
 import { RequestAdapter } from "./requestAdapter";
 import { RequestOption } from "./requestOption";
-import { Parsable } from "./serialization";
+import { Parsable, SerializationWriter } from "./serialization";
+import { TimeOnly } from "./timeOnly";
 
 /** This class represents an abstract HTTP request. */
 export class RequestInformation {
@@ -104,25 +107,95 @@ export class RequestInformation {
     contentType?: string | undefined,
     ...values: T[]
   ): void => {
-    if (!requestAdapter) throw new Error("httpCore cannot be undefined");
-    if (!contentType) throw new Error("contentType cannot be undefined");
-    if (!values || values.length === 0) {
-      throw new Error("values cannot be undefined or empty");
-    }
-
-    const writer = requestAdapter
-      .getSerializationWriterFactory()
-      .getSerializationWriter(contentType);
+    const writer = this.getSerializationWriter(
+      requestAdapter,
+      contentType,
+      values
+    );
     if (!this.headers) {
       this.headers = {};
     }
-    this.headers[RequestInformation.contentTypeHeader] = contentType;
     if (values.length === 1) {
       writer.writeObjectValue(undefined, values[0]);
     } else {
       writer.writeCollectionOfObjectValues(undefined, values);
     }
+    this.setContentAndContentType(writer, contentType);
+  };
+  private setContentAndContentType = (
+    writer: SerializationWriter,
+    contentType?: string | undefined
+  ) => {
+    if (contentType) {
+      this.headers[RequestInformation.contentTypeHeader] = contentType;
+    }
     this.content = writer.getSerializedContent();
+  };
+  private getSerializationWriter = <T>(
+    requestAdapter?: RequestAdapter | undefined,
+    contentType?: string | undefined,
+    ...values: T[]
+  ): SerializationWriter => {
+    if (!requestAdapter) throw new Error("httpCore cannot be undefined");
+    if (!contentType) throw new Error("contentType cannot be undefined");
+    if (!values || values.length === 0) {
+      throw new Error("values cannot be undefined or empty");
+    }
+    return requestAdapter
+      .getSerializationWriterFactory()
+      .getSerializationWriter(contentType);
+  };
+  /**
+   * Sets the request body from a model with the specified content type.
+   * @param values the scalar values to serialize.
+   * @param contentType the content type.
+   * @param requestAdapter The adapter service to get the serialization writer from.
+   * @typeParam T the model type.
+   */
+  public setContentFromScalar = <T>(
+    requestAdapter?: RequestAdapter | undefined,
+    contentType?: string | undefined,
+    ...values: T[]
+  ): void => {
+    const writer = this.getSerializationWriter(
+      requestAdapter,
+      contentType,
+      values
+    );
+    if (!this.headers) {
+      this.headers = {};
+    }
+
+    if (values.length === 1) {
+      const value = values[0];
+      const valueType = typeof value;
+      if (!value) {
+        writer.writeNullValue(undefined);
+      } else if (valueType === "boolean") {
+        writer.writeBooleanValue(undefined, value as any as boolean);
+      } else if (valueType === "string") {
+        writer.writeStringValue(undefined, value as any as string);
+      } else if (value instanceof Date) {
+        writer.writeDateValue(undefined, value as any as Date);
+      } else if (value instanceof DateOnly) {
+        writer.writeDateOnlyValue(undefined, value as any as DateOnly);
+      } else if (value instanceof TimeOnly) {
+        writer.writeTimeOnlyValue(undefined, value as any as TimeOnly);
+      } else if (value instanceof Duration) {
+        writer.writeDurationValue(undefined, value as any as Duration);
+      } else if (valueType === "number") {
+        writer.writeNumberValue(undefined, value as any as number);
+      } else if (Array.isArray(value)) {
+        writer.writeCollectionOfPrimitiveValues(undefined, value);
+      } else {
+        throw new Error(
+          `encountered unknown value type during serialization ${valueType}`
+        );
+      }
+    } else {
+      writer.writeCollectionOfPrimitiveValues(undefined, values);
+    }
+    this.setContentAndContentType(writer, contentType);
   };
   /**
    * Sets the request body to be a binary stream.
