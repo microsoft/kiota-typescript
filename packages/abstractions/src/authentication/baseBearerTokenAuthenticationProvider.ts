@@ -16,7 +16,8 @@ export class BaseBearerTokenAuthenticationProvider
   ) {}
 
   public authenticateRequest = async (
-    request: RequestInformation
+    request: RequestInformation,
+    additionalAuthenticationContext?: Record<string, unknown>
   ): Promise<void> => {
     if (!request) {
       throw new Error("request info cannot be null");
@@ -28,7 +29,8 @@ export class BaseBearerTokenAuthenticationProvider
       ]
     ) {
       const token = await this.accessTokenProvider.getAuthorizationToken(
-        request.URL
+        request.URL,
+        additionalAuthenticationContext
       );
       if (!request.headers) {
         request.headers = {};
