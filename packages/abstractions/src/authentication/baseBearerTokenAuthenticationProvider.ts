@@ -23,6 +23,17 @@ export class BaseBearerTokenAuthenticationProvider
       throw new Error("request info cannot be null");
     }
     if (
+      additionalAuthenticationContext &&
+      additionalAuthenticationContext["claims"] &&
+      request.headers[
+        BaseBearerTokenAuthenticationProvider.authorizationHeaderKey
+      ]
+    ) {
+      delete request.headers[
+        BaseBearerTokenAuthenticationProvider.authorizationHeaderKey
+      ];
+    }
+    if (
       !request.headers ||
       !request.headers[
         BaseBearerTokenAuthenticationProvider.authorizationHeaderKey
