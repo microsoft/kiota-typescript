@@ -10,7 +10,7 @@ import { URL } from "url";
 
 const assert = chai.assert;
 
-import { RequestInformation } from "../../src";
+import { RequestAdapter, RequestInformation, SerializationWriter, SerializationWriterFactory } from "../../src";
 
 class GetQueryParameters {
   select?: string[];
@@ -62,5 +62,39 @@ describe("RequestInformation", () => {
     requestInformation.addRequestHeaders(headers);
     assert.isNotEmpty(requestInformation.headers);
     assert.equal("eventual", requestInformation.headers["ConsistencyLevel"]);
+  });
+
+  it("Sets a scalar content", () => {
+    const requestInformation = new RequestInformation();
+    let writtenValue = "";
+    const mockRequestAdapter = {
+      getSerializationWriterFactory: () => {
+        return {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          getSerializationWriter: (_: string) => {
+            return {
+              writeStringValue: (
+                key?: string | undefined,
+                value?: string | undefined
+              ) => {
+                writtenValue = value as unknown as string;
+              },
+              getSerializedContent: () => {
+                return new ArrayBuffer(0);
+              },
+            } as unknown as SerializationWriter;
+          },
+        } as SerializationWriterFactory;
+      },
+    } as RequestAdapter;
+    requestInformation.setContentFromScalar(
+      mockRequestAdapter,
+      "application/json",
+      "some content"
+    );
+    const headers: Record<string, string> = { ConsistencyLevel: "eventual" };
+    requestInformation.addRequestHeaders(headers);
+    assert.isNotEmpty(requestInformation.headers);
+    assert.equal(writtenValue, "some content");
   });
 });

@@ -1,11 +1,10 @@
 import { ParseNode, ParseNodeFactory } from "@microsoft/kiota-abstractions";
-import { TextDecoder } from "util";
 
-import { TextParseNode } from "./textParseNode";
+import { JsonParseNode } from "./../jsonParseNode";
 
-export class TextParseNodeFactory implements ParseNodeFactory {
+export class JsonParseNodeFactory implements ParseNodeFactory {
   public getValidContentType(): string {
-    return "text/plain";
+    return "application/json";
   }
   public getRootParseNode(
     contentType: string,
@@ -18,11 +17,12 @@ export class TextParseNodeFactory implements ParseNodeFactory {
     } else if (this.getValidContentType() !== contentType) {
       throw new Error(`expected a ${this.getValidContentType()} content type`);
     }
-    return new TextParseNode(this.convertArrayBufferToText(content));
+    return new JsonParseNode(this.convertArrayBufferToJson(content));
   }
 
-  private convertArrayBufferToText(arrayBuffer: ArrayBuffer) {
+  private convertArrayBufferToJson(content: ArrayBuffer) {
     const decoder = new TextDecoder();
-    return decoder.decode(arrayBuffer);
+    const contentAsStr = decoder.decode(content);
+    return JSON.parse(contentAsStr);
   }
 }

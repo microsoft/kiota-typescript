@@ -1,7 +1,6 @@
 import { ParseNode, ParseNodeFactory } from "@microsoft/kiota-abstractions";
-import { TextDecoder } from "util";
 
-import { TextParseNode } from "./textParseNode";
+import { TextParseNode } from "./../textParseNode";
 
 export class TextParseNodeFactory implements ParseNodeFactory {
   public getValidContentType(): string {
