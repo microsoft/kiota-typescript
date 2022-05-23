@@ -12,28 +12,28 @@ import {SingleValueLegacyExtendedProperty} from './singleValueLegacyExtendedProp
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export class MailFolderImpl extends EntityImpl implements MailFolder, Parsable {
-    /** The number of immediate child mailFolders in the current mailFolder.  */
-    childFolderCount?: number | undefined;
-    /** The collection of child folders in the mailFolder.  */
-    childFolders?: MailFolder[] | undefined;
-    /** The mailFolder's display name.  */
-    displayName?: string | undefined;
-    /** Indicates whether the mailFolder is hidden. This property can be set only when creating the folder. Find more information in Hidden mail folders.  */
-    isHidden?: boolean | undefined;
-    /** The collection of rules that apply to the user's Inbox folder.  */
-    messageRules?: MessageRule[] | undefined;
-    /** The collection of messages in the mailFolder.  */
-    messages?: Message[] | undefined;
-    /** The collection of multi-value extended properties defined for the mailFolder. Read-only. Nullable.  */
-    multiValueExtendedProperties?: MultiValueLegacyExtendedProperty[] | undefined;
-    /** The unique identifier for the mailFolder's parent mailFolder.  */
-    parentFolderId?: string | undefined;
-    /** The collection of single-value extended properties defined for the mailFolder. Read-only. Nullable.  */
-    singleValueExtendedProperties?: SingleValueLegacyExtendedProperty[] | undefined;
-    /** The number of items in the mailFolder.  */
-    totalItemCount?: number | undefined;
-    /** The number of items in the mailFolder marked as unread.  */
-    unreadItemCount?: number | undefined;
+    /** The number of immediate child mailFolders in the current mailFolder. */
+    public childFolderCount?: number | undefined;
+    /** The collection of child folders in the mailFolder. */
+    public childFolders?: MailFolder[] | undefined;
+    /** The mailFolder's display name. */
+    public displayName?: string | undefined;
+    /** Indicates whether the mailFolder is hidden. This property can be set only when creating the folder. Find more information in Hidden mail folders. */
+    public isHidden?: boolean | undefined;
+    /** The collection of rules that apply to the user's Inbox folder. */
+    public messageRules?: MessageRule[] | undefined;
+    /** The collection of messages in the mailFolder. */
+    public messages?: Message[] | undefined;
+    /** The collection of multi-value extended properties defined for the mailFolder. Read-only. Nullable. */
+    public multiValueExtendedProperties?: MultiValueLegacyExtendedProperty[] | undefined;
+    /** The unique identifier for the mailFolder's parent mailFolder. */
+    public parentFolderId?: string | undefined;
+    /** The collection of single-value extended properties defined for the mailFolder. Read-only. Nullable. */
+    public singleValueExtendedProperties?: SingleValueLegacyExtendedProperty[] | undefined;
+    /** The number of items in the mailFolder. */
+    public totalItemCount?: number | undefined;
+    /** The number of items in the mailFolder marked as unread. */
+    public unreadItemCount?: number | undefined;
     /**
      * Instantiates a new mailFolder and sets the default values.
      * @param mailFolderParameterValue 
@@ -79,47 +79,36 @@ export class MailFolderImpl extends EntityImpl implements MailFolder, Parsable {
         if(!writer) throw new Error("writer cannot be undefined");
         super.serialize(writer);
         if(this.childFolderCount){
-        if(this.childFolderCount)
         writer.writeNumberValue("childFolderCount", this.childFolderCount);
         }
-        if(this.childFolders){
-        const childFoldersArrValue: MailFolderImpl[] = []; this.childFolders?.forEach(element => {childFoldersArrValue.push(new MailFolderImpl(element));});
+        if(this.childFolders && this.childFolders.length != 0){        const childFoldersArrValue: MailFolderImpl[] = []; this.childFolders?.forEach(element => {childFoldersArrValue.push(new MailFolderImpl(element));});
         writer.writeCollectionOfObjectValues<MailFolderImpl>("childFolders", childFoldersArrValue);
         }
         if(this.displayName){
-        if(this.displayName)
         writer.writeStringValue("displayName", this.displayName);
         }
         if(this.isHidden){
-        if(this.isHidden)
         writer.writeBooleanValue("isHidden", this.isHidden);
         }
-        if(this.messageRules){
-        const messageRulesArrValue: MessageRuleImpl[] = []; this.messageRules?.forEach(element => {messageRulesArrValue.push(new MessageRuleImpl(element));});
+        if(this.messageRules && this.messageRules.length != 0){        const messageRulesArrValue: MessageRuleImpl[] = []; this.messageRules?.forEach(element => {messageRulesArrValue.push(new MessageRuleImpl(element));});
         writer.writeCollectionOfObjectValues<MessageRuleImpl>("messageRules", messageRulesArrValue);
         }
-        if(this.messages){
-        const messagesArrValue: MessageImpl[] = []; this.messages?.forEach(element => {messagesArrValue.push(new MessageImpl(element));});
+        if(this.messages && this.messages.length != 0){        const messagesArrValue: MessageImpl[] = []; this.messages?.forEach(element => {messagesArrValue.push(new MessageImpl(element));});
         writer.writeCollectionOfObjectValues<MessageImpl>("messages", messagesArrValue);
         }
-        if(this.multiValueExtendedProperties){
-        const multiValueExtendedPropertiesArrValue: MultiValueLegacyExtendedPropertyImpl[] = []; this.multiValueExtendedProperties?.forEach(element => {multiValueExtendedPropertiesArrValue.push(new MultiValueLegacyExtendedPropertyImpl(element));});
+        if(this.multiValueExtendedProperties && this.multiValueExtendedProperties.length != 0){        const multiValueExtendedPropertiesArrValue: MultiValueLegacyExtendedPropertyImpl[] = []; this.multiValueExtendedProperties?.forEach(element => {multiValueExtendedPropertiesArrValue.push(new MultiValueLegacyExtendedPropertyImpl(element));});
         writer.writeCollectionOfObjectValues<MultiValueLegacyExtendedPropertyImpl>("multiValueExtendedProperties", multiValueExtendedPropertiesArrValue);
         }
         if(this.parentFolderId){
-        if(this.parentFolderId)
         writer.writeStringValue("parentFolderId", this.parentFolderId);
         }
-        if(this.singleValueExtendedProperties){
-        const singleValueExtendedPropertiesArrValue: SingleValueLegacyExtendedPropertyImpl[] = []; this.singleValueExtendedProperties?.forEach(element => {singleValueExtendedPropertiesArrValue.push(new SingleValueLegacyExtendedPropertyImpl(element));});
+        if(this.singleValueExtendedProperties && this.singleValueExtendedProperties.length != 0){        const singleValueExtendedPropertiesArrValue: SingleValueLegacyExtendedPropertyImpl[] = []; this.singleValueExtendedProperties?.forEach(element => {singleValueExtendedPropertiesArrValue.push(new SingleValueLegacyExtendedPropertyImpl(element));});
         writer.writeCollectionOfObjectValues<SingleValueLegacyExtendedPropertyImpl>("singleValueExtendedProperties", singleValueExtendedPropertiesArrValue);
         }
         if(this.totalItemCount){
-        if(this.totalItemCount)
         writer.writeNumberValue("totalItemCount", this.totalItemCount);
         }
         if(this.unreadItemCount){
-        if(this.unreadItemCount)
         writer.writeNumberValue("unreadItemCount", this.unreadItemCount);
         }
     };

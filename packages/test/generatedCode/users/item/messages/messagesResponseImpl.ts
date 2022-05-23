@@ -5,19 +5,18 @@ import {MessagesResponse} from './messagesResponse';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export class MessagesResponseImpl implements AdditionalDataHolder, MessagesResponse, Parsable {
-    /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.  */
-    additionalData: Record<string, unknown>;
-    /** The nextLink property  */
-    nextLink?: string | undefined;
-    /** The value property  */
-    value?: Message[] | undefined;
+    /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
+    public additionalData: Record<string, unknown>;
+    /** The nextLink property */
+    public nextLink?: string | undefined;
+    /** The value property */
+    public value?: Message[] | undefined;
     /**
      * Instantiates a new messagesResponse and sets the default values.
      * @param messagesResponseParameterValue 
      */
     public constructor(messagesResponseParameterValue?: MessagesResponse | undefined) {
-        this.additionalData = {};
-        this.additionalData = messagesResponseParameterValue?.additionalData ? {} : messagesResponseParameterValue?.additionalData!
+        this.additionalData = messagesResponseParameterValue?.additionalData ? messagesResponseParameterValue?.additionalData! : {}
         this.nextLink = messagesResponseParameterValue?.nextLink ;
         this.value = messagesResponseParameterValue?.value ;
     };
@@ -38,11 +37,9 @@ export class MessagesResponseImpl implements AdditionalDataHolder, MessagesRespo
     public serialize(writer: SerializationWriter) : void {
         if(!writer) throw new Error("writer cannot be undefined");
         if(this.nextLink){
-        if(this.nextLink)
         writer.writeStringValue("@odata.nextLink", this.nextLink);
         }
-        if(this.value){
-        const valueArrValue: MessageImpl[] = []; this.value?.forEach(element => {valueArrValue.push(new MessageImpl(element));});
+        if(this.value && this.value.length != 0){        const valueArrValue: MessageImpl[] = []; this.value?.forEach(element => {valueArrValue.push(new MessageImpl(element));});
         writer.writeCollectionOfObjectValues<MessageImpl>("value", valueArrValue);
         }
         writer.writeAdditionalData(this.additionalData);

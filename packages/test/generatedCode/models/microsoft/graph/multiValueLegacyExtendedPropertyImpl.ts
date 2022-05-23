@@ -3,8 +3,8 @@ import {MultiValueLegacyExtendedProperty} from './multiValueLegacyExtendedProper
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export class MultiValueLegacyExtendedPropertyImpl extends EntityImpl implements MultiValueLegacyExtendedProperty, Parsable {
-    /** A collection of property values.  */
-    value?: string[] | undefined;
+    /** A collection of property values. */
+    public value?: string[] | undefined;
     /**
      * Instantiates a new multiValueLegacyExtendedProperty and sets the default values.
      * @param multiValueLegacyExtendedPropertyParameterValue 
@@ -30,7 +30,6 @@ export class MultiValueLegacyExtendedPropertyImpl extends EntityImpl implements 
         if(!writer) throw new Error("writer cannot be undefined");
         super.serialize(writer);
         if(this.value){
-        if(this.value)
         writer.writeCollectionOfPrimitiveValues<string>("value", this.value);
         }
     };

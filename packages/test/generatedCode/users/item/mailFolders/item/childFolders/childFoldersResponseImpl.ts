@@ -5,19 +5,18 @@ import {ChildFoldersResponse} from './childFoldersResponse';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export class ChildFoldersResponseImpl implements AdditionalDataHolder, ChildFoldersResponse, Parsable {
-    /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.  */
-    additionalData: Record<string, unknown>;
-    /** The nextLink property  */
-    nextLink?: string | undefined;
-    /** The value property  */
-    value?: MailFolder[] | undefined;
+    /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
+    public additionalData: Record<string, unknown>;
+    /** The nextLink property */
+    public nextLink?: string | undefined;
+    /** The value property */
+    public value?: MailFolder[] | undefined;
     /**
      * Instantiates a new childFoldersResponse and sets the default values.
      * @param childFoldersResponseParameterValue 
      */
     public constructor(childFoldersResponseParameterValue?: ChildFoldersResponse | undefined) {
-        this.additionalData = {};
-        this.additionalData = childFoldersResponseParameterValue?.additionalData ? {} : childFoldersResponseParameterValue?.additionalData!
+        this.additionalData = childFoldersResponseParameterValue?.additionalData ? childFoldersResponseParameterValue?.additionalData! : {}
         this.nextLink = childFoldersResponseParameterValue?.nextLink ;
         this.value = childFoldersResponseParameterValue?.value ;
     };
@@ -38,11 +37,9 @@ export class ChildFoldersResponseImpl implements AdditionalDataHolder, ChildFold
     public serialize(writer: SerializationWriter) : void {
         if(!writer) throw new Error("writer cannot be undefined");
         if(this.nextLink){
-        if(this.nextLink)
         writer.writeStringValue("@odata.nextLink", this.nextLink);
         }
-        if(this.value){
-        const valueArrValue: MailFolderImpl[] = []; this.value?.forEach(element => {valueArrValue.push(new MailFolderImpl(element));});
+        if(this.value && this.value.length != 0){        const valueArrValue: MailFolderImpl[] = []; this.value?.forEach(element => {valueArrValue.push(new MailFolderImpl(element));});
         writer.writeCollectionOfObjectValues<MailFolderImpl>("value", valueArrValue);
         }
         writer.writeAdditionalData(this.additionalData);

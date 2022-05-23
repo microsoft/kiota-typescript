@@ -6,10 +6,10 @@ import {InferenceClassificationType} from './inferenceClassificationType';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export class InferenceClassificationOverrideImpl extends EntityImpl implements InferenceClassificationOverride, Parsable {
-    /** The classifyAs property  */
-    classifyAs?: InferenceClassificationType | undefined;
-    /** The senderEmailAddress property  */
-    senderEmailAddress?: EmailAddress | undefined;
+    /** The classifyAs property */
+    public classifyAs?: InferenceClassificationType | undefined;
+    /** The senderEmailAddress property */
+    public senderEmailAddress?: EmailAddress | undefined;
     /**
      * Instantiates a new inferenceClassificationOverride and sets the default values.
      * @param inferenceClassificationOverrideParameterValue 
@@ -37,11 +37,9 @@ export class InferenceClassificationOverrideImpl extends EntityImpl implements I
         if(!writer) throw new Error("writer cannot be undefined");
         super.serialize(writer);
         if(this.classifyAs){
-        if(this.classifyAs)
         writer.writeEnumValue<InferenceClassificationType>("classifyAs", this.classifyAs);
         }
         if(this.senderEmailAddress){
-        if(this.senderEmailAddress)
         writer.writeObjectValue<EmailAddressImpl>("senderEmailAddress", new EmailAddressImpl(this.senderEmailAddress));
         }
     };

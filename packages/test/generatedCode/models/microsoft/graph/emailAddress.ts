@@ -1,9 +1,9 @@
 
 export interface EmailAddress{
-    /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.  */
-    additionalData: Record<string, unknown>;
-    /** The email address of the person or entity.  */
-    address?: string | undefined;
-    /** The display name of the person or entity.  */
-    name?: string | undefined;
+    /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
+    additionalData?:Record<string, unknown>;
+    /** The email address of the person or entity. */
+    address?:string | undefined;
+    /** The display name of the person or entity. */
+    name?:string | undefined;
 }

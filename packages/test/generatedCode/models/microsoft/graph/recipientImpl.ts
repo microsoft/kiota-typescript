@@ -5,17 +5,16 @@ import {Recipient} from './recipient';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export class RecipientImpl implements AdditionalDataHolder, Parsable, Recipient {
-    /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.  */
-    additionalData: Record<string, unknown>;
-    /** The emailAddress property  */
-    emailAddress?: EmailAddress | undefined;
+    /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
+    public additionalData: Record<string, unknown>;
+    /** The emailAddress property */
+    public emailAddress?: EmailAddress | undefined;
     /**
      * Instantiates a new recipient and sets the default values.
      * @param recipientParameterValue 
      */
     public constructor(recipientParameterValue?: Recipient | undefined) {
-        this.additionalData = {};
-        this.additionalData = recipientParameterValue?.additionalData ? {} : recipientParameterValue?.additionalData!
+        this.additionalData = recipientParameterValue?.additionalData ? recipientParameterValue?.additionalData! : {}
         this.emailAddress = recipientParameterValue?.emailAddress ;
     };
     /**
@@ -34,7 +33,6 @@ export class RecipientImpl implements AdditionalDataHolder, Parsable, Recipient 
     public serialize(writer: SerializationWriter) : void {
         if(!writer) throw new Error("writer cannot be undefined");
         if(this.emailAddress){
-        if(this.emailAddress)
         writer.writeObjectValue<EmailAddressImpl>("emailAddress", new EmailAddressImpl(this.emailAddress));
         }
         writer.writeAdditionalData(this.additionalData);

@@ -5,19 +5,18 @@ import {AttachmentsResponse} from './attachmentsResponse';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export class AttachmentsResponseImpl implements AdditionalDataHolder, AttachmentsResponse, Parsable {
-    /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.  */
-    additionalData: Record<string, unknown>;
-    /** The nextLink property  */
-    nextLink?: string | undefined;
-    /** The value property  */
-    value?: Attachment[] | undefined;
+    /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
+    public additionalData: Record<string, unknown>;
+    /** The nextLink property */
+    public nextLink?: string | undefined;
+    /** The value property */
+    public value?: Attachment[] | undefined;
     /**
      * Instantiates a new attachmentsResponse and sets the default values.
      * @param attachmentsResponseParameterValue 
      */
     public constructor(attachmentsResponseParameterValue?: AttachmentsResponse | undefined) {
-        this.additionalData = {};
-        this.additionalData = attachmentsResponseParameterValue?.additionalData ? {} : attachmentsResponseParameterValue?.additionalData!
+        this.additionalData = attachmentsResponseParameterValue?.additionalData ? attachmentsResponseParameterValue?.additionalData! : {}
         this.nextLink = attachmentsResponseParameterValue?.nextLink ;
         this.value = attachmentsResponseParameterValue?.value ;
     };
@@ -38,11 +37,9 @@ export class AttachmentsResponseImpl implements AdditionalDataHolder, Attachment
     public serialize(writer: SerializationWriter) : void {
         if(!writer) throw new Error("writer cannot be undefined");
         if(this.nextLink){
-        if(this.nextLink)
         writer.writeStringValue("@odata.nextLink", this.nextLink);
         }
-        if(this.value){
-        const valueArrValue: AttachmentImpl[] = []; this.value?.forEach(element => {valueArrValue.push(new AttachmentImpl(element));});
+        if(this.value && this.value.length != 0){        const valueArrValue: AttachmentImpl[] = []; this.value?.forEach(element => {valueArrValue.push(new AttachmentImpl(element));});
         writer.writeCollectionOfObjectValues<AttachmentImpl>("value", valueArrValue);
         }
         writer.writeAdditionalData(this.additionalData);

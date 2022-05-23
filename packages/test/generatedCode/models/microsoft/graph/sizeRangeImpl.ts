@@ -2,19 +2,18 @@ import {SizeRange} from './sizeRange';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export class SizeRangeImpl implements AdditionalDataHolder, Parsable, SizeRange {
-    /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.  */
-    additionalData: Record<string, unknown>;
-    /** The maximum size (in kilobytes) that an incoming message must have in order for a condition or exception to apply.  */
-    maximumSize?: number | undefined;
-    /** The minimum size (in kilobytes) that an incoming message must have in order for a condition or exception to apply.  */
-    minimumSize?: number | undefined;
+    /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
+    public additionalData: Record<string, unknown>;
+    /** The maximum size (in kilobytes) that an incoming message must have in order for a condition or exception to apply. */
+    public maximumSize?: number | undefined;
+    /** The minimum size (in kilobytes) that an incoming message must have in order for a condition or exception to apply. */
+    public minimumSize?: number | undefined;
     /**
      * Instantiates a new sizeRange and sets the default values.
      * @param sizeRangeParameterValue 
      */
     public constructor(sizeRangeParameterValue?: SizeRange | undefined) {
-        this.additionalData = {};
-        this.additionalData = sizeRangeParameterValue?.additionalData ? {} : sizeRangeParameterValue?.additionalData!
+        this.additionalData = sizeRangeParameterValue?.additionalData ? sizeRangeParameterValue?.additionalData! : {}
         this.maximumSize = sizeRangeParameterValue?.maximumSize ;
         this.minimumSize = sizeRangeParameterValue?.minimumSize ;
     };
@@ -35,11 +34,9 @@ export class SizeRangeImpl implements AdditionalDataHolder, Parsable, SizeRange 
     public serialize(writer: SerializationWriter) : void {
         if(!writer) throw new Error("writer cannot be undefined");
         if(this.maximumSize){
-        if(this.maximumSize)
         writer.writeNumberValue("maximumSize", this.maximumSize);
         }
         if(this.minimumSize){
-        if(this.minimumSize)
         writer.writeNumberValue("minimumSize", this.minimumSize);
         }
         writer.writeAdditionalData(this.additionalData);

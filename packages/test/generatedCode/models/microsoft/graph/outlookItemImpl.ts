@@ -3,14 +3,14 @@ import {OutlookItem} from './outlookItem';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export class OutlookItemImpl extends EntityImpl implements OutlookItem, Parsable {
-    /** The categories associated with the item  */
-    categories?: string[] | undefined;
-    /** Identifies the version of the item. Every time the item is changed, changeKey changes as well. This allows Exchange to apply changes to the correct version of the object. Read-only.  */
-    changeKey?: string | undefined;
-    /** The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z  */
-    createdDateTime?: Date | undefined;
-    /** The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z  */
-    lastModifiedDateTime?: Date | undefined;
+    /** The categories associated with the item */
+    public categories?: string[] | undefined;
+    /** Identifies the version of the item. Every time the item is changed, changeKey changes as well. This allows Exchange to apply changes to the correct version of the object. Read-only. */
+    public changeKey?: string | undefined;
+    /** The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z */
+    public createdDateTime?: Date | undefined;
+    /** The Timestamp type represents date and time information using ISO 8601 format and is always in UTC time. For example, midnight UTC on Jan 1, 2014 is 2014-01-01T00:00:00Z */
+    public lastModifiedDateTime?: Date | undefined;
     /**
      * Instantiates a new outlookItem and sets the default values.
      * @param outlookItemParameterValue 
@@ -42,19 +42,15 @@ export class OutlookItemImpl extends EntityImpl implements OutlookItem, Parsable
         if(!writer) throw new Error("writer cannot be undefined");
         super.serialize(writer);
         if(this.categories){
-        if(this.categories)
         writer.writeCollectionOfPrimitiveValues<string>("categories", this.categories);
         }
         if(this.changeKey){
-        if(this.changeKey)
         writer.writeStringValue("changeKey", this.changeKey);
         }
         if(this.createdDateTime){
-        if(this.createdDateTime)
         writer.writeDateValue("createdDateTime", this.createdDateTime);
         }
         if(this.lastModifiedDateTime){
-        if(this.lastModifiedDateTime)
         writer.writeDateValue("lastModifiedDateTime", this.lastModifiedDateTime);
         }
     };
