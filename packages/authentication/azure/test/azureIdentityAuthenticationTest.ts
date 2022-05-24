@@ -114,4 +114,35 @@ describe("Test authentication using @azure/identity", () => {
       "Bearer " + accessToken.token
     );
   });
+
+  it("adds the claims to the token context", async () => {
+    const clientCredential = new ClientSecretCredential(
+      tenantId,
+      clientId,
+      clientSecret
+    );
+    const accessToken: AccessToken = {
+      token: "dummy_valid_token",
+      expiresOnTimestamp: 1,
+    };
+
+    const moq = sinon.mock(clientCredential);
+    moq
+      .expects("getToken")
+      .exactly(1)
+      .callsFake((_, options) => {
+        assert.equal(options.claims.access_token.nbf.value, "1652813508");
+        return Promise.resolve(accessToken);
+      });
+    const request: RequestInformation = new RequestInformation();
+    request.urlTemplate = "test";
+    request.URL = "https://graph.microsoft.com/v1.0";
+    const tokenCredentialAuthenticationProvider =
+      new AzureIdentityAuthenticationProvider(clientCredential, scopes);
+    await tokenCredentialAuthenticationProvider.authenticateRequest(request, {
+      claims:
+        "eyJhY2Nlc3NfdG9rZW4iOnsibmJmIjp7ImVzc2VudGlhbCI6dHJ1ZSwgInZhbHVlIjoiMTY1MjgxMzUwOCJ9fX0=",
+    });
+    moq.verify();
+  });
 });
