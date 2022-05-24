@@ -60,12 +60,11 @@ export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
       const rawClaims = additionalAuthenticationContext[
         AzureIdentityAccessTokenProvider.claimsKey
       ] as string;
-      const decoded = Buffer.from(rawClaims, "base64");
-      decodedClaims = decoded.toString("utf8");
+      decodedClaims = Buffer.from(rawClaims, "base64").toString();
     }
     const localOptions = { ...this.options };
     if (decodedClaims) {
-      (localOptions as any).claims = JSON.parse(decodedClaims); // the field is defined in a derived interface for some reason https://github.com/Azure/azure-sdk-for-js/blob/4498fecbede71563fee5daae2ad537ff57de3640/sdk/identity/identity/src/msal/credentials.ts#L29
+      (localOptions as any).claims = decodedClaims; // the field is defined in a derived interface for some reason https://github.com/Azure/azure-sdk-for-js/blob/4498fecbede71563fee5daae2ad537ff57de3640/sdk/identity/identity/src/msal/credentials.ts#L29
     }
 
     const result = await this.credentials.getToken(this.scopes, localOptions);

@@ -131,12 +131,16 @@ describe("Test authentication using @azure/identity", () => {
       .expects("getToken")
       .exactly(1)
       .callsFake((_, options) => {
-        assert.equal(options.claims.access_token.nbf.value, "1652813508");
+        assert.equal(
+          options.claims,
+          '{"access_token":{"nbf":{"essential":true, "value":"1652813508"}}}'
+        );
         return Promise.resolve(accessToken);
       });
     const request: RequestInformation = new RequestInformation();
     request.urlTemplate = "test";
     request.URL = "https://graph.microsoft.com/v1.0";
+    request.headers.Authorization = "Bearer dummy_valid_token";
     const tokenCredentialAuthenticationProvider =
       new AzureIdentityAuthenticationProvider(clientCredential, scopes);
     await tokenCredentialAuthenticationProvider.authenticateRequest(request, {
