@@ -1,6 +1,6 @@
 {
     "name": "@microsoft/kiota-http-fetchlibrary",
-    "version": "1.0.0-preview.6",
+    "version": "1.0.0-preview.7",
     "description": "Kiota request adapter implementation with fetch",
     "keywords": [
         "Kiota",
@@ -44,7 +44,7 @@
         "test:es": "tsc -b tsconfig.es.test.json && mocha 'dist/es/test/common/**/*.js'  --require  esm && mocha 'dist/es/test/node/**/*.js'  --require  esm"
     },
     "dependencies": {
-        "@microsoft/kiota-abstractions": "1.0.0-preview.5",
+        "@microsoft/kiota-abstractions": "^1.0.0-preview.6",
         "node-fetch": "^2.6.5",
         "tslib": "^2.3.1"
     }
