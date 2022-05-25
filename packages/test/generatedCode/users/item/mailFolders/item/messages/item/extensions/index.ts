@@ -1,5 +1,5 @@
 export * from './extensionsResponseImpl'
 export * from './extensionsRequestBuilderGetQueryParameters'
 export * from './extensionsResponse'
-export * from './extensionsRequestBuilderGetRequestConfiguration'
 export * from './extensionsRequestBuilderPostRequestConfiguration'
+export * from './extensionsRequestBuilderGetRequestConfiguration'

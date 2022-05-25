@@ -15,7 +15,10 @@ export class InferenceClassificationOverrideImpl extends EntityImpl implements I
      * @param inferenceClassificationOverrideParameterValue 
      */
     public constructor(inferenceClassificationOverrideParameterValue?: InferenceClassificationOverride | undefined) {
-        super();
+        super({
+            additionalData: inferenceClassificationOverrideParameterValue?.additionalData,
+            id: inferenceClassificationOverrideParameterValue?.id,
+        });
         this.classifyAs = inferenceClassificationOverrideParameterValue?.classifyAs ;
         this.senderEmailAddress = inferenceClassificationOverrideParameterValue?.senderEmailAddress ;
     };
@@ -37,10 +40,10 @@ export class InferenceClassificationOverrideImpl extends EntityImpl implements I
         if(!writer) throw new Error("writer cannot be undefined");
         super.serialize(writer);
         if(this.classifyAs){
-        writer.writeEnumValue<InferenceClassificationType>("classifyAs", this.classifyAs);
+            writer.writeEnumValue<InferenceClassificationType>("classifyAs", this.classifyAs);
         }
         if(this.senderEmailAddress){
-        writer.writeObjectValue<EmailAddressImpl>("senderEmailAddress", new EmailAddressImpl(this.senderEmailAddress));
+            writer.writeObjectValue<EmailAddressImpl>("senderEmailAddress", new EmailAddressImpl(this.senderEmailAddress));
         }
     };
 }

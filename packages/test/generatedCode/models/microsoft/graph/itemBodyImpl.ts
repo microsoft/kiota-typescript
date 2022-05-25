@@ -35,10 +35,10 @@ export class ItemBodyImpl implements AdditionalDataHolder, ItemBody, Parsable {
     public serialize(writer: SerializationWriter) : void {
         if(!writer) throw new Error("writer cannot be undefined");
         if(this.content){
-        writer.writeStringValue("content", this.content);
+            writer.writeStringValue("content", this.content);
         }
         if(this.contentType){
-        writer.writeEnumValue<BodyType>("contentType", this.contentType);
+            writer.writeEnumValue<BodyType>("contentType", this.contentType);
         }
         writer.writeAdditionalData(this.additionalData);
     };

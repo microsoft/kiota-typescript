@@ -8,7 +8,10 @@ export class ExtensionImpl extends EntityImpl implements Extension, Parsable {
      * @param extensionParameterValue 
      */
     public constructor(extensionParameterValue?: Extension | undefined) {
-        super();
+        super({
+            additionalData: extensionParameterValue?.additionalData,
+            id: extensionParameterValue?.id,
+        });
     };
     /**
      * The deserialization information for the current model

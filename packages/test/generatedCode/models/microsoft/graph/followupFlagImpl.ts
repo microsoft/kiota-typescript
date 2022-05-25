@@ -46,16 +46,16 @@ export class FollowupFlagImpl implements AdditionalDataHolder, FollowupFlag, Par
     public serialize(writer: SerializationWriter) : void {
         if(!writer) throw new Error("writer cannot be undefined");
         if(this.completedDateTime){
-        writer.writeObjectValue<DateTimeTimeZoneImpl>("completedDateTime", new DateTimeTimeZoneImpl(this.completedDateTime));
+            writer.writeObjectValue<DateTimeTimeZoneImpl>("completedDateTime", new DateTimeTimeZoneImpl(this.completedDateTime));
         }
         if(this.dueDateTime){
-        writer.writeObjectValue<DateTimeTimeZoneImpl>("dueDateTime", new DateTimeTimeZoneImpl(this.dueDateTime));
+            writer.writeObjectValue<DateTimeTimeZoneImpl>("dueDateTime", new DateTimeTimeZoneImpl(this.dueDateTime));
         }
         if(this.flagStatus){
-        writer.writeEnumValue<FollowupFlagStatus>("flagStatus", this.flagStatus);
+            writer.writeEnumValue<FollowupFlagStatus>("flagStatus", this.flagStatus);
         }
         if(this.startDateTime){
-        writer.writeObjectValue<DateTimeTimeZoneImpl>("startDateTime", new DateTimeTimeZoneImpl(this.startDateTime));
+            writer.writeObjectValue<DateTimeTimeZoneImpl>("startDateTime", new DateTimeTimeZoneImpl(this.startDateTime));
         }
         writer.writeAdditionalData(this.additionalData);
     };

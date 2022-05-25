@@ -1,19 +1,19 @@
 
-export interface MessagesRequestBuilderGetQueryParameters{
+export interface MessagesRequestBuilderGetQueryParameters {
     /** Include count of items */
-    count?:boolean | undefined;
+    count?: boolean | undefined;
     /** Expand related entities */
-    expand?:string[] | undefined;
+    expand?: string[] | undefined;
     /** Filter items by property values */
-    filter?:string | undefined;
+    filter?: string | undefined;
     /** Order items by property values */
-    orderby?:string[] | undefined;
+    orderby?: string[] | undefined;
     /** Search items by search phrases */
-    search?:string | undefined;
+    search?: string | undefined;
     /** Select properties to be returned */
-    select?:string[] | undefined;
+    select?: string[] | undefined;
     /** Skip the first n items */
-    skip?:number | undefined;
+    skip?: number | undefined;
     /** Show only the first n items */
-    top?:number | undefined;
+    top?: number | undefined;
 }

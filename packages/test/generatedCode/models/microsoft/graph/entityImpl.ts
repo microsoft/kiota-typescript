@@ -30,7 +30,7 @@ export class EntityImpl implements AdditionalDataHolder, Entity, Parsable {
     public serialize(writer: SerializationWriter) : void {
         if(!writer) throw new Error("writer cannot be undefined");
         if(this.id){
-        writer.writeStringValue("id", this.id);
+            writer.writeStringValue("id", this.id);
         }
         writer.writeAdditionalData(this.additionalData);
     };

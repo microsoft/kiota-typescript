@@ -1,15 +1,15 @@
 import {DateTimeTimeZone} from './dateTimeTimeZone';
 import {FollowupFlagStatus} from './followupFlagStatus';
 
-export interface FollowupFlag{
+export interface FollowupFlag {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
-    additionalData?:Record<string, unknown>;
+    additionalData?: Record<string, unknown>;
     /** The completedDateTime property */
-    completedDateTime?:DateTimeTimeZone | undefined;
+    completedDateTime?: DateTimeTimeZone | undefined;
     /** The dueDateTime property */
-    dueDateTime?:DateTimeTimeZone | undefined;
+    dueDateTime?: DateTimeTimeZone | undefined;
     /** The flagStatus property */
-    flagStatus?:FollowupFlagStatus | undefined;
+    flagStatus?: FollowupFlagStatus | undefined;
     /** The startDateTime property */
-    startDateTime?:DateTimeTimeZone | undefined;
+    startDateTime?: DateTimeTimeZone | undefined;
 }

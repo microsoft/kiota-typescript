@@ -1,5 +1,5 @@
 
-export interface MessageRuleItemRequestBuilderGetQueryParameters{
+export interface MessageRuleItemRequestBuilderGetQueryParameters {
     /** Select properties to be returned */
-    select?:string[] | undefined;
+    select?: string[] | undefined;
 }

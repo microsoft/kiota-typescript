@@ -37,10 +37,10 @@ export class MessageRulesResponseImpl implements AdditionalDataHolder, MessageRu
     public serialize(writer: SerializationWriter) : void {
         if(!writer) throw new Error("writer cannot be undefined");
         if(this.nextLink){
-        writer.writeStringValue("@odata.nextLink", this.nextLink);
+            writer.writeStringValue("@odata.nextLink", this.nextLink);
         }
         if(this.value && this.value.length != 0){        const valueArrValue: MessageRuleImpl[] = []; this.value?.forEach(element => {valueArrValue.push(new MessageRuleImpl(element));});
-        writer.writeCollectionOfObjectValues<MessageRuleImpl>("value", valueArrValue);
+            writer.writeCollectionOfObjectValues<MessageRuleImpl>("value", valueArrValue);
         }
         writer.writeAdditionalData(this.additionalData);
     };

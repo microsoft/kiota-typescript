@@ -1,5 +1,5 @@
 
-export interface InferenceClassificationRequestBuilderGetQueryParameters{
+export interface InferenceClassificationRequestBuilderGetQueryParameters {
     /** Select properties to be returned */
-    select?:string[] | undefined;
+    select?: string[] | undefined;
 }

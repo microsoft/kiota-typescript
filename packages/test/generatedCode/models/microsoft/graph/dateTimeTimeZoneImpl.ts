@@ -34,10 +34,10 @@ export class DateTimeTimeZoneImpl implements AdditionalDataHolder, DateTimeTimeZ
     public serialize(writer: SerializationWriter) : void {
         if(!writer) throw new Error("writer cannot be undefined");
         if(this.dateTime){
-        writer.writeStringValue("dateTime", this.dateTime);
+            writer.writeStringValue("dateTime", this.dateTime);
         }
         if(this.timeZone){
-        writer.writeStringValue("timeZone", this.timeZone);
+            writer.writeStringValue("timeZone", this.timeZone);
         }
         writer.writeAdditionalData(this.additionalData);
     };

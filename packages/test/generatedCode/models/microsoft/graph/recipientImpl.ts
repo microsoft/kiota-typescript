@@ -33,7 +33,7 @@ export class RecipientImpl implements AdditionalDataHolder, Parsable, Recipient 
     public serialize(writer: SerializationWriter) : void {
         if(!writer) throw new Error("writer cannot be undefined");
         if(this.emailAddress){
-        writer.writeObjectValue<EmailAddressImpl>("emailAddress", new EmailAddressImpl(this.emailAddress));
+            writer.writeObjectValue<EmailAddressImpl>("emailAddress", new EmailAddressImpl(this.emailAddress));
         }
         writer.writeAdditionalData(this.additionalData);
     };

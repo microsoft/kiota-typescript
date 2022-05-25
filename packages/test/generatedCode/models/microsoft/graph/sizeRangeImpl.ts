@@ -34,10 +34,10 @@ export class SizeRangeImpl implements AdditionalDataHolder, Parsable, SizeRange 
     public serialize(writer: SerializationWriter) : void {
         if(!writer) throw new Error("writer cannot be undefined");
         if(this.maximumSize){
-        writer.writeNumberValue("maximumSize", this.maximumSize);
+            writer.writeNumberValue("maximumSize", this.maximumSize);
         }
         if(this.minimumSize){
-        writer.writeNumberValue("minimumSize", this.minimumSize);
+            writer.writeNumberValue("minimumSize", this.minimumSize);
         }
         writer.writeAdditionalData(this.additionalData);
     };

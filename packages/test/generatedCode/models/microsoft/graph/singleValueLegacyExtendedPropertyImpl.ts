@@ -10,7 +10,10 @@ export class SingleValueLegacyExtendedPropertyImpl extends EntityImpl implements
      * @param singleValueLegacyExtendedPropertyParameterValue 
      */
     public constructor(singleValueLegacyExtendedPropertyParameterValue?: SingleValueLegacyExtendedProperty | undefined) {
-        super();
+        super({
+            additionalData: singleValueLegacyExtendedPropertyParameterValue?.additionalData,
+            id: singleValueLegacyExtendedPropertyParameterValue?.id,
+        });
         this.value = singleValueLegacyExtendedPropertyParameterValue?.value ;
     };
     /**
@@ -30,7 +33,7 @@ export class SingleValueLegacyExtendedPropertyImpl extends EntityImpl implements
         if(!writer) throw new Error("writer cannot be undefined");
         super.serialize(writer);
         if(this.value){
-        writer.writeStringValue("value", this.value);
+            writer.writeStringValue("value", this.value);
         }
     };
 }

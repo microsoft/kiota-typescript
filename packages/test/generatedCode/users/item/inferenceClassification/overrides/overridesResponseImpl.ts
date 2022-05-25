@@ -37,10 +37,10 @@ export class OverridesResponseImpl implements AdditionalDataHolder, OverridesRes
     public serialize(writer: SerializationWriter) : void {
         if(!writer) throw new Error("writer cannot be undefined");
         if(this.nextLink){
-        writer.writeStringValue("@odata.nextLink", this.nextLink);
+            writer.writeStringValue("@odata.nextLink", this.nextLink);
         }
         if(this.value && this.value.length != 0){        const valueArrValue: InferenceClassificationOverrideImpl[] = []; this.value?.forEach(element => {valueArrValue.push(new InferenceClassificationOverrideImpl(element));});
-        writer.writeCollectionOfObjectValues<InferenceClassificationOverrideImpl>("value", valueArrValue);
+            writer.writeCollectionOfObjectValues<InferenceClassificationOverrideImpl>("value", valueArrValue);
         }
         writer.writeAdditionalData(this.additionalData);
     };

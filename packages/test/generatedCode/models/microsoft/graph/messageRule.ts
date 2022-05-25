@@ -2,21 +2,21 @@ import {Entity} from './entity';
 import {MessageRuleActions} from './messageRuleActions';
 import {MessageRulePredicates} from './messageRulePredicates';
 
-export interface MessageRule extends Entity{
+export interface MessageRule extends Entity {
     /** The actions property */
-    actions?:MessageRuleActions | undefined;
+    actions?: MessageRuleActions | undefined;
     /** The conditions property */
-    conditions?:MessageRulePredicates | undefined;
+    conditions?: MessageRulePredicates | undefined;
     /** The display name of the rule. */
-    displayName?:string | undefined;
+    displayName?: string | undefined;
     /** The exceptions property */
-    exceptions?:MessageRulePredicates | undefined;
+    exceptions?: MessageRulePredicates | undefined;
     /** Indicates whether the rule is in an error condition. Read-only. */
-    hasError?:boolean | undefined;
+    hasError?: boolean | undefined;
     /** Indicates whether the rule is enabled to be applied to messages. */
-    isEnabled?:boolean | undefined;
+    isEnabled?: boolean | undefined;
     /** Indicates if the rule is read-only and cannot be modified or deleted by the rules REST API. */
-    isReadOnly?:boolean | undefined;
+    isReadOnly?: boolean | undefined;
     /** Indicates the order in which the rule is executed, among other rules. */
-    sequence?:number | undefined;
+    sequence?: number | undefined;
 }

@@ -154,94 +154,94 @@ export class MessageRulePredicatesImpl implements AdditionalDataHolder, MessageR
     public serialize(writer: SerializationWriter) : void {
         if(!writer) throw new Error("writer cannot be undefined");
         if(this.bodyContains){
-        writer.writeCollectionOfPrimitiveValues<string>("bodyContains", this.bodyContains);
+            writer.writeCollectionOfPrimitiveValues<string>("bodyContains", this.bodyContains);
         }
         if(this.bodyOrSubjectContains){
-        writer.writeCollectionOfPrimitiveValues<string>("bodyOrSubjectContains", this.bodyOrSubjectContains);
+            writer.writeCollectionOfPrimitiveValues<string>("bodyOrSubjectContains", this.bodyOrSubjectContains);
         }
         if(this.categories){
-        writer.writeCollectionOfPrimitiveValues<string>("categories", this.categories);
+            writer.writeCollectionOfPrimitiveValues<string>("categories", this.categories);
         }
         if(this.fromAddresses && this.fromAddresses.length != 0){        const fromAddressesArrValue: RecipientImpl[] = []; this.fromAddresses?.forEach(element => {fromAddressesArrValue.push(new RecipientImpl(element));});
-        writer.writeCollectionOfObjectValues<RecipientImpl>("fromAddresses", fromAddressesArrValue);
+            writer.writeCollectionOfObjectValues<RecipientImpl>("fromAddresses", fromAddressesArrValue);
         }
         if(this.hasAttachments){
-        writer.writeBooleanValue("hasAttachments", this.hasAttachments);
+            writer.writeBooleanValue("hasAttachments", this.hasAttachments);
         }
         if(this.headerContains){
-        writer.writeCollectionOfPrimitiveValues<string>("headerContains", this.headerContains);
+            writer.writeCollectionOfPrimitiveValues<string>("headerContains", this.headerContains);
         }
         if(this.importance){
-        writer.writeEnumValue<Importance>("importance", this.importance);
+            writer.writeEnumValue<Importance>("importance", this.importance);
         }
         if(this.isApprovalRequest){
-        writer.writeBooleanValue("isApprovalRequest", this.isApprovalRequest);
+            writer.writeBooleanValue("isApprovalRequest", this.isApprovalRequest);
         }
         if(this.isAutomaticForward){
-        writer.writeBooleanValue("isAutomaticForward", this.isAutomaticForward);
+            writer.writeBooleanValue("isAutomaticForward", this.isAutomaticForward);
         }
         if(this.isAutomaticReply){
-        writer.writeBooleanValue("isAutomaticReply", this.isAutomaticReply);
+            writer.writeBooleanValue("isAutomaticReply", this.isAutomaticReply);
         }
         if(this.isEncrypted){
-        writer.writeBooleanValue("isEncrypted", this.isEncrypted);
+            writer.writeBooleanValue("isEncrypted", this.isEncrypted);
         }
         if(this.isMeetingRequest){
-        writer.writeBooleanValue("isMeetingRequest", this.isMeetingRequest);
+            writer.writeBooleanValue("isMeetingRequest", this.isMeetingRequest);
         }
         if(this.isMeetingResponse){
-        writer.writeBooleanValue("isMeetingResponse", this.isMeetingResponse);
+            writer.writeBooleanValue("isMeetingResponse", this.isMeetingResponse);
         }
         if(this.isNonDeliveryReport){
-        writer.writeBooleanValue("isNonDeliveryReport", this.isNonDeliveryReport);
+            writer.writeBooleanValue("isNonDeliveryReport", this.isNonDeliveryReport);
         }
         if(this.isPermissionControlled){
-        writer.writeBooleanValue("isPermissionControlled", this.isPermissionControlled);
+            writer.writeBooleanValue("isPermissionControlled", this.isPermissionControlled);
         }
         if(this.isReadReceipt){
-        writer.writeBooleanValue("isReadReceipt", this.isReadReceipt);
+            writer.writeBooleanValue("isReadReceipt", this.isReadReceipt);
         }
         if(this.isSigned){
-        writer.writeBooleanValue("isSigned", this.isSigned);
+            writer.writeBooleanValue("isSigned", this.isSigned);
         }
         if(this.isVoicemail){
-        writer.writeBooleanValue("isVoicemail", this.isVoicemail);
+            writer.writeBooleanValue("isVoicemail", this.isVoicemail);
         }
         if(this.messageActionFlag){
-        writer.writeEnumValue<MessageActionFlag>("messageActionFlag", this.messageActionFlag);
+            writer.writeEnumValue<MessageActionFlag>("messageActionFlag", this.messageActionFlag);
         }
         if(this.notSentToMe){
-        writer.writeBooleanValue("notSentToMe", this.notSentToMe);
+            writer.writeBooleanValue("notSentToMe", this.notSentToMe);
         }
         if(this.recipientContains){
-        writer.writeCollectionOfPrimitiveValues<string>("recipientContains", this.recipientContains);
+            writer.writeCollectionOfPrimitiveValues<string>("recipientContains", this.recipientContains);
         }
         if(this.senderContains){
-        writer.writeCollectionOfPrimitiveValues<string>("senderContains", this.senderContains);
+            writer.writeCollectionOfPrimitiveValues<string>("senderContains", this.senderContains);
         }
         if(this.sensitivity){
-        writer.writeEnumValue<Sensitivity>("sensitivity", this.sensitivity);
+            writer.writeEnumValue<Sensitivity>("sensitivity", this.sensitivity);
         }
         if(this.sentCcMe){
-        writer.writeBooleanValue("sentCcMe", this.sentCcMe);
+            writer.writeBooleanValue("sentCcMe", this.sentCcMe);
         }
         if(this.sentOnlyToMe){
-        writer.writeBooleanValue("sentOnlyToMe", this.sentOnlyToMe);
+            writer.writeBooleanValue("sentOnlyToMe", this.sentOnlyToMe);
         }
         if(this.sentToAddresses && this.sentToAddresses.length != 0){        const sentToAddressesArrValue: RecipientImpl[] = []; this.sentToAddresses?.forEach(element => {sentToAddressesArrValue.push(new RecipientImpl(element));});
-        writer.writeCollectionOfObjectValues<RecipientImpl>("sentToAddresses", sentToAddressesArrValue);
+            writer.writeCollectionOfObjectValues<RecipientImpl>("sentToAddresses", sentToAddressesArrValue);
         }
         if(this.sentToMe){
-        writer.writeBooleanValue("sentToMe", this.sentToMe);
+            writer.writeBooleanValue("sentToMe", this.sentToMe);
         }
         if(this.sentToOrCcMe){
-        writer.writeBooleanValue("sentToOrCcMe", this.sentToOrCcMe);
+            writer.writeBooleanValue("sentToOrCcMe", this.sentToOrCcMe);
         }
         if(this.subjectContains){
-        writer.writeCollectionOfPrimitiveValues<string>("subjectContains", this.subjectContains);
+            writer.writeCollectionOfPrimitiveValues<string>("subjectContains", this.subjectContains);
         }
         if(this.withinSizeRange){
-        writer.writeObjectValue<SizeRangeImpl>("withinSizeRange", new SizeRangeImpl(this.withinSizeRange));
+            writer.writeObjectValue<SizeRangeImpl>("withinSizeRange", new SizeRangeImpl(this.withinSizeRange));
         }
         writer.writeAdditionalData(this.additionalData);
     };

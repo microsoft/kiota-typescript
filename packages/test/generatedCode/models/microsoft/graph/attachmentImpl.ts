@@ -18,7 +18,10 @@ export class AttachmentImpl extends EntityImpl implements Attachment, Parsable {
      * @param attachmentParameterValue 
      */
     public constructor(attachmentParameterValue?: Attachment | undefined) {
-        super();
+        super({
+            additionalData: attachmentParameterValue?.additionalData,
+            id: attachmentParameterValue?.id,
+        });
         this.contentType = attachmentParameterValue?.contentType ;
         this.isInline = attachmentParameterValue?.isInline ;
         this.lastModifiedDateTime = attachmentParameterValue?.lastModifiedDateTime ;
@@ -46,19 +49,19 @@ export class AttachmentImpl extends EntityImpl implements Attachment, Parsable {
         if(!writer) throw new Error("writer cannot be undefined");
         super.serialize(writer);
         if(this.contentType){
-        writer.writeStringValue("contentType", this.contentType);
+            writer.writeStringValue("contentType", this.contentType);
         }
         if(this.isInline){
-        writer.writeBooleanValue("isInline", this.isInline);
+            writer.writeBooleanValue("isInline", this.isInline);
         }
         if(this.lastModifiedDateTime){
-        writer.writeDateValue("lastModifiedDateTime", this.lastModifiedDateTime);
+            writer.writeDateValue("lastModifiedDateTime", this.lastModifiedDateTime);
         }
         if(this.name){
-        writer.writeStringValue("name", this.name);
+            writer.writeStringValue("name", this.name);
         }
         if(this.size){
-        writer.writeNumberValue("size", this.size);
+            writer.writeNumberValue("size", this.size);
         }
     };
 }

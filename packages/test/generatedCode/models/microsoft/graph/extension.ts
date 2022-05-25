@@ -1,4 +1,4 @@
 import {Entity} from './entity';
 
-export interface Extension extends Entity{
+export interface Extension extends Entity {
 }

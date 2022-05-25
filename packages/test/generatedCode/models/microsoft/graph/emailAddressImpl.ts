@@ -34,10 +34,10 @@ export class EmailAddressImpl implements AdditionalDataHolder, EmailAddress, Par
     public serialize(writer: SerializationWriter) : void {
         if(!writer) throw new Error("writer cannot be undefined");
         if(this.address){
-        writer.writeStringValue("address", this.address);
+            writer.writeStringValue("address", this.address);
         }
         if(this.name){
-        writer.writeStringValue("name", this.name);
+            writer.writeStringValue("name", this.name);
         }
         writer.writeAdditionalData(this.additionalData);
     };

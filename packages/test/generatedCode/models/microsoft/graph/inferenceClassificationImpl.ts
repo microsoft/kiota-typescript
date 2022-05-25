@@ -12,7 +12,10 @@ export class InferenceClassificationImpl extends EntityImpl implements Inference
      * @param inferenceClassificationParameterValue 
      */
     public constructor(inferenceClassificationParameterValue?: InferenceClassification | undefined) {
-        super();
+        super({
+            additionalData: inferenceClassificationParameterValue?.additionalData,
+            id: inferenceClassificationParameterValue?.id,
+        });
         this.overrides = inferenceClassificationParameterValue?.overrides ;
     };
     /**
@@ -32,7 +35,7 @@ export class InferenceClassificationImpl extends EntityImpl implements Inference
         if(!writer) throw new Error("writer cannot be undefined");
         super.serialize(writer);
         if(this.overrides && this.overrides.length != 0){        const overridesArrValue: InferenceClassificationOverrideImpl[] = []; this.overrides?.forEach(element => {overridesArrValue.push(new InferenceClassificationOverrideImpl(element));});
-        writer.writeCollectionOfObjectValues<InferenceClassificationOverrideImpl>("overrides", overridesArrValue);
+            writer.writeCollectionOfObjectValues<InferenceClassificationOverrideImpl>("overrides", overridesArrValue);
         }
     };
 }

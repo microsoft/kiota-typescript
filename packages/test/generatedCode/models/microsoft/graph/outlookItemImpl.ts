@@ -16,7 +16,10 @@ export class OutlookItemImpl extends EntityImpl implements OutlookItem, Parsable
      * @param outlookItemParameterValue 
      */
     public constructor(outlookItemParameterValue?: OutlookItem | undefined) {
-        super();
+        super({
+            additionalData: outlookItemParameterValue?.additionalData,
+            id: outlookItemParameterValue?.id,
+        });
         this.categories = outlookItemParameterValue?.categories ;
         this.changeKey = outlookItemParameterValue?.changeKey ;
         this.createdDateTime = outlookItemParameterValue?.createdDateTime ;
@@ -42,16 +45,16 @@ export class OutlookItemImpl extends EntityImpl implements OutlookItem, Parsable
         if(!writer) throw new Error("writer cannot be undefined");
         super.serialize(writer);
         if(this.categories){
-        writer.writeCollectionOfPrimitiveValues<string>("categories", this.categories);
+            writer.writeCollectionOfPrimitiveValues<string>("categories", this.categories);
         }
         if(this.changeKey){
-        writer.writeStringValue("changeKey", this.changeKey);
+            writer.writeStringValue("changeKey", this.changeKey);
         }
         if(this.createdDateTime){
-        writer.writeDateValue("createdDateTime", this.createdDateTime);
+            writer.writeDateValue("createdDateTime", this.createdDateTime);
         }
         if(this.lastModifiedDateTime){
-        writer.writeDateValue("lastModifiedDateTime", this.lastModifiedDateTime);
+            writer.writeDateValue("lastModifiedDateTime", this.lastModifiedDateTime);
         }
     };
 }

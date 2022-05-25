@@ -1,6 +1,6 @@
 import {Entity} from './entity';
 
-export interface SingleValueLegacyExtendedProperty extends Entity{
+export interface SingleValueLegacyExtendedProperty extends Entity {
     /** A property value. */
-    value?:string | undefined;
+    value?: string | undefined;
 }
