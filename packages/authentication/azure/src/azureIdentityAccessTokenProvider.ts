@@ -38,15 +38,36 @@ export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
     this.allowedHostsValidator = new AllowedHostsValidator(allowedHosts);
   }
   private readonly allowedHostsValidator: AllowedHostsValidator;
+  private static readonly claimsKey = "claims";
   /**
    * @inheritdoc
    */
-  public getAuthorizationToken = async (url?: string): Promise<string> => {
+  public getAuthorizationToken = async (
+    url?: string,
+    additionalAuthenticationContext?: Record<string, unknown>
+  ): Promise<string> => {
     if (!url || !this.allowedHostsValidator.isUrlHostValid(url)) {
       return "";
     }
     validateProtocol(url);
-    const result = await this.credentials.getToken(this.scopes, this.options);
+    let decodedClaims = "";
+    if (
+      additionalAuthenticationContext &&
+      additionalAuthenticationContext[
+        AzureIdentityAccessTokenProvider.claimsKey
+      ]
+    ) {
+      const rawClaims = additionalAuthenticationContext[
+        AzureIdentityAccessTokenProvider.claimsKey
+      ] as string;
+      decodedClaims = Buffer.from(rawClaims, "base64").toString();
+    }
+    const localOptions = { ...this.options };
+    if (decodedClaims) {
+      (localOptions as any).claims = decodedClaims; // the field is defined in a derived interface for some reason https://github.com/Azure/azure-sdk-for-js/blob/4498fecbede71563fee5daae2ad537ff57de3640/sdk/identity/identity/src/msal/credentials.ts#L29
+    }
+
+    const result = await this.credentials.getToken(this.scopes, localOptions);
     return result?.token ?? "";
   };
   /**

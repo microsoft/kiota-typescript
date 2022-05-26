@@ -16,10 +16,22 @@ export class BaseBearerTokenAuthenticationProvider
   ) {}
 
   public authenticateRequest = async (
-    request: RequestInformation
+    request: RequestInformation,
+    additionalAuthenticationContext?: Record<string, unknown>
   ): Promise<void> => {
     if (!request) {
       throw new Error("request info cannot be null");
+    }
+    if (
+      additionalAuthenticationContext &&
+      additionalAuthenticationContext["claims"] &&
+      request.headers[
+        BaseBearerTokenAuthenticationProvider.authorizationHeaderKey
+      ]
+    ) {
+      delete request.headers[
+        BaseBearerTokenAuthenticationProvider.authorizationHeaderKey
+      ];
     }
     if (
       !request.headers ||
@@ -28,7 +40,8 @@ export class BaseBearerTokenAuthenticationProvider
       ]
     ) {
       const token = await this.accessTokenProvider.getAuthorizationToken(
-        request.URL
+        request.URL,
+        additionalAuthenticationContext
       );
       if (!request.headers) {
         request.headers = {};

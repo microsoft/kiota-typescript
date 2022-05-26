@@ -9,7 +9,11 @@ export interface AuthenticationProvider {
   /**
    * Authenticates the application and returns a token base on the provided Uri.
    * @param request the request to authenticate.
+   * @param {Record<string, unknown>} - The additional authentication context to pass to the authentication library.
    * @return a Promise to await for the authentication to be completed.
    */
-  authenticateRequest: (request: RequestInformation) => Promise<void>;
+  authenticateRequest: (
+    request: RequestInformation,
+    additionalAuthenticationContext?: Record<string, unknown>
+  ) => Promise<void>;
 }

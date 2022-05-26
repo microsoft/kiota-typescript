@@ -209,15 +209,46 @@ export class FetchRequestAdapter implements RequestAdapter {
 		if (error) throw error;
 		else throw new ApiError("unexpected error type" + typeof error);
 	};
-	private getHttpResponseMessage = async (requestInfo: RequestInformation): Promise<Response> => {
+	private getHttpResponseMessage = async (requestInfo: RequestInformation, claims?: string): Promise<Response> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
 		this.setBaseUrlForRequestInformation(requestInfo);
-		await this.authenticationProvider.authenticateRequest(requestInfo);
+		const additionalContext = {} as Record<string, unknown>;
+		if (claims) {
+			additionalContext["claims"] = claims;
+		}
+		await this.authenticationProvider.authenticateRequest(requestInfo, additionalContext);
 
 		const request = this.getRequestFromRequestInformation(requestInfo);
-		return await this.httpClient.executeFetch(requestInfo.URL, request, requestInfo.getRequestOptions());
+		const response = await this.httpClient.executeFetch(requestInfo.URL, request, requestInfo.getRequestOptions());
+
+		return await this.retryCAEResponseIfRequired(requestInfo, response, claims);
+	};
+	private retryCAEResponseIfRequired = async (requestInfo: RequestInformation, response: Response, claims?: string) => {
+		const responseClaims = this.getClaimsFromResponse(response, claims);
+		if (responseClaims) {
+			await this.purgeResponseBody(response);
+			return await this.getHttpResponseMessage(requestInfo, responseClaims);
+		}
+		return response;
+	};
+	private getClaimsFromResponse = (response: Response, claims?: string) => {
+		if (response.status === 401 && !claims) {
+			// avoid infinite loop, we only retry once
+			// no need to check for the content since it's an array and it doesn't need to be rewound
+			const rawAuthenticateHeader = response.headers.get("WWW-Authenticate");
+			if (rawAuthenticateHeader && /^Bearer /gi.test(rawAuthenticateHeader)) {
+				const rawParameters = rawAuthenticateHeader.replace(/^Bearer /gi, "").split(",");
+				for (const rawParameter of rawParameters) {
+					const trimmedParameter = rawParameter.trim();
+					if (/claims="[^"]+"/gi.test(trimmedParameter)) {
+						return trimmedParameter.replace(/claims="([^"]+)"/gi, "$1");
+					}
+				}
+			}
+		}
+		return undefined;
 	};
 	private setBaseUrlForRequestInformation = (requestInfo: RequestInformation): void => {
 		requestInfo.pathParameters["baseurl"] = this.baseUrl;
