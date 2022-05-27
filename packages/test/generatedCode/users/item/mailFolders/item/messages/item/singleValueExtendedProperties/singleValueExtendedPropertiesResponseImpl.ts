@@ -16,9 +16,9 @@ export class SingleValueExtendedPropertiesResponseImpl implements AdditionalData
      * @param singleValueExtendedPropertiesResponseParameterValue 
      */
     public constructor(singleValueExtendedPropertiesResponseParameterValue?: SingleValueExtendedPropertiesResponse | undefined) {
-        this.additionalData = singleValueExtendedPropertiesResponseParameterValue?.additionalData ? singleValueExtendedPropertiesResponseParameterValue?.additionalData! : {}
-        this.nextLink = singleValueExtendedPropertiesResponseParameterValue?.nextLink ;
-        this.value = singleValueExtendedPropertiesResponseParameterValue?.value ;
+        this.additionalData = singleValueExtendedPropertiesResponseParameterValue?.additionalData ? singleValueExtendedPropertiesResponseParameterValue?.additionalData! : {};
+        this.nextLink = singleValueExtendedPropertiesResponseParameterValue?.nextLink;
+        this.value = singleValueExtendedPropertiesResponseParameterValue?.value;
     };
     /**
      * The deserialization information for the current model

@@ -11,8 +11,8 @@ export class EntityImpl implements AdditionalDataHolder, Entity, Parsable {
      * @param entityParameterValue 
      */
     public constructor(entityParameterValue?: Entity | undefined) {
-        this.additionalData = entityParameterValue?.additionalData ? entityParameterValue?.additionalData! : {}
-        this.id = entityParameterValue?.id ;
+        this.additionalData = entityParameterValue?.additionalData ? entityParameterValue?.additionalData! : {};
+        this.id = entityParameterValue?.id;
     };
     /**
      * The deserialization information for the current model

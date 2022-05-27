@@ -16,9 +16,9 @@ export class ChildFoldersResponseImpl implements AdditionalDataHolder, ChildFold
      * @param childFoldersResponseParameterValue 
      */
     public constructor(childFoldersResponseParameterValue?: ChildFoldersResponse | undefined) {
-        this.additionalData = childFoldersResponseParameterValue?.additionalData ? childFoldersResponseParameterValue?.additionalData! : {}
-        this.nextLink = childFoldersResponseParameterValue?.nextLink ;
-        this.value = childFoldersResponseParameterValue?.value ;
+        this.additionalData = childFoldersResponseParameterValue?.additionalData ? childFoldersResponseParameterValue?.additionalData! : {};
+        this.nextLink = childFoldersResponseParameterValue?.nextLink;
+        this.value = childFoldersResponseParameterValue?.value;
     };
     /**
      * The deserialization information for the current model

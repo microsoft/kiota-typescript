@@ -1,6 +1,7 @@
 import {Entity} from './entity';
+import {Parsable} from '@microsoft/kiota-abstractions';
 
-export interface Attachment extends Entity {
+export interface Attachment extends Entity, Partial<Parsable> {
     /** The MIME type. */
     contentType?: string | undefined;
     /** true if the attachment is an inline attachment; otherwise, false. */

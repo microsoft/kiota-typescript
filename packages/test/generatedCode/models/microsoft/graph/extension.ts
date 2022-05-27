@@ -1,4 +1,5 @@
 import {Entity} from './entity';
+import {Parsable} from '@microsoft/kiota-abstractions';
 
-export interface Extension extends Entity {
+export interface Extension extends Entity, Partial<Parsable> {
 }

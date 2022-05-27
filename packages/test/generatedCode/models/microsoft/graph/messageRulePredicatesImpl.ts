@@ -77,37 +77,37 @@ export class MessageRulePredicatesImpl implements AdditionalDataHolder, MessageR
      * @param messageRulePredicatesParameterValue 
      */
     public constructor(messageRulePredicatesParameterValue?: MessageRulePredicates | undefined) {
-        this.additionalData = messageRulePredicatesParameterValue?.additionalData ? messageRulePredicatesParameterValue?.additionalData! : {}
-        this.bodyContains = messageRulePredicatesParameterValue?.bodyContains ;
-        this.bodyOrSubjectContains = messageRulePredicatesParameterValue?.bodyOrSubjectContains ;
-        this.categories = messageRulePredicatesParameterValue?.categories ;
-        this.fromAddresses = messageRulePredicatesParameterValue?.fromAddresses ;
-        this.hasAttachments = messageRulePredicatesParameterValue?.hasAttachments ;
-        this.headerContains = messageRulePredicatesParameterValue?.headerContains ;
-        this.importance = messageRulePredicatesParameterValue?.importance ;
-        this.isApprovalRequest = messageRulePredicatesParameterValue?.isApprovalRequest ;
-        this.isAutomaticForward = messageRulePredicatesParameterValue?.isAutomaticForward ;
-        this.isAutomaticReply = messageRulePredicatesParameterValue?.isAutomaticReply ;
-        this.isEncrypted = messageRulePredicatesParameterValue?.isEncrypted ;
-        this.isMeetingRequest = messageRulePredicatesParameterValue?.isMeetingRequest ;
-        this.isMeetingResponse = messageRulePredicatesParameterValue?.isMeetingResponse ;
-        this.isNonDeliveryReport = messageRulePredicatesParameterValue?.isNonDeliveryReport ;
-        this.isPermissionControlled = messageRulePredicatesParameterValue?.isPermissionControlled ;
-        this.isReadReceipt = messageRulePredicatesParameterValue?.isReadReceipt ;
-        this.isSigned = messageRulePredicatesParameterValue?.isSigned ;
-        this.isVoicemail = messageRulePredicatesParameterValue?.isVoicemail ;
-        this.messageActionFlag = messageRulePredicatesParameterValue?.messageActionFlag ;
-        this.notSentToMe = messageRulePredicatesParameterValue?.notSentToMe ;
-        this.recipientContains = messageRulePredicatesParameterValue?.recipientContains ;
-        this.senderContains = messageRulePredicatesParameterValue?.senderContains ;
-        this.sensitivity = messageRulePredicatesParameterValue?.sensitivity ;
-        this.sentCcMe = messageRulePredicatesParameterValue?.sentCcMe ;
-        this.sentOnlyToMe = messageRulePredicatesParameterValue?.sentOnlyToMe ;
-        this.sentToAddresses = messageRulePredicatesParameterValue?.sentToAddresses ;
-        this.sentToMe = messageRulePredicatesParameterValue?.sentToMe ;
-        this.sentToOrCcMe = messageRulePredicatesParameterValue?.sentToOrCcMe ;
-        this.subjectContains = messageRulePredicatesParameterValue?.subjectContains ;
-        this.withinSizeRange = messageRulePredicatesParameterValue?.withinSizeRange ;
+        this.additionalData = messageRulePredicatesParameterValue?.additionalData ? messageRulePredicatesParameterValue?.additionalData! : {};
+        this.bodyContains = messageRulePredicatesParameterValue?.bodyContains;
+        this.bodyOrSubjectContains = messageRulePredicatesParameterValue?.bodyOrSubjectContains;
+        this.categories = messageRulePredicatesParameterValue?.categories;
+        this.fromAddresses = messageRulePredicatesParameterValue?.fromAddresses;
+        this.hasAttachments = messageRulePredicatesParameterValue?.hasAttachments;
+        this.headerContains = messageRulePredicatesParameterValue?.headerContains;
+        this.importance = messageRulePredicatesParameterValue?.importance;
+        this.isApprovalRequest = messageRulePredicatesParameterValue?.isApprovalRequest;
+        this.isAutomaticForward = messageRulePredicatesParameterValue?.isAutomaticForward;
+        this.isAutomaticReply = messageRulePredicatesParameterValue?.isAutomaticReply;
+        this.isEncrypted = messageRulePredicatesParameterValue?.isEncrypted;
+        this.isMeetingRequest = messageRulePredicatesParameterValue?.isMeetingRequest;
+        this.isMeetingResponse = messageRulePredicatesParameterValue?.isMeetingResponse;
+        this.isNonDeliveryReport = messageRulePredicatesParameterValue?.isNonDeliveryReport;
+        this.isPermissionControlled = messageRulePredicatesParameterValue?.isPermissionControlled;
+        this.isReadReceipt = messageRulePredicatesParameterValue?.isReadReceipt;
+        this.isSigned = messageRulePredicatesParameterValue?.isSigned;
+        this.isVoicemail = messageRulePredicatesParameterValue?.isVoicemail;
+        this.messageActionFlag = messageRulePredicatesParameterValue?.messageActionFlag;
+        this.notSentToMe = messageRulePredicatesParameterValue?.notSentToMe;
+        this.recipientContains = messageRulePredicatesParameterValue?.recipientContains;
+        this.senderContains = messageRulePredicatesParameterValue?.senderContains;
+        this.sensitivity = messageRulePredicatesParameterValue?.sensitivity;
+        this.sentCcMe = messageRulePredicatesParameterValue?.sentCcMe;
+        this.sentOnlyToMe = messageRulePredicatesParameterValue?.sentOnlyToMe;
+        this.sentToAddresses = messageRulePredicatesParameterValue?.sentToAddresses;
+        this.sentToMe = messageRulePredicatesParameterValue?.sentToMe;
+        this.sentToOrCcMe = messageRulePredicatesParameterValue?.sentToOrCcMe;
+        this.subjectContains = messageRulePredicatesParameterValue?.subjectContains;
+        this.withinSizeRange = messageRulePredicatesParameterValue?.withinSizeRange;
     };
     /**
      * The deserialization information for the current model

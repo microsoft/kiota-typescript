@@ -16,9 +16,9 @@ export class ExtensionsResponseImpl implements AdditionalDataHolder, ExtensionsR
      * @param extensionsResponseParameterValue 
      */
     public constructor(extensionsResponseParameterValue?: ExtensionsResponse | undefined) {
-        this.additionalData = extensionsResponseParameterValue?.additionalData ? extensionsResponseParameterValue?.additionalData! : {}
-        this.nextLink = extensionsResponseParameterValue?.nextLink ;
-        this.value = extensionsResponseParameterValue?.value ;
+        this.additionalData = extensionsResponseParameterValue?.additionalData ? extensionsResponseParameterValue?.additionalData! : {};
+        this.nextLink = extensionsResponseParameterValue?.nextLink;
+        this.value = extensionsResponseParameterValue?.value;
     };
     /**
      * The deserialization information for the current model

@@ -1,7 +1,8 @@
 import {Importance} from './importance';
 import {Recipient} from './recipient';
+import {AdditionalDataHolder, Parsable} from '@microsoft/kiota-abstractions';
 
-export interface MessageRuleActions {
+export interface MessageRuleActions extends Partial<AdditionalDataHolder>, Partial<Parsable> {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
     additionalData?: Record<string, unknown>;
     /** A list of categories to be assigned to a message. */

@@ -14,9 +14,9 @@ export class ItemBodyImpl implements AdditionalDataHolder, ItemBody, Parsable {
      * @param itemBodyParameterValue 
      */
     public constructor(itemBodyParameterValue?: ItemBody | undefined) {
-        this.additionalData = itemBodyParameterValue?.additionalData ? itemBodyParameterValue?.additionalData! : {}
-        this.content = itemBodyParameterValue?.content ;
-        this.contentType = itemBodyParameterValue?.contentType ;
+        this.additionalData = itemBodyParameterValue?.additionalData ? itemBodyParameterValue?.additionalData! : {};
+        this.content = itemBodyParameterValue?.content;
+        this.contentType = itemBodyParameterValue?.contentType;
     };
     /**
      * The deserialization information for the current model

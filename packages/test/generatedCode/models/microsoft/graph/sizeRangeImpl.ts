@@ -13,9 +13,9 @@ export class SizeRangeImpl implements AdditionalDataHolder, Parsable, SizeRange 
      * @param sizeRangeParameterValue 
      */
     public constructor(sizeRangeParameterValue?: SizeRange | undefined) {
-        this.additionalData = sizeRangeParameterValue?.additionalData ? sizeRangeParameterValue?.additionalData! : {}
-        this.maximumSize = sizeRangeParameterValue?.maximumSize ;
-        this.minimumSize = sizeRangeParameterValue?.minimumSize ;
+        this.additionalData = sizeRangeParameterValue?.additionalData ? sizeRangeParameterValue?.additionalData! : {};
+        this.maximumSize = sizeRangeParameterValue?.maximumSize;
+        this.minimumSize = sizeRangeParameterValue?.minimumSize;
     };
     /**
      * The deserialization information for the current model

@@ -16,9 +16,9 @@ export class MessageRulesResponseImpl implements AdditionalDataHolder, MessageRu
      * @param messageRulesResponseParameterValue 
      */
     public constructor(messageRulesResponseParameterValue?: MessageRulesResponse | undefined) {
-        this.additionalData = messageRulesResponseParameterValue?.additionalData ? messageRulesResponseParameterValue?.additionalData! : {}
-        this.nextLink = messageRulesResponseParameterValue?.nextLink ;
-        this.value = messageRulesResponseParameterValue?.value ;
+        this.additionalData = messageRulesResponseParameterValue?.additionalData ? messageRulesResponseParameterValue?.additionalData! : {};
+        this.nextLink = messageRulesResponseParameterValue?.nextLink;
+        this.value = messageRulesResponseParameterValue?.value;
     };
     /**
      * The deserialization information for the current model

@@ -10,11 +10,8 @@ export class SingleValueLegacyExtendedPropertyImpl extends EntityImpl implements
      * @param singleValueLegacyExtendedPropertyParameterValue 
      */
     public constructor(singleValueLegacyExtendedPropertyParameterValue?: SingleValueLegacyExtendedProperty | undefined) {
-        super({
-            additionalData: singleValueLegacyExtendedPropertyParameterValue?.additionalData,
-            id: singleValueLegacyExtendedPropertyParameterValue?.id,
-        });
-        this.value = singleValueLegacyExtendedPropertyParameterValue?.value ;
+        super(singleValueLegacyExtendedPropertyParameterValue)
+        this.value = singleValueLegacyExtendedPropertyParameterValue?.value;
     };
     /**
      * The deserialization information for the current model

@@ -39,21 +39,18 @@ export class MailFolderImpl extends EntityImpl implements MailFolder, Parsable {
      * @param mailFolderParameterValue 
      */
     public constructor(mailFolderParameterValue?: MailFolder | undefined) {
-        super({
-            additionalData: mailFolderParameterValue?.additionalData,
-            id: mailFolderParameterValue?.id,
-        });
-        this.childFolderCount = mailFolderParameterValue?.childFolderCount ;
-        this.childFolders = mailFolderParameterValue?.childFolders ;
-        this.displayName = mailFolderParameterValue?.displayName ;
-        this.isHidden = mailFolderParameterValue?.isHidden ;
-        this.messageRules = mailFolderParameterValue?.messageRules ;
-        this.messages = mailFolderParameterValue?.messages ;
-        this.multiValueExtendedProperties = mailFolderParameterValue?.multiValueExtendedProperties ;
-        this.parentFolderId = mailFolderParameterValue?.parentFolderId ;
-        this.singleValueExtendedProperties = mailFolderParameterValue?.singleValueExtendedProperties ;
-        this.totalItemCount = mailFolderParameterValue?.totalItemCount ;
-        this.unreadItemCount = mailFolderParameterValue?.unreadItemCount ;
+        super(mailFolderParameterValue)
+        this.childFolderCount = mailFolderParameterValue?.childFolderCount;
+        this.childFolders = mailFolderParameterValue?.childFolders;
+        this.displayName = mailFolderParameterValue?.displayName;
+        this.isHidden = mailFolderParameterValue?.isHidden;
+        this.messageRules = mailFolderParameterValue?.messageRules;
+        this.messages = mailFolderParameterValue?.messages;
+        this.multiValueExtendedProperties = mailFolderParameterValue?.multiValueExtendedProperties;
+        this.parentFolderId = mailFolderParameterValue?.parentFolderId;
+        this.singleValueExtendedProperties = mailFolderParameterValue?.singleValueExtendedProperties;
+        this.totalItemCount = mailFolderParameterValue?.totalItemCount;
+        this.unreadItemCount = mailFolderParameterValue?.unreadItemCount;
     };
     /**
      * The deserialization information for the current model

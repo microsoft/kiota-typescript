@@ -16,9 +16,9 @@ export class MessagesResponseImpl implements AdditionalDataHolder, MessagesRespo
      * @param messagesResponseParameterValue 
      */
     public constructor(messagesResponseParameterValue?: MessagesResponse | undefined) {
-        this.additionalData = messagesResponseParameterValue?.additionalData ? messagesResponseParameterValue?.additionalData! : {}
-        this.nextLink = messagesResponseParameterValue?.nextLink ;
-        this.value = messagesResponseParameterValue?.value ;
+        this.additionalData = messagesResponseParameterValue?.additionalData ? messagesResponseParameterValue?.additionalData! : {};
+        this.nextLink = messagesResponseParameterValue?.nextLink;
+        this.value = messagesResponseParameterValue?.value;
     };
     /**
      * The deserialization information for the current model

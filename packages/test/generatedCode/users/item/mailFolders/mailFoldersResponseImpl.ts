@@ -16,9 +16,9 @@ export class MailFoldersResponseImpl implements AdditionalDataHolder, MailFolder
      * @param mailFoldersResponseParameterValue 
      */
     public constructor(mailFoldersResponseParameterValue?: MailFoldersResponse | undefined) {
-        this.additionalData = mailFoldersResponseParameterValue?.additionalData ? mailFoldersResponseParameterValue?.additionalData! : {}
-        this.nextLink = mailFoldersResponseParameterValue?.nextLink ;
-        this.value = mailFoldersResponseParameterValue?.value ;
+        this.additionalData = mailFoldersResponseParameterValue?.additionalData ? mailFoldersResponseParameterValue?.additionalData! : {};
+        this.nextLink = mailFoldersResponseParameterValue?.nextLink;
+        this.value = mailFoldersResponseParameterValue?.value;
     };
     /**
      * The deserialization information for the current model

@@ -1,6 +1,7 @@
 import {Extension} from '../../../../../../../models/microsoft/graph/extension';
+import {AdditionalDataHolder, Parsable} from '@microsoft/kiota-abstractions';
 
-export interface ExtensionsResponse {
+export interface ExtensionsResponse extends Partial<AdditionalDataHolder>, Partial<Parsable> {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
     additionalData?: Record<string, unknown>;
     /** The nextLink property */

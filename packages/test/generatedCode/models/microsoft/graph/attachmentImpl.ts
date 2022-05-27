@@ -18,15 +18,12 @@ export class AttachmentImpl extends EntityImpl implements Attachment, Parsable {
      * @param attachmentParameterValue 
      */
     public constructor(attachmentParameterValue?: Attachment | undefined) {
-        super({
-            additionalData: attachmentParameterValue?.additionalData,
-            id: attachmentParameterValue?.id,
-        });
-        this.contentType = attachmentParameterValue?.contentType ;
-        this.isInline = attachmentParameterValue?.isInline ;
-        this.lastModifiedDateTime = attachmentParameterValue?.lastModifiedDateTime ;
-        this.name = attachmentParameterValue?.name ;
-        this.size = attachmentParameterValue?.size ;
+        super(attachmentParameterValue)
+        this.contentType = attachmentParameterValue?.contentType;
+        this.isInline = attachmentParameterValue?.isInline;
+        this.lastModifiedDateTime = attachmentParameterValue?.lastModifiedDateTime;
+        this.name = attachmentParameterValue?.name;
+        this.size = attachmentParameterValue?.size;
     };
     /**
      * The deserialization information for the current model

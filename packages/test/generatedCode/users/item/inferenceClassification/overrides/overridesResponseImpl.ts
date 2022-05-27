@@ -16,9 +16,9 @@ export class OverridesResponseImpl implements AdditionalDataHolder, OverridesRes
      * @param overridesResponseParameterValue 
      */
     public constructor(overridesResponseParameterValue?: OverridesResponse | undefined) {
-        this.additionalData = overridesResponseParameterValue?.additionalData ? overridesResponseParameterValue?.additionalData! : {}
-        this.nextLink = overridesResponseParameterValue?.nextLink ;
-        this.value = overridesResponseParameterValue?.value ;
+        this.additionalData = overridesResponseParameterValue?.additionalData ? overridesResponseParameterValue?.additionalData! : {};
+        this.nextLink = overridesResponseParameterValue?.nextLink;
+        this.value = overridesResponseParameterValue?.value;
     };
     /**
      * The deserialization information for the current model

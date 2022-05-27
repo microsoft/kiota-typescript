@@ -13,9 +13,9 @@ export class InternetMessageHeaderImpl implements AdditionalDataHolder, Internet
      * @param internetMessageHeaderParameterValue 
      */
     public constructor(internetMessageHeaderParameterValue?: InternetMessageHeader | undefined) {
-        this.additionalData = internetMessageHeaderParameterValue?.additionalData ? internetMessageHeaderParameterValue?.additionalData! : {}
-        this.name = internetMessageHeaderParameterValue?.name ;
-        this.value = internetMessageHeaderParameterValue?.value ;
+        this.additionalData = internetMessageHeaderParameterValue?.additionalData ? internetMessageHeaderParameterValue?.additionalData! : {};
+        this.name = internetMessageHeaderParameterValue?.name;
+        this.value = internetMessageHeaderParameterValue?.value;
     };
     /**
      * The deserialization information for the current model

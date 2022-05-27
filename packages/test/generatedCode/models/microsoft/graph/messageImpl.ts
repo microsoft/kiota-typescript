@@ -86,42 +86,37 @@ export class MessageImpl extends OutlookItemImpl implements Message, Parsable {
      * @param messageParameterValue 
      */
     public constructor(messageParameterValue?: Message | undefined) {
-        super({
-            categories: messageParameterValue?.categories,
-            changeKey: messageParameterValue?.changeKey,
-            createdDateTime: messageParameterValue?.createdDateTime,
-            lastModifiedDateTime: messageParameterValue?.lastModifiedDateTime,
-        });
-        this.attachments = messageParameterValue?.attachments ;
-        this.bccRecipients = messageParameterValue?.bccRecipients ;
-        this.body = messageParameterValue?.body ;
-        this.bodyPreview = messageParameterValue?.bodyPreview ;
-        this.ccRecipients = messageParameterValue?.ccRecipients ;
-        this.conversationId = messageParameterValue?.conversationId ;
-        this.conversationIndex = messageParameterValue?.conversationIndex ;
-        this.extensions = messageParameterValue?.extensions ;
-        this.flag = messageParameterValue?.flag ;
-        this.from = messageParameterValue?.from ;
-        this.hasAttachments = messageParameterValue?.hasAttachments ;
-        this.importance = messageParameterValue?.importance ;
-        this.inferenceClassification = messageParameterValue?.inferenceClassification ;
-        this.internetMessageHeaders = messageParameterValue?.internetMessageHeaders ;
-        this.internetMessageId = messageParameterValue?.internetMessageId ;
-        this.isDeliveryReceiptRequested = messageParameterValue?.isDeliveryReceiptRequested ;
-        this.isDraft = messageParameterValue?.isDraft ;
-        this.isRead = messageParameterValue?.isRead ;
-        this.isReadReceiptRequested = messageParameterValue?.isReadReceiptRequested ;
-        this.multiValueExtendedProperties = messageParameterValue?.multiValueExtendedProperties ;
-        this.parentFolderId = messageParameterValue?.parentFolderId ;
-        this.receivedDateTime = messageParameterValue?.receivedDateTime ;
-        this.replyTo = messageParameterValue?.replyTo ;
-        this.sender = messageParameterValue?.sender ;
-        this.sentDateTime = messageParameterValue?.sentDateTime ;
-        this.singleValueExtendedProperties = messageParameterValue?.singleValueExtendedProperties ;
-        this.subject = messageParameterValue?.subject ;
-        this.toRecipients = messageParameterValue?.toRecipients ;
-        this.uniqueBody = messageParameterValue?.uniqueBody ;
-        this.webLink = messageParameterValue?.webLink ;
+        super(messageParameterValue)
+        this.attachments = messageParameterValue?.attachments;
+        this.bccRecipients = messageParameterValue?.bccRecipients;
+        this.body = messageParameterValue?.body;
+        this.bodyPreview = messageParameterValue?.bodyPreview;
+        this.ccRecipients = messageParameterValue?.ccRecipients;
+        this.conversationId = messageParameterValue?.conversationId;
+        this.conversationIndex = messageParameterValue?.conversationIndex;
+        this.extensions = messageParameterValue?.extensions;
+        this.flag = messageParameterValue?.flag;
+        this.from = messageParameterValue?.from;
+        this.hasAttachments = messageParameterValue?.hasAttachments;
+        this.importance = messageParameterValue?.importance;
+        this.inferenceClassification = messageParameterValue?.inferenceClassification;
+        this.internetMessageHeaders = messageParameterValue?.internetMessageHeaders;
+        this.internetMessageId = messageParameterValue?.internetMessageId;
+        this.isDeliveryReceiptRequested = messageParameterValue?.isDeliveryReceiptRequested;
+        this.isDraft = messageParameterValue?.isDraft;
+        this.isRead = messageParameterValue?.isRead;
+        this.isReadReceiptRequested = messageParameterValue?.isReadReceiptRequested;
+        this.multiValueExtendedProperties = messageParameterValue?.multiValueExtendedProperties;
+        this.parentFolderId = messageParameterValue?.parentFolderId;
+        this.receivedDateTime = messageParameterValue?.receivedDateTime;
+        this.replyTo = messageParameterValue?.replyTo;
+        this.sender = messageParameterValue?.sender;
+        this.sentDateTime = messageParameterValue?.sentDateTime;
+        this.singleValueExtendedProperties = messageParameterValue?.singleValueExtendedProperties;
+        this.subject = messageParameterValue?.subject;
+        this.toRecipients = messageParameterValue?.toRecipients;
+        this.uniqueBody = messageParameterValue?.uniqueBody;
+        this.webLink = messageParameterValue?.webLink;
     };
     /**
      * The deserialization information for the current model

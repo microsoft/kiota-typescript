@@ -3,8 +3,9 @@ import {Message} from './message';
 import {MessageRule} from './messageRule';
 import {MultiValueLegacyExtendedProperty} from './multiValueLegacyExtendedProperty';
 import {SingleValueLegacyExtendedProperty} from './singleValueLegacyExtendedProperty';
+import {Parsable} from '@microsoft/kiota-abstractions';
 
-export interface MailFolder extends Entity {
+export interface MailFolder extends Entity, Partial<Parsable> {
     /** The number of immediate child mailFolders in the current mailFolder. */
     childFolderCount?: number | undefined;
     /** The collection of child folders in the mailFolder. */

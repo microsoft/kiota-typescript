@@ -16,9 +16,9 @@ export class MultiValueExtendedPropertiesResponseImpl implements AdditionalDataH
      * @param multiValueExtendedPropertiesResponseParameterValue 
      */
     public constructor(multiValueExtendedPropertiesResponseParameterValue?: MultiValueExtendedPropertiesResponse | undefined) {
-        this.additionalData = multiValueExtendedPropertiesResponseParameterValue?.additionalData ? multiValueExtendedPropertiesResponseParameterValue?.additionalData! : {}
-        this.nextLink = multiValueExtendedPropertiesResponseParameterValue?.nextLink ;
-        this.value = multiValueExtendedPropertiesResponseParameterValue?.value ;
+        this.additionalData = multiValueExtendedPropertiesResponseParameterValue?.additionalData ? multiValueExtendedPropertiesResponseParameterValue?.additionalData! : {};
+        this.nextLink = multiValueExtendedPropertiesResponseParameterValue?.nextLink;
+        this.value = multiValueExtendedPropertiesResponseParameterValue?.value;
     };
     /**
      * The deserialization information for the current model

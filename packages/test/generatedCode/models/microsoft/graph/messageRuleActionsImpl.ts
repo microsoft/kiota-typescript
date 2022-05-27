@@ -35,18 +35,18 @@ export class MessageRuleActionsImpl implements AdditionalDataHolder, MessageRule
      * @param messageRuleActionsParameterValue 
      */
     public constructor(messageRuleActionsParameterValue?: MessageRuleActions | undefined) {
-        this.additionalData = messageRuleActionsParameterValue?.additionalData ? messageRuleActionsParameterValue?.additionalData! : {}
-        this.assignCategories = messageRuleActionsParameterValue?.assignCategories ;
-        this.copyToFolder = messageRuleActionsParameterValue?.copyToFolder ;
-        this.delete = messageRuleActionsParameterValue?.delete ;
-        this.forwardAsAttachmentTo = messageRuleActionsParameterValue?.forwardAsAttachmentTo ;
-        this.forwardTo = messageRuleActionsParameterValue?.forwardTo ;
-        this.markAsRead = messageRuleActionsParameterValue?.markAsRead ;
-        this.markImportance = messageRuleActionsParameterValue?.markImportance ;
-        this.moveToFolder = messageRuleActionsParameterValue?.moveToFolder ;
-        this.permanentDelete = messageRuleActionsParameterValue?.permanentDelete ;
-        this.redirectTo = messageRuleActionsParameterValue?.redirectTo ;
-        this.stopProcessingRules = messageRuleActionsParameterValue?.stopProcessingRules ;
+        this.additionalData = messageRuleActionsParameterValue?.additionalData ? messageRuleActionsParameterValue?.additionalData! : {};
+        this.assignCategories = messageRuleActionsParameterValue?.assignCategories;
+        this.copyToFolder = messageRuleActionsParameterValue?.copyToFolder;
+        this.delete = messageRuleActionsParameterValue?.delete;
+        this.forwardAsAttachmentTo = messageRuleActionsParameterValue?.forwardAsAttachmentTo;
+        this.forwardTo = messageRuleActionsParameterValue?.forwardTo;
+        this.markAsRead = messageRuleActionsParameterValue?.markAsRead;
+        this.markImportance = messageRuleActionsParameterValue?.markImportance;
+        this.moveToFolder = messageRuleActionsParameterValue?.moveToFolder;
+        this.permanentDelete = messageRuleActionsParameterValue?.permanentDelete;
+        this.redirectTo = messageRuleActionsParameterValue?.redirectTo;
+        this.stopProcessingRules = messageRuleActionsParameterValue?.stopProcessingRules;
     };
     /**
      * The deserialization information for the current model

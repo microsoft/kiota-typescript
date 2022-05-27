@@ -21,11 +21,11 @@ export class FollowupFlagImpl implements AdditionalDataHolder, FollowupFlag, Par
      * @param followupFlagParameterValue 
      */
     public constructor(followupFlagParameterValue?: FollowupFlag | undefined) {
-        this.additionalData = followupFlagParameterValue?.additionalData ? followupFlagParameterValue?.additionalData! : {}
-        this.completedDateTime = followupFlagParameterValue?.completedDateTime ;
-        this.dueDateTime = followupFlagParameterValue?.dueDateTime ;
-        this.flagStatus = followupFlagParameterValue?.flagStatus ;
-        this.startDateTime = followupFlagParameterValue?.startDateTime ;
+        this.additionalData = followupFlagParameterValue?.additionalData ? followupFlagParameterValue?.additionalData! : {};
+        this.completedDateTime = followupFlagParameterValue?.completedDateTime;
+        this.dueDateTime = followupFlagParameterValue?.dueDateTime;
+        this.flagStatus = followupFlagParameterValue?.flagStatus;
+        this.startDateTime = followupFlagParameterValue?.startDateTime;
     };
     /**
      * The deserialization information for the current model

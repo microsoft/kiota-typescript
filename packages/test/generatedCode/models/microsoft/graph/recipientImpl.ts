@@ -14,8 +14,8 @@ export class RecipientImpl implements AdditionalDataHolder, Parsable, Recipient 
      * @param recipientParameterValue 
      */
     public constructor(recipientParameterValue?: Recipient | undefined) {
-        this.additionalData = recipientParameterValue?.additionalData ? recipientParameterValue?.additionalData! : {}
-        this.emailAddress = recipientParameterValue?.emailAddress ;
+        this.additionalData = recipientParameterValue?.additionalData ? recipientParameterValue?.additionalData! : {};
+        this.emailAddress = recipientParameterValue?.emailAddress;
     };
     /**
      * The deserialization information for the current model

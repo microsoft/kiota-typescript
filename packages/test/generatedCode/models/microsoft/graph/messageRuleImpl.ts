@@ -28,18 +28,15 @@ export class MessageRuleImpl extends EntityImpl implements MessageRule, Parsable
      * @param messageRuleParameterValue 
      */
     public constructor(messageRuleParameterValue?: MessageRule | undefined) {
-        super({
-            additionalData: messageRuleParameterValue?.additionalData,
-            id: messageRuleParameterValue?.id,
-        });
-        this.actions = messageRuleParameterValue?.actions ;
-        this.conditions = messageRuleParameterValue?.conditions ;
-        this.displayName = messageRuleParameterValue?.displayName ;
-        this.exceptions = messageRuleParameterValue?.exceptions ;
-        this.hasError = messageRuleParameterValue?.hasError ;
-        this.isEnabled = messageRuleParameterValue?.isEnabled ;
-        this.isReadOnly = messageRuleParameterValue?.isReadOnly ;
-        this.sequence = messageRuleParameterValue?.sequence ;
+        super(messageRuleParameterValue)
+        this.actions = messageRuleParameterValue?.actions;
+        this.conditions = messageRuleParameterValue?.conditions;
+        this.displayName = messageRuleParameterValue?.displayName;
+        this.exceptions = messageRuleParameterValue?.exceptions;
+        this.hasError = messageRuleParameterValue?.hasError;
+        this.isEnabled = messageRuleParameterValue?.isEnabled;
+        this.isReadOnly = messageRuleParameterValue?.isReadOnly;
+        this.sequence = messageRuleParameterValue?.sequence;
     };
     /**
      * The deserialization information for the current model

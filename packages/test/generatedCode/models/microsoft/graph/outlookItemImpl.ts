@@ -16,14 +16,11 @@ export class OutlookItemImpl extends EntityImpl implements OutlookItem, Parsable
      * @param outlookItemParameterValue 
      */
     public constructor(outlookItemParameterValue?: OutlookItem | undefined) {
-        super({
-            additionalData: outlookItemParameterValue?.additionalData,
-            id: outlookItemParameterValue?.id,
-        });
-        this.categories = outlookItemParameterValue?.categories ;
-        this.changeKey = outlookItemParameterValue?.changeKey ;
-        this.createdDateTime = outlookItemParameterValue?.createdDateTime ;
-        this.lastModifiedDateTime = outlookItemParameterValue?.lastModifiedDateTime ;
+        super(outlookItemParameterValue)
+        this.categories = outlookItemParameterValue?.categories;
+        this.changeKey = outlookItemParameterValue?.changeKey;
+        this.createdDateTime = outlookItemParameterValue?.createdDateTime;
+        this.lastModifiedDateTime = outlookItemParameterValue?.lastModifiedDateTime;
     };
     /**
      * The deserialization information for the current model

@@ -16,9 +16,9 @@ export class AttachmentsResponseImpl implements AdditionalDataHolder, Attachment
      * @param attachmentsResponseParameterValue 
      */
     public constructor(attachmentsResponseParameterValue?: AttachmentsResponse | undefined) {
-        this.additionalData = attachmentsResponseParameterValue?.additionalData ? attachmentsResponseParameterValue?.additionalData! : {}
-        this.nextLink = attachmentsResponseParameterValue?.nextLink ;
-        this.value = attachmentsResponseParameterValue?.value ;
+        this.additionalData = attachmentsResponseParameterValue?.additionalData ? attachmentsResponseParameterValue?.additionalData! : {};
+        this.nextLink = attachmentsResponseParameterValue?.nextLink;
+        this.value = attachmentsResponseParameterValue?.value;
     };
     /**
      * The deserialization information for the current model

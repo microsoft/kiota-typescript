@@ -12,11 +12,8 @@ export class InferenceClassificationImpl extends EntityImpl implements Inference
      * @param inferenceClassificationParameterValue 
      */
     public constructor(inferenceClassificationParameterValue?: InferenceClassification | undefined) {
-        super({
-            additionalData: inferenceClassificationParameterValue?.additionalData,
-            id: inferenceClassificationParameterValue?.id,
-        });
-        this.overrides = inferenceClassificationParameterValue?.overrides ;
+        super(inferenceClassificationParameterValue)
+        this.overrides = inferenceClassificationParameterValue?.overrides;
     };
     /**
      * The deserialization information for the current model

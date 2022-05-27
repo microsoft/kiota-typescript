@@ -13,9 +13,9 @@ export class EmailAddressImpl implements AdditionalDataHolder, EmailAddress, Par
      * @param emailAddressParameterValue 
      */
     public constructor(emailAddressParameterValue?: EmailAddress | undefined) {
-        this.additionalData = emailAddressParameterValue?.additionalData ? emailAddressParameterValue?.additionalData! : {}
-        this.address = emailAddressParameterValue?.address ;
-        this.name = emailAddressParameterValue?.name ;
+        this.additionalData = emailAddressParameterValue?.additionalData ? emailAddressParameterValue?.additionalData! : {};
+        this.address = emailAddressParameterValue?.address;
+        this.name = emailAddressParameterValue?.name;
     };
     /**
      * The deserialization information for the current model

@@ -3,8 +3,9 @@ import {MessageActionFlag} from './messageActionFlag';
 import {Recipient} from './recipient';
 import {Sensitivity} from './sensitivity';
 import {SizeRange} from './sizeRange';
+import {AdditionalDataHolder, Parsable} from '@microsoft/kiota-abstractions';
 
-export interface MessageRulePredicates {
+export interface MessageRulePredicates extends Partial<AdditionalDataHolder>, Partial<Parsable> {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
     additionalData?: Record<string, unknown>;
     /** Represents the strings that should appear in the body of an incoming message in order for the condition or exception to apply. */

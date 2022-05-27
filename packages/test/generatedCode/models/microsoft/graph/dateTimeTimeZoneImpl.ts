@@ -13,9 +13,9 @@ export class DateTimeTimeZoneImpl implements AdditionalDataHolder, DateTimeTimeZ
      * @param dateTimeTimeZoneParameterValue 
      */
     public constructor(dateTimeTimeZoneParameterValue?: DateTimeTimeZone | undefined) {
-        this.additionalData = dateTimeTimeZoneParameterValue?.additionalData ? dateTimeTimeZoneParameterValue?.additionalData! : {}
-        this.dateTime = dateTimeTimeZoneParameterValue?.dateTime ;
-        this.timeZone = dateTimeTimeZoneParameterValue?.timeZone ;
+        this.additionalData = dateTimeTimeZoneParameterValue?.additionalData ? dateTimeTimeZoneParameterValue?.additionalData! : {};
+        this.dateTime = dateTimeTimeZoneParameterValue?.dateTime;
+        this.timeZone = dateTimeTimeZoneParameterValue?.timeZone;
     };
     /**
      * The deserialization information for the current model

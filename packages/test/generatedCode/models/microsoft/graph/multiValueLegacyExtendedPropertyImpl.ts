@@ -10,11 +10,8 @@ export class MultiValueLegacyExtendedPropertyImpl extends EntityImpl implements 
      * @param multiValueLegacyExtendedPropertyParameterValue 
      */
     public constructor(multiValueLegacyExtendedPropertyParameterValue?: MultiValueLegacyExtendedProperty | undefined) {
-        super({
-            additionalData: multiValueLegacyExtendedPropertyParameterValue?.additionalData,
-            id: multiValueLegacyExtendedPropertyParameterValue?.id,
-        });
-        this.value = multiValueLegacyExtendedPropertyParameterValue?.value ;
+        super(multiValueLegacyExtendedPropertyParameterValue)
+        this.value = multiValueLegacyExtendedPropertyParameterValue?.value;
     };
     /**
      * The deserialization information for the current model
