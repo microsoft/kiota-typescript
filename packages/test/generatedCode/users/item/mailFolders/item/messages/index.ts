@@ -1,5 +1,5 @@
 export * from './messagesResponseImpl'
-export * from './messagesRequestBuilderGetQueryParameters'
 export * from './messagesResponse'
+export * from './messagesRequestBuilderGetQueryParameters'
 export * from './messagesRequestBuilderGetRequestConfiguration'
 export * from './messagesRequestBuilderPostRequestConfiguration'

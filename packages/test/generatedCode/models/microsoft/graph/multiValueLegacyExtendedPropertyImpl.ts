@@ -2,7 +2,7 @@ import {EntityImpl} from './index';
 import {MultiValueLegacyExtendedProperty} from './multiValueLegacyExtendedProperty';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class MultiValueLegacyExtendedPropertyImpl extends EntityImpl implements MultiValueLegacyExtendedProperty, Parsable {
+export class MultiValueLegacyExtendedPropertyImpl extends EntityImpl implements MultiValueLegacyExtendedProperty {
     /** A collection of property values. */
     public value?: string[] | undefined;
     /**
@@ -10,7 +10,7 @@ export class MultiValueLegacyExtendedPropertyImpl extends EntityImpl implements 
      * @param multiValueLegacyExtendedPropertyParameterValue 
      */
     public constructor(multiValueLegacyExtendedPropertyParameterValue?: MultiValueLegacyExtendedProperty | undefined) {
-        super(multiValueLegacyExtendedPropertyParameterValue)
+        super(multiValueLegacyExtendedPropertyParameterValue);
         this.value = multiValueLegacyExtendedPropertyParameterValue?.value;
     };
     /**

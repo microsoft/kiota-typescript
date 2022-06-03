@@ -20,7 +20,7 @@ import {Recipient} from './recipient';
 import {SingleValueLegacyExtendedProperty} from './singleValueLegacyExtendedProperty';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class MessageImpl extends OutlookItemImpl implements Message, Parsable {
+export class MessageImpl extends OutlookItemImpl implements Message {
     /** The fileAttachment and itemAttachment attachments for the message. */
     public attachments?: Attachment[] | undefined;
     /** The Bcc: recipients for the message. */
@@ -86,7 +86,7 @@ export class MessageImpl extends OutlookItemImpl implements Message, Parsable {
      * @param messageParameterValue 
      */
     public constructor(messageParameterValue?: Message | undefined) {
-        super(messageParameterValue)
+        super(messageParameterValue);
         this.attachments = messageParameterValue?.attachments;
         this.bccRecipients = messageParameterValue?.bccRecipients;
         this.body = messageParameterValue?.body;

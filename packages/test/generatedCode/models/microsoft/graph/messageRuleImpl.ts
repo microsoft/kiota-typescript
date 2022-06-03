@@ -6,7 +6,7 @@ import {MessageRuleActions} from './messageRuleActions';
 import {MessageRulePredicates} from './messageRulePredicates';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class MessageRuleImpl extends EntityImpl implements MessageRule, Parsable {
+export class MessageRuleImpl extends EntityImpl implements MessageRule {
     /** The actions property */
     public actions?: MessageRuleActions | undefined;
     /** The conditions property */
@@ -28,7 +28,7 @@ export class MessageRuleImpl extends EntityImpl implements MessageRule, Parsable
      * @param messageRuleParameterValue 
      */
     public constructor(messageRuleParameterValue?: MessageRule | undefined) {
-        super(messageRuleParameterValue)
+        super(messageRuleParameterValue);
         this.actions = messageRuleParameterValue?.actions;
         this.conditions = messageRuleParameterValue?.conditions;
         this.displayName = messageRuleParameterValue?.displayName;

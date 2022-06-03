@@ -5,7 +5,7 @@ import {MessageRuleActions} from './messageRuleActions';
 import {Recipient} from './recipient';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class MessageRuleActionsImpl implements AdditionalDataHolder, MessageRuleActions, Parsable {
+export class MessageRuleActionsImpl implements MessageRuleActions {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
     public additionalData: Record<string, unknown>;
     /** A list of categories to be assigned to a message. */

@@ -2,7 +2,7 @@ import {Attachment} from './attachment';
 import {EntityImpl} from './index';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class AttachmentImpl extends EntityImpl implements Attachment, Parsable {
+export class AttachmentImpl extends EntityImpl implements Attachment {
     /** The MIME type. */
     public contentType?: string | undefined;
     /** true if the attachment is an inline attachment; otherwise, false. */
@@ -18,7 +18,7 @@ export class AttachmentImpl extends EntityImpl implements Attachment, Parsable {
      * @param attachmentParameterValue 
      */
     public constructor(attachmentParameterValue?: Attachment | undefined) {
-        super(attachmentParameterValue)
+        super(attachmentParameterValue);
         this.contentType = attachmentParameterValue?.contentType;
         this.isInline = attachmentParameterValue?.isInline;
         this.lastModifiedDateTime = attachmentParameterValue?.lastModifiedDateTime;

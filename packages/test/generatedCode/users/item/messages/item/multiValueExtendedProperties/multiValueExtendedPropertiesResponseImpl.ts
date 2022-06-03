@@ -4,7 +4,7 @@ import {MultiValueLegacyExtendedProperty} from '../../../../../models/microsoft/
 import {MultiValueExtendedPropertiesResponse} from './multiValueExtendedPropertiesResponse';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class MultiValueExtendedPropertiesResponseImpl implements AdditionalDataHolder, MultiValueExtendedPropertiesResponse, Parsable {
+export class MultiValueExtendedPropertiesResponseImpl implements MultiValueExtendedPropertiesResponse {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
     public additionalData: Record<string, unknown>;
     /** The nextLink property */

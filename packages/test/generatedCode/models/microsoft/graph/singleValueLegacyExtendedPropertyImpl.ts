@@ -2,7 +2,7 @@ import {EntityImpl} from './index';
 import {SingleValueLegacyExtendedProperty} from './singleValueLegacyExtendedProperty';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class SingleValueLegacyExtendedPropertyImpl extends EntityImpl implements Parsable, SingleValueLegacyExtendedProperty {
+export class SingleValueLegacyExtendedPropertyImpl extends EntityImpl implements SingleValueLegacyExtendedProperty {
     /** A property value. */
     public value?: string | undefined;
     /**
@@ -10,7 +10,7 @@ export class SingleValueLegacyExtendedPropertyImpl extends EntityImpl implements
      * @param singleValueLegacyExtendedPropertyParameterValue 
      */
     public constructor(singleValueLegacyExtendedPropertyParameterValue?: SingleValueLegacyExtendedProperty | undefined) {
-        super(singleValueLegacyExtendedPropertyParameterValue)
+        super(singleValueLegacyExtendedPropertyParameterValue);
         this.value = singleValueLegacyExtendedPropertyParameterValue?.value;
     };
     /**

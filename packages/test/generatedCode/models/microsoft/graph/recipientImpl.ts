@@ -4,7 +4,7 @@ import {EmailAddressImpl} from './index';
 import {Recipient} from './recipient';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class RecipientImpl implements AdditionalDataHolder, Parsable, Recipient {
+export class RecipientImpl implements Recipient {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
     public additionalData: Record<string, unknown>;
     /** The emailAddress property */

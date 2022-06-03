@@ -2,7 +2,7 @@ import {BodyType} from './bodyType';
 import {ItemBody} from './itemBody';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class ItemBodyImpl implements AdditionalDataHolder, ItemBody, Parsable {
+export class ItemBodyImpl implements ItemBody {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
     public additionalData: Record<string, unknown>;
     /** The content of the item. */

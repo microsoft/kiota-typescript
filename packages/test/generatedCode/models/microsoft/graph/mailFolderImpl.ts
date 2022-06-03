@@ -11,7 +11,7 @@ import {MultiValueLegacyExtendedProperty} from './multiValueLegacyExtendedProper
 import {SingleValueLegacyExtendedProperty} from './singleValueLegacyExtendedProperty';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class MailFolderImpl extends EntityImpl implements MailFolder, Parsable {
+export class MailFolderImpl extends EntityImpl implements MailFolder {
     /** The number of immediate child mailFolders in the current mailFolder. */
     public childFolderCount?: number | undefined;
     /** The collection of child folders in the mailFolder. */
@@ -39,7 +39,7 @@ export class MailFolderImpl extends EntityImpl implements MailFolder, Parsable {
      * @param mailFolderParameterValue 
      */
     public constructor(mailFolderParameterValue?: MailFolder | undefined) {
-        super(mailFolderParameterValue)
+        super(mailFolderParameterValue);
         this.childFolderCount = mailFolderParameterValue?.childFolderCount;
         this.childFolders = mailFolderParameterValue?.childFolders;
         this.displayName = mailFolderParameterValue?.displayName;

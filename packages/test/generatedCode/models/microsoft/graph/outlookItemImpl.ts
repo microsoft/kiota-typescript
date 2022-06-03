@@ -2,7 +2,7 @@ import {EntityImpl} from './index';
 import {OutlookItem} from './outlookItem';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class OutlookItemImpl extends EntityImpl implements OutlookItem, Parsable {
+export class OutlookItemImpl extends EntityImpl implements OutlookItem {
     /** The categories associated with the item */
     public categories?: string[] | undefined;
     /** Identifies the version of the item. Every time the item is changed, changeKey changes as well. This allows Exchange to apply changes to the correct version of the object. Read-only. */
@@ -16,7 +16,7 @@ export class OutlookItemImpl extends EntityImpl implements OutlookItem, Parsable
      * @param outlookItemParameterValue 
      */
     public constructor(outlookItemParameterValue?: OutlookItem | undefined) {
-        super(outlookItemParameterValue)
+        super(outlookItemParameterValue);
         this.categories = outlookItemParameterValue?.categories;
         this.changeKey = outlookItemParameterValue?.changeKey;
         this.createdDateTime = outlookItemParameterValue?.createdDateTime;

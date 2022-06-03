@@ -4,7 +4,7 @@ import {MailFolder} from '../../../../../models/microsoft/graph/mailFolder';
 import {ChildFoldersResponse} from './childFoldersResponse';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class ChildFoldersResponseImpl implements AdditionalDataHolder, ChildFoldersResponse, Parsable {
+export class ChildFoldersResponseImpl implements ChildFoldersResponse {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
     public additionalData: Record<string, unknown>;
     /** The nextLink property */

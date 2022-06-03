@@ -1,7 +1,7 @@
 import {Entity} from './entity';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class EntityImpl implements AdditionalDataHolder, Entity, Parsable {
+export class EntityImpl implements Entity {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
     public additionalData: Record<string, unknown>;
     /** Read-only. */

@@ -4,7 +4,7 @@ import {createAttachmentFromDiscriminatorValue} from '../../../../../../../model
 import {AttachmentsResponse} from './attachmentsResponse';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class AttachmentsResponseImpl implements AdditionalDataHolder, AttachmentsResponse, Parsable {
+export class AttachmentsResponseImpl implements AttachmentsResponse {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
     public additionalData: Record<string, unknown>;
     /** The nextLink property */

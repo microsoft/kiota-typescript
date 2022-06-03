@@ -4,7 +4,7 @@ import {MessageRule} from '../../../../../models/microsoft/graph/messageRule';
 import {MessageRulesResponse} from './messageRulesResponse';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class MessageRulesResponseImpl implements AdditionalDataHolder, MessageRulesResponse, Parsable {
+export class MessageRulesResponseImpl implements MessageRulesResponse {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
     public additionalData: Record<string, unknown>;
     /** The nextLink property */

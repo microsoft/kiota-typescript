@@ -5,7 +5,7 @@ import {InferenceClassificationOverride} from './inferenceClassificationOverride
 import {InferenceClassificationType} from './inferenceClassificationType';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class InferenceClassificationOverrideImpl extends EntityImpl implements InferenceClassificationOverride, Parsable {
+export class InferenceClassificationOverrideImpl extends EntityImpl implements InferenceClassificationOverride {
     /** The classifyAs property */
     public classifyAs?: InferenceClassificationType | undefined;
     /** The senderEmailAddress property */
@@ -15,7 +15,7 @@ export class InferenceClassificationOverrideImpl extends EntityImpl implements I
      * @param inferenceClassificationOverrideParameterValue 
      */
     public constructor(inferenceClassificationOverrideParameterValue?: InferenceClassificationOverride | undefined) {
-        super(inferenceClassificationOverrideParameterValue)
+        super(inferenceClassificationOverrideParameterValue);
         this.classifyAs = inferenceClassificationOverrideParameterValue?.classifyAs;
         this.senderEmailAddress = inferenceClassificationOverrideParameterValue?.senderEmailAddress;
     };

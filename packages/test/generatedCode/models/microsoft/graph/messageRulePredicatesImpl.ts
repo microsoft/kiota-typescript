@@ -9,7 +9,7 @@ import {Sensitivity} from './sensitivity';
 import {SizeRange} from './sizeRange';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class MessageRulePredicatesImpl implements AdditionalDataHolder, MessageRulePredicates, Parsable {
+export class MessageRulePredicatesImpl implements MessageRulePredicates {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
     public additionalData: Record<string, unknown>;
     /** Represents the strings that should appear in the body of an incoming message in order for the condition or exception to apply. */

@@ -4,7 +4,7 @@ import {Extension} from '../../../../../../../models/microsoft/graph/extension';
 import {ExtensionsResponse} from './extensionsResponse';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class ExtensionsResponseImpl implements AdditionalDataHolder, ExtensionsResponse, Parsable {
+export class ExtensionsResponseImpl implements ExtensionsResponse {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
     public additionalData: Record<string, unknown>;
     /** The nextLink property */

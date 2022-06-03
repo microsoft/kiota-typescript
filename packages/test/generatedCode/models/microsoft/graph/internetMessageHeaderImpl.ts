@@ -1,7 +1,7 @@
 import {InternetMessageHeader} from './internetMessageHeader';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class InternetMessageHeaderImpl implements AdditionalDataHolder, InternetMessageHeader, Parsable {
+export class InternetMessageHeaderImpl implements InternetMessageHeader {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
     public additionalData: Record<string, unknown>;
     /** Represents the key in a key-value pair. */

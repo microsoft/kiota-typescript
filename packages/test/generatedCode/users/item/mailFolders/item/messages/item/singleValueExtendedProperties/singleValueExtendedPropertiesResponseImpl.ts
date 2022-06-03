@@ -4,7 +4,7 @@ import {SingleValueLegacyExtendedProperty} from '../../../../../../../models/mic
 import {SingleValueExtendedPropertiesResponse} from './singleValueExtendedPropertiesResponse';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class SingleValueExtendedPropertiesResponseImpl implements AdditionalDataHolder, Parsable, SingleValueExtendedPropertiesResponse {
+export class SingleValueExtendedPropertiesResponseImpl implements SingleValueExtendedPropertiesResponse {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
     public additionalData: Record<string, unknown>;
     /** The nextLink property */

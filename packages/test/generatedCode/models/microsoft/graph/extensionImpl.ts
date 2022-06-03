@@ -2,13 +2,13 @@ import {Extension} from './extension';
 import {EntityImpl} from './index';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class ExtensionImpl extends EntityImpl implements Extension, Parsable {
+export class ExtensionImpl extends EntityImpl implements Extension {
     /**
      * Instantiates a new extension and sets the default values.
      * @param extensionParameterValue 
      */
     public constructor(extensionParameterValue?: Extension | undefined) {
-        super(extensionParameterValue)
+        super(extensionParameterValue);
     };
     /**
      * The deserialization information for the current model

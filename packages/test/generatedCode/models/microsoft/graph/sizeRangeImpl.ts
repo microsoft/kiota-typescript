@@ -1,7 +1,7 @@
 import {SizeRange} from './sizeRange';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export class SizeRangeImpl implements AdditionalDataHolder, Parsable, SizeRange {
+export class SizeRangeImpl implements SizeRange {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
     public additionalData: Record<string, unknown>;
     /** The maximum size (in kilobytes) that an incoming message must have in order for a condition or exception to apply. */
