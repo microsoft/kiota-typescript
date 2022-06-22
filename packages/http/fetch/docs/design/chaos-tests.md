@@ -4,7 +4,7 @@ The chaos handler is designed to simulate random API Errors that may be generate
 
 ### How to use
 
-You will need to add `ChaosHandler` as middleware to your tests as demostrated below so as to randomly intercept and generate error responses in your tests.
+You will need to add `ChaosHandler` as middleware to your tests as demonstrated below so as to randomly intercept and generate error responses in your tests.
 
 This class is not added by default to any of the options
 
