@@ -1,1 +1,5 @@
+export * from './multiValueExtendedPropertiesResponseImpl'
 export * from './multiValueExtendedPropertiesResponse'
+export * from './multiValueExtendedPropertiesRequestBuilderPostRequestConfiguration'
+export * from './multiValueExtendedPropertiesRequestBuilderGetRequestConfiguration'
+export * from './multiValueExtendedPropertiesRequestBuilderGetQueryParameters'

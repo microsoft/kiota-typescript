@@ -1,1 +1,5 @@
+export * from './childFoldersResponseImpl'
 export * from './childFoldersResponse'
+export * from './childFoldersRequestBuilderGetRequestConfiguration'
+export * from './childFoldersRequestBuilderGetQueryParameters'
+export * from './childFoldersRequestBuilderPostRequestConfiguration'

@@ -1,1 +1,5 @@
+export * from './singleValueExtendedPropertiesResponseImpl'
 export * from './singleValueExtendedPropertiesResponse'
+export * from './singleValueExtendedPropertiesRequestBuilderGetRequestConfiguration'
+export * from './singleValueExtendedPropertiesRequestBuilderPostRequestConfiguration'
+export * from './singleValueExtendedPropertiesRequestBuilderGetQueryParameters'

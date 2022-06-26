@@ -1,7 +1,7 @@
-import {MultiValueExtendedPropertiesResponse} from './index';
+import {MultiValueExtendedPropertiesResponseImpl} from './index';
 import {ParseNode} from '@microsoft/kiota-abstractions';
 
-export function createMultiValueExtendedPropertiesResponseFromDiscriminatorValue(parseNode: ParseNode | undefined) : MultiValueExtendedPropertiesResponse {
+export function createMultiValueExtendedPropertiesResponseFromDiscriminatorValue(parseNode: ParseNode | undefined) : MultiValueExtendedPropertiesResponseImpl {
     if(!parseNode) throw new Error("parseNode cannot be undefined");
-    return new MultiValueExtendedPropertiesResponse();
+    return new MultiValueExtendedPropertiesResponseImpl();
 }
