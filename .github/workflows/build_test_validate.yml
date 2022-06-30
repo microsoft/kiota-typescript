@@ -13,7 +13,7 @@ jobs:
           name: build_test
         strategy:
           matrix:
-            node-version: [ 16.x]
+            node-version: [14.x, 16.x]
         steps:
         - uses: actions/checkout@v3
         - name: Use Node.js ${{ matrix.node-version }}
@@ -33,12 +33,12 @@ jobs:
               packages/serialization/text/dist
               packages/http/fetch/dist
               packages/authentication/azure/dist
-        - run: lerna run test:integrated
+        - run: yarn lerna run test:integrated
           env:
               TENANT_ID:  ${{secrets.tenant_id}}
               CLIENT_ID: ${{secrets.client_id}}
               CLIENT_SECRET: ${{secrets.client_secret}}
-        - run: lerna run test --parallel
+        - run: yarn lerna run test --parallel
     
     publish-npm:
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'auto dependabot')}}
