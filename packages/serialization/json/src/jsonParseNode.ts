@@ -91,6 +91,7 @@ export class JsonParseNode implements ParseNode {
     if (holder && holder.additionalData) {
       itemAdditionalData = holder.additionalData;
     }
+    if (!this._jsonNode) return;
     Object.entries(this._jsonNode as any).forEach(([k, v]) => {
       const deserializer = fields[k];
       if (deserializer) {
