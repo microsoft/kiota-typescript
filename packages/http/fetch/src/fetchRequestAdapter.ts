@@ -52,6 +52,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 					case "number":
 					case "boolean":
 					case "Date":
+						// eslint-disable-next-line no-case-declarations
 						const rootNode = await this.getRootParseNode(response);
 						if (responseType === "string") {
 							return rootNode.getCollectionOfPrimitiveValues<string>() as unknown as ResponseType[];
@@ -127,11 +128,16 @@ export class FetchRequestAdapter implements RequestAdapter {
 				if (this.shouldReturnUndefined(response)) return undefined;
 				switch (responseType) {
 					case "ArrayBuffer":
+						// eslint-disable-next-line no-case-declarations
+						if (!response.body) {
+							return undefined;
+						}
 						return (await response.arrayBuffer()) as unknown as ResponseType;
 					case "string":
 					case "number":
 					case "boolean":
 					case "Date":
+						// eslint-disable-next-line no-case-declarations
 						const rootNode = await this.getRootParseNode(response);
 						if (responseType === "string") {
 							return rootNode.getStringValue() as unknown as ResponseType;
@@ -186,7 +192,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		return this.parseNodeFactory.getRootParseNode(responseContentType, payload);
 	};
 	private shouldReturnUndefined = (response: Response): boolean => {
-		return response.status === 204;
+		return response.status === 204 || !response.body;
 	};
 	/** purges the response body if it hasn't been read to release the connection to the server */
 	private purgeResponseBody = async (response: Response): Promise<void> => {
