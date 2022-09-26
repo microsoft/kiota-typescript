@@ -1,4 +1,5 @@
 import { ApiError, AuthenticationProvider, BackingStoreFactory, BackingStoreFactorySingleton, DateOnly, Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, Parsable, ParsableFactory, ParseNode,ParseNodeFactory, ParseNodeFactoryRegistry, RequestAdapter, RequestInformation, ResponseHandler, SerializationWriterFactory, SerializationWriterFactoryRegistry, TimeOnly } from "@microsoft/kiota-abstractions";
+import { context, trace } from "@opentelemetry/api";
 
 import { HttpClient } from "./httpClient";
 
@@ -96,24 +97,31 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		}
 	};
-	public sendAsync = async <ModelType extends Parsable>(requestInfo: RequestInformation, type: ParsableFactory<ModelType>, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType | undefined> => {
+	public sendAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, type: ParsableFactory<ModelType>, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
-		const response = await this.getHttpResponseMessage(requestInfo);
-		if (responseHandler) {
-			return await responseHandler.handleResponseAsync(response, errorMappings);
-		} else {
+		return trace.getTracer("my-service-tracer").startActiveSpan("sendAsync", async (span) => {
+			span.setAttribute("requestInfo", "foo");
 			try {
-				await this.throwFailedResponses(response, errorMappings);
-				if (this.shouldReturnUndefined(response)) return undefined;
-				const rootNode = await this.getRootParseNode(response);
-				const result = rootNode.getObjectValue(type);
-				return result as unknown as ModelType;
+				const response = await this.getHttpResponseMessage(requestInfo);
+				if (responseHandler) {
+					return await responseHandler.handleResponseAsync(response, errorMappings);
+				} else {
+					try {
+						await this.throwFailedResponses(response, errorMappings);
+						if (this.shouldReturnUndefined(response)) return undefined;
+						const rootNode = await this.getRootParseNode(response);
+						const result = rootNode.getObjectValue(type);
+						return result as unknown as ModelType;
+					} finally {
+						await this.purgeResponseBody(response);
+					}
+				}
 			} finally {
-				await this.purgeResponseBody(response);
+				span.end();
 			}
-		}
+		}) as Promise<ModelType>;
 	};
 	public sendPrimitiveAsync = async <ResponseType>(requestInfo: RequestInformation, responseType: "string" | "number" | "boolean" | "Date" | "ArrayBuffer", responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType | undefined> => {
 		if (!requestInfo) {
