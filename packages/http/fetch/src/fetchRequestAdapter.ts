@@ -1,7 +1,8 @@
 import { ApiError, AuthenticationProvider, BackingStoreFactory, BackingStoreFactorySingleton, DateOnly, Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, Parsable, ParsableFactory, ParseNode,ParseNodeFactory, ParseNodeFactoryRegistry, RequestAdapter, RequestInformation, ResponseHandler, SerializationWriterFactory, SerializationWriterFactoryRegistry, TimeOnly } from "@microsoft/kiota-abstractions";
-import { context, trace } from "@opentelemetry/api";
+import { Span, trace } from "@opentelemetry/api";
 
 import { HttpClient } from "./httpClient";
+import { ObservabilityOptions, ObservabilityOptionsImpl } from "./observabilityOptions";
 
 export class FetchRequestAdapter implements RequestAdapter {
 	/** The base url for every request. */
@@ -15,8 +16,9 @@ export class FetchRequestAdapter implements RequestAdapter {
 	 * @param parseNodeFactory the parse node factory to deserialize responses.
 	 * @param serializationWriterFactory the serialization writer factory to use to serialize request bodies.
 	 * @param httpClient the http client to use to execute requests.
+	 * @param observabilityOptions the observability options to use.
 	 */
-	public constructor(public readonly authenticationProvider: AuthenticationProvider, private parseNodeFactory: ParseNodeFactory = ParseNodeFactoryRegistry.defaultInstance, private serializationWriterFactory: SerializationWriterFactory = SerializationWriterFactoryRegistry.defaultInstance, private readonly httpClient: HttpClient = new HttpClient()) {
+	public constructor(public readonly authenticationProvider: AuthenticationProvider, private parseNodeFactory: ParseNodeFactory = ParseNodeFactoryRegistry.defaultInstance, private serializationWriterFactory: SerializationWriterFactory = SerializationWriterFactoryRegistry.defaultInstance, private readonly httpClient: HttpClient = new HttpClient(), private readonly observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()) {
 		if (!authenticationProvider) {
 			throw new Error("authentication provider cannot be null");
 		}
@@ -28,6 +30,11 @@ export class FetchRequestAdapter implements RequestAdapter {
 		}
 		if (!httpClient) {
 			throw new Error("http client cannot be null");
+		}
+		if (!observabilityOptions) {
+			throw new Error("observability options cannot be null");
+		} else if (!(observabilityOptions instanceof ObservabilityOptionsImpl)) {
+			this.observabilityOptions = new ObservabilityOptionsImpl(observabilityOptions);
 		}
 	}
 	private getResponseContentType = (response: Response): string | undefined => {
@@ -97,12 +104,23 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		}
 	};
+	private startTracingSpan = <T>(requestInfo: RequestInformation, methodName: string, callback: (arg0: Span) => Promise<T>): Promise<T> => {
+		const urlTemplate = requestInfo.urlTemplate ?? ""; //TODO decode the parameters
+		const telemetryPathValue = urlTemplate?.replace(/{?[^}]+}/gi, "");
+		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan(`${methodName} - ${telemetryPathValue}`, async (span) => {
+			try {
+				span.setAttribute("http.uri_template", urlTemplate);
+				return await callback(span);
+			} finally {
+				span.end();
+			}
+		});
+	};
 	public sendAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, type: ParsableFactory<ModelType>, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
-		return trace.getTracer("my-service-tracer").startActiveSpan("sendAsync", async (span) => {
-			span.setAttribute("requestInfo", "foo");
+		return this.startTracingSpan(requestInfo, "sendAsync", async (span) => {
 			try {
 				const response = await this.getHttpResponseMessage(requestInfo);
 				if (responseHandler) {
