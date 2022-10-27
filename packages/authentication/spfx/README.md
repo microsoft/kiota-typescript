@@ -46,8 +46,7 @@ If you have generated a Kiota client for Microsoft Graph, you can also use this 
 
         const authProvider =
           new AzureAdSpfxAuthenticationProvider(
-            tokenProvider, 
-            "https://graph.microsoft.com");
+            tokenProvider);
         
         const adapter = new FetchRequestAdapter(authProvider);
         
