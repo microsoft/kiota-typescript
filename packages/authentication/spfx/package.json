@@ -32,7 +32,10 @@
         "Graph",
         "SharePoint"
     ],
-    "author": "Luis Mañez",
+    "author": "Microsoft",
+    "contributors": [
+        {"name":"Luis Mañez","url":"https://github.com/luismanez"}
+    ],
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/microsoft/kiota-typescript/issues"
