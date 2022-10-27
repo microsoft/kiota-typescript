@@ -6,7 +6,7 @@ It also works for consuming Microsoft Graph, as it is just another Azure Active 
 
 A [Kiota](https://github.com/microsoft/kiota) generated project will need a reference to an authentication provider to make calls to an API endpoint.
 
-Read more about Kiota [here](https://github.com/microsoft/kiota/blob/main/README.md).
+Read more about Kiota [here](https://microsoft.github.io/kiota).
 
 ## Using the Kiota Authentication SPFx
 
