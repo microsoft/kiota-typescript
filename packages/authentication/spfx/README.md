@@ -38,7 +38,7 @@ this.props.aadTokenProviderFactory.getTokenProvider()
       .catch(e => {console.log(e)});
 ```
 
-If you have generated a Kiota client for MS Graph API, you can also use this Auth provider in a similar way:
+If you have generated a Kiota client for Microsoft Graph, you can also use this Auth provider in a similar way:
 
 ```ts
     this.props.aadTokenProviderFactory.getTokenProvider()
