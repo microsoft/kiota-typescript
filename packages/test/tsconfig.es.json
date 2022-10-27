@@ -20,6 +20,9 @@
         },
         {
             "path": "../authentication/azure/tsconfig.es.json"
+        },
+        {
+            "path": "../authentication/spfx/tsconfig.es.json"
         }
     ],
 	"exclude": ["node_modules", "dist"],
@@ -41,6 +44,8 @@
         ],
         "@microsoft/kiota-authentication-azure": [
             "../authentication/azure"
+        ],"@microsoft/kiota-authentication-spfx": [
+            "../authentication/spfx"
         ],
     },
 	"include": ["./generatedCode/**/*.ts", "./tests/**/*.ts"]

@@ -1,0 +1,47 @@
+{
+    "name": "@microsoft/kiota-authentication-spfx",
+    "version": "1.0.0-preview.1",
+    "description": "Authentication provider for using Kiota in SPFx solutions",
+    "main": "dist/cjs/src/index.js",
+    "module": "dist/es/src/index.js",
+    "types": "dist/cjs/src/index.d.ts",
+    "files": [
+        "src",
+        "dist"
+    ],
+    "scripts": {
+        "build": "npm run build:cjs && npm run build:esm",
+        "build:cjs": "tsc -b tsconfig.cjs.json",
+        "build:esm": "tsc -b tsconfig.es.json",
+        "test:cjs": "npm run build:cjs && mocha  'dist/cjs/test/**/*.js'",
+        "test:es": " npm run build:esm && mocha 'dist/es/test/**/*.js'  --require  esm",
+        "test": "npm run test:cjs && npm run test:es",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "clean": "rm -r ./dist"
+    },
+    "repository": "git://github.com/microsoft/kiota-typescript.git",
+    "keywords": [
+        "Kiota",
+        "OpenApi",
+        "Azure",
+        "Authentication",
+        "OAuth",
+        "SPFx",
+        "AzureAD",
+        "Graph",
+        "SharePoint"
+    ],
+    "author": "Luis Mañez",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/microsoft/kiota-typescript/issues"
+    },
+    "homepage": "https://github.com/microsoft/kiota-typescript#readme",
+    "dependencies": {
+        "@azure/core-auth": "^1.3.2",
+        "@microsoft/sp-http": "^1.15.2",
+        "@microsoft/kiota-abstractions": "1.0.0-preview.6",
+        "tslib": "^2.3.1"
+    }
+}
