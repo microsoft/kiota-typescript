@@ -1,6 +1,6 @@
 [![npm version badge](https://img.shields.io/npm/v/@microsoft/kiota-authentication-spfx?color=blue)](https://www.npmjs.com/package/@microsoft/kiota-authentication-spfx)
 
-The Kiota Authentication SPFx Library is an implementation to authenticate HTTP requests in SPFx solutions. This Authentication library, re uses some infrastructure from the SPFx context to obtain a valid token for the required API.
+The Kiota Authentication SharePoint Framework Library is an implementation to authenticate HTTP requests in SharePoint Framework solutions. This Authentication library, re uses some infrastructure from the SPFx context to obtain a valid token for the required API.
 
 It also works for consuming MS Graph API, as Graph is just another Azure AD protected API.
 
