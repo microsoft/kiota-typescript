@@ -2,7 +2,7 @@
 
 The Kiota Authentication SharePoint Framework Library is an implementation to authenticate HTTP requests in SharePoint Framework solutions. This Authentication library, re uses some infrastructure from the SPFx context to obtain a valid token for the required API.
 
-It also works for consuming MS Graph API, as Graph is just another Azure AD protected API.
+It also works for consuming Microsoft Graph, as it is just another Azure Active Directory protected API.
 
 A [Kiota](https://github.com/microsoft/kiota) generated project will need a reference to an authentication provider to make calls to an API endpoint.
 
