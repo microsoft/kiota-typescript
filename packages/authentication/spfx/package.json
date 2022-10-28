@@ -45,5 +45,8 @@
         "@microsoft/sp-http": "^1.15.2",
         "@microsoft/kiota-abstractions": "1.0.0-preview.6",
         "tslib": "^2.3.1"
+    },
+    "publishConfig": {
+        "access": "public"
     }
 }
