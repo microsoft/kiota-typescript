@@ -11,6 +11,8 @@ jobs:
         runs-on: ubuntu-latest
         environment:
           name: build_test
+        env:
+          TENANT_ID: ${{ secrets.TENANT_ID }}
         strategy:
           matrix:
             node-version: [14.x, 16.x, 18.x]
@@ -20,7 +22,7 @@ jobs:
           uses: actions/setup-node@v3
           with:
             node-version: ${{ matrix.node-version }}
-        - run: yarn install --frozen-lockfile
+        - run: yarn install --frozen-lockfile --ignore-engines #spfx still not compatible with node 18
         - run: yarn global add mocha@6.2.3
         - run: yarn run build
         - name: Archive dist folders # archive dist folders to verify if they are transpiled correctly and available for publishing
@@ -34,6 +36,7 @@ jobs:
               packages/http/fetch/dist
               packages/authentication/azure/dist
         - run: yarn lerna run test:integrated
+          if: ${{env.TENANT_ID != '' }}
           env:
               TENANT_ID:  ${{secrets.tenant_id}}
               CLIENT_ID: ${{secrets.client_id}}

@@ -21,6 +21,9 @@
         "@microsoft/kiota-authentication-azure": [
             "../authentication/azure"
         ],
+        "@microsoft/kiota-authentication-spfx": [
+            "../authentication/spfx"
+        ],
     },
     "files": [],
     "references": [
@@ -38,6 +41,9 @@
         },
         {
             "path": "../authentication/azure/tsconfig.cjs.json"
+        },
+        {
+            "path": "../authentication/spfx/tsconfig.cjs.json"
         }
     ],
 	"exclude": ["node_modules", "dist"],
