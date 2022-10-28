@@ -11,6 +11,8 @@ jobs:
         runs-on: ubuntu-latest
         environment:
           name: build_test
+        env:
+          TENANT_ID: ${{ secrets.TENANT_ID }}
         strategy:
           matrix:
             node-version: [14.x, 16.x, 18.x]
@@ -34,7 +36,7 @@ jobs:
               packages/http/fetch/dist
               packages/authentication/azure/dist
         - run: yarn lerna run test:integrated
-          if: ${{secrets.tenant_id}} != ''
+          if: ${{env.TENANT_ID != '' }}
           env:
               TENANT_ID:  ${{secrets.tenant_id}}
               CLIENT_ID: ${{secrets.client_id}}
