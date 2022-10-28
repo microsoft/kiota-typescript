@@ -32,6 +32,14 @@ describe("ApiKeyAuthenticationProvider", () => {
           ApiKeyLocation.QueryParameter
         )
     );
+    assert.throws(
+      () =>
+        new ApiKeyAuthenticationProvider(
+          "param",
+          "key",
+          2 as unknown as ApiKeyLocation
+        )
+    );
   });
   it("Adds in query parameters", async () => {
     const provider = new ApiKeyAuthenticationProvider(

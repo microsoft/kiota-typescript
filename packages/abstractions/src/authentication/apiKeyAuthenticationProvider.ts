@@ -25,6 +25,12 @@ export class ApiKeyAuthenticationProvider implements AuthenticationProvider {
     if (parameterName === undefined || parameterName === "") {
       throw new Error("parameterName cannot be null or empty");
     }
+    if (
+      location !== ApiKeyLocation.QueryParameter &&
+      location !== ApiKeyLocation.Header
+    ) {
+      throw new Error("location must be either QueryParameter or Header");
+    }
     this.validator = new AllowedHostsValidator(validHosts);
   }
   public authenticateRequest(
@@ -48,8 +54,6 @@ export class ApiKeyAuthenticationProvider implements AuthenticationProvider {
       case ApiKeyLocation.Header:
         request.headers[this.parameterName] = this.apiKey;
         break;
-      default:
-        throw new Error("Unsupported ApiKeyLocation");
     }
     return Promise.resolve();
   }
