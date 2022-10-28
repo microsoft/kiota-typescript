@@ -17,6 +17,7 @@ export class RequestInformation {
   /** The URL template for the request */
   public urlTemplate?: string;
   /** Gets the URL of the request  */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public get URL(): string {
     const rawUrl = this.pathParameters[
       RequestInformation.raw_url_key
@@ -97,7 +98,7 @@ export class RequestInformation {
   private static contentTypeHeader = "Content-Type";
   /**
    * Sets the request body from a model with the specified content type.
-   * @param values the models.
+   * @param value the models.
    * @param contentType the content type.
    * @param requestAdapter The adapter service to get the serialization writer from.
    * @typeParam T the model type.
@@ -105,20 +106,20 @@ export class RequestInformation {
   public setContentFromParsable = <T extends Parsable>(
     requestAdapter?: RequestAdapter | undefined,
     contentType?: string | undefined,
-    ...values: T[]
+    value?: T[] | T
   ): void => {
     const writer = this.getSerializationWriter(
       requestAdapter,
       contentType,
-      values
+      value
     );
     if (!this.headers) {
       this.headers = {};
     }
-    if (values.length === 1) {
-      writer.writeObjectValue(undefined, values[0]);
+    if (Array.isArray(value)) {
+      writer.writeCollectionOfObjectValues(undefined, value);
     } else {
-      writer.writeCollectionOfObjectValues(undefined, values);
+      writer.writeObjectValue(undefined, value);
     }
     this.setContentAndContentType(writer, contentType);
   };
@@ -147,7 +148,7 @@ export class RequestInformation {
   };
   /**
    * Sets the request body from a model with the specified content type.
-   * @param values the scalar values to serialize.
+   * @param value the scalar values to serialize.
    * @param contentType the content type.
    * @param requestAdapter The adapter service to get the serialization writer from.
    * @typeParam T the model type.
@@ -155,19 +156,20 @@ export class RequestInformation {
   public setContentFromScalar = <T>(
     requestAdapter?: RequestAdapter | undefined,
     contentType?: string | undefined,
-    ...values: T[]
+    value?: T[] | T
   ): void => {
     const writer = this.getSerializationWriter(
       requestAdapter,
       contentType,
-      values
+      value
     );
     if (!this.headers) {
       this.headers = {};
     }
 
-    if (values.length === 1) {
-      const value = values[0];
+    if (Array.isArray(value)) {
+      writer.writeCollectionOfPrimitiveValues(undefined, value);
+    } else {
       const valueType = typeof value;
       if (!value) {
         writer.writeNullValue(undefined);
@@ -192,8 +194,6 @@ export class RequestInformation {
           `encountered unknown value type during serialization ${valueType}`
         );
       }
-    } else {
-      writer.writeCollectionOfPrimitiveValues(undefined, values);
     }
     this.setContentAndContentType(writer, contentType);
   };
