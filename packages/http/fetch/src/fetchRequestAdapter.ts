@@ -44,69 +44,81 @@ export class FetchRequestAdapter implements RequestAdapter {
 		if (segments.length === 0) return undefined;
 		else return segments[0];
 	};
-	public sendCollectionOfPrimitiveAsync = async <ResponseType>(requestInfo: RequestInformation, responseType: "string" | "number" | "boolean" | "Date", responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType[] | undefined> => {
+	public sendCollectionOfPrimitiveAsync = <ResponseType>(requestInfo: RequestInformation, responseType: "string" | "number" | "boolean" | "Date", responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType[] | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
-		const response = await this.getHttpResponseMessage(requestInfo);
-		if (responseHandler) {
-			return await responseHandler.handleResponseAsync(response, errorMappings);
-		} else {
+		return this.startTracingSpan(requestInfo, "sendCollectionOfPrimitiveAsync", async (span) => {
 			try {
-				await this.throwFailedResponses(response, errorMappings);
-				if (this.shouldReturnUndefined(response)) return undefined;
-				switch (responseType) {
-					case "string":
-					case "number":
-					case "boolean":
-					case "Date":
-						// eslint-disable-next-line no-case-declarations
-						const rootNode = await this.getRootParseNode(response);
-						if (responseType === "string") {
-							return rootNode.getCollectionOfPrimitiveValues<string>() as unknown as ResponseType[];
-						} else if (responseType === "number") {
-							return rootNode.getCollectionOfPrimitiveValues<number>() as unknown as ResponseType[];
-						} else if (responseType === "boolean") {
-							return rootNode.getCollectionOfPrimitiveValues<boolean>() as unknown as ResponseType[];
-						} else if (responseType === "Date") {
-							return rootNode.getCollectionOfPrimitiveValues<Date>() as unknown as ResponseType[];
-						} else if (responseType === "Duration") {
-							return rootNode.getCollectionOfPrimitiveValues<Duration>() as unknown as ResponseType[];
-						} else if (responseType === "DateOnly") {
-							return rootNode.getCollectionOfPrimitiveValues<DateOnly>() as unknown as ResponseType[];
-						} else if (responseType === "TimeOnly") {
-							return rootNode.getCollectionOfPrimitiveValues<TimeOnly>() as unknown as ResponseType[];
-						} else {
-							throw new Error("unexpected type to deserialize");
+				const response = await this.getHttpResponseMessage(requestInfo);
+				if (responseHandler) {
+					return await responseHandler.handleResponseAsync(response, errorMappings);
+				} else {
+					try {
+						await this.throwFailedResponses(response, errorMappings);
+						if (this.shouldReturnUndefined(response)) return undefined;
+						switch (responseType) {
+							case "string":
+							case "number":
+							case "boolean":
+							case "Date":
+								// eslint-disable-next-line no-case-declarations
+								const rootNode = await this.getRootParseNode(response);
+								if (responseType === "string") {
+									return rootNode.getCollectionOfPrimitiveValues<string>() as unknown as ResponseType[];
+								} else if (responseType === "number") {
+									return rootNode.getCollectionOfPrimitiveValues<number>() as unknown as ResponseType[];
+								} else if (responseType === "boolean") {
+									return rootNode.getCollectionOfPrimitiveValues<boolean>() as unknown as ResponseType[];
+								} else if (responseType === "Date") {
+									return rootNode.getCollectionOfPrimitiveValues<Date>() as unknown as ResponseType[];
+								} else if (responseType === "Duration") {
+									return rootNode.getCollectionOfPrimitiveValues<Duration>() as unknown as ResponseType[];
+								} else if (responseType === "DateOnly") {
+									return rootNode.getCollectionOfPrimitiveValues<DateOnly>() as unknown as ResponseType[];
+								} else if (responseType === "TimeOnly") {
+									return rootNode.getCollectionOfPrimitiveValues<TimeOnly>() as unknown as ResponseType[];
+								} else {
+									throw new Error("unexpected type to deserialize");
+								}
 						}
+					} finally {
+						await this.purgeResponseBody(response);
+					}
 				}
 			} finally {
-				await this.purgeResponseBody(response);
+				span.end();
 			}
-		}
+		});
 	};
-	public sendCollectionAsync = async <ModelType extends Parsable>(requestInfo: RequestInformation, type: ParsableFactory<ModelType>, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType[] | undefined> => {
+	public sendCollectionAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, type: ParsableFactory<ModelType>, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType[] | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
-		const response = await this.getHttpResponseMessage(requestInfo);
-		if (responseHandler) {
-			return await responseHandler.handleResponseAsync(response, errorMappings);
-		} else {
+		return this.startTracingSpan(requestInfo, "sendCollectionAsync", async (span) => {
 			try {
-				await this.throwFailedResponses(response, errorMappings);
-				if (this.shouldReturnUndefined(response)) return undefined;
-				const rootNode = await this.getRootParseNode(response);
-				const result = rootNode.getCollectionOfObjectValues(type);
-				return result as unknown as ModelType[];
+				const response = await this.getHttpResponseMessage(requestInfo);
+				if (responseHandler) {
+					return await responseHandler.handleResponseAsync(response, errorMappings);
+				} else {
+					try {
+						await this.throwFailedResponses(response, errorMappings);
+						if (this.shouldReturnUndefined(response)) return undefined;
+						const rootNode = await this.getRootParseNode(response);
+						const result = rootNode.getCollectionOfObjectValues(type);
+						return result as unknown as ModelType[];
+					} finally {
+						await this.purgeResponseBody(response);
+					}
+				}
 			} finally {
-				await this.purgeResponseBody(response);
+				span.end();
 			}
-		}
+		});
 	};
 	private startTracingSpan = <T>(requestInfo: RequestInformation, methodName: string, callback: (arg0: Span) => Promise<T>): Promise<T> => {
-		const urlTemplate = requestInfo.urlTemplate ?? ""; //TODO decode the parameters
-		const telemetryPathValue = urlTemplate?.replace(/{?[^}]+}/gi, "");
+		const urlTemplate = decodeURIComponent(requestInfo.urlTemplate ?? "");
+		const telemetryPathValue = urlTemplate.replace(/\{\?[^}]+\}/gi, "");
 		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan(`${methodName} - ${telemetryPathValue}`, async (span) => {
 			try {
 				span.setAttribute("http.uri_template", urlTemplate);
@@ -141,66 +153,78 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		}) as Promise<ModelType>;
 	};
-	public sendPrimitiveAsync = async <ResponseType>(requestInfo: RequestInformation, responseType: "string" | "number" | "boolean" | "Date" | "ArrayBuffer", responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType | undefined> => {
+	public sendPrimitiveAsync = <ResponseType>(requestInfo: RequestInformation, responseType: "string" | "number" | "boolean" | "Date" | "ArrayBuffer", responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
-		const response = await this.getHttpResponseMessage(requestInfo);
-		if (responseHandler) {
-			return await responseHandler.handleResponseAsync(response, errorMappings);
-		} else {
+		return this.startTracingSpan(requestInfo, "sendPrimitiveAsync", async (span) => {
 			try {
-				await this.throwFailedResponses(response, errorMappings);
-				if (this.shouldReturnUndefined(response)) return undefined;
-				switch (responseType) {
-					case "ArrayBuffer":
-						// eslint-disable-next-line no-case-declarations
-						if (!response.body) {
-							return undefined;
+				const response = await this.getHttpResponseMessage(requestInfo);
+				if (responseHandler) {
+					return await responseHandler.handleResponseAsync(response, errorMappings);
+				} else {
+					try {
+						await this.throwFailedResponses(response, errorMappings);
+						if (this.shouldReturnUndefined(response)) return undefined;
+						switch (responseType) {
+							case "ArrayBuffer":
+								// eslint-disable-next-line no-case-declarations
+								if (!response.body) {
+									return undefined;
+								}
+								return (await response.arrayBuffer()) as unknown as ResponseType;
+							case "string":
+							case "number":
+							case "boolean":
+							case "Date":
+								// eslint-disable-next-line no-case-declarations
+								const rootNode = await this.getRootParseNode(response);
+								if (responseType === "string") {
+									return rootNode.getStringValue() as unknown as ResponseType;
+								} else if (responseType === "number") {
+									return rootNode.getNumberValue() as unknown as ResponseType;
+								} else if (responseType === "boolean") {
+									return rootNode.getBooleanValue() as unknown as ResponseType;
+								} else if (responseType === "Date") {
+									return rootNode.getDateValue() as unknown as ResponseType;
+								} else if (responseType === "Duration") {
+									return rootNode.getDurationValue() as unknown as ResponseType;
+								} else if (responseType === "DateOnly") {
+									return rootNode.getDateOnlyValue() as unknown as ResponseType;
+								} else if (responseType === "TimeOnly") {
+									return rootNode.getTimeOnlyValue() as unknown as ResponseType;
+								} else {
+									throw new Error("unexpected type to deserialize");
+								}
 						}
-						return (await response.arrayBuffer()) as unknown as ResponseType;
-					case "string":
-					case "number":
-					case "boolean":
-					case "Date":
-						// eslint-disable-next-line no-case-declarations
-						const rootNode = await this.getRootParseNode(response);
-						if (responseType === "string") {
-							return rootNode.getStringValue() as unknown as ResponseType;
-						} else if (responseType === "number") {
-							return rootNode.getNumberValue() as unknown as ResponseType;
-						} else if (responseType === "boolean") {
-							return rootNode.getBooleanValue() as unknown as ResponseType;
-						} else if (responseType === "Date") {
-							return rootNode.getDateValue() as unknown as ResponseType;
-						} else if (responseType === "Duration") {
-							return rootNode.getDurationValue() as unknown as ResponseType;
-						} else if (responseType === "DateOnly") {
-							return rootNode.getDateOnlyValue() as unknown as ResponseType;
-						} else if (responseType === "TimeOnly") {
-							return rootNode.getTimeOnlyValue() as unknown as ResponseType;
-						} else {
-							throw new Error("unexpected type to deserialize");
-						}
+					} finally {
+						await this.purgeResponseBody(response);
+					}
 				}
 			} finally {
-				await this.purgeResponseBody(response);
+				span.end();
 			}
-		}
+		}) as Promise<ResponseType>;
 	};
-	public sendNoResponseContentAsync = async (requestInfo: RequestInformation, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<void> => {
+	public sendNoResponseContentAsync = (requestInfo: RequestInformation, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<void> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
-		const response = await this.getHttpResponseMessage(requestInfo);
-		if (responseHandler) {
-			return await responseHandler.handleResponseAsync(response, errorMappings);
-		}
-		try {
-			await this.throwFailedResponses(response, errorMappings);
-		} finally {
-			await this.purgeResponseBody(response);
-		}
+		return this.startTracingSpan(requestInfo, "sendNoResponseContentAsync", async (span) => {
+			try {
+				const response = await this.getHttpResponseMessage(requestInfo);
+				if (responseHandler) {
+					return await responseHandler.handleResponseAsync(response, errorMappings);
+				}
+				try {
+					await this.throwFailedResponses(response, errorMappings);
+				} finally {
+					await this.purgeResponseBody(response);
+				}
+			} finally {
+				span.end();
+			}
+		});
 	};
 	public enableBackingStore = (backingStoreFactory?: BackingStoreFactory | undefined): void => {
 		this.parseNodeFactory = enableBackingStoreForParseNodeFactory(this.parseNodeFactory);
