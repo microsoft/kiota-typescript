@@ -266,21 +266,40 @@ export class FetchRequestAdapter implements RequestAdapter {
 		if (error) throw error;
 		else throw new ApiError("unexpected error type" + typeof error);
 	};
-	private getHttpResponseMessage = async (requestInfo: RequestInformation, spanForAttributes: Span, claims?: string): Promise<Response> => {
-		if (!requestInfo) {
-			throw new Error("requestInfo cannot be null");
-		}
-		this.setBaseUrlForRequestInformation(requestInfo);
-		const additionalContext = {} as Record<string, unknown>;
-		if (claims) {
-			additionalContext["claims"] = claims;
-		}
-		await this.authenticationProvider.authenticateRequest(requestInfo, additionalContext);
+	private getHttpResponseMessage = (requestInfo: RequestInformation, spanForAttributes: Span, claims?: string): Promise<Response> => {
+		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getHttpResponseMessage", async (span) => {
+			try {
+				if (!requestInfo) {
+					throw new Error("requestInfo cannot be null");
+				}
+				this.setBaseUrlForRequestInformation(requestInfo);
+				const additionalContext = {} as Record<string, unknown>;
+				if (claims) {
+					additionalContext["claims"] = claims;
+				}
+				await this.authenticationProvider.authenticateRequest(requestInfo, additionalContext);
 
-		const request = await this.getRequestFromRequestInformation(requestInfo, spanForAttributes);
-		const response = await this.httpClient.executeFetch(requestInfo.URL, request, requestInfo.getRequestOptions());
+				const request = await this.getRequestFromRequestInformation(requestInfo, spanForAttributes);
+				let response = await this.httpClient.executeFetch(requestInfo.URL, request, requestInfo.getRequestOptions());
 
-		return await this.retryCAEResponseIfRequired(requestInfo, response, spanForAttributes, claims);
+				response = await this.retryCAEResponseIfRequired(requestInfo, response, spanForAttributes, claims);
+				if (response) {
+					const responseContentLength = response.headers.get("Content-Length");
+					if (responseContentLength) {
+						spanForAttributes.setAttribute("http.response_content_length", parseInt(responseContentLength));
+					}
+					const responseContentType = response.headers.get("Content-Type");
+					if (responseContentType) {
+						spanForAttributes.setAttribute("http.response_content_type", responseContentType);
+					}
+					spanForAttributes.setAttribute("http.status_code", response.status);
+					// getting the http.flavor (protocol version) is impossible with fetch API
+				}
+				return response;
+			} finally {
+				span.end();
+			}
+		});
 	};
 	private retryCAEResponseIfRequired = async (requestInfo: RequestInformation, response: Response, spanForAttributes: Span, claims?: string) => {
 		const responseClaims = this.getClaimsFromResponse(response, claims);
@@ -325,6 +344,14 @@ export class FetchRequestAdapter implements RequestAdapter {
 				spanForAttributes.setAttribute("http.host", uriWithoutScheme.split("/")[0]);
 				if (this.observabilityOptions.includeEUIIAttributes) {
 					spanForAttributes.setAttribute("http.uri", decodeURIComponent(uri));
+				}
+				const requestContentLength = requestInfo.headers["Content-Length"];
+				if (requestContentLength) {
+					spanForAttributes.setAttribute("http.request_content_length", parseInt(requestContentLength));
+				}
+				const requestContentType = requestInfo.headers["Content-Type"];
+				if (requestContentType) {
+					spanForAttributes.setAttribute("http.request_content_type", requestContentType);
 				}
 				const request = {
 					method,
