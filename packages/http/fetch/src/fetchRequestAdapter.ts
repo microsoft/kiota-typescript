@@ -1,8 +1,8 @@
-import { ApiError, AuthenticationProvider, BackingStoreFactory, BackingStoreFactorySingleton, DateOnly, Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, Parsable, ParsableFactory, ParseNode,ParseNodeFactory, ParseNodeFactoryRegistry, RequestAdapter, RequestInformation, ResponseHandler, SerializationWriterFactory, SerializationWriterFactoryRegistry, TimeOnly } from "@microsoft/kiota-abstractions";
+import { ApiError, AuthenticationProvider, BackingStoreFactory, BackingStoreFactorySingleton, DateOnly, Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, Parsable, ParsableFactory, ParseNode, ParseNodeFactory, ParseNodeFactoryRegistry, RequestAdapter, RequestInformation, ResponseHandler, SerializationWriterFactory, SerializationWriterFactoryRegistry, TimeOnly } from "@microsoft/kiota-abstractions";
 import { Span, trace } from "@opentelemetry/api";
 
 import { HttpClient } from "./httpClient";
-import { ObservabilityOptions, ObservabilityOptionsImpl } from "./observabilityOptions";
+import { ObservabilityOptions, ObservabilityOptionsImpl, ObservabilityOptionsInternal } from "./observabilityOptions";
 
 export class FetchRequestAdapter implements RequestAdapter {
 	/** The base url for every request. */
@@ -10,6 +10,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 	public getSerializationWriterFactory(): SerializationWriterFactory {
 		return this.serializationWriterFactory;
 	}
+	private readonly observabilityOptions: ObservabilityOptions & ObservabilityOptionsInternal;
 	/**
 	 * Instantiates a new http core service
 	 * @param authenticationProvider the authentication provider to use.
@@ -18,7 +19,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 	 * @param httpClient the http client to use to execute requests.
 	 * @param observabilityOptions the observability options to use.
 	 */
-	public constructor(public readonly authenticationProvider: AuthenticationProvider, private parseNodeFactory: ParseNodeFactory = ParseNodeFactoryRegistry.defaultInstance, private serializationWriterFactory: SerializationWriterFactory = SerializationWriterFactoryRegistry.defaultInstance, private readonly httpClient: HttpClient = new HttpClient(), private readonly observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()) {
+	public constructor(public readonly authenticationProvider: AuthenticationProvider, private parseNodeFactory: ParseNodeFactory = ParseNodeFactoryRegistry.defaultInstance, private serializationWriterFactory: SerializationWriterFactory = SerializationWriterFactoryRegistry.defaultInstance, private readonly httpClient: HttpClient = new HttpClient(), observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()) {
 		if (!authenticationProvider) {
 			throw new Error("authentication provider cannot be null");
 		}
@@ -33,7 +34,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		}
 		if (!observabilityOptions) {
 			throw new Error("observability options cannot be null");
-		} else if (!(observabilityOptions instanceof ObservabilityOptionsImpl)) {
+		} else {
 			this.observabilityOptions = new ObservabilityOptionsImpl(observabilityOptions);
 		}
 	}
@@ -50,7 +51,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		}
 		return this.startTracingSpan(requestInfo, "sendCollectionOfPrimitiveAsync", async (span) => {
 			try {
-				const response = await this.getHttpResponseMessage(requestInfo);
+				const response = await this.getHttpResponseMessage(requestInfo, span);
 				if (responseHandler) {
 					return await responseHandler.handleResponseAsync(response, errorMappings);
 				} else {
@@ -97,7 +98,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		}
 		return this.startTracingSpan(requestInfo, "sendCollectionAsync", async (span) => {
 			try {
-				const response = await this.getHttpResponseMessage(requestInfo);
+				const response = await this.getHttpResponseMessage(requestInfo, span);
 				if (responseHandler) {
 					return await responseHandler.handleResponseAsync(response, errorMappings);
 				} else {
@@ -134,7 +135,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		}
 		return this.startTracingSpan(requestInfo, "sendAsync", async (span) => {
 			try {
-				const response = await this.getHttpResponseMessage(requestInfo);
+				const response = await this.getHttpResponseMessage(requestInfo, span);
 				if (responseHandler) {
 					return await responseHandler.handleResponseAsync(response, errorMappings);
 				} else {
@@ -159,7 +160,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		}
 		return this.startTracingSpan(requestInfo, "sendPrimitiveAsync", async (span) => {
 			try {
-				const response = await this.getHttpResponseMessage(requestInfo);
+				const response = await this.getHttpResponseMessage(requestInfo, span);
 				if (responseHandler) {
 					return await responseHandler.handleResponseAsync(response, errorMappings);
 				} else {
@@ -212,7 +213,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		}
 		return this.startTracingSpan(requestInfo, "sendNoResponseContentAsync", async (span) => {
 			try {
-				const response = await this.getHttpResponseMessage(requestInfo);
+				const response = await this.getHttpResponseMessage(requestInfo, span);
 				if (responseHandler) {
 					return await responseHandler.handleResponseAsync(response, errorMappings);
 				}
@@ -265,7 +266,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		if (error) throw error;
 		else throw new ApiError("unexpected error type" + typeof error);
 	};
-	private getHttpResponseMessage = async (requestInfo: RequestInformation, claims?: string): Promise<Response> => {
+	private getHttpResponseMessage = async (requestInfo: RequestInformation, spanForAttributes: Span, claims?: string): Promise<Response> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
@@ -276,16 +277,16 @@ export class FetchRequestAdapter implements RequestAdapter {
 		}
 		await this.authenticationProvider.authenticateRequest(requestInfo, additionalContext);
 
-		const request = this.getRequestFromRequestInformation(requestInfo);
+		const request = await this.getRequestFromRequestInformation(requestInfo, spanForAttributes);
 		const response = await this.httpClient.executeFetch(requestInfo.URL, request, requestInfo.getRequestOptions());
 
-		return await this.retryCAEResponseIfRequired(requestInfo, response, claims);
+		return await this.retryCAEResponseIfRequired(requestInfo, response, spanForAttributes, claims);
 	};
-	private retryCAEResponseIfRequired = async (requestInfo: RequestInformation, response: Response, claims?: string) => {
+	private retryCAEResponseIfRequired = async (requestInfo: RequestInformation, response: Response, spanForAttributes: Span, claims?: string) => {
 		const responseClaims = this.getClaimsFromResponse(response, claims);
 		if (responseClaims) {
 			await this.purgeResponseBody(response);
-			return await this.getHttpResponseMessage(requestInfo, responseClaims);
+			return await this.getHttpResponseMessage(requestInfo, spanForAttributes, responseClaims);
 		}
 		return response;
 	};
@@ -309,12 +310,31 @@ export class FetchRequestAdapter implements RequestAdapter {
 	private setBaseUrlForRequestInformation = (requestInfo: RequestInformation): void => {
 		requestInfo.pathParameters["baseurl"] = this.baseUrl;
 	};
-	private getRequestFromRequestInformation = (requestInfo: RequestInformation): RequestInit => {
-		const request = {
-			method: requestInfo.httpMethod?.toString(),
-			headers: requestInfo.headers,
-			body: requestInfo.content,
-		} as RequestInit;
-		return request;
+	private getRequestFromRequestInformation = (requestInfo: RequestInformation, spanForAttributes: Span): Promise<RequestInit> => {
+		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getRequestFromRequestInformation", async (span) => {
+			try {
+				const method = requestInfo.httpMethod?.toString();
+				const uri = requestInfo.URL;
+				spanForAttributes.setAttribute("http.method", method ?? "");
+				const uriContainsScheme = uri.indexOf("://") > -1;
+				const schemeSplatUri = uri.split("://");
+				if (uriContainsScheme) {
+					spanForAttributes.setAttribute("http.scheme", schemeSplatUri[0]);
+				}
+				const uriWithoutScheme = uriContainsScheme ? schemeSplatUri[1] : uri;
+				spanForAttributes.setAttribute("http.host", uriWithoutScheme.split("/")[0]);
+				if (this.observabilityOptions.includeEUIIAttributes) {
+					spanForAttributes.setAttribute("http.uri", decodeURIComponent(uri));
+				}
+				const request = {
+					method,
+					headers: requestInfo.headers,
+					body: requestInfo.content,
+				} as RequestInit;
+				return request;
+			} finally {
+				span.end();
+			}
+		});
 	};
 }

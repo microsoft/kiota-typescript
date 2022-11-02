@@ -2,10 +2,12 @@ import { RequestOption } from "@microsoft/kiota-abstractions";
 
 export interface ObservabilityOptions {
 	includeEUIIAttributes: boolean;
+}
+export interface ObservabilityOptionsInternal {
 	getTracerInstrumentationName(): string;
 }
 export const ObservabilityOptionKey = "ObservabilityOptionKey";
-export class ObservabilityOptionsImpl implements ObservabilityOptions, RequestOption {
+export class ObservabilityOptionsImpl implements ObservabilityOptions, ObservabilityOptionsInternal, RequestOption {
 	private readonly _originalOptions: ObservabilityOptions;
 	public constructor(originalOptions?: ObservabilityOptions) {
 		this._originalOptions = originalOptions ?? ({} as ObservabilityOptions);
