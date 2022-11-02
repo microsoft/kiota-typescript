@@ -40,8 +40,11 @@
   ],
   "scripts": {
     "build": "npm run build:cjs && npm run build:es",
+    "build:watch": "npm run build:watch:cjs & npm run build:watch:es",
     "build:cjs": "tsc -b packages/test/tsconfig.cjs.json",
+    "build:watch:cjs": "tsc -b packages/test/tsconfig.cjs.json -w",
     "build:es": "tsc -b packages/test/tsconfig.es.json",
+    "build:watch:es": "tsc -b packages/test/tsconfig.es.json -w",
     "test": "lerna run test --parallel"
   }
 }
