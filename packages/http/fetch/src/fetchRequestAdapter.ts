@@ -1,5 +1,5 @@
 import { ApiError, AuthenticationProvider, BackingStoreFactory, BackingStoreFactorySingleton, DateOnly, Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, Parsable, ParsableFactory, ParseNode, ParseNodeFactory, ParseNodeFactoryRegistry, RequestAdapter, RequestInformation, ResponseHandler, SerializationWriterFactory, SerializationWriterFactoryRegistry, TimeOnly } from "@microsoft/kiota-abstractions";
-import { Span, trace } from "@opentelemetry/api";
+import { Span, SpanStatusCode, trace } from "@opentelemetry/api";
 
 import { HttpClient } from "./httpClient";
 import { ObservabilityOptions, ObservabilityOptionsImpl, ObservabilityOptionsInternal } from "./observabilityOptions";
@@ -45,6 +45,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		if (segments.length === 0) return undefined;
 		else return segments[0];
 	};
+	private static readonly responseTypeAttributeKey = "com.microsoft.kiota.response.type";
 	public sendCollectionOfPrimitiveAsync = <ResponseType>(requestInfo: RequestInformation, responseType: "string" | "number" | "boolean" | "Date", responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType[] | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
@@ -53,36 +54,44 @@ export class FetchRequestAdapter implements RequestAdapter {
 			try {
 				const response = await this.getHttpResponseMessage(requestInfo, span);
 				if (responseHandler) {
+					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
 					return await responseHandler.handleResponseAsync(response, errorMappings);
 				} else {
 					try {
-						await this.throwFailedResponses(response, errorMappings);
+						await this.throwFailedResponses(response, errorMappings, span);
 						if (this.shouldReturnUndefined(response)) return undefined;
-						switch (responseType) {
-							case "string":
-							case "number":
-							case "boolean":
-							case "Date":
-								// eslint-disable-next-line no-case-declarations
-								const rootNode = await this.getRootParseNode(response);
-								if (responseType === "string") {
-									return rootNode.getCollectionOfPrimitiveValues<string>() as unknown as ResponseType[];
-								} else if (responseType === "number") {
-									return rootNode.getCollectionOfPrimitiveValues<number>() as unknown as ResponseType[];
-								} else if (responseType === "boolean") {
-									return rootNode.getCollectionOfPrimitiveValues<boolean>() as unknown as ResponseType[];
-								} else if (responseType === "Date") {
-									return rootNode.getCollectionOfPrimitiveValues<Date>() as unknown as ResponseType[];
-								} else if (responseType === "Duration") {
-									return rootNode.getCollectionOfPrimitiveValues<Duration>() as unknown as ResponseType[];
-								} else if (responseType === "DateOnly") {
-									return rootNode.getCollectionOfPrimitiveValues<DateOnly>() as unknown as ResponseType[];
-								} else if (responseType === "TimeOnly") {
-									return rootNode.getCollectionOfPrimitiveValues<TimeOnly>() as unknown as ResponseType[];
-								} else {
-									throw new Error("unexpected type to deserialize");
+						return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan(`getCollectionOf${responseType}Value`, async (deserializeSpan) => {
+							try {
+								switch (responseType) {
+									case "string":
+									case "number":
+									case "boolean":
+									case "Date":
+										// eslint-disable-next-line no-case-declarations
+										const rootNode = await this.getRootParseNode(response);
+										span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, responseType);
+										if (responseType === "string") {
+											return rootNode.getCollectionOfPrimitiveValues<string>() as unknown as ResponseType[];
+										} else if (responseType === "number") {
+											return rootNode.getCollectionOfPrimitiveValues<number>() as unknown as ResponseType[];
+										} else if (responseType === "boolean") {
+											return rootNode.getCollectionOfPrimitiveValues<boolean>() as unknown as ResponseType[];
+										} else if (responseType === "Date") {
+											return rootNode.getCollectionOfPrimitiveValues<Date>() as unknown as ResponseType[];
+										} else if (responseType === "Duration") {
+											return rootNode.getCollectionOfPrimitiveValues<Duration>() as unknown as ResponseType[];
+										} else if (responseType === "DateOnly") {
+											return rootNode.getCollectionOfPrimitiveValues<DateOnly>() as unknown as ResponseType[];
+										} else if (responseType === "TimeOnly") {
+											return rootNode.getCollectionOfPrimitiveValues<TimeOnly>() as unknown as ResponseType[];
+										} else {
+											throw new Error("unexpected type to deserialize");
+										}
 								}
-						}
+							} finally {
+								deserializeSpan.end();
+							}
+						});
 					} finally {
 						await this.purgeResponseBody(response);
 					}
@@ -100,14 +109,22 @@ export class FetchRequestAdapter implements RequestAdapter {
 			try {
 				const response = await this.getHttpResponseMessage(requestInfo, span);
 				if (responseHandler) {
+					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
 					return await responseHandler.handleResponseAsync(response, errorMappings);
 				} else {
 					try {
-						await this.throwFailedResponses(response, errorMappings);
+						await this.throwFailedResponses(response, errorMappings, span);
 						if (this.shouldReturnUndefined(response)) return undefined;
 						const rootNode = await this.getRootParseNode(response);
-						const result = rootNode.getCollectionOfObjectValues(type);
-						return result as unknown as ModelType[];
+						return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getCollectionOfObjectValues", (deserializeSpan) => {
+							try {
+								const result = rootNode.getCollectionOfObjectValues(type);
+								span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "object[]");
+								return result as unknown as ModelType[];
+							} finally {
+								deserializeSpan.end();
+							}
+						});
 					} finally {
 						await this.purgeResponseBody(response);
 					}
@@ -129,6 +146,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		});
 	};
+	public static readonly eventResponseHandlerInvokedKey = "com.microsoft.kiota.response_handler_invoked";
 	public sendAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, type: ParsableFactory<ModelType>, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
@@ -137,14 +155,22 @@ export class FetchRequestAdapter implements RequestAdapter {
 			try {
 				const response = await this.getHttpResponseMessage(requestInfo, span);
 				if (responseHandler) {
+					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
 					return await responseHandler.handleResponseAsync(response, errorMappings);
 				} else {
 					try {
-						await this.throwFailedResponses(response, errorMappings);
+						await this.throwFailedResponses(response, errorMappings, span);
 						if (this.shouldReturnUndefined(response)) return undefined;
 						const rootNode = await this.getRootParseNode(response);
-						const result = rootNode.getObjectValue(type);
-						return result as unknown as ModelType;
+						return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getObjectValue", (deserializeSpan) => {
+							try {
+								span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "object");
+								const result = rootNode.getObjectValue(type);
+								return result as unknown as ModelType;
+							} finally {
+								deserializeSpan.end();
+							}
+						});
 					} finally {
 						await this.purgeResponseBody(response);
 					}
@@ -162,10 +188,11 @@ export class FetchRequestAdapter implements RequestAdapter {
 			try {
 				const response = await this.getHttpResponseMessage(requestInfo, span);
 				if (responseHandler) {
+					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
 					return await responseHandler.handleResponseAsync(response, errorMappings);
 				} else {
 					try {
-						await this.throwFailedResponses(response, errorMappings);
+						await this.throwFailedResponses(response, errorMappings, span);
 						if (this.shouldReturnUndefined(response)) return undefined;
 						switch (responseType) {
 							case "ArrayBuffer":
@@ -180,23 +207,30 @@ export class FetchRequestAdapter implements RequestAdapter {
 							case "Date":
 								// eslint-disable-next-line no-case-declarations
 								const rootNode = await this.getRootParseNode(response);
-								if (responseType === "string") {
-									return rootNode.getStringValue() as unknown as ResponseType;
-								} else if (responseType === "number") {
-									return rootNode.getNumberValue() as unknown as ResponseType;
-								} else if (responseType === "boolean") {
-									return rootNode.getBooleanValue() as unknown as ResponseType;
-								} else if (responseType === "Date") {
-									return rootNode.getDateValue() as unknown as ResponseType;
-								} else if (responseType === "Duration") {
-									return rootNode.getDurationValue() as unknown as ResponseType;
-								} else if (responseType === "DateOnly") {
-									return rootNode.getDateOnlyValue() as unknown as ResponseType;
-								} else if (responseType === "TimeOnly") {
-									return rootNode.getTimeOnlyValue() as unknown as ResponseType;
-								} else {
-									throw new Error("unexpected type to deserialize");
-								}
+								span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, responseType);
+								return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan(`get${responseType}Value`, (deserializeSpan) => {
+									try {
+										if (responseType === "string") {
+											return rootNode.getStringValue() as unknown as ResponseType;
+										} else if (responseType === "number") {
+											return rootNode.getNumberValue() as unknown as ResponseType;
+										} else if (responseType === "boolean") {
+											return rootNode.getBooleanValue() as unknown as ResponseType;
+										} else if (responseType === "Date") {
+											return rootNode.getDateValue() as unknown as ResponseType;
+										} else if (responseType === "Duration") {
+											return rootNode.getDurationValue() as unknown as ResponseType;
+										} else if (responseType === "DateOnly") {
+											return rootNode.getDateOnlyValue() as unknown as ResponseType;
+										} else if (responseType === "TimeOnly") {
+											return rootNode.getTimeOnlyValue() as unknown as ResponseType;
+										} else {
+											throw new Error("unexpected type to deserialize");
+										}
+									} finally {
+										deserializeSpan.end();
+									}
+								});
 						}
 					} finally {
 						await this.purgeResponseBody(response);
@@ -215,10 +249,11 @@ export class FetchRequestAdapter implements RequestAdapter {
 			try {
 				const response = await this.getHttpResponseMessage(requestInfo, span);
 				if (responseHandler) {
+					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
 					return await responseHandler.handleResponseAsync(response, errorMappings);
 				}
 				try {
-					await this.throwFailedResponses(response, errorMappings);
+					await this.throwFailedResponses(response, errorMappings, span);
 				} finally {
 					await this.purgeResponseBody(response);
 				}
@@ -235,12 +270,18 @@ export class FetchRequestAdapter implements RequestAdapter {
 			BackingStoreFactorySingleton.instance = backingStoreFactory;
 		}
 	};
-	private getRootParseNode = async (response: Response): Promise<ParseNode> => {
-		const payload = await response.arrayBuffer();
-		const responseContentType = this.getResponseContentType(response);
-		if (!responseContentType) throw new Error("no response content type found for deserialization");
+	private getRootParseNode = (response: Response): Promise<ParseNode> => {
+		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getRootParseNode", async (span) => {
+			try {
+				const payload = await response.arrayBuffer();
+				const responseContentType = this.getResponseContentType(response);
+				if (!responseContentType) throw new Error("no response content type found for deserialization");
 
-		return this.parseNodeFactory.getRootParseNode(responseContentType, payload);
+				return this.parseNodeFactory.getRootParseNode(responseContentType, payload);
+			} finally {
+				span.end();
+			}
+		});
 	};
 	private shouldReturnUndefined = (response: Response): boolean => {
 		return response.status === 204 || !response.body;
@@ -251,20 +292,47 @@ export class FetchRequestAdapter implements RequestAdapter {
 			await response.arrayBuffer();
 		}
 	};
-	private throwFailedResponses = async (response: Response, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<void> => {
-		if (response.ok) return;
+	public static readonly errorMappingFoundAttributeName = "com.microsoft.kiota.error.mapping_found";
+	public static readonly errorBodyFoundAttributeName = "com.microsoft.kiota.error.body_found";
+	private throwFailedResponses = (response: Response, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined, spanForAttributes: Span): Promise<void> => {
+		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("throwFailedResponses", async (span) => {
+			try {
+				if (response.ok) return;
 
-		const statusCode = response.status;
-		const statusCodeAsString = statusCode.toString();
-		if (!errorMappings || (!errorMappings[statusCodeAsString] && !(statusCode >= 400 && statusCode < 500 && errorMappings["4XX"]) && !(statusCode >= 500 && statusCode < 600 && errorMappings["5XX"]))) throw new ApiError("the server returned an unexpected status code and no error class is registered for this code " + statusCode);
+				spanForAttributes.setStatus({
+					code: SpanStatusCode.ERROR,
+					message: "received_error_response",
+				});
 
-		const factory = errorMappings[statusCodeAsString] ?? (statusCode >= 400 && statusCode < 500 ? errorMappings["4XX"] : undefined) ?? (statusCode >= 500 && statusCode < 600 ? errorMappings["5XX"] : undefined);
+				const statusCode = response.status;
+				const statusCodeAsString = statusCode.toString();
+				if (!errorMappings || (!errorMappings[statusCodeAsString] && !(statusCode >= 400 && statusCode < 500 && errorMappings["4XX"]) && !(statusCode >= 500 && statusCode < 600 && errorMappings["5XX"]))) {
+					spanForAttributes.setAttribute(FetchRequestAdapter.errorMappingFoundAttributeName, false);
+					const error = new ApiError("the server returned an unexpected status code and no error class is registered for this code " + statusCode);
+					spanForAttributes.recordException(error);
+					throw error;
+				}
+				spanForAttributes.setAttribute(FetchRequestAdapter.errorMappingFoundAttributeName, true);
 
-		const rootNode = await this.getRootParseNode(response);
-		const error = rootNode.getObjectValue(factory);
+				const factory = errorMappings[statusCodeAsString] ?? (statusCode >= 400 && statusCode < 500 ? errorMappings["4XX"] : undefined) ?? (statusCode >= 500 && statusCode < 600 ? errorMappings["5XX"] : undefined);
 
-		if (error) throw error;
-		else throw new ApiError("unexpected error type" + typeof error);
+				const rootNode = await this.getRootParseNode(response);
+				let error = trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getObjectValue", (deserializeSpan) => {
+					try {
+						return rootNode.getObjectValue(factory);
+					} finally {
+						deserializeSpan.end();
+					}
+				});
+				spanForAttributes.setAttribute(FetchRequestAdapter.errorBodyFoundAttributeName, !!error);
+
+				if (!error) error = new ApiError("unexpected error type" + typeof error) as unknown as Parsable;
+				spanForAttributes.recordException(error as unknown as Error);
+				throw error;
+			} finally {
+				span.end();
+			}
+		});
 	};
 	private getHttpResponseMessage = (requestInfo: RequestInformation, spanForAttributes: Span, claims?: string): Promise<Response> => {
 		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getHttpResponseMessage", async (span) => {
@@ -301,13 +369,22 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		});
 	};
+	public static readonly authenticateChallengedEventKey = "com.microsoft.kiota.authenticate_challenge_received";
 	private retryCAEResponseIfRequired = async (requestInfo: RequestInformation, response: Response, spanForAttributes: Span, claims?: string) => {
-		const responseClaims = this.getClaimsFromResponse(response, claims);
-		if (responseClaims) {
-			await this.purgeResponseBody(response);
-			return await this.getHttpResponseMessage(requestInfo, spanForAttributes, responseClaims);
-		}
-		return response;
+		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("retryCAEResponseIfRequired", async (span) => {
+			try {
+				const responseClaims = this.getClaimsFromResponse(response, claims);
+				if (responseClaims) {
+					span.addEvent(FetchRequestAdapter.authenticateChallengedEventKey);
+					spanForAttributes.setAttribute("http.retry_count", 1);
+					await this.purgeResponseBody(response);
+					return await this.getHttpResponseMessage(requestInfo, spanForAttributes, responseClaims);
+				}
+				return response;
+			} finally {
+				span.end();
+			}
+		});
 	};
 	private getClaimsFromResponse = (response: Response, claims?: string) => {
 		if (response.status === 401 && !claims) {
