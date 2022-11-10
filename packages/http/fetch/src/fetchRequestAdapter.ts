@@ -60,15 +60,15 @@ export class FetchRequestAdapter implements RequestAdapter {
 					try {
 						await this.throwFailedResponses(response, errorMappings, span);
 						if (this.shouldReturnUndefined(response)) return undefined;
-						return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan(`getCollectionOf${responseType}Value`, async (deserializeSpan) => {
-							try {
-								switch (responseType) {
-									case "string":
-									case "number":
-									case "boolean":
-									case "Date":
-										// eslint-disable-next-line no-case-declarations
-										const rootNode = await this.getRootParseNode(response);
+						switch (responseType) {
+							case "string":
+							case "number":
+							case "boolean":
+							case "Date":
+								// eslint-disable-next-line no-case-declarations
+								const rootNode = await this.getRootParseNode(response);
+								return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan(`getCollectionOf${responseType}Value`, (deserializeSpan) => {
+									try {
 										span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, responseType);
 										if (responseType === "string") {
 											return rootNode.getCollectionOfPrimitiveValues<string>() as unknown as ResponseType[];
@@ -87,11 +87,11 @@ export class FetchRequestAdapter implements RequestAdapter {
 										} else {
 											throw new Error("unexpected type to deserialize");
 										}
-								}
-							} finally {
-								deserializeSpan.end();
-							}
-						});
+									} finally {
+										deserializeSpan.end();
+									}
+								});
+						}
 					} finally {
 						await this.purgeResponseBody(response);
 					}
