@@ -4,6 +4,12 @@ import {
   validateProtocol,
 } from "@microsoft/kiota-abstractions";
 import { AadTokenProvider } from "@microsoft/sp-http";
+import { Span, trace } from "@opentelemetry/api";
+
+import {
+  ObservabilityOptions,
+  ObservabilityOptionsImpl,
+} from "./observabilityOptions";
 
 export class AzureAdSpfxAccessTokenProvider implements AccessTokenProvider {
   private readonly allowedHostsValidator: AllowedHostsValidator;
@@ -26,7 +32,8 @@ export class AzureAdSpfxAccessTokenProvider implements AccessTokenProvider {
       "microsoftgraph.chinacloudapi.cn",
       "canary.graph.microsoft.com",
     ]),
-    private readonly useCachedToken?: boolean
+    private readonly useCachedToken?: boolean,
+    private readonly observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()
   ) {
     if (!tokenProvider) {
       throw new Error("parameter tokenProvider cannot be null");
@@ -34,27 +41,60 @@ export class AzureAdSpfxAccessTokenProvider implements AccessTokenProvider {
     if (!applicationIdUri) {
       throw new Error("applicationIdUri cannot be null or empty");
     }
+    if (!observabilityOptions) {
+      throw new Error("observabilityOptions cannot be null");
+    }
     this.allowedHostsValidator = new AllowedHostsValidator(allowedHosts);
   }
 
   /**
    * @inheritdoc
    */
-  public getAuthorizationToken = async (
+  public getAuthorizationToken = (
     url?: string,
-    additionalAuthenticationContext?: Record<string, unknown>): Promise<string> => {            
-        if (!url || !this.allowedHostsValidator.isUrlHostValid(url)) {
-          return "";
+    additionalAuthenticationContext?: Record<string, unknown>
+  ): Promise<string> => {
+    return trace
+      .getTracer(this.observabilityOptions.getTracerInstrumentationName())
+      .startActiveSpan("getAuthorizationToken", (span) => {
+        try {
+          return this.getAuthorizationTokenInternal(
+            url,
+            additionalAuthenticationContext,
+            span
+          );
+        } finally {
+          span.end();
         }
-        
-        validateProtocol(url);
+      });
+  };
+  private getAuthorizationTokenInternal = async (
+    url?: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    additionalAuthenticationContext?: Record<string, unknown>,
+    span?: Span
+  ): Promise<string> => {
+    if (!url || !this.allowedHostsValidator.isUrlHostValid(url)) {
+      span?.setAttribute(
+        "com.microsoft.kiota.authentication.is_url_valid",
+        false
+      );
+      return "";
+    }
 
-        const accessToken: string = await this.tokenProvider.getToken(
-            this.applicationIdUri,
-            this.useCachedToken
-        );
+    validateProtocol(url);
+    span?.setAttribute("com.microsoft.kiota.authentication.is_url_valid", true);
 
-        return accessToken ?? "";
+    span?.setAttribute(
+      "com.microsoft.kiota.authentication.scopes",
+      this.applicationIdUri
+    );
+    const accessToken: string = await this.tokenProvider.getToken(
+      this.applicationIdUri,
+      this.useCachedToken
+    );
+
+    return accessToken ?? "";
   };
 
   /**

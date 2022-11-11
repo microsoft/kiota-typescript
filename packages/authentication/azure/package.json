@@ -35,6 +35,7 @@
     "dependencies": {
         "@azure/core-auth": "^1.3.2",
         "@microsoft/kiota-abstractions": "1.0.0-preview.7",
+        "@opentelemetry/api": "^1.2.0",
         "tslib": "^2.3.1"
     }
 }

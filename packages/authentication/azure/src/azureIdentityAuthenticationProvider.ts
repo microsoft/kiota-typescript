@@ -2,6 +2,10 @@ import { GetTokenOptions, TokenCredential } from "@azure/core-auth";
 import { BaseBearerTokenAuthenticationProvider } from "@microsoft/kiota-abstractions";
 
 import { AzureIdentityAccessTokenProvider } from "./azureIdentityAccessTokenProvider";
+import {
+  ObservabilityOptions,
+  ObservabilityOptionsImpl,
+} from "./observabilityOptions";
 
 export class AzureIdentityAuthenticationProvider extends BaseBearerTokenAuthenticationProvider {
   /**
@@ -22,14 +26,16 @@ export class AzureIdentityAuthenticationProvider extends BaseBearerTokenAuthenti
       "graph.microsoft.de",
       "microsoftgraph.chinacloudapi.cn",
       "canary.graph.microsoft.com",
-    ])
+    ]),
+    observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()
   ) {
     super(
       new AzureIdentityAccessTokenProvider(
         credentials,
         scopes,
         options,
-        allowedHosts
+        allowedHosts,
+        observabilityOptions,
       )
     );
   }
