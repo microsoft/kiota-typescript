@@ -1,3 +1,4 @@
+import { trace } from "@opentelemetry/api";
 import * as urlTpl from "uri-template-lite";
 
 import { DateOnly } from "./dateOnly";
@@ -94,8 +95,10 @@ export class RequestInformation {
       delete this._requestOptions[option.getKey()];
     });
   }
-  private static binaryContentType = "application/octet-stream";
-  private static contentTypeHeader = "Content-Type";
+  private static readonly binaryContentType = "application/octet-stream";
+  private static readonly contentTypeHeader = "Content-Type";
+  private static readonly tracerKey = "@microsoft/kiota-abstractions";
+  private static readonly requestTypeKey = "com.microsoft.kiota.request.type";
   /**
    * Sets the request body from a model with the specified content type.
    * @param value the models.
@@ -108,20 +111,30 @@ export class RequestInformation {
     contentType?: string | undefined,
     value?: T[] | T
   ): void => {
-    const writer = this.getSerializationWriter(
-      requestAdapter,
-      contentType,
-      value
-    );
-    if (!this.headers) {
-      this.headers = {};
-    }
-    if (Array.isArray(value)) {
-      writer.writeCollectionOfObjectValues(undefined, value);
-    } else {
-      writer.writeObjectValue(undefined, value);
-    }
-    this.setContentAndContentType(writer, contentType);
+    trace
+      .getTracer(RequestInformation.tracerKey)
+      .startActiveSpan("setContentFromParsable", (span) => {
+        try {
+          const writer = this.getSerializationWriter(
+            requestAdapter,
+            contentType,
+            value
+          );
+          if (!this.headers) {
+            this.headers = {};
+          }
+          if (Array.isArray(value)) {
+            span.setAttribute(RequestInformation.requestTypeKey, "object[]");
+            writer.writeCollectionOfObjectValues(undefined, value);
+          } else {
+            span.setAttribute(RequestInformation.requestTypeKey, "object");
+            writer.writeObjectValue(undefined, value);
+          }
+          this.setContentAndContentType(writer, contentType);
+        } finally {
+          span.end();
+        }
+      });
   };
   private setContentAndContentType = (
     writer: SerializationWriter,
@@ -158,44 +171,54 @@ export class RequestInformation {
     contentType?: string | undefined,
     value?: T[] | T
   ): void => {
-    const writer = this.getSerializationWriter(
-      requestAdapter,
-      contentType,
-      value
-    );
-    if (!this.headers) {
-      this.headers = {};
-    }
+    trace
+      .getTracer(RequestInformation.tracerKey)
+      .startActiveSpan("setContentFromScalar", (span) => {
+        try {
+          const writer = this.getSerializationWriter(
+            requestAdapter,
+            contentType,
+            value
+          );
+          if (!this.headers) {
+            this.headers = {};
+          }
 
-    if (Array.isArray(value)) {
-      writer.writeCollectionOfPrimitiveValues(undefined, value);
-    } else {
-      const valueType = typeof value;
-      if (!value) {
-        writer.writeNullValue(undefined);
-      } else if (valueType === "boolean") {
-        writer.writeBooleanValue(undefined, value as any as boolean);
-      } else if (valueType === "string") {
-        writer.writeStringValue(undefined, value as any as string);
-      } else if (value instanceof Date) {
-        writer.writeDateValue(undefined, value as any as Date);
-      } else if (value instanceof DateOnly) {
-        writer.writeDateOnlyValue(undefined, value as any as DateOnly);
-      } else if (value instanceof TimeOnly) {
-        writer.writeTimeOnlyValue(undefined, value as any as TimeOnly);
-      } else if (value instanceof Duration) {
-        writer.writeDurationValue(undefined, value as any as Duration);
-      } else if (valueType === "number") {
-        writer.writeNumberValue(undefined, value as any as number);
-      } else if (Array.isArray(value)) {
-        writer.writeCollectionOfPrimitiveValues(undefined, value);
-      } else {
-        throw new Error(
-          `encountered unknown value type during serialization ${valueType}`
-        );
-      }
-    }
-    this.setContentAndContentType(writer, contentType);
+          if (Array.isArray(value)) {
+            span.setAttribute(RequestInformation.requestTypeKey, "[]");
+            writer.writeCollectionOfPrimitiveValues(undefined, value);
+          } else {
+            const valueType = typeof value;
+            span.setAttribute(RequestInformation.requestTypeKey, valueType);
+            if (!value) {
+              writer.writeNullValue(undefined);
+            } else if (valueType === "boolean") {
+              writer.writeBooleanValue(undefined, value as any as boolean);
+            } else if (valueType === "string") {
+              writer.writeStringValue(undefined, value as any as string);
+            } else if (value instanceof Date) {
+              writer.writeDateValue(undefined, value as any as Date);
+            } else if (value instanceof DateOnly) {
+              writer.writeDateOnlyValue(undefined, value as any as DateOnly);
+            } else if (value instanceof TimeOnly) {
+              writer.writeTimeOnlyValue(undefined, value as any as TimeOnly);
+            } else if (value instanceof Duration) {
+              writer.writeDurationValue(undefined, value as any as Duration);
+            } else if (valueType === "number") {
+              writer.writeNumberValue(undefined, value as any as number);
+            } else if (Array.isArray(value)) {
+              writer.writeCollectionOfPrimitiveValues(undefined, value);
+            } else {
+              throw new Error(
+                `encountered unknown value type during serialization ${valueType}`
+              );
+            }
+          }
+          this.setContentAndContentType(writer, contentType);
+        } finally {
+          span.end();
+        }
+      });
   };
   /**
    * Sets the request body to be a binary stream.
