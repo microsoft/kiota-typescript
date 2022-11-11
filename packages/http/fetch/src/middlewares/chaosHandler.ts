@@ -10,8 +10,10 @@
  */
 
 import { HttpMethod, RequestOption } from "@microsoft/kiota-abstractions";
+import { Span, trace } from "@opentelemetry/api";
 
-import { FetchHeaders, FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions";
+import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
+import { FetchHeaders, FetchRequestInit } from "../utils/fetchDefinitions";
 import { Middleware } from "./middleware";
 import { httpStatusCode, methodStatusCode } from "./options/ChaosHandlerData";
 import { ChaosHandlerOptions } from "./options/chaosHandlerOptions";
@@ -186,14 +188,30 @@ export class ChaosHandler implements Middleware {
 		};
 	}
 
-	public async execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption> | undefined): Promise<Response> {
+	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption> | undefined): Promise<Response> {
+		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
+		if (obsOptions) {
+			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("chaosHandler - execute", (span) => {
+				try {
+					span.setAttribute("com.microsoft.kiota.handler.chaos.enable", true);
+					return this.runChaos(url, requestInit, requestOptions);
+				} finally {
+					span.end();
+				}
+			});
+		}
+		return this.runChaos(url, requestInit, requestOptions);
+	}
+	public static readonly chaosHandlerTriggeredEventKey = "com.microsoft.kiota.chaos_handler_triggered";
+	private runChaos(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption> | undefined, span?: Span): Promise<Response> {
 		if (Math.floor(Math.random() * 100) < this.options.chaosPercentage) {
+			span?.addEvent(ChaosHandler.chaosHandlerTriggeredEventKey);
 			return Promise.resolve(this.createChaosResponse(url, requestInit as FetchRequestInit));
 		} else {
 			if (!this.next) {
 				throw new Error("Please set the next middleware to continue the request");
 			}
-			return await this.next.execute(url, requestInit, requestOptions);
+			return this.next.execute(url, requestInit, requestOptions);
 		}
 	}
 }

@@ -2,7 +2,7 @@ import { ApiError, AuthenticationProvider, BackingStoreFactory, BackingStoreFact
 import { Span, SpanStatusCode, trace } from "@opentelemetry/api";
 
 import { HttpClient } from "./httpClient";
-import { ObservabilityOptions, ObservabilityOptionsImpl, ObservabilityOptionsInternal } from "./observabilityOptions";
+import { ObservabilityOptions, ObservabilityOptionsImpl } from "./observabilityOptions";
 
 export class FetchRequestAdapter implements RequestAdapter {
 	/** The base url for every request. */
@@ -10,7 +10,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 	public getSerializationWriterFactory(): SerializationWriterFactory {
 		return this.serializationWriterFactory;
 	}
-	private readonly observabilityOptions: ObservabilityOptions & ObservabilityOptionsInternal;
+	private readonly observabilityOptions: ObservabilityOptionsImpl;
 	/**
 	 * Instantiates a new http core service
 	 * @param authenticationProvider the authentication provider to use.
@@ -348,6 +348,9 @@ export class FetchRequestAdapter implements RequestAdapter {
 				await this.authenticationProvider.authenticateRequest(requestInfo, additionalContext);
 
 				const request = await this.getRequestFromRequestInformation(requestInfo, spanForAttributes);
+				if (this.observabilityOptions) {
+					requestInfo.addRequestOptions([this.observabilityOptions]);
+				}
 				let response = await this.httpClient.executeFetch(requestInfo.URL, request, requestInfo.getRequestOptions());
 
 				response = await this.retryCAEResponseIfRequired(requestInfo, response, spanForAttributes, claims);

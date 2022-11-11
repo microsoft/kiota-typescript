@@ -25,3 +25,13 @@ export class ObservabilityOptionsImpl implements ObservabilityOptions, Observabi
 		return "@microsoft/kiota-http-fetchlibrary";
 	}
 }
+
+export function getObservabilityOptionsFromRequest(requestOptions?: Record<string, RequestOption>): ObservabilityOptionsInternal | undefined {
+	if (requestOptions) {
+		const observabilityOptions = requestOptions[ObservabilityOptionKey];
+		if (observabilityOptions instanceof ObservabilityOptionsImpl) {
+			return observabilityOptions;
+		}
+	}
+	return undefined;
+}

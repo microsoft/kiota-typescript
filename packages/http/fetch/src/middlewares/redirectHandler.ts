@@ -9,8 +9,10 @@
  * @module RedirectHandler
  */
 
-import { RequestOption, HttpMethod } from "@microsoft/kiota-abstractions";
+import { HttpMethod, RequestOption } from "@microsoft/kiota-abstractions";
+import { trace } from "@opentelemetry/api";
 
+import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import { FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions";
 import { Middleware } from "./middleware";
 import { RedirectHandlerOptionKey, RedirectHandlerOptions } from "./options/redirectHandlerOptions";
@@ -149,9 +151,10 @@ export class RedirectHandler implements Middleware {
 	 * @param {number} redirectCount - The redirect count value
 	 * @param {Record<string, RequestOption>} [requestOptions = {}] - The request options
 	 * @param {RedirectHandlerOptions} currentOptions - The redirect handler options instance
+	 * @param {string} tracerName - The name to use for the tracer
 	 * @returns A promise that resolves to nothing
 	 */
-	private async executeWithRedirect(url: string, fetchRequestInit: FetchRequestInit, redirectCount: number, currentOptions: RedirectHandlerOptions, requestOptions?: Record<string, RequestOption>): Promise<FetchResponse> {
+	private async executeWithRedirect(url: string, fetchRequestInit: FetchRequestInit, redirectCount: number, currentOptions: RedirectHandlerOptions, requestOptions?: Record<string, RequestOption>, tracerName?: string): Promise<FetchResponse> {
 		const response = await this.next?.execute(url, fetchRequestInit as RequestInit, requestOptions);
 		if (!response) {
 			throw new Error("Response is undefined");
@@ -169,6 +172,17 @@ export class RedirectHandler implements Middleware {
 					}
 					url = redirectUrl;
 				}
+			}
+			if (tracerName) {
+				return trace.getTracer(tracerName).startActiveSpan(`redirectHandler - redirect ${redirectCount}`, (span) => {
+					try {
+						span.setAttribute("com.microsoft.kiota.handler.redirect.count", redirectCount);
+						span.setAttribute("http.status_code", response.status);
+						return this.executeWithRedirect(url, fetchRequestInit, redirectCount, currentOptions, requestOptions);
+					} finally {
+						span.end();
+					}
+				});
 			}
 			return await this.executeWithRedirect(url, fetchRequestInit, redirectCount, currentOptions, requestOptions);
 		} else {
@@ -190,6 +204,17 @@ export class RedirectHandler implements Middleware {
 			currentOptions = requestOptions[RedirectHandlerOptionKey] as RedirectHandlerOptions;
 		}
 		(requestInit as FetchRequestInit).redirect = RedirectHandler.MANUAL_REDIRECT;
+		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
+		if (obsOptions) {
+			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("redirectHandler - execute", (span) => {
+				try {
+					span.setAttribute("com.microsoft.kiota.handler.redirect.enable", true);
+					return this.executeWithRedirect(url, requestInit as FetchRequestInit, redirectCount, currentOptions, requestOptions, obsOptions.getTracerInstrumentationName());
+				} finally {
+					span.end();
+				}
+			});
+		}
 		return this.executeWithRedirect(url, requestInit as FetchRequestInit, redirectCount, currentOptions, requestOptions);
 	}
 }
