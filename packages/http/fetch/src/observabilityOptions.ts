@@ -1,8 +1,10 @@
 import { RequestOption } from "@microsoft/kiota-abstractions";
 
+/** Holds the tracing, metrics and logging configuration for the request adapter */
 export interface ObservabilityOptions {
 	includeEUIIAttributes: boolean;
 }
+/** Internal interface not meant to be used externally and designed to facilitate JSON usage of the other interface. */
 export interface ObservabilityOptionsInternal {
 	getTracerInstrumentationName(): string;
 }
