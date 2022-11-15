@@ -5,7 +5,7 @@ export interface ObservabilityOptions {
 	includeEUIIAttributes: boolean;
 }
 /** Internal interface not meant to be used externally and designed to facilitate JSON usage of the other interface. */
-export interface ObservabilityOptionsInternal {
+interface ObservabilityOptionsInternal {
 	getTracerInstrumentationName(): string;
 }
 export const ObservabilityOptionKey = "ObservabilityOptionKey";
