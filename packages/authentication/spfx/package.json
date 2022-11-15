@@ -13,9 +13,7 @@
         "build": "npm run build:cjs && npm run build:esm",
         "build:cjs": "tsc -b tsconfig.cjs.json",
         "build:esm": "tsc -b tsconfig.es.json",
-        "test:cjs": "npm run build:cjs && mocha  'dist/cjs/test/**/*.js'",
-        "test:es": " npm run build:esm && mocha 'dist/es/test/**/*.js'  --require  esm",
-        "test": "npm run test:cjs && npm run test:es",
+        "test": "npm run build && mocha  'dist/cjs/test/**/*.js'",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
         "clean": "rm -r ./dist"
