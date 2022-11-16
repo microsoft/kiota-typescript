@@ -6,7 +6,9 @@
  */
 
 import { RequestOption } from "@microsoft/kiota-abstractions";
+import { trace } from "@opentelemetry/api";
 
+import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import { Middleware } from "./middleware";
 import { ParametersNameDecodingHandlerOptions, ParametersNameDecodingHandlerOptionsKey } from "./options/parametersNameDecodingOptions";
 
@@ -21,7 +23,7 @@ export class ParametersNameDecodingHandler implements Middleware {
 	 * To create an instance of ParametersNameDecodingHandler
 	 * @param {ParametersNameDecodingHandlerOptions} [options = new ParametersNameDecodingHandlerOptions()] - The parameters name decoding handler options value
 	 */
-	public constructor(private options: ParametersNameDecodingHandlerOptions = new ParametersNameDecodingHandlerOptions()) {
+	public constructor(private readonly options: ParametersNameDecodingHandlerOptions = new ParametersNameDecodingHandlerOptions()) {
 		if (!options) {
 			throw new Error("The options parameter is required.");
 		}
@@ -42,6 +44,20 @@ export class ParametersNameDecodingHandler implements Middleware {
 		if (requestOptions && requestOptions[ParametersNameDecodingHandlerOptionsKey]) {
 			currentOptions = requestOptions[ParametersNameDecodingHandlerOptionsKey] as ParametersNameDecodingHandlerOptions;
 		}
+		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
+		if (obsOptions) {
+			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("parametersNameDecodingHandler - execute", (span) => {
+				try {
+					span.setAttribute("com.microsoft.kiota.handler.parameters_name_decoding.enable", currentOptions.enable);
+					return this.decodeParameters(url, requestInit, currentOptions, requestOptions);
+				} finally {
+					span.end();
+				}
+			});
+		}
+		return this.decodeParameters(url, requestInit, currentOptions, requestOptions);
+	}
+	private decodeParameters(url: string, requestInit: RequestInit, currentOptions: ParametersNameDecodingHandlerOptions, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		let updatedUrl = url;
 		if (currentOptions && currentOptions.enable && url.indexOf("%") > -1 && currentOptions.charactersToDecode && currentOptions.charactersToDecode.length > 0) {
 			currentOptions.charactersToDecode.forEach((character) => {

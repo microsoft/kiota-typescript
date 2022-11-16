@@ -1,50 +1,51 @@
 {
-    "name": "@microsoft/kiota-http-fetchlibrary",
-    "version": "1.0.0-preview.8",
-    "description": "Kiota request adapter implementation with fetch",
-    "keywords": [
-        "Kiota",
-        "OpenAPI",
-        "HTTP",
-        "fetch"
-    ],
-    "homepage": "https://github.com/microsoft/kiota-typescript#readme",
-    "bugs": {
-        "url": "https://github.com/microsoft/kiota-typescript/issues"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/microsoft/kiota-typescript.git"
-    },
-    "license": "MIT",
-    "author": "Microsoft",
-    "main": "dist/cjs/src/index.js",
-    "browser": {
-        "./dist/es/src/index.js": "./dist/es/src/browser/index.js",
-        "./dist/es/src/middlewares/middlewareFactory.js": "./dist/es/src/middlewares/browser/middlewareFactory.js"
-    },
-    "types": "dist/cjs/src/index.d.ts",
-    "files": [
-        "dist/",
-        "src/",
-        "dom.shim.d.ts"
-    ],
-    "scripts": {
-        "build": "npm run build:cjs && npm run build:es",
-        "build:cjs": "tsc -b tsconfig.cjs.json",
-        "build:es": "tsc -b tsconfig.es.json",
-        "build:test": "tsc -b tsconfig.cjs.test.json && tsc -b tsconfig.es.test.json",
-        "clean": "rm -r ./dist",
-        "karma": "npm run rollup && karma  start --single-run --browsers ChromeHeadless karma.conf.js",
-        "lint": "eslint . --ext .ts",
-        "lint:fix": "eslint . --ext .ts --fix",
-        "rollup": "rollup -c",
-        "test": "npm run build && npm run build:test && npm run test:cjs && npm run karma",
-        "test:cjs": "mocha 'dist/cjs/test/common/**/*.js' && mocha  'dist/cjs/test/node/**/*.js'"
-    },
-    "dependencies": {
-        "@microsoft/kiota-abstractions": "1.0.0-preview.7",
-        "node-fetch": "^2.6.5",
-        "tslib": "^2.3.1"
-    }
+	"name": "@microsoft/kiota-http-fetchlibrary",
+	"version": "1.0.0-preview.9",
+	"description": "Kiota request adapter implementation with fetch",
+	"keywords": [
+		"Kiota",
+		"OpenAPI",
+		"HTTP",
+		"fetch"
+	],
+	"homepage": "https://github.com/microsoft/kiota-typescript#readme",
+	"bugs": {
+		"url": "https://github.com/microsoft/kiota-typescript/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/microsoft/kiota-typescript.git"
+	},
+	"license": "MIT",
+	"author": "Microsoft",
+	"main": "dist/cjs/src/index.js",
+	"browser": {
+		"./dist/es/src/index.js": "./dist/es/src/browser/index.js",
+		"./dist/es/src/middlewares/middlewareFactory.js": "./dist/es/src/middlewares/browser/middlewareFactory.js"
+	},
+	"types": "dist/cjs/src/index.d.ts",
+	"files": [
+		"dist/",
+		"src/",
+		"dom.shim.d.ts"
+	],
+	"scripts": {
+		"build": "npm run build:cjs && npm run build:es",
+		"build:cjs": "tsc -b tsconfig.cjs.json",
+		"build:es": "tsc -b tsconfig.es.json",
+		"build:test": "tsc -b tsconfig.cjs.test.json && tsc -b tsconfig.es.test.json",
+		"clean": "rm -r ./dist",
+		"karma": "npm run rollup && karma  start --single-run --browsers ChromeHeadless karma.conf.js",
+		"lint": "eslint . --ext .ts",
+		"lint:fix": "eslint . --ext .ts --fix",
+		"rollup": "rollup -c",
+		"test": "npm run build && npm run build:test && npm run test:cjs && npm run karma",
+		"test:cjs": "mocha 'dist/cjs/test/common/**/*.js' && mocha  'dist/cjs/test/node/**/*.js'"
+	},
+	"dependencies": {
+		"@microsoft/kiota-abstractions": "^1.0.0-preview.8",
+		"@opentelemetry/api": "^1.2.0",
+		"node-fetch": "^2.6.5",
+		"tslib": "^2.3.1"
+	}
 }

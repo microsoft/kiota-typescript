@@ -4,6 +4,12 @@ import {
   AllowedHostsValidator,
   validateProtocol,
 } from "@microsoft/kiota-abstractions";
+import { Span, trace } from "@opentelemetry/api";
+
+import {
+  ObservabilityOptions,
+  ObservabilityOptionsImpl,
+} from "./observabilityOptions";
 
 /** Access token provider that leverages the Azure Identity library to retrieve an access token. */
 export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
@@ -27,13 +33,17 @@ export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
       "graph.microsoft.de",
       "microsoftgraph.chinacloudapi.cn",
       "canary.graph.microsoft.com",
-    ])
+    ]),
+    private readonly observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()
   ) {
     if (!credentials) {
       throw new Error("parameter credentials cannot be null");
     }
     if (!scopes || scopes.length === 0) {
       throw new Error("scopes cannot be null or empty");
+    }
+    if (!observabilityOptions) {
+      throw new Error("observabilityOptions cannot be null");
     }
     this.allowedHostsValidator = new AllowedHostsValidator(allowedHosts);
   }
@@ -42,14 +52,38 @@ export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
   /**
    * @inheritdoc
    */
-  public getAuthorizationToken = async (
+  public getAuthorizationToken = (
     url?: string,
     additionalAuthenticationContext?: Record<string, unknown>
   ): Promise<string> => {
+    return trace
+      .getTracer(this.observabilityOptions.getTracerInstrumentationName())
+      .startActiveSpan("getAuthorizationToken", (span) => {
+        try {
+          return this.getAuthorizationTokenInternal(
+            url,
+            additionalAuthenticationContext,
+            span
+          );
+        } finally {
+          span.end();
+        }
+      });
+  };
+  private getAuthorizationTokenInternal = async (
+    url?: string,
+    additionalAuthenticationContext?: Record<string, unknown>,
+    span?: Span
+  ): Promise<string> => {
     if (!url || !this.allowedHostsValidator.isUrlHostValid(url)) {
+      span?.setAttribute(
+        "com.microsoft.kiota.authentication.is_url_valid",
+        false
+      );
       return "";
     }
     validateProtocol(url);
+    span?.setAttribute("com.microsoft.kiota.authentication.is_url_valid", true);
     let decodedClaims = "";
     if (
       additionalAuthenticationContext &&
@@ -62,11 +96,18 @@ export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
       ] as string;
       decodedClaims = Buffer.from(rawClaims, "base64").toString();
     }
+    span?.setAttribute(
+      "com.microsoft.kiota.authentication.additional_claims_provided",
+      decodedClaims !== ""
+    );
     const localOptions = { ...this.options };
     if (decodedClaims) {
       (localOptions as any).claims = decodedClaims; // the field is defined in a derived interface for some reason https://github.com/Azure/azure-sdk-for-js/blob/4498fecbede71563fee5daae2ad537ff57de3640/sdk/identity/identity/src/msal/credentials.ts#L29
     }
-
+    span?.setAttribute(
+      "com.microsoft.kiota.authentication.scopes",
+      this.scopes.join(",")
+    );
     const result = await this.credentials.getToken(this.scopes, localOptions);
     return result?.token ?? "";
   };

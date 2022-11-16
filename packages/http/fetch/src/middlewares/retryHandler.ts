@@ -10,7 +10,9 @@
  */
 
 import { HttpMethod, RequestOption } from "@microsoft/kiota-abstractions";
+import { trace } from "@opentelemetry/api";
 
+import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import { FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions";
 import { getRequestHeader, setRequestHeader } from "../utils/headersUtil";
 import { Middleware } from "./middleware";
@@ -152,20 +154,33 @@ export class RetryHandler implements Middleware {
 	 * @param {number} retryAttempts - The current attempt count
 	 * @param {Record<string, RequestOption>} [requestOptions = {}] - The request options
 	 * @param {RetryHandlerOptions} currentOptions - The retry middleware options instance
+	 * @param {string} tracerName - The name to use for the tracer
 	 * @returns A Promise that resolves to nothing
 	 */
-	private async executeWithRetry(url: string, fetchRequestInit: FetchRequestInit, retryAttempts: number, currentOptions: RetryHandlerOptions, requestOptions?: Record<string, RequestOption>): Promise<FetchResponse> {
+	private async executeWithRetry(url: string, fetchRequestInit: FetchRequestInit, retryAttempts: number, currentOptions: RetryHandlerOptions, requestOptions?: Record<string, RequestOption>, tracerName?: string): Promise<FetchResponse> {
 		const response = await this.next?.execute(url, fetchRequestInit as RequestInit, requestOptions);
 		if (!response) {
 			throw new Error("Response is undefined");
 		}
-		if (retryAttempts < currentOptions.maxRetries && this.isRetry(response!) && this.isBuffered(fetchRequestInit) && currentOptions.shouldRetry(currentOptions.delay, retryAttempts, url, fetchRequestInit! as RequestInit, response)) {
+		if (retryAttempts < currentOptions.maxRetries && this.isRetry(response) && this.isBuffered(fetchRequestInit) && currentOptions.shouldRetry(currentOptions.delay, retryAttempts, url, fetchRequestInit as RequestInit, response)) {
 			++retryAttempts;
 			setRequestHeader(fetchRequestInit, RetryHandler.RETRY_ATTEMPT_HEADER, retryAttempts.toString());
 			if (response) {
-				const delay = this.getDelay(response!, retryAttempts, currentOptions.delay);
+				const delay = this.getDelay(response, retryAttempts, currentOptions.delay);
 				await this.sleep(delay);
 			}
+			if (tracerName) {
+				return await trace.getTracer(tracerName).startActiveSpan(`retryHandler - attempt ${retryAttempts}`, (span) => {
+					try {
+						span.setAttribute("http.retry_count", retryAttempts);
+						span.setAttribute("http.status_code", response.status);
+						return this.executeWithRetry(url, fetchRequestInit, retryAttempts, currentOptions, requestOptions);
+					} finally {
+						span.end();
+					}
+				});
+			}
+
 			return await this.executeWithRetry(url, fetchRequestInit, retryAttempts, currentOptions, requestOptions);
 		} else {
 			return response;
@@ -185,6 +200,17 @@ export class RetryHandler implements Middleware {
 		let currentOptions = this.options;
 		if (requestOptions && requestOptions[RetryHandlerOptionKey]) {
 			currentOptions = requestOptions[RetryHandlerOptionKey] as RetryHandlerOptions;
+		}
+		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
+		if (obsOptions) {
+			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("retryHandler - execute", (span) => {
+				try {
+					span.setAttribute("com.microsoft.kiota.handler.retry.enable", true);
+					return this.executeWithRetry(url, requestInit as FetchRequestInit, retryAttempts, currentOptions, requestOptions, obsOptions.getTracerInstrumentationName());
+				} finally {
+					span.end();
+				}
+			});
 		}
 		return this.executeWithRetry(url, requestInit as FetchRequestInit, retryAttempts, currentOptions, requestOptions);
 	}

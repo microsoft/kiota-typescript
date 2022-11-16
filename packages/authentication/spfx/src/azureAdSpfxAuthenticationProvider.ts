@@ -1,10 +1,10 @@
 import { BaseBearerTokenAuthenticationProvider } from "@microsoft/kiota-abstractions";
 import { AadTokenProvider } from "@microsoft/sp-http";
 import { AzureAdSpfxAccessTokenProvider } from "./azureAdSpfxAccessTokenProvider";
+import { ObservabilityOptions, ObservabilityOptionsImpl } from "./observabilityOptions";
 
 export class AzureAdSpfxAuthenticationProvider extends BaseBearerTokenAuthenticationProvider {
-    
-   /**
+  /**
    *@constructor
    *@param tokenProvider The tokenProvider provided by the SharePoint framework
    *@param applicationIdUri The application ID URI of the Azure AD App that we want to Authenticate
@@ -22,13 +22,16 @@ export class AzureAdSpfxAuthenticationProvider extends BaseBearerTokenAuthentica
       "microsoftgraph.chinacloudapi.cn",
       "canary.graph.microsoft.com",
     ]),
-    useCachedToken?: boolean
+    useCachedToken?: boolean,
+    observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()
   ) {
-    super(new AzureAdSpfxAccessTokenProvider(
-        tokenProvider, 
-        applicationIdUri, 
-        allowedHosts, 
-        useCachedToken
+    super(
+      new AzureAdSpfxAccessTokenProvider(
+        tokenProvider,
+        applicationIdUri,
+        allowedHosts,
+        useCachedToken,
+        observabilityOptions
     ));
   }
 }
