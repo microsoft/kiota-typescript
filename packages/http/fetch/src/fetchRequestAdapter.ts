@@ -58,7 +58,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 					return await responseHandler.handleResponseAsync(response, errorMappings);
 				} else {
 					try {
-						await this.throwFailedResponses(response, errorMappings, span);
+						await this.throwIfFailedResponse(response, errorMappings, span);
 						if (this.shouldReturnUndefined(response)) return undefined;
 						switch (responseType) {
 							case "string":
@@ -113,7 +113,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 					return await responseHandler.handleResponseAsync(response, errorMappings);
 				} else {
 					try {
-						await this.throwFailedResponses(response, errorMappings, span);
+						await this.throwIfFailedResponse(response, errorMappings, span);
 						if (this.shouldReturnUndefined(response)) return undefined;
 						const rootNode = await this.getRootParseNode(response);
 						return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getCollectionOfObjectValues", (deserializeSpan) => {
@@ -159,7 +159,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 					return await responseHandler.handleResponseAsync(response, errorMappings);
 				} else {
 					try {
-						await this.throwFailedResponses(response, errorMappings, span);
+						await this.throwIfFailedResponse(response, errorMappings, span);
 						if (this.shouldReturnUndefined(response)) return undefined;
 						const rootNode = await this.getRootParseNode(response);
 						return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getObjectValue", (deserializeSpan) => {
@@ -192,7 +192,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 					return await responseHandler.handleResponseAsync(response, errorMappings);
 				} else {
 					try {
-						await this.throwFailedResponses(response, errorMappings, span);
+						await this.throwIfFailedResponse(response, errorMappings, span);
 						if (this.shouldReturnUndefined(response)) return undefined;
 						switch (responseType) {
 							case "ArrayBuffer":
@@ -253,7 +253,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 					return await responseHandler.handleResponseAsync(response, errorMappings);
 				}
 				try {
-					await this.throwFailedResponses(response, errorMappings, span);
+					await this.throwIfFailedResponse(response, errorMappings, span);
 				} finally {
 					await this.purgeResponseBody(response);
 				}
@@ -294,8 +294,8 @@ export class FetchRequestAdapter implements RequestAdapter {
 	};
 	public static readonly errorMappingFoundAttributeName = "com.microsoft.kiota.error.mapping_found";
 	public static readonly errorBodyFoundAttributeName = "com.microsoft.kiota.error.body_found";
-	private throwFailedResponses = (response: Response, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined, spanForAttributes: Span): Promise<void> => {
-		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("throwFailedResponses", async (span) => {
+	private throwIfFailedResponse = (response: Response, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined, spanForAttributes: Span): Promise<void> => {
+		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("throwIfFailedResponse", async (span) => {
 			try {
 				if (response.ok) return;
 
