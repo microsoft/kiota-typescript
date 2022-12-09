@@ -433,7 +433,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				if (requestContentType) {
 					spanForAttributes.setAttribute("http.request_content_type", requestContentType);
 				}
-				const headers: [string, string][] | undefined = requestInfo.headers ? Object.entries(requestInfo.headers).map(([key, value]) => [key.toLocaleLowerCase(), value.reduce((acc, val) => acc + val, ",")]) : undefined;
+				const headers: [string, string][] | undefined = requestInfo.headers ? Object.entries(requestInfo.headers).map(([key, value]) => [key.toLocaleLowerCase(), this.foldHeaderValue(value)]) : undefined;
 				const request = {
 					method,
 					headers,
@@ -444,5 +444,14 @@ export class FetchRequestAdapter implements RequestAdapter {
 				span.end();
 			}
 		});
+	};
+	private foldHeaderValue = (value: string[]): string => {
+		if (value.length < 1) {
+			return "";
+		} else if (value.length === 1) {
+			return value[0];
+		} else {
+			return value.reduce((acc, val) => acc + val, ",");
+		}
 	};
 }
