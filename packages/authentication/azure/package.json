@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/kiota-authentication-azure",
-  "version": "1.0.0-preview.6",
+  "version": "1.0.0-preview.7",
   "description": "Authentication provider for Kiota using Azure Identity",
   "main": "dist/cjs/src/index.js",
   "module": "dist/es/src/index.js",
@@ -34,7 +34,7 @@
   "homepage": "https://github.com/microsoft/kiota-typescript#readme",
   "dependencies": {
     "@azure/core-auth": "^1.3.2",
-    "@microsoft/kiota-abstractions": "^1.0.0-preview.8",
+    "@microsoft/kiota-abstractions": "^1.0.0-preview.9",
     "@opentelemetry/api": "^1.2.0",
     "tslib": "^2.3.1"
   }
