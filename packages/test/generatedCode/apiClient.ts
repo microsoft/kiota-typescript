@@ -4,15 +4,17 @@ import {enableBackingStoreForSerializationWriterFactory, getPathParameters, Pars
 import {JsonParseNodeFactory, JsonSerializationWriterFactory} from '@microsoft/kiota-serialization-json';
 import {TextParseNodeFactory, TextSerializationWriterFactory} from '@microsoft/kiota-serialization-text';
 
-/** The main entry point of the SDK, exposes the configuration and the fluent API.  */
+/**
+ * The main entry point of the SDK, exposes the configuration and the fluent API.
+ */
 export class ApiClient {
-    /** Path parameters for the request  */
-    private readonly pathParameters: Record<string, unknown>;
-    /** The request adapter to use to execute the requests.  */
-    private readonly requestAdapter: RequestAdapter;
-    /** Url template to use to build the URL for the current request builder  */
-    private readonly urlTemplate: string;
-    /** The users property  */
+    /** Path parameters for the request */
+    private pathParameters: Record<string, unknown>;
+    /** The request adapter to use to execute the requests. */
+    private requestAdapter: RequestAdapter;
+    /** Url template to use to build the URL for the current request builder */
+    private urlTemplate: string;
+    /** The users property */
     public get users(): UsersRequestBuilder {
         return new UsersRequestBuilder(this.pathParameters, this.requestAdapter);
     }
@@ -36,7 +38,7 @@ export class ApiClient {
     /**
      * Gets an item from the ApiSdk.users.item collection
      * @param id Unique identifier of the item
-     * @returns a userItemRequestBuilder
+     * @returns a UserItemRequestBuilder
      */
     public usersById(id: string) : UserItemRequestBuilder {
         if(!id) throw new Error("id cannot be undefined");

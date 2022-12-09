@@ -1,18 +1,20 @@
-import {MultiValueLegacyExtendedProperty} from '../../../../../../models/microsoft/graph/';
-import {createMultiValueLegacyExtendedPropertyFromDiscriminatorValue} from '../../../../../../models/microsoft/graph/createMultiValueLegacyExtendedPropertyFromDiscriminatorValue';
+import {MultiValueLegacyExtendedProperty} from '../../../../../../models/';
+import {createMultiValueLegacyExtendedPropertyFromDiscriminatorValue} from '../../../../../../models/createMultiValueLegacyExtendedPropertyFromDiscriminatorValue';
 import {MultiValueLegacyExtendedPropertyItemRequestBuilderDeleteRequestConfiguration} from './multiValueLegacyExtendedPropertyItemRequestBuilderDeleteRequestConfiguration';
 import {MultiValueLegacyExtendedPropertyItemRequestBuilderGetRequestConfiguration} from './multiValueLegacyExtendedPropertyItemRequestBuilderGetRequestConfiguration';
 import {MultiValueLegacyExtendedPropertyItemRequestBuilderPatchRequestConfiguration} from './multiValueLegacyExtendedPropertyItemRequestBuilderPatchRequestConfiguration';
 import {getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
 
-/** Builds and executes requests for operations under /users/{user-id}/messages/{message-id}/multiValueExtendedProperties/{multiValueLegacyExtendedProperty-id}  */
+/**
+ * Builds and executes requests for operations under /users/{user-id}/messages/{message-id}/multiValueExtendedProperties/{multiValueLegacyExtendedProperty-id}
+ */
 export class MultiValueLegacyExtendedPropertyItemRequestBuilder {
-    /** Path parameters for the request  */
-    private readonly pathParameters: Record<string, unknown>;
-    /** The request adapter to use to execute the requests.  */
-    private readonly requestAdapter: RequestAdapter;
-    /** Url template to use to build the URL for the current request builder  */
-    private readonly urlTemplate: string;
+    /** Path parameters for the request */
+    private pathParameters: Record<string, unknown>;
+    /** The request adapter to use to execute the requests. */
+    private requestAdapter: RequestAdapter;
+    /** Url template to use to build the URL for the current request builder */
+    private urlTemplate: string;
     /**
      * Instantiates a new MultiValueLegacyExtendedPropertyItemRequestBuilder and sets the default values.
      * @param pathParameters The raw url or the Url template parameters for the request.
@@ -27,7 +29,7 @@ export class MultiValueLegacyExtendedPropertyItemRequestBuilder {
         this.requestAdapter = requestAdapter;
     };
     /**
-     * The collection of multi-value extended properties defined for the message. Nullable.
+     * Delete navigation property multiValueExtendedProperties for users
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
      */
@@ -52,6 +54,7 @@ export class MultiValueLegacyExtendedPropertyItemRequestBuilder {
         requestInfo.urlTemplate = this.urlTemplate;
         requestInfo.pathParameters = this.pathParameters;
         requestInfo.httpMethod = HttpMethod.GET;
+        requestInfo.headers["Accept"] = ["application/json"];
         if (requestConfiguration) {
             requestInfo.addRequestHeaders(requestConfiguration.headers);
             requestInfo.setQueryStringParametersFromRawObject(requestConfiguration.queryParameters);
@@ -60,8 +63,8 @@ export class MultiValueLegacyExtendedPropertyItemRequestBuilder {
         return requestInfo;
     };
     /**
-     * The collection of multi-value extended properties defined for the message. Nullable.
-     * @param body 
+     * Update the navigation property multiValueExtendedProperties in users
+     * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
      */
@@ -79,7 +82,7 @@ export class MultiValueLegacyExtendedPropertyItemRequestBuilder {
         return requestInfo;
     };
     /**
-     * The collection of multi-value extended properties defined for the message. Nullable.
+     * Delete navigation property multiValueExtendedProperties for users
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @param responseHandler Response handler to use in place of the default response handling provided by the core service
      */
@@ -87,7 +90,7 @@ export class MultiValueLegacyExtendedPropertyItemRequestBuilder {
         const requestInfo = this.createDeleteRequestInformation(
             requestConfiguration
         );
-        return this.requestAdapter?.sendNoResponseContentAsync(requestInfo, responseHandler, undefined) ?? Promise.reject(new Error('http core is null'));
+        return this.requestAdapter?.sendNoResponseContentAsync(requestInfo, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
     /**
      * The collection of multi-value extended properties defined for the message. Nullable.
@@ -99,11 +102,11 @@ export class MultiValueLegacyExtendedPropertyItemRequestBuilder {
         const requestInfo = this.createGetRequestInformation(
             requestConfiguration
         );
-        return this.requestAdapter?.sendAsync<MultiValueLegacyExtendedProperty>(requestInfo, createMultiValueLegacyExtendedPropertyFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('http core is null'));
+        return this.requestAdapter?.sendAsync<MultiValueLegacyExtendedProperty>(requestInfo, createMultiValueLegacyExtendedPropertyFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
     /**
-     * The collection of multi-value extended properties defined for the message. Nullable.
-     * @param body 
+     * Update the navigation property multiValueExtendedProperties in users
+     * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @param responseHandler Response handler to use in place of the default response handling provided by the core service
      */
@@ -112,6 +115,6 @@ export class MultiValueLegacyExtendedPropertyItemRequestBuilder {
         const requestInfo = this.createPatchRequestInformation(
             body, requestConfiguration
         );
-        return this.requestAdapter?.sendNoResponseContentAsync(requestInfo, responseHandler, undefined) ?? Promise.reject(new Error('http core is null'));
+        return this.requestAdapter?.sendNoResponseContentAsync(requestInfo, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
 }

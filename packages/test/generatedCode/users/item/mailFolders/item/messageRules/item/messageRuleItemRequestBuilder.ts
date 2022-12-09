@@ -1,18 +1,20 @@
-import {MessageRule} from '../../../../../../models/microsoft/graph/';
-import {createMessageRuleFromDiscriminatorValue} from '../../../../../../models/microsoft/graph/createMessageRuleFromDiscriminatorValue';
+import {MessageRule} from '../../../../../../models/';
+import {createMessageRuleFromDiscriminatorValue} from '../../../../../../models/createMessageRuleFromDiscriminatorValue';
 import {MessageRuleItemRequestBuilderDeleteRequestConfiguration} from './messageRuleItemRequestBuilderDeleteRequestConfiguration';
 import {MessageRuleItemRequestBuilderGetRequestConfiguration} from './messageRuleItemRequestBuilderGetRequestConfiguration';
 import {MessageRuleItemRequestBuilderPatchRequestConfiguration} from './messageRuleItemRequestBuilderPatchRequestConfiguration';
 import {getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
 
-/** Builds and executes requests for operations under /users/{user-id}/mailFolders/{mailFolder-id}/messageRules/{messageRule-id}  */
+/**
+ * Builds and executes requests for operations under /users/{user-id}/mailFolders/{mailFolder-id}/messageRules/{messageRule-id}
+ */
 export class MessageRuleItemRequestBuilder {
-    /** Path parameters for the request  */
-    private readonly pathParameters: Record<string, unknown>;
-    /** The request adapter to use to execute the requests.  */
-    private readonly requestAdapter: RequestAdapter;
-    /** Url template to use to build the URL for the current request builder  */
-    private readonly urlTemplate: string;
+    /** Path parameters for the request */
+    private pathParameters: Record<string, unknown>;
+    /** The request adapter to use to execute the requests. */
+    private requestAdapter: RequestAdapter;
+    /** Url template to use to build the URL for the current request builder */
+    private urlTemplate: string;
     /**
      * Instantiates a new MessageRuleItemRequestBuilder and sets the default values.
      * @param pathParameters The raw url or the Url template parameters for the request.
@@ -27,7 +29,7 @@ export class MessageRuleItemRequestBuilder {
         this.requestAdapter = requestAdapter;
     };
     /**
-     * The collection of rules that apply to the user's Inbox folder.
+     * Delete navigation property messageRules for users
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
      */
@@ -52,6 +54,7 @@ export class MessageRuleItemRequestBuilder {
         requestInfo.urlTemplate = this.urlTemplate;
         requestInfo.pathParameters = this.pathParameters;
         requestInfo.httpMethod = HttpMethod.GET;
+        requestInfo.headers["Accept"] = ["application/json"];
         if (requestConfiguration) {
             requestInfo.addRequestHeaders(requestConfiguration.headers);
             requestInfo.setQueryStringParametersFromRawObject(requestConfiguration.queryParameters);
@@ -60,8 +63,8 @@ export class MessageRuleItemRequestBuilder {
         return requestInfo;
     };
     /**
-     * The collection of rules that apply to the user's Inbox folder.
-     * @param body 
+     * Update the navigation property messageRules in users
+     * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
      */
@@ -79,7 +82,7 @@ export class MessageRuleItemRequestBuilder {
         return requestInfo;
     };
     /**
-     * The collection of rules that apply to the user's Inbox folder.
+     * Delete navigation property messageRules for users
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @param responseHandler Response handler to use in place of the default response handling provided by the core service
      */
@@ -87,7 +90,7 @@ export class MessageRuleItemRequestBuilder {
         const requestInfo = this.createDeleteRequestInformation(
             requestConfiguration
         );
-        return this.requestAdapter?.sendNoResponseContentAsync(requestInfo, responseHandler, undefined) ?? Promise.reject(new Error('http core is null'));
+        return this.requestAdapter?.sendNoResponseContentAsync(requestInfo, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
     /**
      * The collection of rules that apply to the user's Inbox folder.
@@ -99,11 +102,11 @@ export class MessageRuleItemRequestBuilder {
         const requestInfo = this.createGetRequestInformation(
             requestConfiguration
         );
-        return this.requestAdapter?.sendAsync<MessageRule>(requestInfo, createMessageRuleFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('http core is null'));
+        return this.requestAdapter?.sendAsync<MessageRule>(requestInfo, createMessageRuleFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
     /**
-     * The collection of rules that apply to the user's Inbox folder.
-     * @param body 
+     * Update the navigation property messageRules in users
+     * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @param responseHandler Response handler to use in place of the default response handling provided by the core service
      */
@@ -112,6 +115,6 @@ export class MessageRuleItemRequestBuilder {
         const requestInfo = this.createPatchRequestInformation(
             body, requestConfiguration
         );
-        return this.requestAdapter?.sendNoResponseContentAsync(requestInfo, responseHandler, undefined) ?? Promise.reject(new Error('http core is null'));
+        return this.requestAdapter?.sendNoResponseContentAsync(requestInfo, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
 }

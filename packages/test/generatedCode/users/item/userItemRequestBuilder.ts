@@ -5,26 +5,28 @@ import {MessageItemRequestBuilder} from './messages/item/messageItemRequestBuild
 import {MessagesRequestBuilder} from './messages/messagesRequestBuilder';
 import {getPathParameters, RequestAdapter} from '@microsoft/kiota-abstractions';
 
-/** Builds and executes requests for operations under /users/{user-id}  */
+/**
+ * Builds and executes requests for operations under /users/{user-id}
+ */
 export class UserItemRequestBuilder {
-    /** The inferenceClassification property  */
+    /** The inferenceClassification property */
     public get inferenceClassification(): InferenceClassificationRequestBuilder {
         return new InferenceClassificationRequestBuilder(this.pathParameters, this.requestAdapter);
     }
-    /** The mailFolders property  */
+    /** The mailFolders property */
     public get mailFolders(): MailFoldersRequestBuilder {
         return new MailFoldersRequestBuilder(this.pathParameters, this.requestAdapter);
     }
-    /** The messages property  */
+    /** The messages property */
     public get messages(): MessagesRequestBuilder {
         return new MessagesRequestBuilder(this.pathParameters, this.requestAdapter);
     }
-    /** Path parameters for the request  */
-    private readonly pathParameters: Record<string, unknown>;
-    /** The request adapter to use to execute the requests.  */
-    private readonly requestAdapter: RequestAdapter;
-    /** Url template to use to build the URL for the current request builder  */
-    private readonly urlTemplate: string;
+    /** Path parameters for the request */
+    private pathParameters: Record<string, unknown>;
+    /** The request adapter to use to execute the requests. */
+    private requestAdapter: RequestAdapter;
+    /** Url template to use to build the URL for the current request builder */
+    private urlTemplate: string;
     /**
      * Instantiates a new UserItemRequestBuilder and sets the default values.
      * @param pathParameters The raw url or the Url template parameters for the request.
@@ -41,7 +43,7 @@ export class UserItemRequestBuilder {
     /**
      * Gets an item from the ApiSdk.users.item.mailFolders.item collection
      * @param id Unique identifier of the item
-     * @returns a mailFolderItemRequestBuilder
+     * @returns a MailFolderItemRequestBuilder
      */
     public mailFoldersById(id: string) : MailFolderItemRequestBuilder {
         if(!id) throw new Error("id cannot be undefined");
@@ -52,7 +54,7 @@ export class UserItemRequestBuilder {
     /**
      * Gets an item from the ApiSdk.users.item.messages.item collection
      * @param id Unique identifier of the item
-     * @returns a messageItemRequestBuilder
+     * @returns a MessageItemRequestBuilder
      */
     public messagesById(id: string) : MessageItemRequestBuilder {
         if(!id) throw new Error("id cannot be undefined");
