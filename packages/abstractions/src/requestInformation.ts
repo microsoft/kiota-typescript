@@ -68,14 +68,14 @@ export class RequestInformation {
     string | number | boolean | undefined
   > = {}; //TODO: case insensitive
   /** The Request Headers. */
-  public headers: Record<string, string> = {}; //TODO: case insensitive
+  public headers: Record<string, string[]> = {};
   private _requestOptions: Record<string, RequestOption> = {}; //TODO: case insensitive
   /** Gets the request options for the request. */
   public getRequestOptions() {
     return this._requestOptions;
   }
   /** Adds the headers for the request. */
-  public addRequestHeaders(source: Record<string, string> | undefined) {
+  public addRequestHeaders(source: Record<string, string[]> | undefined) {
     if (!source) return;
     for (const key in source) {
       this.headers[key] = source[key];
@@ -141,7 +141,7 @@ export class RequestInformation {
     contentType?: string | undefined
   ) => {
     if (contentType) {
-      this.headers[RequestInformation.contentTypeHeader] = contentType;
+      this.headers[RequestInformation.contentTypeHeader] = [contentType];
     }
     this.content = writer.getSerializedContent();
   };
@@ -225,8 +225,9 @@ export class RequestInformation {
    * @param value the binary stream
    */
   public setStreamContent = (value: ArrayBuffer): void => {
-    this.headers[RequestInformation.contentTypeHeader] =
-      RequestInformation.binaryContentType;
+    this.headers[RequestInformation.contentTypeHeader] = [
+      RequestInformation.binaryContentType,
+    ];
     this.content = value;
   };
   /**

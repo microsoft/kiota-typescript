@@ -76,6 +76,6 @@ describe("ApiKeyAuthenticationProvider", () => {
     request.urlTemplate = "https://localhost{?param1}";
     await provider.authenticateRequest(request);
     assert.equal(request.URL, "https://localhost");
-    assert.equal(request.headers["param"], "key");
+    assert.equal(request.headers["param"][0], "key");
   });
 });
