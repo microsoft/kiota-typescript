@@ -427,15 +427,16 @@ export class FetchRequestAdapter implements RequestAdapter {
 				}
 				const requestContentLength = requestInfo.headers["Content-Length"];
 				if (requestContentLength) {
-					spanForAttributes.setAttribute("http.request_content_length", parseInt(requestContentLength));
+					spanForAttributes.setAttribute("http.request_content_length", parseInt(requestContentLength[0]));
 				}
 				const requestContentType = requestInfo.headers["Content-Type"];
 				if (requestContentType) {
 					spanForAttributes.setAttribute("http.request_content_type", requestContentType);
 				}
+				const headers: [string, string][] | undefined = requestInfo.headers ? Object.entries(requestInfo.headers).map(([key, value]) => [key.toLocaleLowerCase(), value.reduce((acc, val) => acc + val, ",")]) : undefined;
 				const request = {
 					method,
-					headers: requestInfo.headers,
+					headers,
 					body: requestInfo.content,
 				} as RequestInit;
 				return request;
