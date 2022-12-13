@@ -1,12 +1,14 @@
 import {OverridesRequestBuilderGetQueryParameters} from './overridesRequestBuilderGetQueryParameters';
 import {RequestOption} from '@microsoft/kiota-abstractions';
 
-/** Configuration for the request such as headers, query parameters, and middleware options.  */
+/**
+ * Configuration for the request such as headers, query parameters, and middleware options.
+ */
 export class OverridesRequestBuilderGetRequestConfiguration {
-    /** Request headers  */
-    public headers?: Record<string, string> | undefined;
-    /** Request options  */
+    /** Request headers */
+    public headers?: Record<string, string[]> | undefined;
+    /** Request options */
     public options?: RequestOption[] | undefined;
-    /** Request query parameters  */
+    /** Request query parameters */
     public queryParameters?: OverridesRequestBuilderGetQueryParameters | undefined;
 }

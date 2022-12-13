@@ -49,7 +49,7 @@ export class BaseBearerTokenAuthenticationProvider
       if (token) {
         request.headers[
           BaseBearerTokenAuthenticationProvider.authorizationHeaderKey
-        ] = `Bearer ${token}`;
+        ] = [`Bearer ${token}`];
       }
     }
   };

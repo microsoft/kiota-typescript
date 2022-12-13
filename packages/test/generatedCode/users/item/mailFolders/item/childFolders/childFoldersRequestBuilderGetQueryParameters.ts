@@ -1,19 +1,21 @@
 
-/** The collection of child folders in the mailFolder.  */
+/**
+ * Get the folder collection under the specified folder. You can use the `.../me/mailFolders` shortcut to get the top-level folder collection and navigate to another folder. By default, this operation does not return hidden folders. Use a query parameter _includeHiddenFolders_ to include them in the response.
+ */
 export class ChildFoldersRequestBuilderGetQueryParameters {
-    /** Include count of items  */
+    /** Include count of items */
     public count?: boolean | undefined;
-    /** Expand related entities  */
+    /** Expand related entities */
     public expand?: string[] | undefined;
-    /** Filter items by property values  */
+    /** Filter items by property values */
     public filter?: string | undefined;
-    /** Order items by property values  */
+    /** Order items by property values */
     public orderby?: string[] | undefined;
-    /** Select properties to be returned  */
+    /** Select properties to be returned */
     public select?: string[] | undefined;
-    /** Skip the first n items  */
+    /** Skip the first n items */
     public skip?: number | undefined;
-    /** Show only the first n items  */
+    /** Show only the first n items */
     public top?: number | undefined;
     /**
      * Maps the query parameters names to their encoded names for the URI template parsing.

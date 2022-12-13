@@ -427,15 +427,16 @@ export class FetchRequestAdapter implements RequestAdapter {
 				}
 				const requestContentLength = requestInfo.headers["Content-Length"];
 				if (requestContentLength) {
-					spanForAttributes.setAttribute("http.request_content_length", parseInt(requestContentLength));
+					spanForAttributes.setAttribute("http.request_content_length", parseInt(requestContentLength[0]));
 				}
 				const requestContentType = requestInfo.headers["Content-Type"];
 				if (requestContentType) {
 					spanForAttributes.setAttribute("http.request_content_type", requestContentType);
 				}
+				const headers: [string, string][] | undefined = requestInfo.headers ? Object.entries(requestInfo.headers).map(([key, value]) => [key.toLocaleLowerCase(), this.foldHeaderValue(value)]) : undefined;
 				const request = {
 					method,
-					headers: requestInfo.headers,
+					headers,
 					body: requestInfo.content,
 				} as RequestInit;
 				return request;
@@ -443,5 +444,14 @@ export class FetchRequestAdapter implements RequestAdapter {
 				span.end();
 			}
 		});
+	};
+	private foldHeaderValue = (value: string[]): string => {
+		if (value.length < 1) {
+			return "";
+		} else if (value.length === 1) {
+			return value[0];
+		} else {
+			return value.reduce((acc, val) => acc + val, ",");
+		}
 	};
 }

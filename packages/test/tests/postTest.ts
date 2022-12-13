@@ -1,7 +1,7 @@
 import { apiClient } from "./testClient";
 
 import { assert } from "chai";
-import { Message } from "../generatedCode/models/microsoft/graph";
+import { Message } from "../generatedCode/models";
 
 describe("TestPost", () => {
 
