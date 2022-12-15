@@ -36,6 +36,15 @@ updates:
       prefix: "auto dependabot"
 
 - package-ecosystem: npm
+  directory: "/packages/serialization/form"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  commit-message:
+      # Prefix all commit messages with "npm"
+      prefix: "auto dependabot"
+
+- package-ecosystem: npm
   directory: "/packages/serialization/json"
   schedule:
     interval: daily
