@@ -27,7 +27,7 @@ export class TextParseNode implements ParseNode {
   public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
   public getStringValue = (): string => this.text;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public getChildNode = (identifier: string): ParseNode => {
+  public getChildNode = (identifier: string): ParseNode | undefined => {
     throw new Error(TextParseNode.noStructuredDataMessage);
   };
   public getBooleanValue = (): boolean =>

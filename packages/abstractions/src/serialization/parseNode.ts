@@ -1,7 +1,7 @@
-import { ParsableFactory } from ".";
 import { DateOnly } from "../dateOnly";
 import { Duration } from "../duration";
 import { TimeOnly } from "../timeOnly";
+import { ParsableFactory } from ".";
 import { Parsable } from "./parsable";
 
 /**
@@ -18,7 +18,7 @@ export interface ParseNode {
    * @param identifier the identifier of the current node property.
    * @return a new parse node for the given identifier.
    */
-  getChildNode(identifier: string): ParseNode;
+  getChildNode(identifier: string): ParseNode | undefined;
   /**
    * Gets the boolean value of the node.
    * @return the boolean value of the node.
