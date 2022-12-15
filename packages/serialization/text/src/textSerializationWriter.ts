@@ -30,7 +30,7 @@ export class TextSerializationWriter implements SerializationWriter {
     }
   };
   public writeBooleanValue = (key?: string, value?: boolean): void => {
-    if (value) {
+    if (value !== null && value !== undefined) {
       this.writeStringValue(key, `${value}`);
     }
   };
