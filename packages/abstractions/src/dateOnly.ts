@@ -14,27 +14,13 @@ export class DateOnly implements DateOnlyInterface {
     month = 1,
     day = 1,
   }: Partial<DateOnlyInterface>) {
-    this.date = new Date(year, month - 1, day);
+    this.day = day;
+    this.month = month;
+    this.year = year;
   }
-  private date: Date;
-  public get year(): number {
-    return this.date.getFullYear();
-  }
-  public set year(value: number) {
-    this.date.setFullYear(value);
-  }
-  public get month(): number {
-    return this.date.getMonth() + 1;
-  }
-  public set month(value: number) {
-    this.date.setMonth(value - 1);
-  }
-  public get day(): number {
-    return this.date.getDate();
-  }
-  public set day(value: number) {
-    this.date.setDate(value);
-  }
+  public year: number;
+  public month: number;
+  public day: number;
   /**
    * Creates a new DateOnly from the given date.
    * @param date The date
@@ -45,8 +31,11 @@ export class DateOnly implements DateOnlyInterface {
     if (!date) {
       throw new Error("Date cannot be undefined");
     }
-    const result = new DateOnly({});
-    result.date = new Date(date);
+    const result = new DateOnly({
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate(),
+    });
     return result;
   }
   /**
@@ -59,24 +48,22 @@ export class DateOnly implements DateOnlyInterface {
     if (!value || value.length === 0) {
       return undefined;
     }
+    const exec =
+      /^(?<year>\d{4,})-(?<month>0[1-9]|1[012])-(?<day>0[1-9]|[12]\d|3[01])$/gi.exec(
+        value
+      );
+    if (exec) {
+      const year = parseInt(exec.groups?.year ?? "", 10);
+      const month = parseInt(exec.groups?.month ?? "", 10);
+      const day = parseInt(exec.groups?.day ?? "", 10);
+      return new DateOnly({ year, month, day });
+    }
     const ticks = Date.parse(value);
-    if (isNaN(ticks)) {
-      const exec =
-        /^(?<year>\d{4,})-(?<month>0[1-9]|1[012])-(?<day>0[1-9]|[12]\d|3[01])$/gi.exec(
-          value
-        );
-      if (exec) {
-        const year = parseInt(exec.groups?.year ?? "");
-        const month = parseInt(exec.groups?.month ?? "");
-        const day = parseInt(exec.groups?.day ?? "");
-        return new DateOnly({ year, month, day });
-      } else {
-        throw new Error("Value is not a valid date-only representation");
-      }
-    } else {
+    if (!isNaN(ticks)) {
       const date = new Date(ticks);
       return this.fromDate(date);
     }
+    throw new Error(`Value is not a valid date-only representation: ${value}`);
   }
   /**
    *  Returns a string representation of the date in the format YYYY-MM-DD
