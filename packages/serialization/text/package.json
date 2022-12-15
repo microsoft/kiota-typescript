@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/kiota-serialization-text",
-  "version": "1.0.0-preview.9",
+  "version": "1.0.0-preview.10",
   "description": "Implementation of Kiota Serialization interfaces for text",
   "files": [
     "src",
@@ -43,7 +43,7 @@
   },
   "homepage": "https://github.com/microsoft/kiota-typescript#readme",
   "dependencies": {
-    "@microsoft/kiota-abstractions": "^1.0.0-preview.9",
+    "@microsoft/kiota-abstractions": "^1.0.0-preview.10",
     "tslib": "^2.3.1"
   }
 }
