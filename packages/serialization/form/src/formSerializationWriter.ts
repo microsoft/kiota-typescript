@@ -17,9 +17,11 @@ export class FormSerializationWriter implements SerializationWriter {
     | ((value: Parsable, writer: SerializationWriter) => void)
     | undefined;
   public writeStringValue = (key?: string, value?: string): void => {
-    key && value && this.writePropertyName(key);
-    value && this.writer.push(`=${encodeURIComponent(value)}`);
-    key && value && this.writer.push(FormSerializationWriter.propertySeparator);
+    if (key && value) {
+      this.writePropertyName(key);
+      this.writer.push(`=${encodeURIComponent(value)}`);
+      this.writer.push(FormSerializationWriter.propertySeparator);
+    }
   };
   private writePropertyName = (key: string): void => {
     this.writer.push(encodeURIComponent(key));
@@ -33,19 +35,19 @@ export class FormSerializationWriter implements SerializationWriter {
     value && this.writeStringValue(key, `${value}`);
   };
   public writeGuidValue = (key?: string, value?: string): void => {
-    value && this.writeStringValue(key, `${value}`);
+    value && this.writeStringValue(key, value);
   };
   public writeDateValue = (key?: string, value?: Date): void => {
-    value && this.writeStringValue(key, `${value.toISOString()}`);
+    value && this.writeStringValue(key, value.toISOString());
   };
   public writeDateOnlyValue = (key?: string, value?: DateOnly): void => {
-    value && this.writeStringValue(key, `${value.toString()}`);
+    value && this.writeStringValue(key, value.toString());
   };
   public writeTimeOnlyValue = (key?: string, value?: TimeOnly): void => {
-    value && this.writeStringValue(key, `${value.toString()}`);
+    value && this.writeStringValue(key, value.toString());
   };
   public writeDurationValue = (key?: string, value?: Duration): void => {
-    value && this.writeStringValue(key, `${value.toString()}`);
+    value && this.writeStringValue(key, value.toString());
   };
   public writeNullValue = (key?: string): void => {
     this.writeStringValue(key, `null`);
