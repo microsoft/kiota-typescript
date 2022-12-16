@@ -24,11 +24,6 @@
 		"./dist/es/src/middlewares/middlewareFactory.js": "./dist/es/src/middlewares/browser/middlewareFactory.js"
 	},
 	"types": "dist/cjs/src/index.d.ts",
-	"files": [
-		"dist/",
-		"src/",
-		"dom.shim.d.ts"
-	],
 	"scripts": {
 		"build": "npm run build:cjs && npm run build:es",
 		"build:cjs": "tsc -b tsconfig.cjs.json",

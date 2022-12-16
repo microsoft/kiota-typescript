@@ -1,6 +1,11 @@
-tsconfig.json
-dist/cjs/test
-dist/es/test
-test/
-tsconfig.**.json
 .eslint**
+.prettier**
+*.log
+*.tgz
+**/test/**/*
+docs/
+karma.conf.js
+node_modules/
+rollup.config.js
+src/
+tsconfig.**.json
