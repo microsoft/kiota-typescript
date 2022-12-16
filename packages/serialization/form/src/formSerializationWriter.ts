@@ -22,7 +22,7 @@ export class FormSerializationWriter implements SerializationWriter {
     key && value && this.writer.push(FormSerializationWriter.propertySeparator);
   };
   private writePropertyName = (key: string): void => {
-    this.writer.push(key);
+    this.writer.push(encodeURIComponent(key));
   };
   public writeBooleanValue = (key?: string, value?: boolean): void => {
     value !== null &&

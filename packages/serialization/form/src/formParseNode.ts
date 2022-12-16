@@ -31,7 +31,8 @@ export class FormParseNode implements ParseNode {
         }
       });
   }
-  private normalizeKey = (key: string): string => key.trim();
+  private normalizeKey = (key: string): string =>
+    decodeURIComponent(key).trim();
   public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
   public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
   public getStringValue = (): string => decodeURIComponent(this._rawString);
