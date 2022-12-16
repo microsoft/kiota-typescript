@@ -15,26 +15,34 @@ export class TextParseNode implements ParseNode {
    *
    */
   constructor(private readonly text: string) {
-    this.text =
+    if (
       this.text &&
       this.text.length > 1 &&
       this.text.charAt(0) === '"' &&
       this.text.charAt(this.text.length - 1) === '"'
-        ? this.text.substring(1, this.text.length - 2)
-        : this.text;
+    ) {
+      this.text = this.text.substring(1, this.text.length - 2);
+    }
   }
   public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
   public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
-  public getStringValue = (): string => this.text;
+  public getStringValue = () => this.text;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public getChildNode = (identifier: string): ParseNode | undefined => {
     throw new Error(TextParseNode.noStructuredDataMessage);
   };
-  public getBooleanValue = (): boolean =>
-    (this.text && this.text.toLowerCase() === "true") || this.text === "1";
-  public getNumberValue = (): number => Number(this.text);
-  public getGuidValue = (): string => this.text;
-  public getDateValue = (): Date => new Date(Date.parse(this.text));
+  public getBooleanValue = (): boolean | undefined => {
+    const value = this.getStringValue()?.toLowerCase();
+    if (value === "true" || value === "1") {
+      return true;
+    } else if (value === "false" || value === "0") {
+      return false;
+    }
+    return undefined;
+  };
+  public getNumberValue = () => Number(this.text);
+  public getGuidValue = () => this.text;
+  public getDateValue = () => new Date(Date.parse(this.text));
   public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
   public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
   public getDurationValue = () => Duration.parse(this.getStringValue());

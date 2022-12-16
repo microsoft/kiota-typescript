@@ -41,11 +41,18 @@ export class FormParseNode implements ParseNode {
     }
     return undefined;
   };
-  public getBooleanValue = (): boolean =>
-    JSON.parse(this.getStringValue()) as boolean;
-  public getNumberValue = (): number => parseFloat(this.getStringValue());
-  public getGuidValue = (): string => this.getStringValue();
-  public getDateValue = (): Date => new Date(Date.parse(this.getStringValue()));
+  public getBooleanValue = () => {
+    const value = this.getStringValue()?.toLowerCase();
+    if (value === "true" || value === "1") {
+      return true;
+    } else if (value === "false" || value === "0") {
+      return false;
+    }
+    return undefined;
+  };
+  public getNumberValue = () => parseFloat(this.getStringValue());
+  public getGuidValue = () => this.getStringValue();
+  public getDateValue = () => new Date(Date.parse(this.getStringValue()));
   public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
   public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
   public getDurationValue = () => Duration.parse(this.getStringValue());
