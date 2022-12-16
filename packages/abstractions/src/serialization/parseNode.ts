@@ -1,7 +1,7 @@
-import { ParsableFactory } from ".";
 import { DateOnly } from "../dateOnly";
 import { Duration } from "../duration";
 import { TimeOnly } from "../timeOnly";
+import { ParsableFactory } from ".";
 import { Parsable } from "./parsable";
 
 /**
@@ -12,33 +12,33 @@ export interface ParseNode {
    * Gets the string value of the node.
    * @return the string value of the node.
    */
-  getStringValue(): string;
+  getStringValue(): string | undefined;
   /**
    * Gets a new parse node for the given identifier.
    * @param identifier the identifier of the current node property.
    * @return a new parse node for the given identifier.
    */
-  getChildNode(identifier: string): ParseNode;
+  getChildNode(identifier: string): ParseNode | undefined;
   /**
    * Gets the boolean value of the node.
    * @return the boolean value of the node.
    */
-  getBooleanValue(): boolean;
+  getBooleanValue(): boolean | undefined;
   /**
    * Gets the Number value of the node.
    * @return the Number value of the node.
    */
-  getNumberValue(): number;
+  getNumberValue(): number | undefined;
   /**
    * Gets the Guid value of the node.
    * @return the Guid value of the node.
    */
-  getGuidValue(): string; //TODO https://www.npmjs.com/package/guid-typescript
+  getGuidValue(): string | undefined; //TODO https://www.npmjs.com/package/guid-typescript
   /**
    * Gets the Date value of the node.
    * @return the Date value of the node.
    */
-  getDateValue(): Date;
+  getDateValue(): Date | undefined;
   /**
    * Gets the Duration value of the node.
    * @return the Duration value of the node.

@@ -31,6 +31,7 @@ jobs:
             name: dist folders
             path: |
               packages/abstractions/dist
+              packages/serialization/form/dist
               packages/serialization/json/dist
               packages/serialization/text/dist
               packages/http/fetch/dist

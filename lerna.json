@@ -3,6 +3,7 @@
     "packages/test",
     "packages/abstractions",
     "packages/http/*",
+    "packages/serialization/form/",
     "packages/serialization/json/",
     "packages/serialization/text/",
     "packages/authentication/*"

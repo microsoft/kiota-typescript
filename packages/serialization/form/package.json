@@ -1,11 +1,11 @@
 {
-  "name": "@microsoft/kiota-serialization-json",
-  "version": "1.0.0-preview.11",
-  "description": "Implementation of Kiota Serialization interfaces for JSON",
+  "name": "@microsoft/kiota-serialization-form",
+  "version": "1.0.0-preview.2",
+  "description": "Implementation of Kiota Serialization interfaces for URI from encoded",
   "main": "dist/cjs/src/index.js",
   "browser": {
     "./dist/es/src/index.js": "./dist/es/src/browser/index.js",
-    "./dist/es/src/jsonParseNodeFactory.js": "./dist/es/src/browser/jsonParseNodeFactory.js"
+    "./dist/es/src/formParseNodeFactory.js": "./dist/es/src/browser/formParseNodeFactory.js"
   },
   "module": "dist/es/src/index.js",
   "types": "dist/cjs/src/index.d.ts",
@@ -30,7 +30,7 @@
     "openAPI",
     "Microsoft",
     "Graph",
-    "JSON"
+    "form"
   ],
   "author": "Microsoft",
   "license": "MIT",

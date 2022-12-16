@@ -7,111 +7,86 @@ import {
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
 
-export class JsonSerializationWriter implements SerializationWriter {
+export class FormSerializationWriter implements SerializationWriter {
   private readonly writer: string[] = [];
-  private static propertySeparator = `,`;
+  private static propertySeparator = `&`;
+  private depth = -1;
   public onBeforeObjectSerialization: ((value: Parsable) => void) | undefined;
   public onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
   public onStartObjectSerialization:
     | ((value: Parsable, writer: SerializationWriter) => void)
     | undefined;
   public writeStringValue = (key?: string, value?: string): void => {
-    key && value && this.writePropertyName(key);
-    value && this.writer.push(`"${value}"`);
-    key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
+    if (key && value) {
+      this.writePropertyName(key);
+      this.writer.push(`=${encodeURIComponent(value)}`);
+      this.writer.push(FormSerializationWriter.propertySeparator);
+    }
   };
   private writePropertyName = (key: string): void => {
-    this.writer.push(`"${key}":`);
+    this.writer.push(encodeURIComponent(key));
   };
   public writeBooleanValue = (key?: string, value?: boolean): void => {
-    const isValuePresent = value !== null && value !== undefined;
-    key && isValuePresent && this.writePropertyName(key);
-    isValuePresent && this.writer.push(`${value}`);
-    key &&
-      isValuePresent &&
-      this.writer.push(JsonSerializationWriter.propertySeparator);
+    value !== null &&
+      value !== undefined &&
+      this.writeStringValue(key, `${value}`);
   };
   public writeNumberValue = (key?: string, value?: number): void => {
-    key && value && this.writePropertyName(key);
-    value && this.writer.push(`${value}`);
-    key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
+    value && this.writeStringValue(key, `${value}`);
   };
   public writeGuidValue = (key?: string, value?: string): void => {
-    key && value && this.writePropertyName(key);
-    value && this.writer.push(`"${value}"`);
-    key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
+    value && this.writeStringValue(key, value);
   };
   public writeDateValue = (key?: string, value?: Date): void => {
-    key && value && this.writePropertyName(key);
-    value && this.writer.push(`"${value.toISOString()}"`);
-    key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
+    value && this.writeStringValue(key, value.toISOString());
   };
   public writeDateOnlyValue = (key?: string, value?: DateOnly): void => {
-    key && value && this.writePropertyName(key);
-    value && this.writer.push(`"${value.toString()}"`);
-    key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
+    value && this.writeStringValue(key, value.toString());
   };
   public writeTimeOnlyValue = (key?: string, value?: TimeOnly): void => {
-    key && value && this.writePropertyName(key);
-    value && this.writer.push(`"${value.toString()}"`);
-    key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
+    value && this.writeStringValue(key, value.toString());
   };
   public writeDurationValue = (key?: string, value?: Duration): void => {
-    key && value && this.writePropertyName(key);
-    value && this.writer.push(`"${value.toString()}"`);
-    key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
+    value && this.writeStringValue(key, value.toString());
   };
   public writeNullValue = (key?: string): void => {
-    key && this.writePropertyName(key);
-    this.writer.push(`null`);
-    key && this.writer.push(JsonSerializationWriter.propertySeparator);
+    this.writeStringValue(key, `null`);
   };
   public writeCollectionOfPrimitiveValues = <T>(
-    key?: string,
-    values?: T[]
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _key?: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _values?: T[]
   ): void => {
-    if (values) {
-      key && this.writePropertyName(key);
-      this.writer.push(`[`);
-      values.forEach((v, idx) => {
-        this.writeAnyValue(undefined, v);
-        idx + 1 < values.length &&
-          this.writer.push(JsonSerializationWriter.propertySeparator);
-      });
-      this.writer.push(`]`);
-      key && this.writer.push(JsonSerializationWriter.propertySeparator);
-    }
+    throw new Error(
+      `serialization of collections is not supported with URI encoding`
+    );
   };
   public writeCollectionOfObjectValues = <T extends Parsable>(
-    key?: string,
-    values?: T[]
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _key?: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _values?: T[]
   ): void => {
-    if (values) {
-      key && this.writePropertyName(key);
-      this.writer.push(`[`);
-      values.forEach((v) => {
-        this.writeObjectValue(undefined, v);
-        this.writer.push(JsonSerializationWriter.propertySeparator);
-      });
-      if (values.length > 0) {
-        //removing the last separator
-        this.writer.pop();
-      }
-      this.writer.push(`]`);
-      key && this.writer.push(JsonSerializationWriter.propertySeparator);
-    }
+    throw new Error(
+      `serialization of collections is not supported with URI encoding`
+    );
   };
   public writeObjectValue = <T extends Parsable>(
     key?: string,
     value?: T
   ): void => {
+    if (++this.depth > 0) {
+      throw new Error(
+        `serialization of nested objects is not supported with URI encoding`
+      );
+    }
     if (value) {
       if (key) {
         this.writePropertyName(key);
       }
       this.onBeforeObjectSerialization &&
         this.onBeforeObjectSerialization(value);
-      this.writer.push(`{`);
       this.onStartObjectSerialization &&
         this.onStartObjectSerialization(value, this);
       value.serialize(this);
@@ -119,13 +94,12 @@ export class JsonSerializationWriter implements SerializationWriter {
       if (
         this.writer.length > 0 &&
         this.writer[this.writer.length - 1] ===
-          JsonSerializationWriter.propertySeparator
+          FormSerializationWriter.propertySeparator
       ) {
         //removing the last separator
         this.writer.pop();
       }
-      this.writer.push(`}`);
-      key && this.writer.push(JsonSerializationWriter.propertySeparator);
+      key && this.writer.push(FormSerializationWriter.propertySeparator);
     }
   };
   public writeEnumValue = <T>(
@@ -164,18 +138,6 @@ export class JsonSerializationWriter implements SerializationWriter {
       this.writeAnyValue(key, value[key]);
     }
   };
-  private writeNonParsableObjectValue = (
-    key?: string | undefined,
-    value?: object | undefined
-  ) => {
-    if (key) {
-      this.writePropertyName(key);
-    }
-    this.writer.push(
-      JSON.stringify(value),
-      JsonSerializationWriter.propertySeparator
-    );
-  };
   private writeAnyValue = (
     key?: string | undefined,
     value?: unknown | undefined
@@ -196,10 +158,6 @@ export class JsonSerializationWriter implements SerializationWriter {
         this.writeDurationValue(key, value as any as Duration);
       } else if (valueType === "number") {
         this.writeNumberValue(key, value as any as number);
-      } else if (Array.isArray(value)) {
-        this.writeCollectionOfPrimitiveValues(key, value);
-      } else if (valueType === "object") {
-        this.writeNonParsableObjectValue(key, value as any as object);
       } else {
         throw new Error(
           `encountered unknown value type during serialization ${valueType}`

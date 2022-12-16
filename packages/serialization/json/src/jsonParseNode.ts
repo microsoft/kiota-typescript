@@ -16,13 +16,13 @@ export class JsonParseNode implements ParseNode {
   constructor(private readonly _jsonNode: unknown) {}
   public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
   public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
-  public getStringValue = (): string => this._jsonNode as string;
-  public getChildNode = (identifier: string): ParseNode =>
+  public getStringValue = () => this._jsonNode as string;
+  public getChildNode = (identifier: string): ParseNode | undefined =>
     new JsonParseNode((this._jsonNode as any)[identifier]);
-  public getBooleanValue = (): boolean => this._jsonNode as boolean;
-  public getNumberValue = (): number => this._jsonNode as number;
-  public getGuidValue = (): string => this._jsonNode as string;
-  public getDateValue = (): Date => this._jsonNode as Date;
+  public getBooleanValue = () => this._jsonNode as boolean;
+  public getNumberValue = () => this._jsonNode as number;
+  public getGuidValue = () => this._jsonNode as string;
+  public getDateValue = () => this._jsonNode as Date;
   public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
   public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
   public getDurationValue = () => Duration.parse(this.getStringValue());
