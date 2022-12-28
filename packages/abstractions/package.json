@@ -3,10 +3,6 @@
   "version": "1.0.0-preview.10",
   "description": "Core abstractions for kiota generated libraries in TypeScript and JavaScript",
   "main": "dist/cjs/src/index.js",
-  "files": [
-    "src",
-    "dist"
-  ],
   "module": "dist/es/src/index.js",
   "types": "dist/cjs/src/index.d.ts",
   "scripts": {
