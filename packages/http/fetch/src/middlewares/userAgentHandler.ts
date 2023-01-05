@@ -16,7 +16,7 @@ import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import { FetchRequestInit } from "../utils/fetchDefinitions";
 import { appendRequestHeader, getRequestHeader } from "../utils/headersUtil";
 import { Middleware } from "./middleware";
-import { UserAgentHandlerOption, UserAgentHandlerOptionKey } from "./options/userAgentHandlerOption";
+import { UserAgentHandlerOptions, UserAgentHandlerOptionsKey } from "./options/userAgentHandlerOptions";
 
 const USER_AGENT_HEADER_KEY = "User-Agent";
 export class UserAgentHandler implements Middleware {
@@ -26,7 +26,7 @@ export class UserAgentHandler implements Middleware {
 	 * To create an instance of UserAgentHandler
 	 * @param {UserAgentHandlerOption} [options = new UserAgentHandlerOption()] - The options for the middleware
 	 */
-	public constructor(private readonly _options: UserAgentHandlerOption = new UserAgentHandlerOption()) {}
+	public constructor(private readonly _options: UserAgentHandlerOptions = new UserAgentHandlerOptions()) {}
 	/** @inheritdoc */
 	next: Middleware | undefined;
 	/** @inheritdoc */
@@ -47,8 +47,8 @@ export class UserAgentHandler implements Middleware {
 	}
 	private async addValue(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption> | undefined): Promise<Response> {
 		let currentOptions = this._options;
-		if (requestOptions && requestOptions[UserAgentHandlerOptionKey]) {
-			currentOptions = requestOptions[UserAgentHandlerOptionKey] as UserAgentHandlerOption;
+		if (requestOptions && requestOptions[UserAgentHandlerOptionsKey]) {
+			currentOptions = requestOptions[UserAgentHandlerOptionsKey] as UserAgentHandlerOptions;
 		}
 		if (currentOptions.enable) {
 			const additionalValue = `${currentOptions.productName}/${currentOptions.productVersion}`;

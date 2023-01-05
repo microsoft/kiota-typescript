@@ -7,11 +7,11 @@
 
 import { RequestOption } from "@microsoft/kiota-abstractions";
 
-export const UserAgentHandlerOptionKey = "UserAgentHandlerOptionKey";
+export const UserAgentHandlerOptionsKey = "UserAgentHandlerOptionKey";
 
-export class UserAgentHandlerOption implements RequestOption {
+export class UserAgentHandlerOptions implements RequestOption {
 	getKey(): string {
-		return UserAgentHandlerOptionKey;
+		return UserAgentHandlerOptionsKey;
 	}
 	/**
 	 * @public
