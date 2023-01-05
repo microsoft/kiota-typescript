@@ -5,7 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "test:integrated": "mocha dist/cjs/tests/*.js"
+    "test:integrated": "mocha  --exit dist/cjs/tests/*.js"
   },
   "dependencies": {
     "@azure/identity": "^3.0.0",

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   DateOnly,
   Duration,
@@ -5,6 +6,7 @@ import {
   SerializationWriter,
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
+import { SerializerMethod } from "@microsoft/kiota-abstractions/dist/cjs/src/serialization/serializerMethod";
 
 export class TextSerializationWriter implements SerializationWriter {
   private static noStructuredDataMessage =
@@ -79,7 +81,8 @@ export class TextSerializationWriter implements SerializationWriter {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     key?: string,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    values?: T[]
+    values?: T[],
+    serializerMethod?: SerializerMethod<T>
   ): void => {
     throw new Error(TextSerializationWriter.noStructuredDataMessage);
   };
@@ -87,7 +90,8 @@ export class TextSerializationWriter implements SerializationWriter {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     key?: string,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    value?: T
+    value?: T,
+    serializerMethod?: SerializerMethod<T>
   ): void => {
     throw new Error(TextSerializationWriter.noStructuredDataMessage);
   };

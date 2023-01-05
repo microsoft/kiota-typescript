@@ -24,6 +24,9 @@
         "@microsoft/kiota-authentication-spfx": [
             "../authentication/spfx"
         ],
+        "@microsoft/kiota-serialization-form": [
+            "../serialization/form"
+        ],
     },
     "files": [],
     "references": [
@@ -35,6 +38,10 @@
         },
         {
             "path": "../serialization/text/tsconfig.cjs.json"
+        }
+        ,
+        {
+            "path": "../serialization/form/tsconfig.cjs.json"
         },
         {
             "path": "../http/fetch/tsconfig.cjs.json"

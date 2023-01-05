@@ -2,11 +2,11 @@ import { DateOnly, Duration, TimeOnly } from "@microsoft/kiota-abstractions";
 import { assert } from "chai";
 
 import { FormSerializationWriter } from "../../src";
-import { TestEntity } from "../testEntity";
+import { serializeTestEntity, TestEntity } from "../testEntity";
 
 describe("FormSerializationWriter", () => {
   it("writesSampleObjectValue", () => {
-    const testEntity = new TestEntity();
+    const testEntity = {} as TestEntity;
     testEntity.id = "48d31887-5fad-4d73-a9f5-3c356e68a038";
     testEntity.workDuration = new Duration({
       hours: 1,
@@ -19,12 +19,16 @@ describe("FormSerializationWriter", () => {
       month: 9,
       day: 4,
     });
-    testEntity.additionalData["mobilePhone"] = null;
-    testEntity.additionalData["accountEnabled"] = false;
-    testEntity.additionalData["jobTitle"] = "Author";
-    testEntity.additionalData["createdDateTime"] = new Date(0);
+    testEntity["mobilePhone"] = null;
+    testEntity["accountEnabled"] = false;
+    testEntity["jobTitle"] = "Author";
+    testEntity["createdDateTime"] = new Date(0);
     const formSerializationWriter = new FormSerializationWriter();
-    formSerializationWriter.writeObjectValue(undefined, testEntity);
+    formSerializationWriter.writeObjectValue(
+      undefined,
+      testEntity,
+      serializeTestEntity
+    );
     const formContent = formSerializationWriter.getSerializedContent();
     const form = new TextDecoder().decode(formContent);
     const expectedString =
@@ -39,7 +43,7 @@ describe("FormSerializationWriter", () => {
     assert.equal(form, expectedString);
   });
   it("writesSampleCollectionOfObjectValues", () => {
-    const testEntity = new TestEntity();
+    const testEntity = {} as TestEntity;
     testEntity.id = "48d31887-5fad-4d73-a9f5-3c356e68a038";
     testEntity.workDuration = new Duration({
       hours: 1,
@@ -52,10 +56,10 @@ describe("FormSerializationWriter", () => {
       month: 9,
       day: 4,
     });
-    testEntity.additionalData["mobilePhone"] = null;
-    testEntity.additionalData["accountEnabled"] = false;
-    testEntity.additionalData["jobTitle"] = "Author";
-    testEntity.additionalData["createdDateTime"] = new Date(0);
+    testEntity["mobilePhone"] = null;
+    testEntity["accountEnabled"] = false;
+    testEntity["jobTitle"] = "Author";
+    testEntity["createdDateTime"] = new Date(0);
     const formSerializationWriter = new FormSerializationWriter();
     assert.throw(() =>
       formSerializationWriter.writeCollectionOfObjectValues(undefined, [

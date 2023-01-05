@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
-  AdditionalDataHolder,
   DateOnly,
+  DeserializeMethod,
   Duration,
   Parsable,
   ParsableFactory,
@@ -63,23 +64,24 @@ export class FormParseNode implements ParseNode {
     );
   };
   public getCollectionOfObjectValues = <T extends Parsable>(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _type: ParsableFactory<T>
+    method: DeserializeMethod<T>
   ): T[] | undefined => {
     throw new Error(
       `serialization of collections is not supported with URI encoding`
     );
   };
-  public getObjectValue = <T extends Parsable>(type: ParsableFactory<T>): T => {
-    const result = type(this);
+  public getObjectValue = <T extends Parsable>(
+    deserializerFunction: DeserializeMethod<T>,
+    value: T = {} as T
+  ): T => {
     if (this.onBeforeAssignFieldValues) {
-      this.onBeforeAssignFieldValues(result);
+      this.onBeforeAssignFieldValues(value);
     }
-    this.assignFieldValues(result);
+    this.assignFieldValues(value, deserializerFunction);
     if (this.onAfterAssignFieldValues) {
-      this.onAfterAssignFieldValues(result);
+      this.onAfterAssignFieldValues(value);
     }
-    return result;
+    return value;
   };
   public getEnumValues = <T>(type: any): T[] => {
     const rawValues = this.getStringValue();
@@ -96,21 +98,19 @@ export class FormParseNode implements ParseNode {
       return undefined;
     }
   };
-  private assignFieldValues = <T extends Parsable>(item: T): void => {
-    const fields = item.getFieldDeserializers();
-    let itemAdditionalData: Record<string, unknown> | undefined;
-    const holder = item as unknown as AdditionalDataHolder;
-    if (holder && holder.additionalData) {
-      itemAdditionalData = holder.additionalData;
-    }
+  private assignFieldValues = <T extends Parsable>(
+    model: T,
+    deserializerFunction: (model: T) => Record<string, (n: ParseNode) => void>
+  ): void => {
+    const fields = deserializerFunction(model);
     Object.entries(this._fields)
       .filter((x) => !/^null$/i.test(x[1]))
       .forEach(([k, v]) => {
         const deserializer = fields[k];
         if (deserializer) {
           deserializer(new FormParseNode(v));
-        } else if (itemAdditionalData) {
-          itemAdditionalData[k] = v;
+        } else {
+          (model as Record<string, unknown>)[k] = v;
         }
       });
   };

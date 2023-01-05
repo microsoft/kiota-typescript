@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   DateOnly,
+  DeserializeMethod,
   Duration,
   Parsable,
   ParsableFactory,
@@ -24,6 +26,7 @@ export class TextParseNode implements ParseNode {
       this.text = this.text.substring(1, this.text.length - 2);
     }
   }
+
   public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
   public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
   public getStringValue = () => this.text;
@@ -49,16 +52,19 @@ export class TextParseNode implements ParseNode {
   public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
     throw new Error(TextParseNode.noStructuredDataMessage);
   };
-  public getCollectionOfObjectValues = <T extends Parsable>(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    type: ParsableFactory<T>
-  ): T[] | undefined => {
+  public getCollectionOfObjectValues<T extends Parsable>(
+    modelDeserializer: DeserializeMethod<T>
+  ): T[] | undefined {
     throw new Error(TextParseNode.noStructuredDataMessage);
-  };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public getObjectValue = <T extends Parsable>(type: ParsableFactory<T>): T => {
+  }
+
+  public getObjectValue<T extends Parsable>(
+    deserializerFunction: DeserializeMethod<T>,
+    value?: T
+  ): T {
     throw new Error(TextParseNode.noStructuredDataMessage);
-  };
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public getEnumValues = <T>(type: any): T[] => {
     throw new Error(TextParseNode.noStructuredDataMessage);

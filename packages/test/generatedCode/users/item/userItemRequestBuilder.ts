@@ -10,21 +10,27 @@ import {getPathParameters, RequestAdapter} from '@microsoft/kiota-abstractions';
  */
 export class UserItemRequestBuilder {
     /** The inferenceClassification property */
+    /** The inferenceClassification property */
     public get inferenceClassification(): InferenceClassificationRequestBuilder {
         return new InferenceClassificationRequestBuilder(this.pathParameters, this.requestAdapter);
     }
+    /** The mailFolders property */
     /** The mailFolders property */
     public get mailFolders(): MailFoldersRequestBuilder {
         return new MailFoldersRequestBuilder(this.pathParameters, this.requestAdapter);
     }
     /** The messages property */
+    /** The messages property */
     public get messages(): MessagesRequestBuilder {
         return new MessagesRequestBuilder(this.pathParameters, this.requestAdapter);
     }
     /** Path parameters for the request */
+    /** Path parameters for the request */
     private pathParameters: Record<string, unknown>;
     /** The request adapter to use to execute the requests. */
+    /** The request adapter to use to execute the requests. */
     private requestAdapter: RequestAdapter;
+    /** Url template to use to build the URL for the current request builder */
     /** Url template to use to build the URL for the current request builder */
     private urlTemplate: string;
     /**

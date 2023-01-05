@@ -6,7 +6,11 @@ import { Duration } from "./duration";
 import { HttpMethod } from "./httpMethod";
 import { RequestAdapter } from "./requestAdapter";
 import { RequestOption } from "./requestOption";
-import { Parsable, SerializationWriter } from "./serialization";
+import {
+  Parsable,
+  SerializationWriter,
+  SerializerMethod,
+} from "./serialization";
 import { TimeOnly } from "./timeOnly";
 
 /** This class represents an abstract HTTP request. */
@@ -109,7 +113,8 @@ export class RequestInformation {
   public setContentFromParsable = <T extends Parsable>(
     requestAdapter?: RequestAdapter | undefined,
     contentType?: string | undefined,
-    value?: T[] | T
+    value?: T[] | T,
+    serializerMethod?: SerializerMethod<T>
   ): void => {
     trace
       .getTracer(RequestInformation.tracerKey)
@@ -123,12 +128,18 @@ export class RequestInformation {
           if (!this.headers) {
             this.headers = {};
           }
+
           if (Array.isArray(value)) {
             span.setAttribute(RequestInformation.requestTypeKey, "object[]");
-            writer.writeCollectionOfObjectValues(undefined, value);
+            writer.writeCollectionOfObjectValues(
+              undefined,
+              value,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              serializerMethod!
+            );
           } else {
             span.setAttribute(RequestInformation.requestTypeKey, "object");
-            writer.writeObjectValue(undefined, value);
+            writer.writeObjectValue(undefined, value, serializerMethod);
           }
           this.setContentAndContentType(writer, contentType);
         } finally {

@@ -2,6 +2,7 @@ import { DateOnly } from "../dateOnly";
 import { Duration } from "../duration";
 import { TimeOnly } from "../timeOnly";
 import { Parsable } from "./parsable";
+import { SerializerMethod } from "./serializerMethod";
 
 /** Defines an interface for serialization of objects to a stream. */
 export interface SerializationWriter {
@@ -81,7 +82,8 @@ export interface SerializationWriter {
    */
   writeCollectionOfObjectValues<T extends Parsable>(
     key?: string | undefined,
-    values?: T[]
+    values?: T[],
+    serializerMethod?: SerializerMethod<T>
   ): void;
   /**
    * Writes the specified model object value to the stream with an optional given key.
@@ -90,8 +92,10 @@ export interface SerializationWriter {
    */
   writeObjectValue<T extends Parsable>(
     key?: string | undefined,
-    value?: T | undefined
+    value?: T | undefined,
+    serializerMethod?: SerializerMethod<T>
   ): void;
+
   /**
    * Writes the specified enum value to the stream with an optional given key.
    * @param key the key to write the value with.

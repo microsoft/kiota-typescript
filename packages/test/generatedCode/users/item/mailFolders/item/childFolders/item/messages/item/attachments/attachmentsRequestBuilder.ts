@@ -1,18 +1,24 @@
-import {Attachment, AttachmentCollectionResponse} from '../../../../../../../../../models/';
-import {createAttachmentCollectionResponseFromDiscriminatorValue} from '../../../../../../../../../models/createAttachmentCollectionResponseFromDiscriminatorValue';
-import {createAttachmentFromDiscriminatorValue} from '../../../../../../../../../models/createAttachmentFromDiscriminatorValue';
+import {Attachment} from '../../../../../../../../../models/attachment';
+import {AttachmentCollectionResponse} from '../../../../../../../../../models/attachmentCollectionResponse';
+import {deserializeIntoAttachment} from '../../../../../../../../../models/deserializeIntoAttachment';
+import {deserializeIntoAttachmentCollectionResponse} from '../../../../../../../../../models/deserializeIntoAttachmentCollectionResponse';
+import {serializeAttachment} from '../../../../../../../../../models/serializeAttachment';
+import {serializeAttachmentCollectionResponse} from '../../../../../../../../../models/serializeAttachmentCollectionResponse';
 import {AttachmentsRequestBuilderGetRequestConfiguration} from './attachmentsRequestBuilderGetRequestConfiguration';
 import {AttachmentsRequestBuilderPostRequestConfiguration} from './attachmentsRequestBuilderPostRequestConfiguration';
-import {getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
+import {DeserializeMethod, getPathParameters, HttpMethod, Parsable, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/mailFolders/{mailFolder-id}/childFolders/{mailFolder-id1}/messages/{message-id}/attachments
  */
 export class AttachmentsRequestBuilder {
     /** Path parameters for the request */
+    /** Path parameters for the request */
     private pathParameters: Record<string, unknown>;
     /** The request adapter to use to execute the requests. */
+    /** The request adapter to use to execute the requests. */
     private requestAdapter: RequestAdapter;
+    /** Url template to use to build the URL for the current request builder */
     /** Url template to use to build the URL for the current request builder */
     private urlTemplate: string;
     /**
@@ -63,7 +69,7 @@ export class AttachmentsRequestBuilder {
             requestInfo.addRequestHeaders(requestConfiguration.headers);
             requestInfo.addRequestOptions(requestConfiguration.options);
         }
-        requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body);
+        requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body as any, serializeAttachment);
         return requestInfo;
     };
     /**
@@ -77,7 +83,7 @@ export class AttachmentsRequestBuilder {
         const requestInfo = this.createGetRequestInformation(
             requestConfiguration
         );
-        return this.requestAdapter?.sendAsync<AttachmentCollectionResponse>(requestInfo, createAttachmentCollectionResponseFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
+        return this.requestAdapter?.sendAsync<AttachmentCollectionResponse>(requestInfo, deserializeIntoAttachmentCollectionResponse, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
     /**
      * Use this API to add an attachment to a message.  An attachment can be one of the following types: All these types of attachment resources are derived from the attachmentresource.  You can add an attachment to an existing message by posting to its attachments collection, or you can add an attachment to a message that is being created and sent on the fly. This operation limits the size of the attachment you can add to under 3 MB.
@@ -92,6 +98,6 @@ export class AttachmentsRequestBuilder {
         const requestInfo = this.createPostRequestInformation(
             body, requestConfiguration
         );
-        return this.requestAdapter?.sendAsync<Attachment>(requestInfo, createAttachmentFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
+        return this.requestAdapter?.sendAsync<Attachment>(requestInfo, deserializeIntoAttachment, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
 }

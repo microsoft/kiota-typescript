@@ -10,6 +10,7 @@
         "strictNullChecks": true,
         "forceConsistentCasingInFileNames": true,
 		"declaration": true,
-        "composite": true
+        "composite": true,
+        "lib": ["es6"]
 	}
 }

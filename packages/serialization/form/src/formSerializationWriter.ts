@@ -4,6 +4,7 @@ import {
   Duration,
   Parsable,
   SerializationWriter,
+  SerializerMethod,
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
 
@@ -73,8 +74,9 @@ export class FormSerializationWriter implements SerializationWriter {
     );
   };
   public writeObjectValue = <T extends Parsable>(
-    key?: string,
-    value?: T
+    key: string | undefined,
+    value: T | undefined,
+    serializerMethod: SerializerMethod<T>
   ): void => {
     if (++this.depth > 0) {
       throw new Error(
@@ -89,7 +91,7 @@ export class FormSerializationWriter implements SerializationWriter {
         this.onBeforeObjectSerialization(value);
       this.onStartObjectSerialization &&
         this.onStartObjectSerialization(value, this);
-      value.serialize(this);
+      serializerMethod(this, value);
       this.onAfterObjectSerialization && this.onAfterObjectSerialization(value);
       if (
         this.writer.length > 0 &&

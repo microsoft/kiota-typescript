@@ -1,8 +1,4 @@
-import {
-  Parsable,
-  ParseNode,
-  SerializationWriter,
-} from "@microsoft/kiota-abstractions";
+import { ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
 import { assert } from "chai";
 
 import { JsonParseNode } from "../../src/index";
@@ -13,44 +9,28 @@ describe("JsonParseNode", () => {
     assert.isDefined(jsonParseNode);
   });
   it("jsonParseNode:initializes", async () => {
-    class TestParser implements Parsable {
-      private _testCollection?: string[] | undefined;
-
-      public get testCollection() {
-        return this._testCollection;
-      }
-
-      public set testCollection(value: string[] | undefined) {
-        this._testCollection = value;
-      }
-
-      getFieldDeserializers(): Record<string, (node: ParseNode) => void> {
-        return {
-          testCollection: (n) => {
-            this.testCollection = n.getCollectionOfPrimitiveValues<string>();
-          },
-        };
-      }
-      serialize(writer: SerializationWriter): void {
-        if (!writer) throw new Error("writer cannot be undefined");
-        writer.writeCollectionOfPrimitiveValues<string>(
-          "testCollection",
-          this.testCollection
-        );
-      }
+    interface TestParser {
+      testCollection?: string[] | undefined;
     }
 
-    function factory(parseNode: ParseNode | undefined): TestParser {
-      if (!parseNode) throw new Error("parseNode cannot be undefined");
-      return new TestParser();
+    function deserializeTestParser(
+      testParser: TestParser | undefined = {}
+    ): Record<string, (node: ParseNode) => void> {
+      return {
+        testCollection: (n) => {
+          testParser.testCollection = n.getCollectionOfPrimitiveValues();
+        },
+      };
     }
 
-    const result = new JsonParseNode(null).getObjectValue(factory);
+    const result = new JsonParseNode(null).getObjectValue(
+      deserializeTestParser
+    );
     assert.isDefined(result);
 
     const stringValueResult = new JsonParseNode({
       testCollection: ["2", "3"],
-    }).getObjectValue(factory);
+    }).getObjectValue(deserializeTestParser) as TestParser;
     assert.equal(stringValueResult.testCollection?.length, 2);
     assert.equal(stringValueResult.testCollection?.shift(), "2");
   });

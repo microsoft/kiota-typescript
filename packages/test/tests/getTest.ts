@@ -10,7 +10,7 @@ describe("TestGet", () => {
         assert.isDefined(messages?.value);
     });
     it("should decode query parameters", async () => {
-        const qs = new MessagesRequestBuilderGetQueryParameters();
+        const qs = {} as MessagesRequestBuilderGetQueryParameters;
         qs.select = ["subject"];
         qs.search = "test";
         qs.count = true;

@@ -1,9 +1,8 @@
 import {
-  AdditionalDataHolder,
   DateOnly,
+  DeserializeMethod,
   Duration,
   Parsable,
-  ParsableFactory,
   ParseNode,
   TimeOnly,
   toFirstCharacterUpper,
@@ -51,23 +50,44 @@ export class JsonParseNode implements ParseNode {
       }
     });
   };
+
   public getCollectionOfObjectValues = <T extends Parsable>(
-    type: ParsableFactory<T>
+    method: DeserializeMethod<T>
   ): T[] | undefined => {
     return (this._jsonNode as unknown[])
       .map((x) => new JsonParseNode(x))
-      .map((x) => x.getObjectValue<T>(type));
+      .map((x) => x.getObjectValue<T>(method)); // test this
   };
-  public getObjectValue = <T extends Parsable>(type: ParsableFactory<T>): T => {
-    const result = type(this);
+
+  public getObjectValue = <T extends Parsable>(
+    deserializerFunction: DeserializeMethod<T>,
+    value: T = {} as T
+  ): T => {
     if (this.onBeforeAssignFieldValues) {
-      this.onBeforeAssignFieldValues(result);
+      this.onBeforeAssignFieldValues(value);
     }
-    this.assignFieldValues(result);
+    this.assignFieldValues(value, deserializerFunction);
     if (this.onAfterAssignFieldValues) {
-      this.onAfterAssignFieldValues(result);
+      this.onAfterAssignFieldValues(value);
     }
-    return result;
+    return value;
+  };
+
+  private assignFieldValues = <T extends Parsable>(
+    model: T,
+    deserializerFunction: (model: T) => Record<string, (n: ParseNode) => void>
+  ): void => {
+    const fields = deserializerFunction(model);
+
+    if (!this._jsonNode) return;
+    Object.entries(this._jsonNode as any).forEach(([k, v]) => {
+      const deserializer = fields[k];
+      if (deserializer) {
+        deserializer(new JsonParseNode(v));
+      } else {
+        (model as Record<string, unknown>)[k] = v;
+      }
+    });
   };
   public getEnumValues = <T>(type: any): T[] => {
     const rawValues = this.getStringValue();
@@ -83,22 +103,5 @@ export class JsonParseNode implements ParseNode {
     } else {
       return undefined;
     }
-  };
-  private assignFieldValues = <T extends Parsable>(item: T): void => {
-    const fields = item.getFieldDeserializers();
-    let itemAdditionalData: Record<string, unknown> | undefined;
-    const holder = item as unknown as AdditionalDataHolder;
-    if (holder && holder.additionalData) {
-      itemAdditionalData = holder.additionalData;
-    }
-    if (!this._jsonNode) return;
-    Object.entries(this._jsonNode as any).forEach(([k, v]) => {
-      const deserializer = fields[k];
-      if (deserializer) {
-        deserializer(new JsonParseNode(v));
-      } else if (itemAdditionalData) {
-        itemAdditionalData[k] = v;
-      }
-    });
   };
 }

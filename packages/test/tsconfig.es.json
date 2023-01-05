@@ -16,6 +16,9 @@
             "path": "../serialization/text/tsconfig.es.json"
         },
         {
+            "path": "../serialization/form/tsconfig.es.json"
+        },
+        {
             "path": "../http/fetch/tsconfig.es.json"
         },
         {
@@ -46,6 +49,9 @@
             "../authentication/azure"
         ],"@microsoft/kiota-authentication-spfx": [
             "../authentication/spfx"
+        ],
+        "@microsoft/kiota-serialization-form": [
+            "../serialization/form"
         ],
     },
 	"include": ["./generatedCode/**/*.ts", "./tests/**/*.ts"]
