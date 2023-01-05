@@ -51,9 +51,10 @@ export const setRequestHeader = (options: FetchRequestInit | undefined, key: str
  * @param {FetchOptions|undefined} options - The request options object
  * @param {string} key - The header key string
  * @param {string } value - The header value string
+ * @param {string} separator - The separator string
  * @returns Nothing
  */
-export const appendRequestHeader = (options: FetchRequestInit | undefined, key: string, value: string): void => {
+export const appendRequestHeader = (options: FetchRequestInit | undefined, key: string, value: string, separator = ", "): void => {
 	if (options) {
 		if (!options.headers) {
 			options.headers = {};
@@ -61,7 +62,7 @@ export const appendRequestHeader = (options: FetchRequestInit | undefined, key: 
 		if (!options.headers[key]) {
 			options.headers[key] = value;
 		} else {
-			options.headers[key] += `, ${value}`;
+			options.headers[key] += `${separator}${value}`;
 		}
 	}
 };
