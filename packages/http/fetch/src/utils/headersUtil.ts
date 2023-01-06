@@ -14,7 +14,6 @@ import { FetchRequestInit } from "./fetchDefinitions";
 /**
  * @constant
  * To get the request header from the request
- * @param {RequestInfo} request - The request object or the url string
  * @param {FetchOptions|undefined} options - The request options object
  * @param {string} key - The header key string
  * @returns A header value for the given key from the request
@@ -29,7 +28,6 @@ export const getRequestHeader = (options: FetchRequestInit | undefined, key: str
 /**
  * @constant
  * To set the header value to the given request
- * @param {RequestInfo} request - The request object or the url string
  * @param {FetchOptions|undefined} options - The request options object
  * @param {string} key - The header key string
  * @param {string } value - The header value string
@@ -47,7 +45,6 @@ export const setRequestHeader = (options: FetchRequestInit | undefined, key: str
 /**
  * @constant
  * To append the header value to the given request
- * @param {RequestInfo} request - The request object or the url string
  * @param {FetchOptions|undefined} options - The request options object
  * @param {string} key - The header key string
  * @param {string } value - The header value string
