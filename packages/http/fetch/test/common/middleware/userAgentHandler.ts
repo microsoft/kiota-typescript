@@ -1,8 +1,14 @@
 import { assert } from "chai";
 
 import { UserAgentHandler, UserAgentHandlerOptions } from "../../../src";
+import { getResponse } from "../../testUtils";
 import { DummyFetchHandler } from "./dummyFetchHandler";
 
+// eslint-disable-next-line no-var
+var Response = Response;
+if (typeof Response !== "object") {
+	Response = getResponse();
+}
 describe("userAgentHandler.ts", function () {
 	const dummyFetchHandler = new DummyFetchHandler();
 	describe("adds the user agent product", async () => {
