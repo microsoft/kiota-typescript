@@ -454,4 +454,18 @@ export class FetchRequestAdapter implements RequestAdapter {
 			return value.reduce((acc, val) => acc + val, ",");
 		}
 	};
+	/**
+	 * @inheritdoc
+	 */
+	public convertToNativeRequestAsync = async <T>(requestInfo: RequestInformation): Promise<T> => {
+		if (!requestInfo) {
+			throw new Error("requestInfo cannot be null");
+		}
+		await this.authenticationProvider.authenticateRequest(requestInfo, undefined);
+
+		return this.startTracingSpan(requestInfo, "convertToNativeRequestAsync", async (span) => {
+			const request = await this.getRequestFromRequestInformation(requestInfo, span);
+			return request as any as T;
+		});
+	};
 }
