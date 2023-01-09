@@ -1,0 +1,71 @@
+name: Build and test a Kiota generated SDK with packages
+on:
+  workflow_dispatch:
+    inputs:
+      KIOTA_BRANCH:
+        required: true
+        description: 'Branch to build kiota from'
+        type: string
+        default: 'nikithauc/model-as-interfaces'
+      KIOTA_REP0:
+        required: true
+        description: 'Repo to build kiota from'
+        type: string
+        default: 'https://github.com/microsoft/kiota.git'
+      OPEN_API_DEF:
+        required: true
+        description: 'OpenAPI definition to build test SDK for'
+        type: string
+        default: 'https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/master/openapi/v1.0/openapi.yaml'
+
+  push:
+    branches: [ nikithauc/model-interface-serialization ]
+  pull_request:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        environment:
+          name: build_test
+        env:
+          TENANT_ID: ${{ secrets.TENANT_ID }}
+        strategy:
+          matrix:
+            node-version: [14.x, 16.x, 18.x]
+        steps:
+        # download kiota
+        - run: git clone --branch ${{ inputs.KIOTA_BRANCH }} --single-branch ${{ inputs.KIOTA_REPO }} kiota_tool
+        # build kiota
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v3
+          with:
+            dotnet-version: 7.0.x
+        - name: Build Kiota tool for linux-x64
+          run: dotnet publish ./kiota_tool/src/kiota/kiota.csproj -c Release -p:PublishSingleFile=true -r linux-x64 -o ./kiota-linux-x64
+        - run: chmod +x ./kiota_tool/kiota
+        # use kiota to generate an SDK into the test folder
+        - run: ./kiota-tool/kiota generate --open-api ${{ inputs.OPEN_API_DEF }} -l typescript --output ./packages/test/generatedCode --clean-output
+        - uses: actions/checkout@v3
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+        - run: yarn install --frozen-lockfile --ignore-engines #spfx still not compatible with node 18
+        - run: yarn global add mocha@10.X
+        - name: Archive dist folders # archive dist folders to verify if they are transpiled correctly and available for publishing
+          uses: actions/upload-artifact@v3
+          with:
+            name: dist folders
+            path: |
+              packages/abstractions/dist
+              packages/serialization/json/dist
+              packages/serialization/text/dist
+              packages/http/fetch/dist
+              packages/authentication/azure/dist
+        - run: yarn lerna run test:integrated
+          if: ${{env.TENANT_ID != '' }}
+          env:
+              TENANT_ID:  ${{secrets.tenant_id}}
+              CLIENT_ID: ${{secrets.client_id}}
+              CLIENT_SECRET: ${{secrets.client_secret}}
+        - run: yarn lerna run test --parallel
