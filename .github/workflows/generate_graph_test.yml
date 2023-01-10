@@ -34,7 +34,7 @@ jobs:
             node-version: [14.x, 16.x, 18.x]
         steps:
         # download kiota
-        - run: git clone --branch ${{ inputs.KIOTA_BRANCH }} --single-branch ${{ inputs.KIOTA_REPO }} kiota_tool
+        - run: git clone --branch ${{ github.event.inputs.KIOTA_BRANCH }} --single-branch ${{ github.event.inputs.KIOTA_REPO }} kiota_tool
         # build kiota
         - name: Setup .NET
           uses: actions/setup-dotnet@v3
@@ -44,7 +44,7 @@ jobs:
           run: dotnet publish ./kiota_tool/src/kiota/kiota.csproj -c Release -p:PublishSingleFile=true -r linux-x64 -o ./kiota-linux-x64
         - run: chmod +x ./kiota_tool/kiota
         # use kiota to generate an SDK into the test folder
-        - run: ./kiota-tool/kiota generate --open-api ${{ inputs.OPEN_API_DEF }} -l typescript --output ./packages/test/generatedCode --clean-output
+        - run: ./kiota-tool/kiota generate --open-api ${{ github.event.inputs.OPEN_API_DEF }} -l typescript --output ./packages/test/generatedCode --clean-output
         - uses: actions/checkout@v3
         - name: Use Node.js ${{ matrix.node-version }}
           uses: actions/setup-node@v3
