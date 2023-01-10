@@ -6,7 +6,7 @@ on:
         description: 'Branch to build kiota from'
         type: string
         default: 'nikithauc/model-as-interfaces'
-      KIOTA_REP0:
+      KIOTA_REPO:
         description: 'Repo to build kiota from'
         type: string
         default: 'https://github.com/microsoft/kiota.git'
@@ -21,7 +21,7 @@ on:
 
 env:
   KIOTA_BRANCH: 'nikithauc/model-as-interfaces'
-  KIOTA_REP0: 'https://github.com/microsoft/kiota.git'
+  KIOTA_REPO: 'https://github.com/microsoft/kiota.git'
   OPEN_API_DEF: 'https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/master/openapi/v1.0/openapi.yaml'
 
 jobs:
@@ -41,6 +41,7 @@ jobs:
 
         - run: git clone --branch ${{ env.KIOTA_BRANCH }} --single-branch ${{ env.KIOTA_REPO }} kiota_tool
           if: ${{ !inputs.KIOTA_BRANCH }}
+
         # build kiota
         - name: Setup .NET
           uses: actions/setup-dotnet@v3
