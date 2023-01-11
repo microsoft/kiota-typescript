@@ -62,17 +62,20 @@ jobs:
             node-version: ${{ matrix.node-version }}
         - run: yarn install --frozen-lockfile --ignore-engines #spfx still not compatible with node 18
         - run: yarn global add mocha@10.X
-        - run: yarn build
-        - name: Archive dist folders # archive dist folders to verify if they are transpiled correctly and available for publishing
-          uses: actions/upload-artifact@v3
+        # build the sample generated SDK code only
+        - run: yarn build:sdk
+        # analyze size of generated bundle for SDK.
+        - name: Package size report
+          uses: pkg-size/action@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
-            name: dist folders
-            path: |
-              packages/abstractions/dist
-              packages/serialization/json/dist
-              packages/serialization/text/dist
-              packages/http/fetch/dist
-              packages/authentication/azure/dist
+            working-directory: packages/test
+            mode: head-only
+            hide-files: '*.{js,css}.map' # Set a glob to filter out irrelevant files
+            unchanged-files: show
+            display-size: uncompressed, gzip, brotli
+        - run: yarn build
         - run: yarn lerna run test:integrated
           if: ${{env.TENANT_ID != '' }}
           env:
