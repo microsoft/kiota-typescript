@@ -62,6 +62,7 @@ jobs:
             node-version: ${{ matrix.node-version }}
         - run: yarn install --frozen-lockfile --ignore-engines #spfx still not compatible with node 18
         - run: yarn global add mocha@10.X
+        - run: yarn build
         - name: Archive dist folders # archive dist folders to verify if they are transpiled correctly and available for publishing
           uses: actions/upload-artifact@v3
           with:
