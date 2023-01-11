@@ -67,11 +67,12 @@ jobs:
         - run: yarn build:sdk
         # analyze size of generated bundle for SDK.
         - name: Package size report
-          run: echo "PKG_DATA=$(npm pack --json -dry-run)" >> $GITHUB_ENV
+          run: |
+            PKG_DATA=$(npm pack --json -dry-run)
+            echo "FILE_COUNT=$(echo $PKG_DATA | jq .[0].entryCount)" >> $GITHUB_ENV
+            echo "UNPACKED=$(echo $PKG_DATA | jq .[0].unpackedSize)" >> $GITHUB_ENV
+            echo "SIZE=$(echo $PKG_DATA | jq .[0].size)" >> $GITHUB_ENV
           working-directory: packages/test
-        - run: echo "FILE_COUNT=$(echo $PKG_DATA | jq .[0].entryCount)" >> $GITHUB_ENV
-        - run: echo "UNPACKED=$(echo $PKG_DATA | jq .[0].unpackedSize)" >> $GITHUB_ENV
-        - run: echo "SIZE=$(echo $PKG_DATA | jq .[0].size)" >> $GITHUB_ENV
         - name: Comment PR
           uses: thollander/actions-comment-pull-request@v1
           with:
