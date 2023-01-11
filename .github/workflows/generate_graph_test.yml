@@ -62,6 +62,7 @@ jobs:
             node-version: ${{ matrix.node-version }}
         - run: yarn install --frozen-lockfile --ignore-engines #spfx still not compatible with node 18
         - run: yarn global add mocha@10.X
+        - run: yarn build
         # build the sample generated SDK code only
         - run: yarn build:sdk
         # analyze size of generated bundle for SDK.
