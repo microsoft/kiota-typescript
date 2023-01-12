@@ -33,7 +33,7 @@ jobs:
           TENANT_ID: ${{ secrets.TENANT_ID }}
         strategy:
           matrix:
-            node-version: [14.x, 16.x, 18.x]
+            node-version: [18.x]
         steps:
         # download kiota
         - run: git clone --branch ${{ github.event.inputs.KIOTA_BRANCH }} --single-branch ${{ github.event.inputs.KIOTA_REPO }} kiota_tool
