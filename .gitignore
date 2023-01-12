@@ -2,3 +2,5 @@ node_modules/
 dist/
 *.tgz
 lib/
+kiota-linux-x64/
+kiota_tool/
