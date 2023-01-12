@@ -71,14 +71,22 @@ jobs:
           run: |
             PKG_DATA=$(npm pack --json -dry-run)
             echo "FILE_COUNT=$(echo $PKG_DATA | jq .[0].entryCount)" >> $GITHUB_ENV
+            UNPACKED_B=$(echo $PKG_DATA | jq .[0].unpackedSize)
+            tmp=$echo "scale=2 ; $UNPACKED_B / 1024" | bc)
+            echo "UNPACKED=$tmp" >> $GITHUB_ENV
             echo "UNPACKED=$(echo $PKG_DATA | jq .[0].unpackedSize)" >> $GITHUB_ENV
-            echo "SIZE=$(echo $PKG_DATA | jq .[0].size)" >> $GITHUB_ENV
+            SIZE_B=$(echo $PKG_DATA | jq .[0].size)
+            tmp=$echo "scale=2 ; $SIZE_B / 1024" | bc)
+            echo "SIZE=$tmp" >> $GITHUB_ENV
             echo "PKG_NAME=$(echo $PKG_DATA | jq .[0].name)" >> $GITHUB_ENV
             echo $PKG_DATA
         - name: Comment PR
           uses: thollander/actions-comment-pull-request@v1
           with:
-            message: 'The generated ${{ env.PKG_NAME }} SDK package contains ${{ env.FILE_COUNT }} files and is ${{ env.SIZE }} bytes (${{ env.UNPACKED }} when unpacked)'
+            message: 'Generated ${{ env.PKG_NAME }} SDK package:
+              | File count | Size (Kb) | Unpacked (Kb) |
+              | ---------- | --------- | ------------- |
+              | ${{ env.FILE_COUNT }} | ${{ env.SIZE }} | ${{ env.UNPACKED }}|'
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         - run: yarn build
         - run: yarn lerna run test:integrated
