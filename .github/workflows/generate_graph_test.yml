@@ -35,6 +35,11 @@ jobs:
           matrix:
             node-version: [18.x]
         steps:
+        - uses: actions/checkout@v3
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
         # download kiota
         - run: git clone --branch ${{ github.event.inputs.KIOTA_BRANCH }} --single-branch ${{ github.event.inputs.KIOTA_REPO }} kiota_tool
           if: ${{ inputs.KIOTA_BRANCH }}
@@ -51,15 +56,11 @@ jobs:
           run: dotnet publish ./kiota_tool/src/kiota/kiota.csproj -c Release -p:PublishSingleFile=true -r linux-x64 -o ./kiota-linux-x64 --self-contained
         - run: chmod +x ./kiota-linux-x64/kiota
         # use kiota to generate an SDK into the test folder
-        - run: ./kiota-linux-x64/kiota generate --openapi ${{ github.event.inputs.OPEN_API_DEF }} -l typescript --output ./packages/test/generatedCode --clean-output --log-level trace
+        - run: ./kiota-linux-x64/kiota generate --openapi ${{ github.event.inputs.OPEN_API_DEF }} -l typescript --output packages/test/generatedCode --clean-output --log-level debug
           if: ${{ inputs.KIOTA_BRANCH }}
-        - run: ./kiota-linux-x64/kiota generate --openapi ${{ env.OPEN_API_DEF }} -l typescript --output ./packages/test/generatedCode --clean-output --log-level trace
+        - run: ./kiota-linux-x64/kiota generate --openapi ${{ env.OPEN_API_DEF }} -l typescript --output packages/test/generatedCode --clean-output --log-level debug
           if: ${{ !inputs.KIOTA_BRANCH }}
-        - uses: actions/checkout@v3
-        - name: Use Node.js ${{ matrix.node-version }}
-          uses: actions/setup-node@v3
-          with:
-            node-version: ${{ matrix.node-version }}
+
         - run: yarn install --frozen-lockfile --ignore-engines #spfx still not compatible with node 18
         - run: yarn global add mocha@10.X
         - run: yarn build
