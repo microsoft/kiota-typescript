@@ -81,12 +81,13 @@ jobs:
             echo "Raw npm pack stats:"
             echo $PKG_DATA
         - name: Comment PR
-          uses: thollander/actions-comment-pull-request@v1
+          uses: thollander/actions-comment-pull-request@v2
           with:
-            message: 'Generated ${{ env.PKG_NAME }} SDK package:
+            message: |
+              Generated ${{ env.PKG_NAME }} SDK package:
               | File count | Size (Kb) | Unpacked (Kb) |
               | ---------- | --------- | ------------- |
-              | ${{ env.FILE_COUNT }} | ${{ env.SIZE }} | ${{ env.UNPACKED }}|'
+              | ${{ env.FILE_COUNT }} | ${{ env.SIZE }} | ${{ env.UNPACKED }} |
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         - run: yarn build
         - run: yarn lerna run test:integrated
