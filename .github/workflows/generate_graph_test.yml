@@ -67,16 +67,18 @@ jobs:
         - run: yarn build:sdk
         # analyze size of generated bundle for SDK.
         - name: Package size report
+          working-directory: ./packages/test
           run: |
             PKG_DATA=$(npm pack --json -dry-run)
             echo "FILE_COUNT=$(echo $PKG_DATA | jq .[0].entryCount)" >> $GITHUB_ENV
             echo "UNPACKED=$(echo $PKG_DATA | jq .[0].unpackedSize)" >> $GITHUB_ENV
             echo "SIZE=$(echo $PKG_DATA | jq .[0].size)" >> $GITHUB_ENV
-          working-directory: packages/test
+            echo "PKG_NAME=$(echo $PKG_DATA | jq .[0].name)" >> $GITHUB_ENV
+            echo $PKG_DATA
         - name: Comment PR
           uses: thollander/actions-comment-pull-request@v1
           with:
-            message: 'The generated SDK package contains ${{ env.FILE_COUNT }} files and is ${{ env.SIZE }} bytes (${{ env.UNPACKED }} when unpacked))'
+            message: 'The generated ${{ env.PKG_NAME }} SDK package contains ${{ env.FILE_COUNT }} files and is ${{ env.SIZE }} bytes (${{ env.UNPACKED }} when unpacked)'
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         - run: yarn build
         - run: yarn lerna run test:integrated
