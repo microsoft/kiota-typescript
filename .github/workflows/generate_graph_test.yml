@@ -89,7 +89,6 @@ jobs:
               | ---------- | --------- | ------------- |
               | ${{ env.FILE_COUNT }} | ${{ env.SIZE }} | ${{ env.UNPACKED }} |
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        - run: yarn build
         - run: yarn lerna run test:integrated
           if: ${{env.TENANT_ID != '' }}
           env:
