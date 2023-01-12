@@ -15,5 +15,8 @@
     "@microsoft/kiota-serialization-form": "^1.0.0-preview.1",
     "@microsoft/kiota-serialization-json": "^1.0.0-preview.8",
     "@microsoft/kiota-serialization-text": "^1.0.0-preview.7"
-  }
+  },
+  "files": [
+    "lib/"
+  ]
 }
