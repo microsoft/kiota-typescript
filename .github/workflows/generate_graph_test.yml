@@ -51,9 +51,9 @@ jobs:
           run: dotnet publish ./kiota_tool/src/kiota/kiota.csproj -c Release -p:PublishSingleFile=true -r linux-x64 -o ./kiota-linux-x64 --self-contained
         - run: chmod +x ./kiota-linux-x64/kiota
         # use kiota to generate an SDK into the test folder
-        - run: ./kiota-linux-x64/kiota generate --openapi ${{ github.event.inputs.OPEN_API_DEF }} -l typescript --output ./packages/test/generatedCode --clean-output
+        - run: ./kiota-linux-x64/kiota generate --openapi ${{ github.event.inputs.OPEN_API_DEF }} -l typescript --output ./packages/test/generatedCode --clean-output --log-level trace
           if: ${{ inputs.KIOTA_BRANCH }}
-        - run: ./kiota-linux-x64/kiota generate --openapi ${{ env.OPEN_API_DEF }} -l typescript --output ./packages/test/generatedCode --clean-output
+        - run: ./kiota-linux-x64/kiota generate --openapi ${{ env.OPEN_API_DEF }} -l typescript --output ./packages/test/generatedCode --clean-output --log-level trace
           if: ${{ !inputs.KIOTA_BRANCH }}
         - uses: actions/checkout@v3
         - name: Use Node.js ${{ matrix.node-version }}
@@ -89,6 +89,7 @@ jobs:
               | ---------- | --------- | ------------- |
               | ${{ env.FILE_COUNT }} | ${{ env.SIZE }} | ${{ env.UNPACKED }} |
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            comment_tag: package-stats
         - run: yarn lerna run test:integrated
           if: ${{env.TENANT_ID != '' }}
           env:
