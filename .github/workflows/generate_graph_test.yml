@@ -76,9 +76,10 @@ jobs:
             echo "UNPACKED=$tmp" >> $GITHUB_ENV
             echo "UNPACKED=$(echo $PKG_DATA | jq .[0].unpackedSize)" >> $GITHUB_ENV
             SIZE_B=$(echo $PKG_DATA | jq .[0].size)
-            tmp=$echo "scale=2 ; $SIZE_B / 1024" | bc)
+            tmp=$(echo "scale=2 ; $SIZE_B / 1024" | bc)
             echo "SIZE=$tmp" >> $GITHUB_ENV
             echo "PKG_NAME=$(echo $PKG_DATA | jq .[0].name)" >> $GITHUB_ENV
+            echo "Raw npm pack stats:"
             echo $PKG_DATA
         - name: Comment PR
           uses: thollander/actions-comment-pull-request@v1
