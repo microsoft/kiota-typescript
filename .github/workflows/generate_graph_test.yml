@@ -40,8 +40,6 @@ jobs:
           uses: actions/setup-node@v3
           with:
             node-version: ${{ matrix.node-version }}
-        # increase heap allocation to try to avoid OOM errors during build
-        - run: export NODE_OPTIONS=--max-old-space-size=6144
         # download kiota
         - run: git clone --branch ${{ github.event.inputs.KIOTA_BRANCH }} --single-branch ${{ github.event.inputs.KIOTA_REPO }} kiota_tool
           if: ${{ inputs.KIOTA_BRANCH }}
@@ -66,9 +64,15 @@ jobs:
         - run: yarn install --frozen-lockfile --ignore-engines #spfx still not compatible with node 18
         - run: yarn global add mocha@10.X
         - run: yarn tsc:version
-        - run: yarn build
+        - name: yarn build
+          env:
+            NODE_OPTIONS: "--max_old_space_size=9182"
+          run: yarn build
         # build the sample generated SDK code only
-        - run: yarn build:sdk
+        - name: yarn build:sdk
+          env:
+            NODE_OPTIONS: "--max_old_space_size=9182"
+          run: yarn build:sdk
         # analyze size of generated bundle for SDK.
         - name: Package size report
           working-directory: ./packages/test
