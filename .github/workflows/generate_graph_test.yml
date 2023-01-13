@@ -40,6 +40,8 @@ jobs:
           uses: actions/setup-node@v3
           with:
             node-version: ${{ matrix.node-version }}
+        # increase heap allocation to try to avoid OOM errors during build
+        - run: export NODE_OPTIONS=--max-old-space-size=4096
         # download kiota
         - run: git clone --branch ${{ github.event.inputs.KIOTA_BRANCH }} --single-branch ${{ github.event.inputs.KIOTA_REPO }} kiota_tool
           if: ${{ inputs.KIOTA_BRANCH }}
