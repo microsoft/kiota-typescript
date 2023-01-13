@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   DateOnly,
-  DeserializeMethod,
   Duration,
   Parsable,
   ParsableFactory,
@@ -64,20 +63,20 @@ export class FormParseNode implements ParseNode {
     );
   };
   public getCollectionOfObjectValues = <T extends Parsable>(
-    method: DeserializeMethod<T>
+    parsableFactory: ParsableFactory<T>
   ): T[] | undefined => {
     throw new Error(
       `serialization of collections is not supported with URI encoding`
     );
   };
   public getObjectValue = <T extends Parsable>(
-    deserializerFunction: DeserializeMethod<T>,
+    parsableFactory: ParsableFactory<T>,
     value: T = {} as T
   ): T => {
     if (this.onBeforeAssignFieldValues) {
       this.onBeforeAssignFieldValues(value);
     }
-    this.assignFieldValues(value, deserializerFunction);
+    this.assignFieldValues(value, parsableFactory);
     if (this.onAfterAssignFieldValues) {
       this.onAfterAssignFieldValues(value);
     }
@@ -100,9 +99,9 @@ export class FormParseNode implements ParseNode {
   };
   private assignFieldValues = <T extends Parsable>(
     model: T,
-    deserializerFunction: (model: T) => Record<string, (n: ParseNode) => void>
+    parsableFactory: ParsableFactory<T>
   ): void => {
-    const fields = deserializerFunction(model);
+    const fields = parsableFactory(this);
     Object.entries(this._fields)
       .filter((x) => !/^null$/i.test(x[1]))
       .forEach(([k, v]) => {

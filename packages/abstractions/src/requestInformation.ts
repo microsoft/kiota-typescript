@@ -7,9 +7,9 @@ import { HttpMethod } from "./httpMethod";
 import { RequestAdapter } from "./requestAdapter";
 import { RequestOption } from "./requestOption";
 import {
+  ModelSerializerFunction,
   Parsable,
   SerializationWriter,
-  SerializerMethod,
 } from "./serialization";
 import { TimeOnly } from "./timeOnly";
 
@@ -114,7 +114,7 @@ export class RequestInformation {
     requestAdapter?: RequestAdapter | undefined,
     contentType?: string | undefined,
     value?: T[] | T,
-    serializerMethod?: SerializerMethod<T>
+    modelSerializerFunction?: ModelSerializerFunction<T>
   ): void => {
     trace
       .getTracer(RequestInformation.tracerKey)
@@ -135,11 +135,11 @@ export class RequestInformation {
               undefined,
               value,
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              serializerMethod!
+              modelSerializerFunction!
             );
           } else {
             span.setAttribute(RequestInformation.requestTypeKey, "object");
-            writer.writeObjectValue(undefined, value, serializerMethod);
+            writer.writeObjectValue(undefined, value, modelSerializerFunction);
           }
           this.setContentAndContentType(writer, contentType);
         } finally {

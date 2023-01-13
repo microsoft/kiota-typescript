@@ -1,10 +1,6 @@
 import { RequestInformation } from "./requestInformation";
 import { ResponseHandler } from "./responseHandler";
-import {
-  DeserializeMethod,
-  Parsable,
-  SerializationWriterFactory,
-} from "./serialization";
+import { ParsableFactory, Parsable, SerializationWriterFactory } from "./serialization";
 import { BackingStoreFactory } from "./store";
 
 /** Service responsible for translating abstract Request Info into concrete native HTTP requests. */
@@ -25,9 +21,9 @@ export interface RequestAdapter {
    */
   sendAsync<ModelType extends Parsable>(
     requestInfo: RequestInformation,
-    deserializerMethod: DeserializeMethod<ModelType>,
+    type: ParsableFactory<ModelType>,
     responseHandler: ResponseHandler | undefined,
-    errorMappings: Record<string, DeserializeMethod<Parsable>> | undefined
+    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
   ): Promise<ModelType | undefined>;
   /**
    * Excutes the HTTP request specified by the given RequestInformation and returns the deserialized response model collection.
@@ -40,9 +36,9 @@ export interface RequestAdapter {
    */
   sendCollectionAsync<ModelType extends Parsable>(
     requestInfo: RequestInformation,
-    deserializerMethod: DeserializeMethod<ModelType>,
+    type: ParsableFactory<ModelType>,
     responseHandler: ResponseHandler | undefined,
-    errorMappings: Record<string, DeserializeMethod<any>> | undefined
+    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
   ): Promise<ModelType[] | undefined>;
   /**
    * Excutes the HTTP request specified by the given RequestInformation and returns the deserialized response model collection.
@@ -58,7 +54,7 @@ export interface RequestAdapter {
     requestInfo: RequestInformation,
     responseType: "string" | "number" | "boolean" | "Date",
     responseHandler: ResponseHandler | undefined,
-    errorMappings: Record<string, DeserializeMethod<Parsable>> | undefined
+    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
   ): Promise<ResponseType[] | undefined>;
   /**
    * Excutes the HTTP request specified by the given RequestInformation and returns the deserialized primitive response model.
@@ -73,7 +69,7 @@ export interface RequestAdapter {
     requestInfo: RequestInformation,
     responseType: "string" | "number" | "boolean" | "Date" | "ArrayBuffer",
     responseHandler: ResponseHandler | undefined,
-    errorMappings: Record<string, DeserializeMethod<Parsable>> | undefined
+    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
   ): Promise<ResponseType | undefined>;
   /**
    * Excutes the HTTP request specified by the given RequestInformation and returns the deserialized primitive response model.
@@ -85,7 +81,7 @@ export interface RequestAdapter {
   sendNoResponseContentAsync(
     requestInfo: RequestInformation,
     responseHandler: ResponseHandler | undefined,
-    errorMappings: Record<string, DeserializeMethod<Parsable>> | undefined
+    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
   ): Promise<void>;
   /**
    * Enables the backing store proxies for the SerializationWriters and ParseNodes in use.

@@ -2,7 +2,7 @@ import { DateOnly } from "../dateOnly";
 import { Duration } from "../duration";
 import { TimeOnly } from "../timeOnly";
 import { Parsable } from "./parsable";
-import { SerializerMethod } from "./serializerMethod";
+import { ModelSerializerFunction } from "./serializerMethod";
 
 /** Defines an interface for serialization of objects to a stream. */
 export interface SerializationWriter {
@@ -83,7 +83,7 @@ export interface SerializationWriter {
   writeCollectionOfObjectValues<T extends Parsable>(
     key?: string | undefined,
     values?: T[],
-    serializerMethod?: SerializerMethod<T>
+    serializerMethod?: ModelSerializerFunction<T>
   ): void;
   /**
    * Writes the specified model object value to the stream with an optional given key.
@@ -93,7 +93,7 @@ export interface SerializationWriter {
   writeObjectValue<T extends Parsable>(
     key?: string | undefined,
     value?: T | undefined,
-    serializerMethod?: SerializerMethod<T>
+    serializerMethod?: ModelSerializerFunction<T>
   ): void;
 
   /**

@@ -1,8 +1,8 @@
 import {
   DateOnly,
-  DeserializeMethod,
   Duration,
   Parsable,
+  ParsableFactory,
   ParseNode,
   TimeOnly,
   toFirstCharacterUpper,
@@ -52,7 +52,7 @@ export class JsonParseNode implements ParseNode {
   };
 
   public getCollectionOfObjectValues = <T extends Parsable>(
-    method: DeserializeMethod<T>
+    method: ParsableFactory<T>
   ): T[] | undefined => {
     return (this._jsonNode as unknown[])
       .map((x) => new JsonParseNode(x))
@@ -60,13 +60,13 @@ export class JsonParseNode implements ParseNode {
   };
 
   public getObjectValue = <T extends Parsable>(
-    deserializerFunction: DeserializeMethod<T>,
+    parsableFactory: ParsableFactory<T>,
     value: T = {} as T
   ): T => {
     if (this.onBeforeAssignFieldValues) {
       this.onBeforeAssignFieldValues(value);
     }
-    this.assignFieldValues(value, deserializerFunction);
+    this.assignFieldValues(value, parsableFactory);
     if (this.onAfterAssignFieldValues) {
       this.onAfterAssignFieldValues(value);
     }
@@ -75,9 +75,9 @@ export class JsonParseNode implements ParseNode {
 
   private assignFieldValues = <T extends Parsable>(
     model: T,
-    deserializerFunction: (model: T) => Record<string, (n: ParseNode) => void>
+    parsableFactory: ParsableFactory<T>
   ): void => {
-    const fields = deserializerFunction(model);
+    const fields = parsableFactory(this);
 
     if (!this._jsonNode) return;
     Object.entries(this._jsonNode as any).forEach(([k, v]) => {
@@ -85,6 +85,7 @@ export class JsonParseNode implements ParseNode {
       if (deserializer) {
         deserializer(new JsonParseNode(v));
       } else {
+        // additional properties
         (model as Record<string, unknown>)[k] = v;
       }
     });

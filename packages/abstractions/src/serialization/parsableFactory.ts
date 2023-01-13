@@ -1,11 +1,12 @@
 import { Parsable } from "./parsable";
 import { ParseNode } from "./parseNode";
+import { DeserializeIntoModelFunction } from "./serializerMethod";
 
 /**
- * Defines the factory for creating parsable objects.
+ * Defines the factory to get the deserializers constructing the parsable models.
  * @param parseNode The node to parse use to get the discriminator value from the payload.
  * @returns The parsable object.
  */
 export type ParsableFactory<T extends Parsable> = (
   parseNode: ParseNode | undefined
-) => T;
+) => DeserializeIntoModelFunction<T>;
