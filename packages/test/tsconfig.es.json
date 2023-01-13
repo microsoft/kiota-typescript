@@ -10,6 +10,9 @@
             "path": "../abstractions/tsconfig.es.json"
         },
         {
+            "path": "../serialization/form/tsconfig.es.json"
+        },
+        {
             "path": "../serialization/json/tsconfig.es.json"
         },
         {
@@ -29,6 +32,9 @@
     "paths": {
         "@microsoft/kiota-abstractions": [
             "../abstractions"
+        ],
+        "@microsoft/kiota-serialization-form": [
+            "../serialization/form"
         ],
         "@microsoft/kiota-serialization-json": [
             "../serialization/json"

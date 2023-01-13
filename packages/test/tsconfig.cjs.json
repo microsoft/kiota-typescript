@@ -9,6 +9,9 @@
         "@microsoft/kiota-abstractions": [
             "../abstractions"
         ],
+        "@microsoft/kiota-serialization-form": [
+            "../serialization/form"
+        ],
         "@microsoft/kiota-serialization-json": [
             "../serialization/json"
         ],
@@ -29,6 +32,9 @@
     "references": [
         {
             "path": "../abstractions/tsconfig.cjs.json"
+        },
+        {
+            "path": "../serialization/form/tsconfig.cjs.json"
         },
         {
             "path": "../serialization/json/tsconfig.cjs.json"
