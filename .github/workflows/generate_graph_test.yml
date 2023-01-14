@@ -88,7 +88,7 @@ jobs:
             echo "PKG_NAME=$(echo $PKG_DATA | jq .[0].name)" >> $GITHUB_ENV
             echo "Raw npm pack stats:"
             echo $PKG_DATA
-        - name: Comment PR
+        - name: Comment PR Bundle Size
           uses: thollander/actions-comment-pull-request@v2
           with:
             message: |
@@ -98,6 +98,31 @@ jobs:
               | ${{ env.FILE_COUNT }} | ${{ env.SIZE }} | ${{ env.UNPACKED }} |
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             comment_tag: package-stats
+        # Build sample app and get stats from webpack-bundle analyzer
+        - name: Build sample app
+          run: yarn build
+          working-directory: ./packages/sample-app
+        - name: Extract sample app size
+          working-directory: ./packages/sample-app
+          run: |
+            APP_DATA=$(cat ./dist/report.json)
+            APP_STAT=$(echo $APP_DATA | jq .[0].statSize)
+            echo "APP_STAT=$(echo "scale=2 ; $APP_STAT / 1024" | bc)" >> $GITHUB_ENV
+            APP_PARSED=$(echo $APP_DATA | jq .[0].parsedSize)
+            echo "APP_PARSED=$(echo "scale=2 ; $APP_PARSED / 1024" | bc)" >> $GITHUB_ENV
+            APP_GZIP=$(echo $APP_DATA | jq .[0].gzipSize)
+            echo "APP_GZIP=$(echo "scale=2 ; $APP_GZIP / 1024" | bc)" >> $GITHUB_ENV
+            echo $APP_DATA
+        - name: Comment PR Sample App Size
+          uses: thollander/actions-comment-pull-request@v2
+          with:
+            message: |
+              Generated sample app bundle:
+              | Parsed Size (Kb) | Stat Size (Kb) | Gzipped (Kb) |
+              | ---------- | --------- | ------------- |
+              | ${{ env.APP_PARSED }} | ${{ env.APP_STAT }} | ${{ env.APP_GZIP }} |
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            comment_tag: sample-app-stats
         - run: yarn lerna run test:integrated
           if: ${{env.TENANT_ID != '' }}
           env:

@@ -1,0 +1,31 @@
+{
+    "compilerOptions":{
+        "target": "es2015",
+        "module": "es2015",
+        "outDir": "./dist",
+        "importHelpers": true,
+        "noEmitOnError": true,
+        "moduleResolution": "node",
+        "strict": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "forceConsistentCasingInFileNames": true,
+        "declaration": true,
+        "composite": true
+    },
+    "paths": {
+        "test-kiota-typescript-libraries": [
+            "../test"
+        ]
+    },
+    "files": [],
+    "references": [
+        {
+            "path": "../test/tsconfig.cjs.json"
+        }
+    ],
+	"exclude": ["node_modules", "dist"],
+	"include": ["./src/**/*.ts"]
+}

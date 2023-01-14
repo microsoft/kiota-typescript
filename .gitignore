@@ -4,3 +4,4 @@ dist/
 lib/
 kiota-linux-x64/
 kiota_tool/
+*.log
