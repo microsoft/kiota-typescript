@@ -31,6 +31,7 @@ jobs:
           name: build_test
         env:
           TENANT_ID: ${{ secrets.TENANT_ID }}
+          NODE_OPTIONS: "--max_old_space_size=9182"
         strategy:
           matrix:
             node-version: [18.x]
@@ -64,15 +65,9 @@ jobs:
         - run: yarn install --frozen-lockfile --ignore-engines #spfx still not compatible with node 18
         - run: yarn global add mocha@10.X
         - run: yarn tsc:version
-        - name: yarn build
-          env:
-            NODE_OPTIONS: "--max_old_space_size=9182"
-          run: yarn build
+        - run: yarn build
         # build the sample generated SDK code only
-        - name: yarn build:sdk
-          env:
-            NODE_OPTIONS: "--max_old_space_size=9182"
-          run: yarn build:sdk
+        - run: yarn build:sdk
         # analyze size of generated bundle for SDK.
         - name: Package size report
           working-directory: ./packages/test
