@@ -113,9 +113,9 @@ jobs:
           with:
             message: |
               Generated sample app bundle:
-              | Parsed Size (Kb) | Stat Size (Kb) | Gzipped (Kb) |
+              | Stat Size (Kb) | Parsed Size (Kb) | Gzipped (Kb) |
               | ---------- | --------- | ------------- |
-              | ${{ env.APP_PARSED }} | ${{ env.APP_STAT }} | ${{ env.APP_GZIP }} |
+              | ${{ env.APP_STAT }} | ${{ env.APP_PARSED }} | ${{ env.APP_GZIP }} |
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             comment_tag: sample-app-stats
         - name: Archive webpack stats
