@@ -23,7 +23,7 @@ module.exports = {
       template: 'index.html'
     }),
     new BundleAnalyzerPlugin({
-        analyzerMode: 'static',
+        analyzerMode: 'json',
         generateStatsFile: true,
     })
   ],
