@@ -118,6 +118,11 @@ jobs:
               | ${{ env.APP_PARSED }} | ${{ env.APP_STAT }} | ${{ env.APP_GZIP }} |
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             comment_tag: sample-app-stats
+        - name: Archive webpack stats
+          uses: actions/upload-artifact@v3
+          with:
+            name: webpack-stats
+            path: packages/sample-app/dist/stats.json
         - run: yarn lerna run test:integrated
           if: ${{env.TENANT_ID != '' }}
           env:
