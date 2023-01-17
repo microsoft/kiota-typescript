@@ -22,25 +22,16 @@ export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
    */
   public constructor(
     private readonly credentials: TokenCredential,
-    private readonly scopes: string[] = [
-      "https://graph.microsoft.com/.default",
-    ],
+    private readonly scopes: string[] = [],
     private readonly options?: GetTokenOptions,
-    allowedHosts: Set<string> = new Set<string>([
-      "graph.microsoft.com",
-      "graph.microsoft.us",
-      "dod-graph.microsoft.us",
-      "graph.microsoft.de",
-      "microsoftgraph.chinacloudapi.cn",
-      "canary.graph.microsoft.com",
-    ]),
+    allowedHosts: Set<string> = new Set<string>(),
     private readonly observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()
   ) {
     if (!credentials) {
       throw new Error("parameter credentials cannot be null");
     }
-    if (!scopes || scopes.length === 0) {
-      throw new Error("scopes cannot be null or empty");
+    if (!scopes) {
+      throw new Error("scopes cannot be null");
     }
     if (!observabilityOptions) {
       throw new Error("observabilityOptions cannot be null");
@@ -104,12 +95,43 @@ export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
     if (decodedClaims) {
       (localOptions as any).claims = decodedClaims; // the field is defined in a derived interface for some reason https://github.com/Azure/azure-sdk-for-js/blob/4498fecbede71563fee5daae2ad537ff57de3640/sdk/identity/identity/src/msal/credentials.ts#L29
     }
+    if (this.scopes.length === 0) {
+      const [scheme, host] = this.getSchemeAndHostFromUrl(url);
+      this.scopes.push(`${scheme}://${host}/.default`);
+    }
     span?.setAttribute(
       "com.microsoft.kiota.authentication.scopes",
       this.scopes.join(",")
     );
     const result = await this.credentials.getToken(this.scopes, localOptions);
     return result?.token ?? "";
+  };
+  private getSchemeAndHostFromUrl = (url: string): string[] => {
+    const urlParts = url.split("://");
+    if (urlParts.length === 0) {
+      // relative url
+      return [this.getSchemeFromLocation(), this.getHostFromLocation()];
+    } else if (urlParts.length === 1) {
+      // protocol relative url
+      return [this.getSchemeFromLocation(), urlParts[0].split("/")[0]];
+    } else if (urlParts.length >= 2) {
+      // absolute url
+      return [urlParts[0], urlParts[1].split("/")[0]];
+    } else {
+      throw new Error("invalid url");
+    }
+  };
+  private getSchemeFromLocation = (): string => {
+    if (window && window.location && window.location.protocol) {
+      return window.location.protocol.replace(":", "");
+    }
+    return "";
+  };
+  private getHostFromLocation = (): string => {
+    if (window && window.location && window.location.host) {
+      return window.location.host;
+    }
+    return "";
   };
   /**
    * @inheritdoc
