@@ -93,6 +93,7 @@ jobs:
               | ${{ env.FILE_COUNT }} | ${{ env.SIZE }} | ${{ env.UNPACKED }} |
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             comment_tag: package-stats
+            mode: recreate
         # Build sample app and get stats from webpack-bundle analyzer
         - name: Build sample app
           run: yarn build
@@ -118,6 +119,7 @@ jobs:
               | ${{ env.APP_STAT }} | ${{ env.APP_PARSED }} | ${{ env.APP_GZIP }} |
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             comment_tag: sample-app-stats
+            mode: recreate
         - name: Archive webpack stats
           uses: actions/upload-artifact@v3
           with:
