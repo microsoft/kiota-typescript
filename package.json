@@ -32,6 +32,7 @@
   },
   "workspaces": [
     "packages/test/",
+    "packages/sample-app/",
     "packages/abstractions",
     "packages/http/*",
     "packages/serialization/form/",
@@ -45,7 +46,11 @@
     "build:cjs": "tsc -b packages/test/tsconfig.cjs.json",
     "build:watch:cjs": "tsc -b packages/test/tsconfig.cjs.json -w",
     "build:es": "tsc -b packages/test/tsconfig.es.json",
+    "build:sdk": "npm run build:sdk:es && npm run build:sdk:cjs",
+    "build:sdk:es": "tsc -b packages/test/tsconfig.sdk.es.json",
+    "build:sdk:cjs": "tsc -b packages/test/tsconfig.sdk.cjs.json",
     "build:watch:es": "tsc -b packages/test/tsconfig.es.json -w",
-    "test": "lerna run test --parallel"
+    "test": "lerna run test --parallel",
+    "tsc:version": "tsc --version"
   }
 }

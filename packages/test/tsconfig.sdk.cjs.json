@@ -3,7 +3,7 @@
     "compilerOptions":{
         "target": "ES2017",
         "module": "commonjs",
-        "outDir": "./dist/cjs"
+        "outDir": "./lib/sdk/cjs"
     },
     "paths": {
         "@microsoft/kiota-abstractions": [
@@ -52,6 +52,6 @@
             "path": "../authentication/spfx/tsconfig.cjs.json"
         }
     ],
-	"exclude": ["node_modules", "dist"],
-	"include": ["./generatedCode/**/*.ts", "./tests"]
+	"exclude": ["node_modules", "dist", "tests"],
+	"include": ["./generatedCode/**/*.ts"]
 }
