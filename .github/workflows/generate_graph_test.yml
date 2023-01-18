@@ -85,6 +85,7 @@ jobs:
             echo $PKG_DATA
         - name: Comment PR Bundle Size
           uses: thollander/actions-comment-pull-request@v2
+          if: ${{ github.event_name == 'pull_request' }}
           with:
             message: |
               Generated ${{ env.PKG_NAME }} SDK package:
@@ -111,6 +112,7 @@ jobs:
             echo $APP_DATA
         - name: Comment PR Sample App Size
           uses: thollander/actions-comment-pull-request@v2
+          if: ${{ github.event_name == 'pull_request' }}
           with:
             message: |
               Generated sample app bundle:
