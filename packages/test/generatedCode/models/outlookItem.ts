@@ -1,7 +1,7 @@
 import {Entity} from './index';
 import {Parsable} from '@microsoft/kiota-abstractions';
 
-export interface OutlookItem extends Entity, Partial<Parsable> {
+export interface OutlookItem extends Entity, Parsable {
     /** The categories associated with the item */
     categories?: string[] | undefined;
     /** Identifies the version of the item. Every time the item is changed, changeKey changes as well. This allows Exchange to apply changes to the correct version of the object. Read-only. */

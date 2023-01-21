@@ -1,49 +1,49 @@
-import {deserializeIntoAttachment} from './deserializeIntoAttachment';
-import {deserializeIntoExtension} from './deserializeIntoExtension';
-import {deserializeIntoFollowupFlag} from './deserializeIntoFollowupFlag';
-import {deserializeIntoInternetMessageHeader} from './deserializeIntoInternetMessageHeader';
-import {deserializeIntoItemBody} from './deserializeIntoItemBody';
-import {deserializeIntoMultiValueLegacyExtendedProperty} from './deserializeIntoMultiValueLegacyExtendedProperty';
+import {createAttachmentFromDiscriminatorValue} from './createAttachmentFromDiscriminatorValue';
+import {createExtensionFromDiscriminatorValue} from './createExtensionFromDiscriminatorValue';
+import {createFollowupFlagFromDiscriminatorValue} from './createFollowupFlagFromDiscriminatorValue';
+import {createInternetMessageHeaderFromDiscriminatorValue} from './createInternetMessageHeaderFromDiscriminatorValue';
+import {createItemBodyFromDiscriminatorValue} from './createItemBodyFromDiscriminatorValue';
+import {createMultiValueLegacyExtendedPropertyFromDiscriminatorValue} from './createMultiValueLegacyExtendedPropertyFromDiscriminatorValue';
+import {createRecipientFromDiscriminatorValue} from './createRecipientFromDiscriminatorValue';
+import {createSingleValueLegacyExtendedPropertyFromDiscriminatorValue} from './createSingleValueLegacyExtendedPropertyFromDiscriminatorValue';
 import {deserializeIntoOutlookItem} from './deserializeIntoOutlookItem';
-import {deserializeIntoRecipient} from './deserializeIntoRecipient';
-import {deserializeIntoSingleValueLegacyExtendedProperty} from './deserializeIntoSingleValueLegacyExtendedProperty';
 import {Importance} from './importance';
 import {Attachment, Extension, FollowupFlag, InternetMessageHeader, ItemBody, Message, MultiValueLegacyExtendedProperty, Recipient, SingleValueLegacyExtendedProperty} from './index';
 import {InferenceClassificationType} from './inferenceClassificationType';
-import {DeserializeMethod, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function deserializeIntoMessage(message: Message | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
         ...deserializeIntoOutlookItem(message),
-        "attachments": n => { message.attachments = n.getCollectionOfObjectValues<Attachment>(deserializeIntoAttachment); },
-        "bccRecipients": n => { message.bccRecipients = n.getCollectionOfObjectValues<Recipient>(deserializeIntoRecipient); },
-        "body": n => { message.body = n.getObjectValue<ItemBody>(deserializeIntoItemBody); },
+        "attachments": n => { message.attachments = n.getCollectionOfObjectValues<Attachment>(createAttachmentFromDiscriminatorValue); },
+        "bccRecipients": n => { message.bccRecipients = n.getCollectionOfObjectValues<Recipient>(createRecipientFromDiscriminatorValue); },
+        "body": n => { message.body = n.getObjectValue<ItemBody>(createItemBodyFromDiscriminatorValue); },
         "bodyPreview": n => { message.bodyPreview = n.getStringValue(); },
-        "ccRecipients": n => { message.ccRecipients = n.getCollectionOfObjectValues<Recipient>(deserializeIntoRecipient); },
+        "ccRecipients": n => { message.ccRecipients = n.getCollectionOfObjectValues<Recipient>(createRecipientFromDiscriminatorValue); },
         "conversationId": n => { message.conversationId = n.getStringValue(); },
         "conversationIndex": n => { message.conversationIndex = n.getStringValue(); },
-        "extensions": n => { message.extensions = n.getCollectionOfObjectValues<Extension>(deserializeIntoExtension); },
-        "flag": n => { message.flag = n.getObjectValue<FollowupFlag>(deserializeIntoFollowupFlag); },
-        "from": n => { message.from = n.getObjectValue<Recipient>(deserializeIntoRecipient); },
+        "extensions": n => { message.extensions = n.getCollectionOfObjectValues<Extension>(createExtensionFromDiscriminatorValue); },
+        "flag": n => { message.flag = n.getObjectValue<FollowupFlag>(createFollowupFlagFromDiscriminatorValue); },
+        "from": n => { message.from = n.getObjectValue<Recipient>(createRecipientFromDiscriminatorValue); },
         "hasAttachments": n => { message.hasAttachments = n.getBooleanValue(); },
         "importance": n => { message.importance = n.getEnumValue<Importance>(Importance); },
         "inferenceClassification": n => { message.inferenceClassification = n.getEnumValue<InferenceClassificationType>(InferenceClassificationType); },
-        "internetMessageHeaders": n => { message.internetMessageHeaders = n.getCollectionOfObjectValues<InternetMessageHeader>(deserializeIntoInternetMessageHeader); },
+        "internetMessageHeaders": n => { message.internetMessageHeaders = n.getCollectionOfObjectValues<InternetMessageHeader>(createInternetMessageHeaderFromDiscriminatorValue); },
         "internetMessageId": n => { message.internetMessageId = n.getStringValue(); },
         "isDeliveryReceiptRequested": n => { message.isDeliveryReceiptRequested = n.getBooleanValue(); },
         "isDraft": n => { message.isDraft = n.getBooleanValue(); },
         "isRead": n => { message.isRead = n.getBooleanValue(); },
         "isReadReceiptRequested": n => { message.isReadReceiptRequested = n.getBooleanValue(); },
-        "multiValueExtendedProperties": n => { message.multiValueExtendedProperties = n.getCollectionOfObjectValues<MultiValueLegacyExtendedProperty>(deserializeIntoMultiValueLegacyExtendedProperty); },
+        "multiValueExtendedProperties": n => { message.multiValueExtendedProperties = n.getCollectionOfObjectValues<MultiValueLegacyExtendedProperty>(createMultiValueLegacyExtendedPropertyFromDiscriminatorValue); },
         "parentFolderId": n => { message.parentFolderId = n.getStringValue(); },
         "receivedDateTime": n => { message.receivedDateTime = n.getDateValue(); },
-        "replyTo": n => { message.replyTo = n.getCollectionOfObjectValues<Recipient>(deserializeIntoRecipient); },
-        "sender": n => { message.sender = n.getObjectValue<Recipient>(deserializeIntoRecipient); },
+        "replyTo": n => { message.replyTo = n.getCollectionOfObjectValues<Recipient>(createRecipientFromDiscriminatorValue); },
+        "sender": n => { message.sender = n.getObjectValue<Recipient>(createRecipientFromDiscriminatorValue); },
         "sentDateTime": n => { message.sentDateTime = n.getDateValue(); },
-        "singleValueExtendedProperties": n => { message.singleValueExtendedProperties = n.getCollectionOfObjectValues<SingleValueLegacyExtendedProperty>(deserializeIntoSingleValueLegacyExtendedProperty); },
+        "singleValueExtendedProperties": n => { message.singleValueExtendedProperties = n.getCollectionOfObjectValues<SingleValueLegacyExtendedProperty>(createSingleValueLegacyExtendedPropertyFromDiscriminatorValue); },
         "subject": n => { message.subject = n.getStringValue(); },
-        "toRecipients": n => { message.toRecipients = n.getCollectionOfObjectValues<Recipient>(deserializeIntoRecipient); },
-        "uniqueBody": n => { message.uniqueBody = n.getObjectValue<ItemBody>(deserializeIntoItemBody); },
+        "toRecipients": n => { message.toRecipients = n.getCollectionOfObjectValues<Recipient>(createRecipientFromDiscriminatorValue); },
+        "uniqueBody": n => { message.uniqueBody = n.getObjectValue<ItemBody>(createItemBodyFromDiscriminatorValue); },
         "webLink": n => { message.webLink = n.getStringValue(); },
     }
 }

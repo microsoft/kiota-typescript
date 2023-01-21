@@ -1,10 +1,11 @@
+import {createMultiValueLegacyExtendedPropertyFromDiscriminatorValue} from '../../../../../../models/createMultiValueLegacyExtendedPropertyFromDiscriminatorValue';
 import {deserializeIntoMultiValueLegacyExtendedProperty} from '../../../../../../models/deserializeIntoMultiValueLegacyExtendedProperty';
 import {MultiValueLegacyExtendedProperty} from '../../../../../../models/multiValueLegacyExtendedProperty';
 import {serializeMultiValueLegacyExtendedProperty} from '../../../../../../models/serializeMultiValueLegacyExtendedProperty';
 import {MultiValueLegacyExtendedPropertyItemRequestBuilderDeleteRequestConfiguration} from './multiValueLegacyExtendedPropertyItemRequestBuilderDeleteRequestConfiguration';
 import {MultiValueLegacyExtendedPropertyItemRequestBuilderGetRequestConfiguration} from './multiValueLegacyExtendedPropertyItemRequestBuilderGetRequestConfiguration';
 import {MultiValueLegacyExtendedPropertyItemRequestBuilderPatchRequestConfiguration} from './multiValueLegacyExtendedPropertyItemRequestBuilderPatchRequestConfiguration';
-import {DeserializeMethod, getPathParameters, HttpMethod, Parsable, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
+import {getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/messages/{message-id}/multiValueExtendedProperties/{multiValueLegacyExtendedProperty-id}
@@ -106,7 +107,7 @@ export class MultiValueLegacyExtendedPropertyItemRequestBuilder {
         const requestInfo = this.createGetRequestInformation(
             requestConfiguration
         );
-        return this.requestAdapter?.sendAsync<MultiValueLegacyExtendedProperty>(requestInfo, deserializeIntoMultiValueLegacyExtendedProperty, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
+        return this.requestAdapter?.sendAsync<MultiValueLegacyExtendedProperty>(requestInfo, createMultiValueLegacyExtendedPropertyFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
     /**
      * Update the navigation property multiValueExtendedProperties in users

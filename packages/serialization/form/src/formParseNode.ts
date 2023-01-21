@@ -101,7 +101,7 @@ export class FormParseNode implements ParseNode {
     model: T,
     parsableFactory: ParsableFactory<T>
   ): void => {
-    const fields = parsableFactory(this);
+    const fields = (parsableFactory(this))();
     Object.entries(this._fields)
       .filter((x) => !/^null$/i.test(x[1]))
       .forEach(([k, v]) => {

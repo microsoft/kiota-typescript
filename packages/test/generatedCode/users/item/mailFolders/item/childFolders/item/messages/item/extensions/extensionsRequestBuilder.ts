@@ -1,3 +1,5 @@
+import {createExtensionCollectionResponseFromDiscriminatorValue} from '../../../../../../../../../models/createExtensionCollectionResponseFromDiscriminatorValue';
+import {createExtensionFromDiscriminatorValue} from '../../../../../../../../../models/createExtensionFromDiscriminatorValue';
 import {deserializeIntoExtension} from '../../../../../../../../../models/deserializeIntoExtension';
 import {deserializeIntoExtensionCollectionResponse} from '../../../../../../../../../models/deserializeIntoExtensionCollectionResponse';
 import {Extension} from '../../../../../../../../../models/extension';
@@ -6,7 +8,7 @@ import {serializeExtension} from '../../../../../../../../../models/serializeExt
 import {serializeExtensionCollectionResponse} from '../../../../../../../../../models/serializeExtensionCollectionResponse';
 import {ExtensionsRequestBuilderGetRequestConfiguration} from './extensionsRequestBuilderGetRequestConfiguration';
 import {ExtensionsRequestBuilderPostRequestConfiguration} from './extensionsRequestBuilderPostRequestConfiguration';
-import {DeserializeMethod, getPathParameters, HttpMethod, Parsable, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
+import {getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/mailFolders/{mailFolder-id}/childFolders/{mailFolder-id1}/messages/{message-id}/extensions
@@ -82,7 +84,7 @@ export class ExtensionsRequestBuilder {
         const requestInfo = this.createGetRequestInformation(
             requestConfiguration
         );
-        return this.requestAdapter?.sendAsync<ExtensionCollectionResponse>(requestInfo, deserializeIntoExtensionCollectionResponse, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
+        return this.requestAdapter?.sendAsync<ExtensionCollectionResponse>(requestInfo, createExtensionCollectionResponseFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
     /**
      * Create an open extension (openTypeExtension object) and add custom properties in a new or existing instance of a resource. You can create an open extension in a resource instance and store custom data to it all in the same operation, except for specific resources. See known limitations of open extensions for more information. The table in the Permissions section lists the resources that support open extensions.
@@ -97,6 +99,6 @@ export class ExtensionsRequestBuilder {
         const requestInfo = this.createPostRequestInformation(
             body, requestConfiguration
         );
-        return this.requestAdapter?.sendAsync<Extension>(requestInfo, deserializeIntoExtension, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
+        return this.requestAdapter?.sendAsync<Extension>(requestInfo, createExtensionFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
 }

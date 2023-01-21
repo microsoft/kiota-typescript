@@ -10,7 +10,7 @@ import {serializeMultiValueLegacyExtendedProperty} from './serializeMultiValueLe
 import {serializeOutlookItem} from './serializeOutlookItem';
 import {serializeRecipient} from './serializeRecipient';
 import {serializeSingleValueLegacyExtendedProperty} from './serializeSingleValueLegacyExtendedProperty';
-import {DeserializeMethod, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function serializeMessage(writer: SerializationWriter, message: Message | undefined = {}) : void {
         serializeOutlookItem(writer, message)

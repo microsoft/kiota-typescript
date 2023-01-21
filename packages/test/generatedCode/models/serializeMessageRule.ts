@@ -2,7 +2,7 @@ import {MessageRule, MessageRuleActions, MessageRulePredicates} from './index';
 import {serializeEntity} from './serializeEntity';
 import {serializeMessageRuleActions} from './serializeMessageRuleActions';
 import {serializeMessageRulePredicates} from './serializeMessageRulePredicates';
-import {DeserializeMethod, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function serializeMessageRule(writer: SerializationWriter, messageRule: MessageRule | undefined = {}) : void {
         serializeEntity(writer, messageRule)

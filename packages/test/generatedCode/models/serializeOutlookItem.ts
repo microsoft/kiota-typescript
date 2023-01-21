@@ -1,6 +1,6 @@
 import {OutlookItem} from './index';
 import {serializeEntity} from './serializeEntity';
-import {DeserializeMethod, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function serializeOutlookItem(writer: SerializationWriter, outlookItem: OutlookItem | undefined = {}) : void {
         serializeEntity(writer, outlookItem)

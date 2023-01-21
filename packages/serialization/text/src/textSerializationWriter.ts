@@ -5,9 +5,8 @@ import {
   Parsable,
   SerializationWriter,
   TimeOnly,
+  ModelSerializerFunction
 } from "@microsoft/kiota-abstractions";
-import { SerializerMethod } from "@microsoft/kiota-abstractions/dist/cjs/src/serialization/serializerMethod";
-
 export class TextSerializationWriter implements SerializationWriter {
   private static noStructuredDataMessage =
     "text does not support structured data";
@@ -82,7 +81,7 @@ export class TextSerializationWriter implements SerializationWriter {
     key?: string,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     values?: T[],
-    serializerMethod?: SerializerMethod<T>
+    serializerMethod?: ModelSerializerFunction<T>
   ): void => {
     throw new Error(TextSerializationWriter.noStructuredDataMessage);
   };
@@ -91,7 +90,7 @@ export class TextSerializationWriter implements SerializationWriter {
     key?: string,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     value?: T,
-    serializerMethod?: SerializerMethod<T>
+    serializerMethod?: ModelSerializerFunction<T>
   ): void => {
     throw new Error(TextSerializationWriter.noStructuredDataMessage);
   };

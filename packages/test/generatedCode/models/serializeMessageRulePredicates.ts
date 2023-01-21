@@ -4,7 +4,7 @@ import {MessageActionFlag} from './messageActionFlag';
 import {Sensitivity} from './sensitivity';
 import {serializeRecipient} from './serializeRecipient';
 import {serializeSizeRange} from './serializeSizeRange';
-import {AdditionalDataHolder, DeserializeMethod, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {AdditionalDataHolder, DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function serializeMessageRulePredicates(writer: SerializationWriter, messageRulePredicates: MessageRulePredicates | undefined = {}) : void {
             writer.writeCollectionOfPrimitiveValues<string>("bodyContains", messageRulePredicates.bodyContains);

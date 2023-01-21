@@ -1,6 +1,6 @@
 import {BodyType} from './bodyType';
 import {ItemBody} from './index';
-import {AdditionalDataHolder, DeserializeMethod, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {AdditionalDataHolder, DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function deserializeIntoItemBody(itemBody: ItemBody | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {

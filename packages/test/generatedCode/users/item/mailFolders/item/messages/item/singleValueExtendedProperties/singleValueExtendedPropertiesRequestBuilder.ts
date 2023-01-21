@@ -1,3 +1,5 @@
+import {createSingleValueLegacyExtendedPropertyCollectionResponseFromDiscriminatorValue} from '../../../../../../../models/createSingleValueLegacyExtendedPropertyCollectionResponseFromDiscriminatorValue';
+import {createSingleValueLegacyExtendedPropertyFromDiscriminatorValue} from '../../../../../../../models/createSingleValueLegacyExtendedPropertyFromDiscriminatorValue';
 import {deserializeIntoSingleValueLegacyExtendedProperty} from '../../../../../../../models/deserializeIntoSingleValueLegacyExtendedProperty';
 import {deserializeIntoSingleValueLegacyExtendedPropertyCollectionResponse} from '../../../../../../../models/deserializeIntoSingleValueLegacyExtendedPropertyCollectionResponse';
 import {serializeSingleValueLegacyExtendedProperty} from '../../../../../../../models/serializeSingleValueLegacyExtendedProperty';
@@ -6,7 +8,7 @@ import {SingleValueLegacyExtendedProperty} from '../../../../../../../models/sin
 import {SingleValueLegacyExtendedPropertyCollectionResponse} from '../../../../../../../models/singleValueLegacyExtendedPropertyCollectionResponse';
 import {SingleValueExtendedPropertiesRequestBuilderGetRequestConfiguration} from './singleValueExtendedPropertiesRequestBuilderGetRequestConfiguration';
 import {SingleValueExtendedPropertiesRequestBuilderPostRequestConfiguration} from './singleValueExtendedPropertiesRequestBuilderPostRequestConfiguration';
-import {DeserializeMethod, getPathParameters, HttpMethod, Parsable, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
+import {getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/mailFolders/{mailFolder-id}/messages/{message-id}/singleValueExtendedProperties
@@ -82,7 +84,7 @@ export class SingleValueExtendedPropertiesRequestBuilder {
         const requestInfo = this.createGetRequestInformation(
             requestConfiguration
         );
-        return this.requestAdapter?.sendAsync<SingleValueLegacyExtendedPropertyCollectionResponse>(requestInfo, deserializeIntoSingleValueLegacyExtendedPropertyCollectionResponse, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
+        return this.requestAdapter?.sendAsync<SingleValueLegacyExtendedPropertyCollectionResponse>(requestInfo, createSingleValueLegacyExtendedPropertyCollectionResponseFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
     /**
      * Create new navigation property to singleValueExtendedProperties for users
@@ -96,6 +98,6 @@ export class SingleValueExtendedPropertiesRequestBuilder {
         const requestInfo = this.createPostRequestInformation(
             body, requestConfiguration
         );
-        return this.requestAdapter?.sendAsync<SingleValueLegacyExtendedProperty>(requestInfo, deserializeIntoSingleValueLegacyExtendedProperty, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
+        return this.requestAdapter?.sendAsync<SingleValueLegacyExtendedProperty>(requestInfo, createSingleValueLegacyExtendedPropertyFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
 }

@@ -1,3 +1,5 @@
+import {createMessageCollectionResponseFromDiscriminatorValue} from '../../../../../models/createMessageCollectionResponseFromDiscriminatorValue';
+import {createMessageFromDiscriminatorValue} from '../../../../../models/createMessageFromDiscriminatorValue';
 import {deserializeIntoMessage} from '../../../../../models/deserializeIntoMessage';
 import {deserializeIntoMessageCollectionResponse} from '../../../../../models/deserializeIntoMessageCollectionResponse';
 import {Message} from '../../../../../models/message';
@@ -6,7 +8,7 @@ import {serializeMessage} from '../../../../../models/serializeMessage';
 import {serializeMessageCollectionResponse} from '../../../../../models/serializeMessageCollectionResponse';
 import {MessagesRequestBuilderGetRequestConfiguration} from './messagesRequestBuilderGetRequestConfiguration';
 import {MessagesRequestBuilderPostRequestConfiguration} from './messagesRequestBuilderPostRequestConfiguration';
-import {DeserializeMethod, getPathParameters, HttpMethod, Parsable, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
+import {getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/mailFolders/{mailFolder-id}/messages
@@ -83,7 +85,7 @@ export class MessagesRequestBuilder {
         const requestInfo = this.createGetRequestInformation(
             requestConfiguration
         );
-        return this.requestAdapter?.sendAsync<MessageCollectionResponse>(requestInfo, deserializeIntoMessageCollectionResponse, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
+        return this.requestAdapter?.sendAsync<MessageCollectionResponse>(requestInfo, createMessageCollectionResponseFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
     /**
      * Use this API to create a new Message in a mailfolder.
@@ -98,6 +100,6 @@ export class MessagesRequestBuilder {
         const requestInfo = this.createPostRequestInformation(
             body, requestConfiguration
         );
-        return this.requestAdapter?.sendAsync<Message>(requestInfo, deserializeIntoMessage, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
+        return this.requestAdapter?.sendAsync<Message>(requestInfo, createMessageFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
 }

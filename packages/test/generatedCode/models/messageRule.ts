@@ -1,7 +1,7 @@
 import {Entity, MessageRuleActions, MessageRulePredicates} from './index';
 import {Parsable} from '@microsoft/kiota-abstractions';
 
-export interface MessageRule extends Entity, Partial<Parsable> {
+export interface MessageRule extends Entity, Parsable {
     /** The actions property */
     actions?: MessageRuleActions | undefined;
     /** The conditions property */

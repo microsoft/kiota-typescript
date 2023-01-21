@@ -1,7 +1,7 @@
 import {Importance} from './importance';
 import {MessageRuleActions, Recipient} from './index';
 import {serializeRecipient} from './serializeRecipient';
-import {AdditionalDataHolder, DeserializeMethod, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {AdditionalDataHolder, DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function serializeMessageRuleActions(writer: SerializationWriter, messageRuleActions: MessageRuleActions | undefined = {}) : void {
             writer.writeCollectionOfPrimitiveValues<string>("assignCategories", messageRuleActions.assignCategories);

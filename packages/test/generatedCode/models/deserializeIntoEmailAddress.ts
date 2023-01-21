@@ -1,5 +1,5 @@
 import {EmailAddress} from './index';
-import {AdditionalDataHolder, DeserializeMethod, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {AdditionalDataHolder, DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function deserializeIntoEmailAddress(emailAddress: EmailAddress | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {

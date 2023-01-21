@@ -1,7 +1,7 @@
 import {FollowupFlagStatus} from './followupFlagStatus';
 import {DateTimeTimeZone, FollowupFlag} from './index';
 import {serializeDateTimeTimeZone} from './serializeDateTimeTimeZone';
-import {AdditionalDataHolder, DeserializeMethod, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {AdditionalDataHolder, DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function serializeFollowupFlag(writer: SerializationWriter, followupFlag: FollowupFlag | undefined = {}) : void {
             writer.writeObjectValue<DateTimeTimeZone>("completedDateTime", followupFlag.completedDateTime, serializeDateTimeTimeZone);

@@ -4,7 +4,7 @@ import {
   Duration,
   Parsable,
   SerializationWriter,
-  SerializerMethod,
+  ModelSerializerFunction,
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
 
@@ -86,7 +86,7 @@ export class JsonSerializationWriter implements SerializationWriter {
   public writeCollectionOfObjectValues = <T extends Parsable>(
     key: string,
     values: T[],
-    serializerMethod: SerializerMethod<T>
+    serializerMethod: ModelSerializerFunction<T>
   ): void => {
     if (values) {
       key && this.writePropertyName(key);
@@ -107,7 +107,7 @@ export class JsonSerializationWriter implements SerializationWriter {
   public writeObjectValue<T extends Parsable>(
     key: string | undefined,
     value: T,
-    serializerMethod: SerializerMethod<T>
+    serializerMethod: ModelSerializerFunction<T>
   ): void {
     if (key) {
       this.writePropertyName(key);

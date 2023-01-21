@@ -1,17 +1,17 @@
-import {deserializeIntoRecipient} from './deserializeIntoRecipient';
-import {deserializeIntoSizeRange} from './deserializeIntoSizeRange';
+import {createRecipientFromDiscriminatorValue} from './createRecipientFromDiscriminatorValue';
+import {createSizeRangeFromDiscriminatorValue} from './createSizeRangeFromDiscriminatorValue';
 import {Importance} from './importance';
 import {MessageRulePredicates, Recipient, SizeRange} from './index';
 import {MessageActionFlag} from './messageActionFlag';
 import {Sensitivity} from './sensitivity';
-import {AdditionalDataHolder, DeserializeMethod, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {AdditionalDataHolder, DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function deserializeIntoMessageRulePredicates(messageRulePredicates: MessageRulePredicates | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
         "bodyContains": n => { messageRulePredicates.bodyContains = n.getCollectionOfPrimitiveValues<string>(); },
         "bodyOrSubjectContains": n => { messageRulePredicates.bodyOrSubjectContains = n.getCollectionOfPrimitiveValues<string>(); },
         "categories": n => { messageRulePredicates.categories = n.getCollectionOfPrimitiveValues<string>(); },
-        "fromAddresses": n => { messageRulePredicates.fromAddresses = n.getCollectionOfObjectValues<Recipient>(deserializeIntoRecipient); },
+        "fromAddresses": n => { messageRulePredicates.fromAddresses = n.getCollectionOfObjectValues<Recipient>(createRecipientFromDiscriminatorValue); },
         "hasAttachments": n => { messageRulePredicates.hasAttachments = n.getBooleanValue(); },
         "headerContains": n => { messageRulePredicates.headerContains = n.getCollectionOfPrimitiveValues<string>(); },
         "importance": n => { messageRulePredicates.importance = n.getEnumValue<Importance>(Importance); },
@@ -33,10 +33,10 @@ export function deserializeIntoMessageRulePredicates(messageRulePredicates: Mess
         "sensitivity": n => { messageRulePredicates.sensitivity = n.getEnumValue<Sensitivity>(Sensitivity); },
         "sentCcMe": n => { messageRulePredicates.sentCcMe = n.getBooleanValue(); },
         "sentOnlyToMe": n => { messageRulePredicates.sentOnlyToMe = n.getBooleanValue(); },
-        "sentToAddresses": n => { messageRulePredicates.sentToAddresses = n.getCollectionOfObjectValues<Recipient>(deserializeIntoRecipient); },
+        "sentToAddresses": n => { messageRulePredicates.sentToAddresses = n.getCollectionOfObjectValues<Recipient>(createRecipientFromDiscriminatorValue); },
         "sentToMe": n => { messageRulePredicates.sentToMe = n.getBooleanValue(); },
         "sentToOrCcMe": n => { messageRulePredicates.sentToOrCcMe = n.getBooleanValue(); },
         "subjectContains": n => { messageRulePredicates.subjectContains = n.getCollectionOfPrimitiveValues<string>(); },
-        "withinSizeRange": n => { messageRulePredicates.withinSizeRange = n.getObjectValue<SizeRange>(deserializeIntoSizeRange); },
+        "withinSizeRange": n => { messageRulePredicates.withinSizeRange = n.getObjectValue<SizeRange>(createSizeRangeFromDiscriminatorValue); },
     }
 }

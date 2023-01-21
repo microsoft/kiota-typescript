@@ -1,4 +1,4 @@
-export * from './singleValueLegacyExtendedPropertyItemRequestBuilderDeleteRequestConfiguration'
-export * from './singleValueLegacyExtendedPropertyItemRequestBuilderGetRequestConfiguration'
 export * from './singleValueLegacyExtendedPropertyItemRequestBuilderPatchRequestConfiguration'
 export * from './singleValueLegacyExtendedPropertyItemRequestBuilderGetQueryParameters'
+export * from './singleValueLegacyExtendedPropertyItemRequestBuilderGetRequestConfiguration'
+export * from './singleValueLegacyExtendedPropertyItemRequestBuilderDeleteRequestConfiguration'

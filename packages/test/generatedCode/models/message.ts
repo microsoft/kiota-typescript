@@ -3,7 +3,7 @@ import {Attachment, Extension, FollowupFlag, InternetMessageHeader, ItemBody, Mu
 import {InferenceClassificationType} from './inferenceClassificationType';
 import {Parsable} from '@microsoft/kiota-abstractions';
 
-export interface Message extends OutlookItem, Partial<Parsable> {
+export interface Message extends OutlookItem, Parsable {
     /** The fileAttachment and itemAttachment attachments for the message. */
     attachments?: Attachment[] | undefined;
     /** The Bcc: recipients for the message. */
