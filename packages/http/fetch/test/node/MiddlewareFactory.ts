@@ -7,16 +7,17 @@
 
 import { assert } from "chai";
 
-import { CustomFetchHandler, MiddlewareFactory, ParametersNameDecodingHandler, RedirectHandler, RetryHandler } from "../../src";
+import { CustomFetchHandler, MiddlewareFactory, ParametersNameDecodingHandler, RedirectHandler, RetryHandler, UserAgentHandler } from "../../src";
 
-describe("MiddlewareFactory", () => {
+describe("node - MiddlewareFactory", () => {
 	it("Should return the default pipeline", () => {
 		const defaultMiddleWareArray = MiddlewareFactory.getDefaultMiddlewareChain();
-		assert.equal(defaultMiddleWareArray.length, 4);
+		assert.equal(defaultMiddleWareArray.length, 5);
 
 		assert.isTrue(defaultMiddleWareArray[0] instanceof RetryHandler);
 		assert.isTrue(defaultMiddleWareArray[1] instanceof RedirectHandler);
 		assert.isTrue(defaultMiddleWareArray[2] instanceof ParametersNameDecodingHandler);
-		assert.isTrue(defaultMiddleWareArray[3] instanceof CustomFetchHandler);
+		assert.isTrue(defaultMiddleWareArray[3] instanceof UserAgentHandler);
+		assert.isTrue(defaultMiddleWareArray[4] instanceof CustomFetchHandler);
 	});
 });

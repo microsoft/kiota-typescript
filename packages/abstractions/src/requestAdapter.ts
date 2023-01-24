@@ -1,6 +1,10 @@
 import { RequestInformation } from "./requestInformation";
 import { ResponseHandler } from "./responseHandler";
-import { ParsableFactory, Parsable, SerializationWriterFactory } from "./serialization";
+import {
+  Parsable,
+  ParsableFactory,
+  SerializationWriterFactory,
+} from "./serialization";
 import { BackingStoreFactory } from "./store";
 
 /** Service responsible for translating abstract Request Info into concrete native HTTP requests. */
@@ -11,7 +15,7 @@ export interface RequestAdapter {
    */
   getSerializationWriterFactory(): SerializationWriterFactory;
   /**
-   * Excutes the HTTP request specified by the given RequestInformation and returns the deserialized response model.
+   * Executes the HTTP request specified by the given RequestInformation and returns the deserialized response model.
    * @param requestInfo the request info to execute.
    * @param responseHandler The response handler to use for the HTTP request instead of the default handler.
    * @param errorMappings the error factories mapping to use in case of a failed request.
@@ -26,7 +30,7 @@ export interface RequestAdapter {
     errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
   ): Promise<ModelType | undefined>;
   /**
-   * Excutes the HTTP request specified by the given RequestInformation and returns the deserialized response model collection.
+   * Executes the HTTP request specified by the given RequestInformation and returns the deserialized response model collection.
    * @param requestInfo the request info to execute.
    * @param responseHandler The response handler to use for the HTTP request instead of the default handler.
    * @param errorMappings the error factories mapping to use in case of a failed request.
@@ -41,7 +45,7 @@ export interface RequestAdapter {
     errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
   ): Promise<ModelType[] | undefined>;
   /**
-   * Excutes the HTTP request specified by the given RequestInformation and returns the deserialized response model collection.
+   * Executes the HTTP request specified by the given RequestInformation and returns the deserialized response model collection.
    * @param requestInfo the request info to execute.
    * @param responseType the class of the response model to deserialize the response into.
    * @param responseHandler The response handler to use for the HTTP request instead of the default handler.
@@ -57,7 +61,7 @@ export interface RequestAdapter {
     errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
   ): Promise<ResponseType[] | undefined>;
   /**
-   * Excutes the HTTP request specified by the given RequestInformation and returns the deserialized primitive response model.
+   * Executes the HTTP request specified by the given RequestInformation and returns the deserialized primitive response model.
    * @param requestInfo the request info to execute.
    * @param responseHandler The response handler to use for the HTTP request instead of the default handler.
    * @param errorMappings the error factories mapping to use in case of a failed request.
@@ -72,7 +76,7 @@ export interface RequestAdapter {
     errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
   ): Promise<ResponseType | undefined>;
   /**
-   * Excutes the HTTP request specified by the given RequestInformation and returns the deserialized primitive response model.
+   * Executes the HTTP request specified by the given RequestInformation and returns the deserialized primitive response model.
    * @param requestInfo the request info to execute.
    * @param responseHandler The response handler to use for the HTTP request instead of the default handler.
    * @param errorMappings the error factories mapping to use in case of a failed request.
@@ -92,4 +96,11 @@ export interface RequestAdapter {
   ): void;
   /** The base url for every request. */
   baseUrl: string;
+  /**
+   * Converts the given RequestInformation into a native HTTP request used by the implementing adapter.
+   * @param requestInfo the request info to convert.
+   * @typeParam T the type of the native request.
+   * @return a {@link Promise} with the native request.
+   */
+  convertToNativeRequestAsync<T>(requestInfo: RequestInformation): Promise<T>;
 }

@@ -24,14 +24,7 @@ export class AzureAdSpfxAccessTokenProvider implements AccessTokenProvider {
   public constructor(
     private readonly tokenProvider: AadTokenProvider,
     private readonly applicationIdUri: string,
-    allowedHosts: Set<string> = new Set<string>([
-      "graph.microsoft.com",
-      "graph.microsoft.us",
-      "dod-graph.microsoft.us",
-      "graph.microsoft.de",
-      "microsoftgraph.chinacloudapi.cn",
-      "canary.graph.microsoft.com",
-    ]),
+    allowedHosts: Set<string> = new Set<string>(),
     private readonly useCachedToken?: boolean,
     private readonly observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()
   ) {

@@ -1,0 +1,136 @@
+name: Build and test a Kiota generated SDK with packages
+on:
+  workflow_dispatch:
+    inputs:
+      KIOTA_BRANCH:
+        description: 'Branch to build kiota from'
+        type: string
+        default: 'nikithauc/model-as-interfaces'
+      KIOTA_REPO:
+        description: 'Repo to build kiota from'
+        type: string
+        default: 'https://github.com/microsoft/kiota.git'
+      OPEN_API_DEF:
+        description: 'OpenAPI definition to build test SDK for'
+        type: string
+        default: 'https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/master/openapi/v1.0/openapi.yaml'
+
+  push:
+    branches: [ main, nikithauc/model-interface-serialization ]
+  pull_request:
+
+env:
+  KIOTA_BRANCH: 'main'
+  KIOTA_REPO: 'https://github.com/microsoft/kiota.git'
+  OPEN_API_DEF: 'https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/master/openapi/v1.0/openapi.yaml'
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        environment:
+          name: build_test
+        env:
+          TENANT_ID: ${{ secrets.TENANT_ID }}
+          NODE_OPTIONS: "--max_old_space_size=9182"
+        strategy:
+          matrix:
+            node-version: [18.x]
+        steps:
+        - uses: actions/checkout@v3
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+        # download kiota
+        - run: git clone --branch ${{ github.event.inputs.KIOTA_BRANCH }} --single-branch ${{ github.event.inputs.KIOTA_REPO }} kiota_tool
+          if: ${{ inputs.KIOTA_BRANCH }}
+
+        - run: git clone --branch ${{ env.KIOTA_BRANCH }} --single-branch ${{ env.KIOTA_REPO }} kiota_tool
+          if: ${{ !inputs.KIOTA_BRANCH }}
+
+        # build kiota
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v3
+          with:
+            dotnet-version: 7.0.x
+        - name: Build Kiota tool for linux-x64
+          run: dotnet publish ./kiota_tool/src/kiota/kiota.csproj -c Release -p:PublishSingleFile=true -r linux-x64 -o ./kiota-linux-x64 --self-contained
+        - run: chmod +x ./kiota-linux-x64/kiota
+        # use kiota to generate an SDK into the test folder
+        - run: ./kiota-linux-x64/kiota generate --openapi ${{ github.event.inputs.OPEN_API_DEF }} -l typescript --output packages/test/generatedCode --clean-output --log-level debug
+          if: ${{ inputs.KIOTA_BRANCH }}
+        - run: ./kiota-linux-x64/kiota generate --openapi ${{ env.OPEN_API_DEF }} -l typescript --output packages/test/generatedCode --clean-output --log-level debug
+          if: ${{ !inputs.KIOTA_BRANCH }}
+
+        - run: yarn install --frozen-lockfile --ignore-engines #spfx still not compatible with node 18
+        - run: yarn global add mocha@10.X
+        - run: yarn tsc:version
+        - run: yarn build
+        # build the sample generated SDK code only
+        - run: yarn build:sdk
+        # analyze size of generated bundle for SDK.
+        - name: Package size report
+          working-directory: ./packages/test
+          run: |
+            PKG_DATA=$(npm pack --json -dry-run)
+            echo "FILE_COUNT=$(echo $PKG_DATA | jq .[0].entryCount)" >> $GITHUB_ENV
+            UNPACKED_B=$(echo $PKG_DATA | jq .[0].unpackedSize)
+            tmp=$(echo "scale=2 ; $UNPACKED_B / 1024" | bc)
+            echo "UNPACKED=$tmp" >> $GITHUB_ENV
+            SIZE_B=$(echo $PKG_DATA | jq .[0].size)
+            tmp=$(echo "scale=2 ; $SIZE_B / 1024" | bc)
+            echo "SIZE=$tmp" >> $GITHUB_ENV
+            echo "PKG_NAME=$(echo $PKG_DATA | jq .[0].name)" >> $GITHUB_ENV
+            echo "Raw npm pack stats:"
+            echo $PKG_DATA
+        - name: Comment PR Bundle Size
+          uses: thollander/actions-comment-pull-request@v2
+          if: ${{ github.event_name == 'pull_request' }}
+          with:
+            message: |
+              Generated ${{ env.PKG_NAME }} SDK package:
+              | File count | Size (Kb) | Unpacked (Kb) |
+              | ---------- | --------- | ------------- |
+              | ${{ env.FILE_COUNT }} | ${{ env.SIZE }} | ${{ env.UNPACKED }} |
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            comment_tag: package-stats
+            mode: recreate
+        # Build sample app and get stats from webpack-bundle analyzer
+        - name: Build sample app
+          run: yarn build
+          working-directory: ./packages/sample-app
+        - name: Extract sample app size
+          working-directory: ./packages/sample-app
+          run: |
+            APP_DATA=$(cat ./dist/report.json)
+            APP_STAT=$(echo $APP_DATA | jq .[0].statSize)
+            echo "APP_STAT=$(echo "scale=2 ; $APP_STAT / 1024" | bc)" >> $GITHUB_ENV
+            APP_PARSED=$(echo $APP_DATA | jq .[0].parsedSize)
+            echo "APP_PARSED=$(echo "scale=2 ; $APP_PARSED / 1024" | bc)" >> $GITHUB_ENV
+            APP_GZIP=$(echo $APP_DATA | jq .[0].gzipSize)
+            echo "APP_GZIP=$(echo "scale=2 ; $APP_GZIP / 1024" | bc)" >> $GITHUB_ENV
+            echo $APP_DATA
+        - name: Comment PR Sample App Size
+          uses: thollander/actions-comment-pull-request@v2
+          if: ${{ github.event_name == 'pull_request' }}
+          with:
+            message: |
+              Generated sample app bundle:
+              | Stat Size (Kb) | Parsed Size (Kb) | Gzipped (Kb) |
+              | ---------- | --------- | ------------- |
+              | ${{ env.APP_STAT }} | ${{ env.APP_PARSED }} | ${{ env.APP_GZIP }} |
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            comment_tag: sample-app-stats
+            mode: recreate
+        - name: Archive webpack stats
+          uses: actions/upload-artifact@v3
+          with:
+            name: webpack-stats
+            path: packages/sample-app/dist/stats.json
+        - run: yarn lerna run test:integrated
+          if: ${{env.TENANT_ID != '' }}
+          env:
+              TENANT_ID:  ${{secrets.tenant_id}}
+              CLIENT_ID: ${{secrets.client_id}}
+              CLIENT_SECRET: ${{secrets.client_secret}}
+        - run: yarn lerna run test --parallel

@@ -62,8 +62,30 @@ describe("RequestInformation", () => {
     const qs = new GetQueryParameters();
     qs.select = ["id", "displayName"];
     requestInformation.setQueryStringParametersFromRawObject(qs);
-    assert.equal(requestInformation.URL,
-      "http://localhost/me?%24select=id,displayName");
+    assert.equal(
+      requestInformation.URL,
+      "http://localhost/me?%24select=id,displayName"
+    );
+  });
+
+  it("Does not set empty select query parameter", () => {
+    const requestInformation = new RequestInformation();
+    requestInformation.pathParameters["baseurl"] = baseUrl;
+    requestInformation.urlTemplate = "http://localhost/me{?%24select}";
+    const qs = new GetQueryParameters();
+    qs.select = [];
+    requestInformation.setQueryStringParametersFromRawObject(qs);
+    assert.equal(requestInformation.URL, "http://localhost/me");
+  });
+
+  it("Does not set empty search query parameter", () => {
+    const requestInformation = new RequestInformation();
+    requestInformation.pathParameters["baseurl"] = baseUrl;
+    requestInformation.urlTemplate = "http://localhost/me{?%24select}";
+    const qs = new GetQueryParameters();
+    qs.search = "";
+    requestInformation.setQueryStringParametersFromRawObject(qs);
+    assert.equal(requestInformation.URL, "http://localhost/me");
   });
 
   it("Adds headers to requestInformation", () => {
