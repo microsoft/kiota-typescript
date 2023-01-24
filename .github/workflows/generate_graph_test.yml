@@ -5,7 +5,7 @@ on:
       KIOTA_BRANCH:
         description: 'Branch to build kiota from'
         type: string
-        default: 'nikithauc/model-as-interfaces'
+        default: 'main'
       KIOTA_REPO:
         description: 'Repo to build kiota from'
         type: string
@@ -18,9 +18,10 @@ on:
   push:
     branches: [ main, nikithauc/model-interface-serialization ]
   pull_request:
+    branches: [main]
 
 env:
-  KIOTA_BRANCH: 'main'
+  KIOTA_BRANCH: 'nikithauc/model-as-interfaces'
   KIOTA_REPO: 'https://github.com/microsoft/kiota.git'
   OPEN_API_DEF: 'https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/master/openapi/v1.0/openapi.yaml'
 
