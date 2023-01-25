@@ -16,7 +16,7 @@ on:
         default: 'https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/master/openapi/v1.0/openapi.yaml'
 
   push:
-    branches: [ main, nikithauc/model-interface-serialization ]
+    branches: [ main ]
   pull_request:
     branches: [main]
 
