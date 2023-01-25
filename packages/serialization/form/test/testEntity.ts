@@ -17,6 +17,13 @@ export interface TestEntity extends Parsable, AdditionalDataHolder {
   endWorkTime?: TimeOnly;
   officeLocation?: string;
 }
+export function createTestParserFromDiscriminatorValue(
+  parseNode: ParseNode | undefined
+) {
+  if (!parseNode) throw new Error("parseNode cannot be undefined");
+  return deserializeTestEntity;
+}
+
 export function deserializeTestEntity(
   testEntity: TestEntity | undefined = {}
 ): Record<string, (node: ParseNode) => void> {

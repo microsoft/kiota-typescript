@@ -77,11 +77,12 @@ export class JsonParseNode implements ParseNode {
     model: T,
     parsableFactory: ParsableFactory<T>
   ): void => {
-    const fields = (parsableFactory(this))();
+    const fields = parsableFactory(this)(model);
 
     if (!this._jsonNode) return;
     Object.entries(this._jsonNode as any).forEach(([k, v]) => {
       const deserializer = fields[k];
+
       if (deserializer) {
         deserializer(new JsonParseNode(v));
       } else {

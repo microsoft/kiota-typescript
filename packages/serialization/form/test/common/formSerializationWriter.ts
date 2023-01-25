@@ -40,6 +40,12 @@ describe("FormSerializationWriter", () => {
       "accountEnabled=false&" +
       "jobTitle=Author&" +
       "createdDateTime=1970-01-01T00%3A00%3A00.000Z";
+      console.log("form:");
+      console.log(form);
+      console.log("form:");
+      console.log("expectedString:");
+      console.log(expectedString);
+      console.log("expectedString:");
     assert.equal(form, expectedString);
   });
   it("writesSampleCollectionOfObjectValues", () => {

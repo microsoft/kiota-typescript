@@ -1,37 +1,51 @@
-// import { ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
-// import { assert } from "chai";
+import { ParseNode } from "@microsoft/kiota-abstractions";
+import { assert } from "chai";
 
-// import { JsonParseNode } from "../../src/index";
+import { JsonParseNode } from "../../src/index";
 
-// describe("JsonParseNode", () => {
-//   it("jsonParseNode:initializes", async () => {
-//     const jsonParseNode = new JsonParseNode(null);
-//     assert.isDefined(jsonParseNode);
-//   });
-//   it("jsonParseNode:initializes", async () => {
-//     interface TestParser {
-//       testCollection?: string[] | undefined;
-//     }
+describe("JsonParseNode", () => {
+  it("jsonParseNode:initializes", async () => {
+    const jsonParseNode = new JsonParseNode(null);
+    assert.isDefined(jsonParseNode);
+  });
 
-//     function deserializeTestParser(
-//       testParser: TestParser | undefined = {}
-//     ): Record<string, (node: ParseNode) => void> {
-//       return {
-//         testCollection: (n) => {
-//           testParser.testCollection = n.getCollectionOfPrimitiveValues();
-//         },
-//       };
-//     }
+  it("Test object creation", async () => {
+    interface TestParser {
+      testCollection?: string[] | undefined;
+      testString?: string | undefined;
+    }
 
-//     const result = new JsonParseNode(null).getObjectValue(
-//       deserializeTestParser
-//     );
-//     assert.isDefined(result);
+    function createTestParserFromDiscriminatorValue(
+      parseNode: ParseNode | undefined
+    ) {
+      if (!parseNode) throw new Error("parseNode cannot be undefined");
+      return deserializeTestParser;
+    }
 
-//     const stringValueResult = new JsonParseNode({
-//       testCollection: ["2", "3"],
-//     }).getObjectValue(deserializeTestParser) as TestParser;
-//     assert.equal(stringValueResult.testCollection?.length, 2);
-//     assert.equal(stringValueResult.testCollection?.shift(), "2");
-//   });
-// });
+    function deserializeTestParser(
+      testParser: TestParser | undefined = {}
+    ): Record<string, (node: ParseNode) => void> {
+      return {
+        testCollection: (n) => {
+          testParser.testCollection = n.getCollectionOfPrimitiveValues();
+        },
+        testString: (n) => {
+          testParser.testString = n.getStringValue();
+        },
+      };
+    }
+
+    const result = new JsonParseNode(null).getObjectValue(
+      createTestParserFromDiscriminatorValue
+    );
+    assert.isDefined(result);
+
+    const stringValueResult = new JsonParseNode({
+      testCollection: ["2", "3"],
+      testString: "test",
+      additionalProperty: "addnProp",
+    }).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
+    assert.equal(stringValueResult.testCollection?.length, 2);
+    assert.equal(stringValueResult.testCollection?.shift(), "2");
+  });
+});

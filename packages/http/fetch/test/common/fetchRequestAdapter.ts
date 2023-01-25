@@ -113,7 +113,7 @@ describe("FetchRequestAdapter.ts", () => {
 					response.headers.set("Content-Type", "application/json");
 					return Promise.resolve(response);
 				};
-				const mockFactory = new MockParseNodeFactory(new MockParseNode(new MockEntity()));
+				const mockFactory = new MockParseNodeFactory(new MockParseNode({}));
 				const requestAdapter = new FetchRequestAdapter(new AnonymousAuthenticationProvider(), mockFactory, undefined, mockHttpClient);
 				const requestInformation = new RequestInformation();
 				requestInformation.URL = "https://www.example.com";
