@@ -41,6 +41,7 @@ export class ApiClient {
         if (requestAdapter.baseUrl === undefined || requestAdapter.baseUrl === "") {
             requestAdapter.baseUrl = "https://graph.microsoft.com/v1.0";
         }
+        this.pathParameters["baseurl"] = requestAdapter.baseUrl;
     };
     /**
      * Gets an item from the ApiSdk.users.item collection

@@ -1,3 +1,3 @@
-export * from './messagesRequestBuilderPostRequestConfiguration'
-export * from './messagesRequestBuilderGetQueryParameters'
 export * from './messagesRequestBuilderGetRequestConfiguration'
+export * from './messagesRequestBuilderGetQueryParameters'
+export * from './messagesRequestBuilderPostRequestConfiguration'

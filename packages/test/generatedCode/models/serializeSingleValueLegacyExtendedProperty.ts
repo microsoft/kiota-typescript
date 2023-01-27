@@ -4,5 +4,14 @@ import {DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} 
 
 export function serializeSingleValueLegacyExtendedProperty(writer: SerializationWriter, singleValueLegacyExtendedProperty: SingleValueLegacyExtendedProperty | undefined = {}) : void {
         serializeEntity(writer, singleValueLegacyExtendedProperty)
-            writer.writeStringValue("value", singleValueLegacyExtendedProperty.value);
+        for (const [key, value] of Object.entries(singleValueLegacyExtendedProperty)){
+            switch(key){
+                case "value":
+                    writer.writeStringValue("value", singleValueLegacyExtendedProperty.value);
+                break
+                default:
+                writer.writeAdditionalData(key, value);
+                break
+            }
+        }
 }

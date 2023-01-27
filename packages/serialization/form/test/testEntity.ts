@@ -56,11 +56,32 @@ export function serializeTestEntity(
   writer: SerializationWriter,
   testEntity: TestEntity | undefined = {}
 ): void {
-  writer.writeStringValue("id", testEntity.id);
-  writer.writeDateOnlyValue("birthday", testEntity.birthday);
-  writer.writeDateValue("createdDateTime", testEntity.createdDateTime);
-  writer.writeDurationValue("workDuration", testEntity.workDuration);
-  writer.writeTimeOnlyValue("startWorkTime", testEntity.startWorkTime);
-  writer.writeTimeOnlyValue("endWorkTime", testEntity.endWorkTime);
-  writer.writeStringValue("officeLocation", testEntity.officeLocation);
+  for (const [key, value] of Object.entries(testEntity)) {
+    switch (key) {
+      case "id":
+        writer.writeStringValue("id", testEntity.id);
+        break;
+      case "birthday":
+        writer.writeDateOnlyValue("birthday", testEntity.birthday);
+        break;
+      case "createdDateTime":
+        writer.writeDateValue("createdDateTime", testEntity.createdDateTime);
+        break;
+      case "workDuration":
+        writer.writeDurationValue("workDuration", testEntity.workDuration);
+        break;
+      case "startWorkTime":
+        writer.writeTimeOnlyValue("startWorkTime", testEntity.startWorkTime);
+        break;
+      case "endWorkTime":
+        writer.writeTimeOnlyValue("endWorkTime", testEntity.endWorkTime);
+        break;
+      case "officeLocation":
+        writer.writeStringValue("officeLocation", testEntity.officeLocation);
+        break;
+      default:
+        writer.writeAdditionalData(key, value);
+        break;
+    }
+  }
 }

@@ -2,9 +2,9 @@
 import {
   DateOnly,
   Duration,
+  ModelSerializerFunction,
   Parsable,
   SerializationWriter,
-  ModelSerializerFunction,
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
 
@@ -133,12 +133,12 @@ export class FormSerializationWriter implements SerializationWriter {
     return arrayBuffer;
   };
 
-  public writeAdditionalData = (value: Record<string, unknown>): void => {
-    if (!value) return;
+  public writeAdditionalData = (key: string, value: any): void => {
+    // Do not use !value here, because value can be `false`.
+    if (value === undefined) return;
 
-    for (const key in value) {
-      this.writeAnyValue(key, value[key]);
-    }
+    console.log("write any value key: ", key);
+    this.writeAnyValue(key, value);
   };
   private writeAnyValue = (
     key?: string | undefined,

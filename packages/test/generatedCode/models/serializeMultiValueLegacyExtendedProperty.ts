@@ -4,5 +4,14 @@ import {DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} 
 
 export function serializeMultiValueLegacyExtendedProperty(writer: SerializationWriter, multiValueLegacyExtendedProperty: MultiValueLegacyExtendedProperty | undefined = {}) : void {
         serializeEntity(writer, multiValueLegacyExtendedProperty)
-            writer.writeCollectionOfPrimitiveValues<string>("value", multiValueLegacyExtendedProperty.value);
+        for (const [key, value] of Object.entries(multiValueLegacyExtendedProperty)){
+            switch(key){
+                case "value":
+                    writer.writeCollectionOfPrimitiveValues<string>("value", multiValueLegacyExtendedProperty.value);
+                break
+                default:
+                writer.writeAdditionalData(key, value);
+                break
+            }
+        }
 }

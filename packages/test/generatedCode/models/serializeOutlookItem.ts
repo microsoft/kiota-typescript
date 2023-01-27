@@ -4,8 +4,23 @@ import {DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} 
 
 export function serializeOutlookItem(writer: SerializationWriter, outlookItem: OutlookItem | undefined = {}) : void {
         serializeEntity(writer, outlookItem)
-            writer.writeCollectionOfPrimitiveValues<string>("categories", outlookItem.categories);
-            writer.writeStringValue("changeKey", outlookItem.changeKey);
-            writer.writeDateValue("createdDateTime", outlookItem.createdDateTime);
-            writer.writeDateValue("lastModifiedDateTime", outlookItem.lastModifiedDateTime);
+        for (const [key, value] of Object.entries(outlookItem)){
+            switch(key){
+                case "categories":
+                    writer.writeCollectionOfPrimitiveValues<string>("categories", outlookItem.categories);
+                break
+                case "changeKey":
+                    writer.writeStringValue("changeKey", outlookItem.changeKey);
+                break
+                case "createdDateTime":
+                    writer.writeDateValue("createdDateTime", outlookItem.createdDateTime);
+                break
+                case "lastModifiedDateTime":
+                    writer.writeDateValue("lastModifiedDateTime", outlookItem.lastModifiedDateTime);
+                break
+                default:
+                writer.writeAdditionalData(key, value);
+                break
+            }
+        }
 }

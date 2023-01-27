@@ -2,9 +2,9 @@
 import {
   DateOnly,
   Duration,
+  ModelSerializerFunction,
   Parsable,
   SerializationWriter,
-  ModelSerializerFunction,
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
 
@@ -166,12 +166,13 @@ export class JsonSerializationWriter implements SerializationWriter {
     return arrayBuffer;
   };
 
-  public writeAdditionalData = (value: Record<string, unknown>): void => {
+  public writeAdditionalData = (
+    key: string,
+    value: unknown | undefined
+  ): void => {
     if (!value) return;
 
-    for (const key in value) {
-      this.writeAnyValue(key, value[key]);
-    }
+    this.writeAnyValue(key, value);
   };
   private writeNonParsableObjectValue = (
     key?: string | undefined,

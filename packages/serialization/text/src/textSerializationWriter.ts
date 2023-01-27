@@ -2,10 +2,10 @@
 import {
   DateOnly,
   Duration,
+  ModelSerializerFunction,
   Parsable,
   SerializationWriter,
   TimeOnly,
-  ModelSerializerFunction
 } from "@microsoft/kiota-abstractions";
 export class TextSerializationWriter implements SerializationWriter {
   private static noStructuredDataMessage =
@@ -124,7 +124,10 @@ export class TextSerializationWriter implements SerializationWriter {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public writeAdditionalData = (value: Record<string, unknown>): void => {
+  public writeAdditionalData = (
+    key: string,
+    value: unknown | undefined
+  ): void => {
     throw new Error(TextSerializationWriter.noStructuredDataMessage);
   };
 }

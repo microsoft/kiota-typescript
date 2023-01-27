@@ -6,6 +6,17 @@ import {DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} 
 
 export function serializeInferenceClassificationOverride(writer: SerializationWriter, inferenceClassificationOverride: InferenceClassificationOverride | undefined = {}) : void {
         serializeEntity(writer, inferenceClassificationOverride)
-            writer.writeEnumValue<InferenceClassificationType>("classifyAs", inferenceClassificationOverride.classifyAs);
-            writer.writeObjectValue<EmailAddress>("senderEmailAddress", inferenceClassificationOverride.senderEmailAddress, serializeEmailAddress);
+        for (const [key, value] of Object.entries(inferenceClassificationOverride)){
+            switch(key){
+                case "classifyAs":
+                    writer.writeEnumValue<InferenceClassificationType>("classifyAs", inferenceClassificationOverride.classifyAs);
+                break
+                case "senderEmailAddress":
+                    writer.writeObjectValue<EmailAddress>("senderEmailAddress", inferenceClassificationOverride.senderEmailAddress, serializeEmailAddress);
+                break
+                default:
+                writer.writeAdditionalData(key, value);
+                break
+            }
+        }
 }

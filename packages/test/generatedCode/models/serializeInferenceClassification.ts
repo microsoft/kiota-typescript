@@ -5,5 +5,14 @@ import {DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} 
 
 export function serializeInferenceClassification(writer: SerializationWriter, inferenceClassification: InferenceClassification | undefined = {}) : void {
         serializeEntity(writer, inferenceClassification)
-            writer.writeCollectionOfObjectValues<InferenceClassificationOverride>("overrides", inferenceClassification.overrides, serializeInferenceClassificationOverride);
+        for (const [key, value] of Object.entries(inferenceClassification)){
+            switch(key){
+                case "overrides":
+                    writer.writeCollectionOfObjectValues<InferenceClassificationOverride>("overrides", inferenceClassification.overrides, serializeInferenceClassificationOverride);
+                break
+                default:
+                writer.writeAdditionalData(key, value);
+                break
+            }
+        }
 }
