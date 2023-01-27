@@ -53,12 +53,8 @@ describe("FormSerializationWriter", () => {
     });
     assert.equal(expectedString.length, count);
     assert.equal(arr.length, 0);
-   
-    console.log("expectedString:");
-    console.log(expectedString);
-    console.log("expectedString:");
-    // assert.equal(form, expectedString);
   });
+  
   it("writesSampleCollectionOfObjectValues", () => {
     const testEntity = {} as TestEntity;
     testEntity.id = "48d31887-5fad-4d73-a9f5-3c356e68a038";

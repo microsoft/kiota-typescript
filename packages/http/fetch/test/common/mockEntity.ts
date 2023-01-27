@@ -1,6 +1,6 @@
 import { Parsable, ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
 
-type MockEntity = Parsable;
+export type MockEntity = Parsable;
 
 export function createMockEntityFromDiscriminatorValue(parseNode: ParseNode | undefined) {
 	if (!parseNode) throw new Error("parseNode cannot be undefined");

@@ -114,7 +114,6 @@ export class JsonSerializationWriter implements SerializationWriter {
     }
     this.onBeforeObjectSerialization &&
       this.onBeforeObjectSerialization(value as unknown as Parsable);
-    // if (value) {
     this.writer.push(`{`);
 
     this.onStartObjectSerialization &&
@@ -123,13 +122,8 @@ export class JsonSerializationWriter implements SerializationWriter {
     this.onAfterObjectSerialization &&
       this.onAfterObjectSerialization(value as unknown as Parsable);
 
-    // if (this.writer.length > 0 && JsonSerializationWriter.propertySeparator) {
-    //   //removing the last separator
-    //   this.writer.pop();
-    // }
-    //  if (value) {
     this.writer.push(`}`);
-    //}
+
     key && this.writer.push(JsonSerializationWriter.propertySeparator);
   }
 
@@ -150,10 +144,6 @@ export class JsonSerializationWriter implements SerializationWriter {
     }
   };
   public getSerializedContent = (): ArrayBuffer => {
-    console.log("this.writer");
-    const s = this.writer.join(``);
-    console.log(s);
-    console.log("this.writer");
     return this.convertStringToArrayBuffer(this.writer.join(``));
   };
 
@@ -170,7 +160,8 @@ export class JsonSerializationWriter implements SerializationWriter {
     key: string,
     value: unknown | undefined
   ): void => {
-    if (!value) return;
+    // !value will fail to serialize false and null values which can be valid input
+    if (value === undefined) return;
 
     this.writeAnyValue(key, value);
   };

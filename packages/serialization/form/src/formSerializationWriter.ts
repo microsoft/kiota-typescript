@@ -136,10 +136,9 @@ export class FormSerializationWriter implements SerializationWriter {
   public writeAdditionalData = (key: string, value: any): void => {
     // Do not use !value here, because value can be `false`.
     if (value === undefined) return;
-
-    console.log("write any value key: ", key);
     this.writeAnyValue(key, value);
   };
+  
   private writeAnyValue = (
     key?: string | undefined,
     value?: unknown | undefined

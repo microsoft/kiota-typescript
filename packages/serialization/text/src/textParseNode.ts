@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   DateOnly,
   Duration,
@@ -51,12 +50,14 @@ export class TextParseNode implements ParseNode {
   public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
     throw new Error(TextParseNode.noStructuredDataMessage);
   };
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   public getCollectionOfObjectValues<T extends Parsable>(
     parsableFactory: ParsableFactory<T>
   ): T[] | undefined {
     throw new Error(TextParseNode.noStructuredDataMessage);
   }
 
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   public getObjectValue<T extends Parsable>(
     parsableFactory: ParsableFactory<T>,
     value?: T
