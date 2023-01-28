@@ -5,7 +5,7 @@ import {AdditionalDataHolder, DeserializeIntoModelFunction, Parsable, ParseNode,
 export function serializeSingleValueLegacyExtendedPropertyCollectionResponse(writer: SerializationWriter, singleValueLegacyExtendedPropertyCollectionResponse: SingleValueLegacyExtendedPropertyCollectionResponse | undefined = {}) : void {
         for (const [key, value] of Object.entries(singleValueLegacyExtendedPropertyCollectionResponse)){
             switch(key){
-                case "@odata.nextLink":
+                case "odataNextLink":
                     writer.writeStringValue("@odata.nextLink", singleValueLegacyExtendedPropertyCollectionResponse.odataNextLink);
                 break
                 case "value":

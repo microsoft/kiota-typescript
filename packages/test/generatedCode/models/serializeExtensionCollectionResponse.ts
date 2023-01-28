@@ -5,7 +5,7 @@ import {AdditionalDataHolder, DeserializeIntoModelFunction, Parsable, ParseNode,
 export function serializeExtensionCollectionResponse(writer: SerializationWriter, extensionCollectionResponse: ExtensionCollectionResponse | undefined = {}) : void {
         for (const [key, value] of Object.entries(extensionCollectionResponse)){
             switch(key){
-                case "@odata.nextLink":
+                case "odataNextLink":
                     writer.writeStringValue("@odata.nextLink", extensionCollectionResponse.odataNextLink);
                 break
                 case "value":
