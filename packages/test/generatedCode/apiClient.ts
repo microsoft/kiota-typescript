@@ -11,18 +11,14 @@ import {TextParseNodeFactory, TextSerializationWriterFactory} from '@microsoft/k
 export class ApiClient {
     /** Path parameters for the request */
     /** Path parameters for the request */
-    private pathParameters: Record<string, unknown>;
+    public pathParameters: Record<string, unknown>;
     /** The request adapter to use to execute the requests. */
     /** The request adapter to use to execute the requests. */
-    private requestAdapter: RequestAdapter;
+    public requestAdapter: RequestAdapter;
     /** Url template to use to build the URL for the current request builder */
     /** Url template to use to build the URL for the current request builder */
     private urlTemplate: string;
     /** The users property */
-    /** The users property */
-    public get users(): UsersRequestBuilder {
-        return new UsersRequestBuilder(this.pathParameters, this.requestAdapter);
-    }
     /**
      * Instantiates a new ApiClient and sets the default values.
      * @param requestAdapter The request adapter to use to execute the requests.

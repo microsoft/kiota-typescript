@@ -20,31 +20,15 @@ import {getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter
  */
 export class MailFolderItemRequestBuilder {
     /** The messageRules property */
-    /** The messageRules property */
-    public get messageRules(): MessageRulesRequestBuilder {
-        return new MessageRulesRequestBuilder(this.pathParameters, this.requestAdapter);
-    }
     /** The messages property */
-    /** The messages property */
-    public get messages(): MessagesRequestBuilder {
-        return new MessagesRequestBuilder(this.pathParameters, this.requestAdapter);
-    }
     /** The multiValueExtendedProperties property */
-    /** The multiValueExtendedProperties property */
-    public get multiValueExtendedProperties(): MultiValueExtendedPropertiesRequestBuilder {
-        return new MultiValueExtendedPropertiesRequestBuilder(this.pathParameters, this.requestAdapter);
-    }
     /** Path parameters for the request */
     /** Path parameters for the request */
-    private pathParameters: Record<string, unknown>;
+    public pathParameters: Record<string, unknown>;
     /** The request adapter to use to execute the requests. */
     /** The request adapter to use to execute the requests. */
-    private requestAdapter: RequestAdapter;
+    public requestAdapter: RequestAdapter;
     /** The singleValueExtendedProperties property */
-    /** The singleValueExtendedProperties property */
-    public get singleValueExtendedProperties(): SingleValueExtendedPropertiesRequestBuilder {
-        return new SingleValueExtendedPropertiesRequestBuilder(this.pathParameters, this.requestAdapter);
-    }
     /** Url template to use to build the URL for the current request builder */
     /** Url template to use to build the URL for the current request builder */
     private urlTemplate: string;

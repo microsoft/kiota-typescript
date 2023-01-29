@@ -21,36 +21,16 @@ import {getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter
  */
 export class MessageItemRequestBuilder {
     /** The attachments property */
-    /** The attachments property */
-    public get attachments(): AttachmentsRequestBuilder {
-        return new AttachmentsRequestBuilder(this.pathParameters, this.requestAdapter);
-    }
     /** The Content property */
-    /** The Content property */
-    public get content(): ContentRequestBuilder {
-        return new ContentRequestBuilder(this.pathParameters, this.requestAdapter);
-    }
     /** The extensions property */
-    /** The extensions property */
-    public get extensions(): ExtensionsRequestBuilder {
-        return new ExtensionsRequestBuilder(this.pathParameters, this.requestAdapter);
-    }
     /** The multiValueExtendedProperties property */
-    /** The multiValueExtendedProperties property */
-    public get multiValueExtendedProperties(): MultiValueExtendedPropertiesRequestBuilder {
-        return new MultiValueExtendedPropertiesRequestBuilder(this.pathParameters, this.requestAdapter);
-    }
     /** Path parameters for the request */
     /** Path parameters for the request */
-    private pathParameters: Record<string, unknown>;
+    public pathParameters: Record<string, unknown>;
     /** The request adapter to use to execute the requests. */
     /** The request adapter to use to execute the requests. */
-    private requestAdapter: RequestAdapter;
+    public requestAdapter: RequestAdapter;
     /** The singleValueExtendedProperties property */
-    /** The singleValueExtendedProperties property */
-    public get singleValueExtendedProperties(): SingleValueExtendedPropertiesRequestBuilder {
-        return new SingleValueExtendedPropertiesRequestBuilder(this.pathParameters, this.requestAdapter);
-    }
     /** Url template to use to build the URL for the current request builder */
     /** Url template to use to build the URL for the current request builder */
     private urlTemplate: string;
