@@ -48,17 +48,6 @@ export class InferenceClassificationRequestBuilder {
         return this.requestAdapter?.sendAsync<InferenceClassification>(requestInfo, createInferenceClassificationFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
     /**
-     * Gets an item from the ApiSdk.users.item.inferenceClassification.overrides.item collection
-     * @param id Unique identifier of the item
-     * @returns a InferenceClassificationOverrideItemRequestBuilder
-     */
-    public overridesById(id: string) : InferenceClassificationOverrideItemRequestBuilder {
-        if(!id) throw new Error("id cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["inferenceClassificationOverride%2Did"] = id
-        return new InferenceClassificationOverrideItemRequestBuilder(urlTplParams, this.requestAdapter);
-    };
-    /**
      * Update the navigation property inferenceClassification in users
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.

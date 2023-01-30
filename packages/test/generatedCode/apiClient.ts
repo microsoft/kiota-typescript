@@ -39,15 +39,4 @@ export class ApiClient {
         }
         this.pathParameters["baseurl"] = requestAdapter.baseUrl;
     };
-    /**
-     * Gets an item from the ApiSdk.users.item collection
-     * @param id Unique identifier of the item
-     * @returns a UserItemRequestBuilder
-     */
-    public usersById(id: string) : UserItemRequestBuilder {
-        if(!id) throw new Error("id cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["user%2Did"] = id
-        return new UserItemRequestBuilder(urlTplParams, this.requestAdapter);
-    };
 }

@@ -1,18 +1,21 @@
-export * from './singleValueLegacyExtendedPropertyItemRequestBuilderPatchRequestConfiguration'
 export * from './singleValueLegacyExtendedPropertyItemRequestBuilderGetQueryParameters'
-export * from './singleValueLegacyExtendedPropertyItemRequestBuilderGetRequestConfiguration'
 export * from './singleValueLegacyExtendedPropertyItemRequestBuilderDeleteRequestConfiguration'
+export * from './singleValueLegacyExtendedPropertyItemRequestBuilderGetRequestConfiguration'
+export * from './singleValueLegacyExtendedPropertyItemRequestBuilderPatchRequestConfiguration'
 import {SingleValueLegacyExtendedPropertyItemRequestBuilder } from "./singleValueLegacyExtendedPropertyItemRequestBuilder"
-import {SingleValueExtendedPropertiesRequestBuilder} from "../singleValueExtendedPropertiesRequestBuilder"
-declare module "../singleValueExtendedPropertiesRequestBuilder"{
-    interface singleValueExtendedPropertiesRequestBuilder{
+import {MessageItemRequestBuilder} from "../../messageItemRequestBuilder"
+import { getPathParameters } from "@microsoft/kiota-abstractions";
+declare module "../../messageItemRequestBuilder"{
+    interface MessageItemRequestBuilder{
         singleValueLegacyExtendedPropertyItem:SingleValueLegacyExtendedPropertyItemRequestBuilder
     }
 }
-Reflect.defineProperty(SingleValueExtendedPropertiesRequestBuilder.prototype, "singleValueLegacyExtendedPropertyItem", {
+Reflect.defineProperty(MessageItemRequestBuilder.prototype, "singleValueLegacyExtendedPropertyItem", {
     configurable: true,
     enumerable: true,
-    get: function(this: SingleValueExtendedPropertiesRequestBuilder) {
+    get: function(this: MessageItemRequestBuilder, id:String) {
+        const urlTplParams = getPathParameters(this.pathParameters);
+ urlTplParams["attachment%2Did"] = id
         return new SingleValueLegacyExtendedPropertyItemRequestBuilder(this.pathParameters,this.requestAdapter)
-    }
+    } as any
 })

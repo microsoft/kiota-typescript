@@ -1,18 +1,21 @@
-export * from './mailFolderItemRequestBuilderGetRequestConfiguration'
-export * from './mailFolderItemRequestBuilderPatchRequestConfiguration'
-export * from './mailFolderItemRequestBuilderGetQueryParameters'
 export * from './mailFolderItemRequestBuilderDeleteRequestConfiguration'
-import {MailFolderItemRequestBuilder } from "./mailFolderItemRequestBuilder"
-import {ChildFoldersRequestBuilder} from "../childFoldersRequestBuilder"
-declare module "../childFoldersRequestBuilder"{
-    interface childFoldersRequestBuilder{
-        mailFolderItem:MailFolderItemRequestBuilder
+export * from './mailFolderItemRequestBuilderPatchRequestConfiguration'
+export * from './mailFolderItemRequestBuilderGetRequestConfiguration'
+export * from './mailFolderItemRequestBuilderGetQueryParameters'
+import {MailFolderItemRequestBuilder as MailFolderItemRequestBuilderChild} from "./mailFolderItemRequestBuilder"
+import {MailFolderItemRequestBuilder} from "../../mailFolderItemRequestBuilder"
+import { getPathParameters } from "@microsoft/kiota-abstractions";
+declare module "../../mailFolderItemRequestBuilder"{
+    interface MailFolderItemRequestBuilder{
+        mailFolderItem:MailFolderItemRequestBuilderChild
     }
 }
-Reflect.defineProperty(ChildFoldersRequestBuilder.prototype, "mailFolderItem", {
+Reflect.defineProperty(MailFolderItemRequestBuilder.prototype, "mailFolderItem", {
     configurable: true,
     enumerable: true,
-    get: function(this: ChildFoldersRequestBuilder) {
-        return new MailFolderItemRequestBuilder(this.pathParameters,this.requestAdapter)
-    }
+    get: function(this: MailFolderItemRequestBuilder, id:String) {
+        const urlTplParams = getPathParameters(this.pathParameters);
+ urlTplParams["attachment%2Did"] = id
+        return new MailFolderItemRequestBuilderChild(this.pathParameters,this.requestAdapter)
+    } as any
 })

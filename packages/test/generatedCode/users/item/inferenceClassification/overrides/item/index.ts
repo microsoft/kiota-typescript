@@ -1,18 +1,21 @@
-export * from './inferenceClassificationOverrideItemRequestBuilderPatchRequestConfiguration'
 export * from './inferenceClassificationOverrideItemRequestBuilderGetQueryParameters'
-export * from './inferenceClassificationOverrideItemRequestBuilderGetRequestConfiguration'
 export * from './inferenceClassificationOverrideItemRequestBuilderDeleteRequestConfiguration'
+export * from './inferenceClassificationOverrideItemRequestBuilderPatchRequestConfiguration'
+export * from './inferenceClassificationOverrideItemRequestBuilderGetRequestConfiguration'
 import {InferenceClassificationOverrideItemRequestBuilder } from "./inferenceClassificationOverrideItemRequestBuilder"
-import {OverridesRequestBuilder} from "../overridesRequestBuilder"
-declare module "../overridesRequestBuilder"{
-    interface overridesRequestBuilder{
+import {InferenceClassificationRequestBuilder} from "../../inferenceClassificationRequestBuilder"
+import { getPathParameters } from "@microsoft/kiota-abstractions";
+declare module "../../inferenceClassificationRequestBuilder"{
+    interface inferenceClassificationRequestBuilder{
         inferenceClassificationOverrideItem:InferenceClassificationOverrideItemRequestBuilder
     }
 }
-Reflect.defineProperty(OverridesRequestBuilder.prototype, "inferenceClassificationOverrideItem", {
+Reflect.defineProperty(InferenceClassificationRequestBuilder.prototype, "inferenceClassificationOverrideItem", {
     configurable: true,
     enumerable: true,
-    get: function(this: OverridesRequestBuilder) {
+    get: function(this: InferenceClassificationRequestBuilder, id:String) {
+        const urlTplParams = getPathParameters(this.pathParameters);
+ urlTplParams["attachment%2Did"] = id
         return new InferenceClassificationOverrideItemRequestBuilder(this.pathParameters,this.requestAdapter)
-    }
+    } as any
 })

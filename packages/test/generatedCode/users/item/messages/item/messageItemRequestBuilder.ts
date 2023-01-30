@@ -35,17 +35,6 @@ export class MessageItemRequestBuilder {
     /** Url template to use to build the URL for the current request builder */
     private urlTemplate: string;
     /**
-     * Gets an item from the ApiSdk.users.item.messages.item.attachments.item collection
-     * @param id Unique identifier of the item
-     * @returns a AttachmentItemRequestBuilder
-     */
-    public attachmentsById(id: string) : AttachmentItemRequestBuilder {
-        if(!id) throw new Error("id cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["attachment%2Did"] = id
-        return new AttachmentItemRequestBuilder(urlTplParams, this.requestAdapter);
-    };
-    /**
      * Instantiates a new MessageItemRequestBuilder and sets the default values.
      * @param pathParameters The raw url or the Url template parameters for the request.
      * @param requestAdapter The request adapter to use to execute the requests.
@@ -70,17 +59,6 @@ export class MessageItemRequestBuilder {
         return this.requestAdapter?.sendNoResponseContentAsync(requestInfo, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
     /**
-     * Gets an item from the ApiSdk.users.item.messages.item.extensions.item collection
-     * @param id Unique identifier of the item
-     * @returns a ExtensionItemRequestBuilder
-     */
-    public extensionsById(id: string) : ExtensionItemRequestBuilder {
-        if(!id) throw new Error("id cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["extension%2Did"] = id
-        return new ExtensionItemRequestBuilder(urlTplParams, this.requestAdapter);
-    };
-    /**
      * The messages in a mailbox or folder. Read-only. Nullable.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @param responseHandler Response handler to use in place of the default response handling provided by the core service
@@ -91,17 +69,6 @@ export class MessageItemRequestBuilder {
             requestConfiguration
         );
         return this.requestAdapter?.sendAsync<Message>(requestInfo, createMessageFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
-    };
-    /**
-     * Gets an item from the ApiSdk.users.item.messages.item.multiValueExtendedProperties.item collection
-     * @param id Unique identifier of the item
-     * @returns a MultiValueLegacyExtendedPropertyItemRequestBuilder
-     */
-    public multiValueExtendedPropertiesById(id: string) : MultiValueLegacyExtendedPropertyItemRequestBuilder {
-        if(!id) throw new Error("id cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["multiValueLegacyExtendedProperty%2Did"] = id
-        return new MultiValueLegacyExtendedPropertyItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
     /**
      * Update the navigation property messages in users
@@ -115,17 +82,6 @@ export class MessageItemRequestBuilder {
             body, requestConfiguration
         );
         return this.requestAdapter?.sendNoResponseContentAsync(requestInfo, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
-    };
-    /**
-     * Gets an item from the ApiSdk.users.item.messages.item.singleValueExtendedProperties.item collection
-     * @param id Unique identifier of the item
-     * @returns a SingleValueLegacyExtendedPropertyItemRequestBuilder
-     */
-    public singleValueExtendedPropertiesById(id: string) : SingleValueLegacyExtendedPropertyItemRequestBuilder {
-        if(!id) throw new Error("id cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["singleValueLegacyExtendedProperty%2Did"] = id
-        return new SingleValueLegacyExtendedPropertyItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
     /**
      * Delete navigation property messages for users

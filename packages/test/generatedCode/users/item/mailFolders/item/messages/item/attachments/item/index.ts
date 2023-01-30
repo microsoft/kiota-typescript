@@ -1,17 +1,20 @@
 export * from './attachmentItemRequestBuilderGetRequestConfiguration'
-export * from './attachmentItemRequestBuilderGetQueryParameters'
 export * from './attachmentItemRequestBuilderDeleteRequestConfiguration'
+export * from './attachmentItemRequestBuilderGetQueryParameters'
 import {AttachmentItemRequestBuilder } from "./attachmentItemRequestBuilder"
-import {AttachmentsRequestBuilder} from "../attachmentsRequestBuilder"
-declare module "../attachmentsRequestBuilder"{
-    interface attachmentsRequestBuilder{
+import {MessageItemRequestBuilder} from "../../messageItemRequestBuilder"
+import { getPathParameters } from "@microsoft/kiota-abstractions";
+declare module "../../messageItemRequestBuilder"{
+    interface MessageItemRequestBuilder{
         attachmentItem:AttachmentItemRequestBuilder
     }
 }
-Reflect.defineProperty(AttachmentsRequestBuilder.prototype, "attachmentItem", {
+Reflect.defineProperty(MessageItemRequestBuilder.prototype, "attachmentItem", {
     configurable: true,
     enumerable: true,
-    get: function(this: AttachmentsRequestBuilder) {
+    get: function(this: MessageItemRequestBuilder, id:String) {
+        const urlTplParams = getPathParameters(this.pathParameters);
+ urlTplParams["attachment%2Did"] = id
         return new AttachmentItemRequestBuilder(this.pathParameters,this.requestAdapter)
-    }
+    } as any
 })

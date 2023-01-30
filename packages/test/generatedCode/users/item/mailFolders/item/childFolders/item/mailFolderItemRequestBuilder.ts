@@ -69,39 +69,6 @@ export class MailFolderItemRequestBuilder {
         return this.requestAdapter?.sendAsync<MailFolder>(requestInfo, createMailFolderFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
     };
     /**
-     * Gets an item from the ApiSdk.users.item.mailFolders.item.childFolders.item.messageRules.item collection
-     * @param id Unique identifier of the item
-     * @returns a MessageRuleItemRequestBuilder
-     */
-    public messageRulesById(id: string) : MessageRuleItemRequestBuilder {
-        if(!id) throw new Error("id cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["messageRule%2Did"] = id
-        return new MessageRuleItemRequestBuilder(urlTplParams, this.requestAdapter);
-    };
-    /**
-     * Gets an item from the ApiSdk.users.item.mailFolders.item.childFolders.item.messages.item collection
-     * @param id Unique identifier of the item
-     * @returns a MessageItemRequestBuilder
-     */
-    public messagesById(id: string) : MessageItemRequestBuilder {
-        if(!id) throw new Error("id cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["message%2Did"] = id
-        return new MessageItemRequestBuilder(urlTplParams, this.requestAdapter);
-    };
-    /**
-     * Gets an item from the ApiSdk.users.item.mailFolders.item.childFolders.item.multiValueExtendedProperties.item collection
-     * @param id Unique identifier of the item
-     * @returns a MultiValueLegacyExtendedPropertyItemRequestBuilder
-     */
-    public multiValueExtendedPropertiesById(id: string) : MultiValueLegacyExtendedPropertyItemRequestBuilder {
-        if(!id) throw new Error("id cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["multiValueLegacyExtendedProperty%2Did"] = id
-        return new MultiValueLegacyExtendedPropertyItemRequestBuilder(urlTplParams, this.requestAdapter);
-    };
-    /**
      * Update the navigation property childFolders in users
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
@@ -113,17 +80,6 @@ export class MailFolderItemRequestBuilder {
             body, requestConfiguration
         );
         return this.requestAdapter?.sendNoResponseContentAsync(requestInfo, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
-    };
-    /**
-     * Gets an item from the ApiSdk.users.item.mailFolders.item.childFolders.item.singleValueExtendedProperties.item collection
-     * @param id Unique identifier of the item
-     * @returns a SingleValueLegacyExtendedPropertyItemRequestBuilder
-     */
-    public singleValueExtendedPropertiesById(id: string) : SingleValueLegacyExtendedPropertyItemRequestBuilder {
-        if(!id) throw new Error("id cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["singleValueLegacyExtendedProperty%2Did"] = id
-        return new SingleValueLegacyExtendedPropertyItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
     /**
      * Delete navigation property childFolders for users

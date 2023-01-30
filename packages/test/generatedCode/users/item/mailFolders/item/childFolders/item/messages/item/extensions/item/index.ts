@@ -1,18 +1,21 @@
 export * from './extensionItemRequestBuilderDeleteRequestConfiguration'
-export * from './extensionItemRequestBuilderGetRequestConfiguration'
 export * from './extensionItemRequestBuilderPatchRequestConfiguration'
 export * from './extensionItemRequestBuilderGetQueryParameters'
+export * from './extensionItemRequestBuilderGetRequestConfiguration'
 import {ExtensionItemRequestBuilder } from "./extensionItemRequestBuilder"
-import {ExtensionsRequestBuilder} from "../extensionsRequestBuilder"
-declare module "../extensionsRequestBuilder"{
-    interface extensionsRequestBuilder{
+import {MessageItemRequestBuilder} from "../../messageItemRequestBuilder"
+import { getPathParameters } from "@microsoft/kiota-abstractions";
+declare module "../../messageItemRequestBuilder"{
+    interface MessageItemRequestBuilder{
         extensionItem:ExtensionItemRequestBuilder
     }
 }
-Reflect.defineProperty(ExtensionsRequestBuilder.prototype, "extensionItem", {
+Reflect.defineProperty(MessageItemRequestBuilder.prototype, "extensionItem", {
     configurable: true,
     enumerable: true,
-    get: function(this: ExtensionsRequestBuilder) {
+    get: function(this: MessageItemRequestBuilder, id:String) {
+        const urlTplParams = getPathParameters(this.pathParameters);
+ urlTplParams["attachment%2Did"] = id
         return new ExtensionItemRequestBuilder(this.pathParameters,this.requestAdapter)
-    }
+    } as any
 })
