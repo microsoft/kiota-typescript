@@ -1,5 +1,5 @@
 
-export interface MailFolderItemRequestBuilderGetQueryParameters {
-    /** Select properties to be returned */
-    select?: string[] | undefined;
-}
+        export interface MailFolderItemRequestBuilderGetQueryParameters {
+            /** Select properties to be returned */
+            select?: string[] | undefined;
+        }

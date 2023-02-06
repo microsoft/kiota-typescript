@@ -3,6 +3,9 @@ import { apiClient } from "./testClient";
 import { assert } from "chai";
 import { MessagesRequestBuilderGetQueryParameters } from "../generatedCode/users/item/messages/messagesRequestBuilderGetQueryParameters";
 
+import "../generatedCode/users/item"
+import "../generatedCode/users/item/messages"
+
 describe("TestGet", () => {
 
     it("should return a test", async () => {

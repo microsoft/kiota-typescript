@@ -3,6 +3,10 @@ import { apiClient } from "./testClient";
 import { assert } from "chai";
 import { Message } from "../generatedCode/models";
 
+import "../generatedCode/users/item"
+import "../generatedCode/users/item/messages"
+
+
 describe("TestPost", () => {
 
     it("should return a test", async () => {
