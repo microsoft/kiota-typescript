@@ -1,5 +1,5 @@
 import {deserializeIntoMultiValueLegacyExtendedPropertyCollectionResponse} from './deserializeIntoMultiValueLegacyExtendedPropertyCollectionResponse';
-import {MultiValueLegacyExtendedPropertyCollectionResponse} from './multiValueLegacyExtendedPropertyCollectionResponse';
+import {MultiValueLegacyExtendedPropertyCollectionResponse} from './index';
 import {ParseNode} from '@microsoft/kiota-abstractions';
 
 export function createMultiValueLegacyExtendedPropertyCollectionResponseFromDiscriminatorValue(parseNode: ParseNode | undefined) {

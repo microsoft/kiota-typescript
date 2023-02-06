@@ -1,5 +1,5 @@
 import {deserializeIntoInferenceClassificationOverrideCollectionResponse} from './deserializeIntoInferenceClassificationOverrideCollectionResponse';
-import {InferenceClassificationOverrideCollectionResponse} from './inferenceClassificationOverrideCollectionResponse';
+import {InferenceClassificationOverrideCollectionResponse} from './index';
 import {ParseNode} from '@microsoft/kiota-abstractions';
 
 export function createInferenceClassificationOverrideCollectionResponseFromDiscriminatorValue(parseNode: ParseNode | undefined) {

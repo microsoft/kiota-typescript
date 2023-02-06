@@ -1,5 +1,5 @@
-import {SizeRange} from './index';
-import {AdditionalDataHolder, DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {SizeRange} from './sizeRange';
+import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function deserializeIntoSizeRange(sizeRange: SizeRange | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {

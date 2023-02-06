@@ -1,5 +1,5 @@
 import {deserializeIntoMailFolderCollectionResponse} from './deserializeIntoMailFolderCollectionResponse';
-import {MailFolderCollectionResponse} from './mailFolderCollectionResponse';
+import {MailFolderCollectionResponse} from './index';
 import {ParseNode} from '@microsoft/kiota-abstractions';
 
 export function createMailFolderCollectionResponseFromDiscriminatorValue(parseNode: ParseNode | undefined) {

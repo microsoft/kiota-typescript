@@ -1,19 +1,10 @@
-import {InferenceClassificationOverride, InferenceClassificationOverrideCollectionResponse} from './index';
+import {InferenceClassificationOverride} from './inferenceClassificationOverride';
+import {InferenceClassificationOverrideCollectionResponse} from './inferenceClassificationOverrideCollectionResponse';
 import {serializeInferenceClassificationOverride} from './serializeInferenceClassificationOverride';
-import {AdditionalDataHolder, DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function serializeInferenceClassificationOverrideCollectionResponse(writer: SerializationWriter, inferenceClassificationOverrideCollectionResponse: InferenceClassificationOverrideCollectionResponse | undefined = {}) : void {
-        for (const [key, value] of Object.entries(inferenceClassificationOverrideCollectionResponse)){
-            switch(key){
-                case "odataNextLink":
-                    writer.writeStringValue("@odata.nextLink", inferenceClassificationOverrideCollectionResponse.odataNextLink);
-                break
-                case "value":
-                    writer.writeCollectionOfObjectValues<InferenceClassificationOverride>("value", inferenceClassificationOverrideCollectionResponse.value, serializeInferenceClassificationOverride);
-                break
-                default:
-                writer.writeAdditionalData(key, value);
-                break
-            }
-        }
+        writer.writeStringValue("@odata.nextLink", inferenceClassificationOverrideCollectionResponse.odataNextLink);
+        writer.writeCollectionOfObjectValues<InferenceClassificationOverride>("value", inferenceClassificationOverrideCollectionResponse.value, serializeInferenceClassificationOverride);
+        writer.writeAdditionalData(inferenceClassificationOverrideCollectionResponse.additionalData);
 }

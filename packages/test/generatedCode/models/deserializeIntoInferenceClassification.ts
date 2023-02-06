@@ -1,7 +1,9 @@
 import {createInferenceClassificationOverrideFromDiscriminatorValue} from './createInferenceClassificationOverrideFromDiscriminatorValue';
 import {deserializeIntoEntity} from './deserializeIntoEntity';
-import {InferenceClassification, InferenceClassificationOverride} from './index';
-import {DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {InferenceClassification} from './inferenceClassification';
+import {InferenceClassificationOverride} from './inferenceClassificationOverride';
+import {serializeInferenceClassificationOverride} from './serializeInferenceClassificationOverride';
+import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function deserializeIntoInferenceClassification(inferenceClassification: InferenceClassification | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {

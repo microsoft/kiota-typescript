@@ -1,4 +1,6 @@
-import {Entity, MessageRuleActions, MessageRulePredicates} from './index';
+import {Entity} from './entity';
+import {MessageRuleActions} from './messageRuleActions';
+import {MessageRulePredicates} from './messageRulePredicates';
 import {Parsable} from '@microsoft/kiota-abstractions';
 
 export interface MessageRule extends Entity, Parsable {

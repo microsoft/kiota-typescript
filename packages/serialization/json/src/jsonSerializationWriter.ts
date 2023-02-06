@@ -122,6 +122,14 @@ export class JsonSerializationWriter implements SerializationWriter {
     this.onAfterObjectSerialization &&
       this.onAfterObjectSerialization(value as unknown as Parsable);
 
+    if (
+      this.writer.length > 0 &&
+      this.writer[this.writer.length - 1] ===
+        JsonSerializationWriter.propertySeparator
+    ) {
+      //removing the last separator
+      this.writer.pop();
+    }
     this.writer.push(`}`);
 
     key && this.writer.push(JsonSerializationWriter.propertySeparator);
@@ -157,14 +165,15 @@ export class JsonSerializationWriter implements SerializationWriter {
   };
 
   public writeAdditionalData = (
-    key: string,
-    value: unknown | undefined
+    additionalData: Record<string, unknown> | undefined
   ): void => {
     // !value will fail to serialize false and null values which can be valid input
-    if (value === undefined) return;
-
-    this.writeAnyValue(key, value);
+    if (additionalData === undefined) return;
+    for (const key in additionalData) {
+      this.writeAnyValue(key, additionalData[key]);
+    }
   };
+
   private writeNonParsableObjectValue = (
     key?: string | undefined,
     value?: object | undefined

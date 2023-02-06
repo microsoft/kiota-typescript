@@ -1,7 +1,9 @@
 import {createDateTimeTimeZoneFromDiscriminatorValue} from './createDateTimeTimeZoneFromDiscriminatorValue';
+import {DateTimeTimeZone} from './dateTimeTimeZone';
+import {FollowupFlag} from './followupFlag';
 import {FollowupFlagStatus} from './followupFlagStatus';
-import {DateTimeTimeZone, FollowupFlag} from './index';
-import {AdditionalDataHolder, DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {serializeDateTimeTimeZone} from './serializeDateTimeTimeZone';
+import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function deserializeIntoFollowupFlag(followupFlag: FollowupFlag | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {

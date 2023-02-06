@@ -1,4 +1,4 @@
-export * from './inferenceClassificationOverrideItemRequestBuilderPatchRequestConfiguration'
+export * from './inferenceClassificationOverrideItemRequestBuilderGetQueryParameters'
 export * from './inferenceClassificationOverrideItemRequestBuilderDeleteRequestConfiguration'
 export * from './inferenceClassificationOverrideItemRequestBuilderGetRequestConfiguration'
-export * from './inferenceClassificationOverrideItemRequestBuilderGetQueryParameters'
+export * from './inferenceClassificationOverrideItemRequestBuilderPatchRequestConfiguration'

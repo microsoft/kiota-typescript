@@ -1,6 +1,8 @@
 import {createMailFolderFromDiscriminatorValue} from './createMailFolderFromDiscriminatorValue';
-import {MailFolder, MailFolderCollectionResponse} from './index';
-import {AdditionalDataHolder, DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {MailFolder} from './mailFolder';
+import {MailFolderCollectionResponse} from './mailFolderCollectionResponse';
+import {serializeMailFolder} from './serializeMailFolder';
+import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function deserializeIntoMailFolderCollectionResponse(mailFolderCollectionResponse: MailFolderCollectionResponse | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {

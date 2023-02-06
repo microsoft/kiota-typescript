@@ -133,17 +133,21 @@ export class FormSerializationWriter implements SerializationWriter {
     return arrayBuffer;
   };
 
-  public writeAdditionalData = (key: string, value: any): void => {
+  public writeAdditionalData = (
+    additionalData: Record<string, unknown> | undefined
+  ): void => {
     // Do not use !value here, because value can be `false`.
-    if (value === undefined) return;
-    this.writeAnyValue(key, value);
+    if (additionalData === undefined) return;
+    for (const key in additionalData) {
+      this.writeAnyValue(key, additionalData[key]);
+    }
   };
-  
+
   private writeAnyValue = (
     key?: string | undefined,
     value?: unknown | undefined
   ): void => {
-    if (value !== undefined && value !== null) {
+    if (value !== null && value !== undefined) {
       const valueType = typeof value;
       if (valueType === "boolean") {
         this.writeBooleanValue(key, value as any as boolean);
@@ -161,7 +165,7 @@ export class FormSerializationWriter implements SerializationWriter {
         this.writeNumberValue(key, value as any as number);
       } else {
         throw new Error(
-          `encountered unknown value type during serialization ${valueType}`
+          `encountered unknown ${value} value type during serialization ${valueType} for key ${key}`
         );
       }
     } else {

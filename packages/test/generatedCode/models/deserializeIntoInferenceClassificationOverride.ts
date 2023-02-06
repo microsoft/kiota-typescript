@@ -1,8 +1,10 @@
 import {createEmailAddressFromDiscriminatorValue} from './createEmailAddressFromDiscriminatorValue';
 import {deserializeIntoEntity} from './deserializeIntoEntity';
-import {EmailAddress, InferenceClassificationOverride} from './index';
+import {EmailAddress} from './emailAddress';
+import {InferenceClassificationOverride} from './inferenceClassificationOverride';
 import {InferenceClassificationType} from './inferenceClassificationType';
-import {DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {serializeEmailAddress} from './serializeEmailAddress';
+import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function deserializeIntoInferenceClassificationOverride(inferenceClassificationOverride: InferenceClassificationOverride | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {

@@ -1,6 +1,14 @@
+import {Attachment} from './attachment';
+import {Extension} from './extension';
+import {FollowupFlag} from './followupFlag';
 import {Importance} from './importance';
-import {Attachment, Extension, FollowupFlag, InternetMessageHeader, ItemBody, MultiValueLegacyExtendedProperty, OutlookItem, Recipient, SingleValueLegacyExtendedProperty} from './index';
 import {InferenceClassificationType} from './inferenceClassificationType';
+import {InternetMessageHeader} from './internetMessageHeader';
+import {ItemBody} from './itemBody';
+import {MultiValueLegacyExtendedProperty} from './multiValueLegacyExtendedProperty';
+import {OutlookItem} from './outlookItem';
+import {Recipient} from './recipient';
+import {SingleValueLegacyExtendedProperty} from './singleValueLegacyExtendedProperty';
 import {Parsable} from '@microsoft/kiota-abstractions';
 
 export interface Message extends OutlookItem, Parsable {

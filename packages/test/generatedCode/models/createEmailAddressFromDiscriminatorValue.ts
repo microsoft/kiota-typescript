@@ -1,5 +1,5 @@
 import {deserializeIntoEmailAddress} from './deserializeIntoEmailAddress';
-import {EmailAddress} from './emailAddress';
+import {EmailAddress} from './index';
 import {ParseNode} from '@microsoft/kiota-abstractions';
 
 export function createEmailAddressFromDiscriminatorValue(parseNode: ParseNode | undefined) {

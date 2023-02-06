@@ -1,5 +1,5 @@
 import {deserializeIntoSizeRange} from './deserializeIntoSizeRange';
-import {SizeRange} from './sizeRange';
+import {SizeRange} from './index';
 import {ParseNode} from '@microsoft/kiota-abstractions';
 
 export function createSizeRangeFromDiscriminatorValue(parseNode: ParseNode | undefined) {

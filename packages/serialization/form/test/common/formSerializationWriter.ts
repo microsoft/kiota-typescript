@@ -19,10 +19,11 @@ describe("FormSerializationWriter", () => {
       month: 9,
       day: 4,
     });
-    testEntity["mobilePhone"] = null;
-    testEntity["accountEnabled"] = false;
-    testEntity["jobTitle"] = "Author";
-    testEntity["createdDateTime"] = new Date(0);
+    testEntity.additionalData = {};
+    testEntity.additionalData["mobilePhone"] = null;
+    testEntity.additionalData["accountEnabled"] = false;
+    testEntity.additionalData["jobTitle"] = "Author";
+    testEntity.additionalData["createdDateTime"] = new Date(0);
     const formSerializationWriter = new FormSerializationWriter();
     formSerializationWriter.writeObjectValue(
       undefined,
@@ -69,9 +70,10 @@ describe("FormSerializationWriter", () => {
       month: 9,
       day: 4,
     });
-    testEntity["mobilePhone"] = null;
-    testEntity["accountEnabled"] = false;
-    testEntity["jobTitle"] = "Author";
+    testEntity.additionalData = {};
+    testEntity.additionalData["mobilePhone"] = null;
+    testEntity.additionalData["accountEnabled"] = false;
+    testEntity.additionalData["jobTitle"] = "Author";
     testEntity["createdDateTime"] = new Date(0);
     const formSerializationWriter = new FormSerializationWriter();
     assert.throw(() =>

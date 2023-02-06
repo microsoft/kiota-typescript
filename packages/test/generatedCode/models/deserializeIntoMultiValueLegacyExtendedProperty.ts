@@ -1,6 +1,6 @@
 import {deserializeIntoEntity} from './deserializeIntoEntity';
-import {MultiValueLegacyExtendedProperty} from './index';
-import {DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {MultiValueLegacyExtendedProperty} from './multiValueLegacyExtendedProperty';
+import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function deserializeIntoMultiValueLegacyExtendedProperty(multiValueLegacyExtendedProperty: MultiValueLegacyExtendedProperty | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {

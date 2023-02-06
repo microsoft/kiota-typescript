@@ -1,5 +1,5 @@
-import {DateTimeTimeZone} from './dateTimeTimeZone';
 import {deserializeIntoDateTimeTimeZone} from './deserializeIntoDateTimeTimeZone';
+import {DateTimeTimeZone} from './index';
 import {ParseNode} from '@microsoft/kiota-abstractions';
 
 export function createDateTimeTimeZoneFromDiscriminatorValue(parseNode: ParseNode | undefined) {

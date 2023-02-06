@@ -9,4 +9,4 @@ export * from "./serializationWriter";
 export * from "./serializationWriterFactory";
 export * from "./serializationWriterFactoryRegistry";
 export * from "./serializationWriterProxyFactory";
-export * from "./serializerMethod";
+export * from "./serializationFunctionTypes";

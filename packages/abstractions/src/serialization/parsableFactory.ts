@@ -1,6 +1,6 @@
 import { Parsable } from "./parsable";
 import { ParseNode } from "./parseNode";
-import { DeserializeIntoModelFunction } from "./serializerMethod";
+import { DeserializeIntoModelFunction } from "./serializationFunctionTypes";
 
 /**
  * Defines the factory to get the deserializers constructing the parsable models.

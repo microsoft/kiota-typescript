@@ -1,10 +1,14 @@
 import {createRecipientFromDiscriminatorValue} from './createRecipientFromDiscriminatorValue';
 import {createSizeRangeFromDiscriminatorValue} from './createSizeRangeFromDiscriminatorValue';
 import {Importance} from './importance';
-import {MessageRulePredicates, Recipient, SizeRange} from './index';
 import {MessageActionFlag} from './messageActionFlag';
+import {MessageRulePredicates} from './messageRulePredicates';
+import {Recipient} from './recipient';
 import {Sensitivity} from './sensitivity';
-import {AdditionalDataHolder, DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {serializeRecipient} from './serializeRecipient';
+import {serializeSizeRange} from './serializeSizeRange';
+import {SizeRange} from './sizeRange';
+import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function deserializeIntoMessageRulePredicates(messageRulePredicates: MessageRulePredicates | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {

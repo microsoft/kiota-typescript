@@ -1,5 +1,5 @@
 import {deserializeIntoInferenceClassification} from './deserializeIntoInferenceClassification';
-import {InferenceClassification} from './inferenceClassification';
+import {InferenceClassification} from './index';
 import {ParseNode} from '@microsoft/kiota-abstractions';
 
 export function createInferenceClassificationFromDiscriminatorValue(parseNode: ParseNode | undefined) {

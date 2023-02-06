@@ -9,7 +9,7 @@ import {deserializeIntoMessageRule} from './deserializeIntoMessageRule';
 import {deserializeIntoMultiValueLegacyExtendedProperty} from './deserializeIntoMultiValueLegacyExtendedProperty';
 import {deserializeIntoOutlookItem} from './deserializeIntoOutlookItem';
 import {deserializeIntoSingleValueLegacyExtendedProperty} from './deserializeIntoSingleValueLegacyExtendedProperty';
-import {Entity} from './entity';
+import {Entity} from './index';
 import {ParseNode} from '@microsoft/kiota-abstractions';
 
 export function createEntityFromDiscriminatorValue(parseNode: ParseNode | undefined) {

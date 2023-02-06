@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   DateOnly,
   Duration,
@@ -63,6 +62,7 @@ export class FormParseNode implements ParseNode {
     );
   };
   public getCollectionOfObjectValues = <T extends Parsable>(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     parsableFactory: ParsableFactory<T>
   ): T[] | undefined => {
     throw new Error(

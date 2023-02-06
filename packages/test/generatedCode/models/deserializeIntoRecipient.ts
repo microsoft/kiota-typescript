@@ -1,6 +1,8 @@
 import {createEmailAddressFromDiscriminatorValue} from './createEmailAddressFromDiscriminatorValue';
-import {EmailAddress, Recipient} from './index';
-import {AdditionalDataHolder, DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {EmailAddress} from './emailAddress';
+import {Recipient} from './recipient';
+import {serializeEmailAddress} from './serializeEmailAddress';
+import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function deserializeIntoRecipient(recipient: Recipient | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {

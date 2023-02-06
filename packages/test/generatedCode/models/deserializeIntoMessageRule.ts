@@ -1,8 +1,12 @@
 import {createMessageRuleActionsFromDiscriminatorValue} from './createMessageRuleActionsFromDiscriminatorValue';
 import {createMessageRulePredicatesFromDiscriminatorValue} from './createMessageRulePredicatesFromDiscriminatorValue';
 import {deserializeIntoEntity} from './deserializeIntoEntity';
-import {MessageRule, MessageRuleActions, MessageRulePredicates} from './index';
-import {DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {MessageRule} from './messageRule';
+import {MessageRuleActions} from './messageRuleActions';
+import {MessageRulePredicates} from './messageRulePredicates';
+import {serializeMessageRuleActions} from './serializeMessageRuleActions';
+import {serializeMessageRulePredicates} from './serializeMessageRulePredicates';
+import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function deserializeIntoMessageRule(messageRule: MessageRule | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {

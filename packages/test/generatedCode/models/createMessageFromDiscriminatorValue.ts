@@ -1,5 +1,5 @@
 import {deserializeIntoMessage} from './deserializeIntoMessage';
-import {Message} from './message';
+import {Message} from './index';
 import {ParseNode} from '@microsoft/kiota-abstractions';
 
 export function createMessageFromDiscriminatorValue(parseNode: ParseNode | undefined) {

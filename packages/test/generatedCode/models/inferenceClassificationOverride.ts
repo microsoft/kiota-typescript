@@ -1,4 +1,5 @@
-import {EmailAddress, Entity} from './index';
+import {EmailAddress} from './emailAddress';
+import {Entity} from './entity';
 import {InferenceClassificationType} from './inferenceClassificationType';
 import {Parsable} from '@microsoft/kiota-abstractions';
 

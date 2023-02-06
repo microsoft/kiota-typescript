@@ -1,5 +1,5 @@
-import {AttachmentCollectionResponse} from './attachmentCollectionResponse';
 import {deserializeIntoAttachmentCollectionResponse} from './deserializeIntoAttachmentCollectionResponse';
+import {AttachmentCollectionResponse} from './index';
 import {ParseNode} from '@microsoft/kiota-abstractions';
 
 export function createAttachmentCollectionResponseFromDiscriminatorValue(parseNode: ParseNode | undefined) {

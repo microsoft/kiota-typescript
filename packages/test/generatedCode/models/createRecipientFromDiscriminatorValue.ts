@@ -1,5 +1,5 @@
 import {deserializeIntoRecipient} from './deserializeIntoRecipient';
-import {Recipient} from './recipient';
+import {Recipient} from './index';
 import {ParseNode} from '@microsoft/kiota-abstractions';
 
 export function createRecipientFromDiscriminatorValue(parseNode: ParseNode | undefined) {

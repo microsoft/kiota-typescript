@@ -33,8 +33,11 @@ describe("FormParseNode", () => {
     assert.isNotNull(testEntity);
     assert.isUndefined(testEntity.officeLocation);
     assert.equal(testEntity.id, "48d31887-5fad-4d73-a9f5-3c356e68a038");
-    assert.equal(testEntity["jobTitle"], "Auditor");
-    assert.equal(testEntity.hasOwnProperty("mobilePhone"), false);
+    assert.equal((testEntity as any)["jobTitle"], "Auditor");
+    assert.equal(
+      Object.prototype.hasOwnProperty.call(testEntity, "mobilePhone"),
+      false
+    );
     assert.equal(testEntity.workDuration?.toString(), "PT1H");
     assert.equal(testEntity.startWorkTime?.toString(), "08:00:00.000000000000");
     assert.equal(testEntity.endWorkTime?.toString(), "17:00:00.000000000000");

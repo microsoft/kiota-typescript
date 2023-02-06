@@ -2,7 +2,7 @@ import { DateOnly } from "../dateOnly";
 import { Duration } from "../duration";
 import { TimeOnly } from "../timeOnly";
 import { Parsable } from "./parsable";
-import { ModelSerializerFunction } from "./serializerMethod";
+import { ModelSerializerFunction } from "./serializationFunctionTypes";
 
 /** Defines an interface for serialization of objects to a stream. */
 export interface SerializationWriter {
@@ -119,7 +119,7 @@ export interface SerializationWriter {
    * Writes the specified additional data values to the stream with an optional given key.
    * @param value the values to write to the stream.
    */
-  writeAdditionalData(key: string, value: unknown | undefined): void;
+  writeAdditionalData(value: Record<string, unknown> | undefined): void;
   /**
    * Gets the callback called before the object gets serialized.
    * @return the callback called before the object gets serialized.

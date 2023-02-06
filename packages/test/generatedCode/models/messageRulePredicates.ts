@@ -1,12 +1,13 @@
 import {Importance} from './importance';
-import {Recipient, SizeRange} from './index';
 import {MessageActionFlag} from './messageActionFlag';
+import {Recipient} from './recipient';
 import {Sensitivity} from './sensitivity';
+import {SizeRange} from './sizeRange';
 import {AdditionalDataHolder, Parsable} from '@microsoft/kiota-abstractions';
 
 export interface MessageRulePredicates extends AdditionalDataHolder, Parsable {
     /** Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well. */
-    additionalData?: Record<string, unknown> | undefined;
+    additionalData?: Record<string, unknown>;
     /** Represents the strings that should appear in the body of an incoming message in order for the condition or exception to apply. */
     bodyContains?: string[] | undefined;
     /** Represents the strings that should appear in the body or subject of an incoming message in order for the condition or exception to apply. */

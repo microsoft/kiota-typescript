@@ -1,5 +1,5 @@
 import {deserializeIntoExtensionCollectionResponse} from './deserializeIntoExtensionCollectionResponse';
-import {ExtensionCollectionResponse} from './extensionCollectionResponse';
+import {ExtensionCollectionResponse} from './index';
 import {ParseNode} from '@microsoft/kiota-abstractions';
 
 export function createExtensionCollectionResponseFromDiscriminatorValue(parseNode: ParseNode | undefined) {

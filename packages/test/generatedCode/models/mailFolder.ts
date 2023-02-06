@@ -1,4 +1,8 @@
-import {Entity, Message, MessageRule, MultiValueLegacyExtendedProperty, SingleValueLegacyExtendedProperty} from './index';
+import {Entity} from './entity';
+import {Message} from './message';
+import {MessageRule} from './messageRule';
+import {MultiValueLegacyExtendedProperty} from './multiValueLegacyExtendedProperty';
+import {SingleValueLegacyExtendedProperty} from './singleValueLegacyExtendedProperty';
 import {Parsable} from '@microsoft/kiota-abstractions';
 
 export interface MailFolder extends Entity, Parsable {

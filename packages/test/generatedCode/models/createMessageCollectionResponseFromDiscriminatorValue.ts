@@ -1,5 +1,5 @@
 import {deserializeIntoMessageCollectionResponse} from './deserializeIntoMessageCollectionResponse';
-import {MessageCollectionResponse} from './messageCollectionResponse';
+import {MessageCollectionResponse} from './index';
 import {ParseNode} from '@microsoft/kiota-abstractions';
 
 export function createMessageCollectionResponseFromDiscriminatorValue(parseNode: ParseNode | undefined) {

@@ -1,6 +1,8 @@
 import {createMessageFromDiscriminatorValue} from './createMessageFromDiscriminatorValue';
-import {Message, MessageCollectionResponse} from './index';
-import {AdditionalDataHolder, DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {Message} from './message';
+import {MessageCollectionResponse} from './messageCollectionResponse';
+import {serializeMessage} from './serializeMessage';
+import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function deserializeIntoMessageCollectionResponse(messageCollectionResponse: MessageCollectionResponse | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {

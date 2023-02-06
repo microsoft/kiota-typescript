@@ -1,6 +1,8 @@
 import {createExtensionFromDiscriminatorValue} from './createExtensionFromDiscriminatorValue';
-import {Extension, ExtensionCollectionResponse} from './index';
-import {AdditionalDataHolder, DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {Extension} from './extension';
+import {ExtensionCollectionResponse} from './extensionCollectionResponse';
+import {serializeExtension} from './serializeExtension';
+import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function deserializeIntoExtensionCollectionResponse(extensionCollectionResponse: ExtensionCollectionResponse | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {

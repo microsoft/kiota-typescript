@@ -1,6 +1,6 @@
+import {Attachment} from './attachment';
 import {deserializeIntoEntity} from './deserializeIntoEntity';
-import {Attachment} from './index';
-import {DeserializeIntoModelFunction, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
+import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
 export function deserializeIntoAttachment(attachment: Attachment | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
