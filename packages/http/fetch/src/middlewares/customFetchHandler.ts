@@ -34,6 +34,7 @@ export class CustomFetchHandler implements Middleware {
 	 * @returns A promise that resolves to nothing
 	 */
 	public async execute(url: string, requestInit: RequestInit): Promise<Response> {
+        console.log("url -->", url);
 		return await this.customFetch(url, requestInit);
 	}
 }

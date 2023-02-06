@@ -8,8 +8,12 @@ declare module "../../apiClient"{
 }
 const s = function (this: ApiClient, id:String) {
     const urlTplParams = getPathParameters(this.pathParameters);
-urlTplParams["attachment%2Did"] = id
-    return new UserItemRequestBuilder(this.pathParameters,this.requestAdapter)
+
+    console.log("this.pathParameters"+this.pathParameters)
+    console.log(this.pathParameters);
+    console.log("userid -> "+id)
+urlTplParams["user%2Did"] = id
+    return new UserItemRequestBuilder(urlTplParams,this.requestAdapter)
 }
 var c = Reflect.defineProperty(ApiClient.prototype, "userItem", {
     configurable: true,
@@ -19,6 +23,6 @@ var c = Reflect.defineProperty(ApiClient.prototype, "userItem", {
 
 
 console.log("value of reflect.defineproperty");
-console.log(ApiClient.prototype);
+console.log(ApiClient.prototype.userItem);
 console.log(c);
 console.log("value of reflect.defineproperty");

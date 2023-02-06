@@ -7,15 +7,19 @@ import {UserItemRequestBuilder} from "../../userItemRequestBuilder"
 import { getPathParameters } from "@microsoft/kiota-abstractions";
 declare module "../../userItemRequestBuilder"{
     interface UserItemRequestBuilder{
-        messageItem:MessageItemRequestBuilder
+        messageItem:(id:string) => MessageItemRequestBuilder
     }
 }
 Reflect.defineProperty(UserItemRequestBuilder.prototype, "messageItem", {
     configurable: true,
     enumerable: true,
-    get: function(this: UserItemRequestBuilder, id:String) {
+    get: function() {
+        return (function(this: UserItemRequestBuilder, id:String){
         const urlTplParams = getPathParameters(this.pathParameters);
- urlTplParams["attachment%2Did"] = id
-        return new MessageItemRequestBuilder(this.pathParameters,this.requestAdapter)
+        console.log("messageid ->", id);
+        console.log(urlTplParams);
+        urlTplParams["message%2Did"] = id
+        return new MessageItemRequestBuilder(urlTplParams,this.requestAdapter)
+        })
     } as any
 })
