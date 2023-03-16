@@ -1,6 +1,7 @@
 export * from "./apiClientBuilder";
 export * from "./apiError";
 export * from "./authentication";
+export * from "./baseRequestBuilder";
 export * from "./dateOnly";
 export * from "./duration";
 export * from "./getPathParameters";
