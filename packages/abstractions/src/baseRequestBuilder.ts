@@ -1,4 +1,4 @@
-import { getPathParameters } from "../dist/cjs/src";
+import { getPathParameters } from "./getPathParameters";
 import { RequestAdapter } from "./requestAdapter";
 
 export abstract class BaseRequestBuilder {
