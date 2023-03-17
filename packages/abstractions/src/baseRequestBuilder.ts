@@ -13,7 +13,6 @@ export abstract class BaseRequestBuilder {
     requestAdapter: RequestAdapter,
     urlTemplate: string
   ) {
-    if (!pathParameters) throw new Error("pathParameters cannot be undefined");
     if (!requestAdapter) throw new Error("requestAdapter cannot be undefined");
     if (urlTemplate === undefined) {
       // empty string is ok
