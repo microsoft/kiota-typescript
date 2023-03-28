@@ -156,10 +156,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@microsoft/kiota-abstractions@^1.0.0-preview.11", "@microsoft/kiota-abstractions@^1.0.0-preview.12":
-  version "1.0.0-preview.12"
-  resolved "https://registry.yarnpkg.com/@microsoft/kiota-abstractions/-/kiota-abstractions-1.0.0-preview.12.tgz#a70ab00e92786ce80d4e3352b000c0ae9d9624cb"
-  integrity sha512-T3SRyqQW+aWzBipeKHRFIjKH7qsWB4jOrnADrYRGCdY3knybh4bhErwTdEdRnsmuxgQgPHyfol1mIu6YQMmTHg==
+"@microsoft/kiota-abstractions@^1.0.0-preview.14":
+  version "1.0.0-preview.14"
+  resolved "https://registry.yarnpkg.com/@microsoft/kiota-abstractions/-/kiota-abstractions-1.0.0-preview.14.tgz#368b5002e4bc11fdcc00f29305de51a6c67f9f98"
+  integrity sha512-oBVLfoqIvZQvkReYzUGrOFrKf6ooh+kVgmOFiv1PPFB76MeTCW93gbm3nCa1PKjuiYCyxSIYL7uYJnapFtk3+w==
   dependencies:
     "@opentelemetry/api" "^1.2.0"
     tinyduration "^3.2.2"
@@ -167,48 +167,48 @@
     uri-template-lite "^22.1.0"
     uuid "^9.0.0"
 
-"@microsoft/kiota-authentication-azure@^1.0.0-preview.9":
-  version "1.0.0-preview.10"
-  resolved "https://registry.yarnpkg.com/@microsoft/kiota-authentication-azure/-/kiota-authentication-azure-1.0.0-preview.10.tgz#09fa0c6d8dc964430389fab817f97e40820a25c7"
-  integrity sha512-j5LFLTWByStTYVjQqIE/lSd5a/xMyWKpXVFZvT/ercoClRmiIijWPv08bc3ZQs/hp8EvXA6YeXbE5OidzkHiPA==
+"@microsoft/kiota-authentication-azure@^1.0.0-preview.12":
+  version "1.0.0-preview.12"
+  resolved "https://registry.yarnpkg.com/@microsoft/kiota-authentication-azure/-/kiota-authentication-azure-1.0.0-preview.12.tgz#574dd74c243e982158beb2ac3539f4c1b5dbcfdb"
+  integrity sha512-qzJz8/+mBwnnZgE+seoQCOE2J0q0HeNzkCVnxuJ+RlD/jq1BWRpyHFcJXwdpCoTaIUR5/VsqLy8FM8yuiFU/7Q==
   dependencies:
     "@azure/core-auth" "^1.3.2"
-    "@microsoft/kiota-abstractions" "^1.0.0-preview.12"
+    "@microsoft/kiota-abstractions" "^1.0.0-preview.14"
     "@opentelemetry/api" "^1.2.0"
     tslib "^2.3.1"
 
-"@microsoft/kiota-http-fetchlibrary@^1.0.0-preview.12":
-  version "1.0.0-preview.13"
-  resolved "https://registry.yarnpkg.com/@microsoft/kiota-http-fetchlibrary/-/kiota-http-fetchlibrary-1.0.0-preview.13.tgz#d9e9723135558931fe8af2fb605c9b28e1e5d108"
-  integrity sha512-ct2/VkEA493oALIqdbn58OEoW31x9pUSh5MNaaSz+MQc243rKudDxQ0mueoHT/tpNNYBogabLQn3fr7judWjIA==
+"@microsoft/kiota-http-fetchlibrary@^1.0.0-preview.15":
+  version "1.0.0-preview.15"
+  resolved "https://registry.yarnpkg.com/@microsoft/kiota-http-fetchlibrary/-/kiota-http-fetchlibrary-1.0.0-preview.15.tgz#283ef720a5cbd7e1b2269a4f0a1a9d4311eed9ae"
+  integrity sha512-Ht8Oz0EmM2+LmUMyX/NhZoKvgwNbrIZ9kqGQTV6jLYkxvAP8d2QamiwoE6jXYhB4elc0GgZuy5FcyTmrJFr+PA==
   dependencies:
-    "@microsoft/kiota-abstractions" "^1.0.0-preview.12"
+    "@microsoft/kiota-abstractions" "^1.0.0-preview.14"
     "@opentelemetry/api" "^1.2.0"
     node-fetch "^2.6.5"
     tslib "^2.3.1"
 
-"@microsoft/kiota-serialization-form@^1.0.0-preview.3":
-  version "1.0.0-preview.4"
-  resolved "https://registry.yarnpkg.com/@microsoft/kiota-serialization-form/-/kiota-serialization-form-1.0.0-preview.4.tgz#881b73867a4a3b6ed607f86eb3caa91e31ff7182"
-  integrity sha512-vzfWLJ+q7WSceUIi9SILOf4cNjEKaabdgWbwR2gC/9cEuEi/lgo01PiTpUq5dDvDa9OsdVkMDhKIkBr70UaFDQ==
+"@microsoft/kiota-serialization-form@^1.0.0-preview.6":
+  version "1.0.0-preview.6"
+  resolved "https://registry.yarnpkg.com/@microsoft/kiota-serialization-form/-/kiota-serialization-form-1.0.0-preview.6.tgz#a0024592be2fcbbaaa6adb31362e531ebb19beae"
+  integrity sha512-Z/+oC+g+TY+OX+ToQEMKCkfQ+UyEggcfQE7yYebBAJXlVyD5++ZD6D4/dE5No6cGg9/2x8ODNFnSk+WyN4okuQ==
   dependencies:
-    "@microsoft/kiota-abstractions" "^1.0.0-preview.12"
+    "@microsoft/kiota-abstractions" "^1.0.0-preview.14"
     tslib "^2.3.1"
 
-"@microsoft/kiota-serialization-json@^1.0.0-preview.12":
-  version "1.0.0-preview.13"
-  resolved "https://registry.yarnpkg.com/@microsoft/kiota-serialization-json/-/kiota-serialization-json-1.0.0-preview.13.tgz#c9f6c45b6a55f9b62f7bf54115f0c83479c9f692"
-  integrity sha512-KjpeAlogAdhkL7hgUdkxpP8MybVRJCcSl/6BaI0z/hWgGC4F9yKzX/P+YU5zVlqjrq2yszqWXKqpUNQKcz1N0w==
+"@microsoft/kiota-serialization-json@^1.0.0-preview.15":
+  version "1.0.0-preview.15"
+  resolved "https://registry.yarnpkg.com/@microsoft/kiota-serialization-json/-/kiota-serialization-json-1.0.0-preview.15.tgz#ca3c51249cb02567f5e217de574819e2ad0b5273"
+  integrity sha512-/BhEGXdAYIOJ0bMMuE8lIHzJaXWBikXCaHVCP1JI8XwGjJrbdJEvaeMQ/tSPUG4i4GEhWtg+72Og7XBGTZnzmQ==
   dependencies:
-    "@microsoft/kiota-abstractions" "^1.0.0-preview.12"
+    "@microsoft/kiota-abstractions" "^1.0.0-preview.14"
     tslib "^2.3.1"
 
-"@microsoft/kiota-serialization-text@^1.0.0-preview.11":
-  version "1.0.0-preview.12"
-  resolved "https://registry.yarnpkg.com/@microsoft/kiota-serialization-text/-/kiota-serialization-text-1.0.0-preview.12.tgz#2628011afd454024a20866db8cf5aa740d09184c"
-  integrity sha512-IEIEtZJSdjh5xvdveaXIcdWFGYVsppuNt3syyxG7QQVB6W3dScouiCl7UU4Pm03oQmWV62hkprAgZgM4nEg8cw==
+"@microsoft/kiota-serialization-text@^1.0.0-preview.14":
+  version "1.0.0-preview.14"
+  resolved "https://registry.yarnpkg.com/@microsoft/kiota-serialization-text/-/kiota-serialization-text-1.0.0-preview.14.tgz#29c4358362e2bd9f5ee61cf9db650f06ae3e3b82"
+  integrity sha512-kUNhF3NXTnMcsijJc/70Xqee8Ma692iEswVKt2b/si+eiwteVE/OhVnQ3YSMS7QJLnL/zsKawzA3dCRjnHsv+Q==
   dependencies:
-    "@microsoft/kiota-abstractions" "^1.0.0-preview.12"
+    "@microsoft/kiota-abstractions" "^1.0.0-preview.14"
     tslib "^2.3.1"
 
 "@opentelemetry/api@^1.2.0":
@@ -1373,15 +1373,15 @@ terser@^5.10.0, terser@^5.14.1:
     source-map-support "~0.5.20"
 
 "test-kiota-typescript-libraries@file:../test":
-  version "0.0.1-preview.4"
+  version "0.0.1-preview.5"
   dependencies:
     "@azure/identity" "^3.0.0"
-    "@microsoft/kiota-abstractions" "^1.0.0-preview.11"
-    "@microsoft/kiota-authentication-azure" "^1.0.0-preview.9"
-    "@microsoft/kiota-http-fetchlibrary" "^1.0.0-preview.12"
-    "@microsoft/kiota-serialization-form" "^1.0.0-preview.3"
-    "@microsoft/kiota-serialization-json" "^1.0.0-preview.12"
-    "@microsoft/kiota-serialization-text" "^1.0.0-preview.11"
+    "@microsoft/kiota-abstractions" "^1.0.0-preview.14"
+    "@microsoft/kiota-authentication-azure" "^1.0.0-preview.12"
+    "@microsoft/kiota-http-fetchlibrary" "^1.0.0-preview.15"
+    "@microsoft/kiota-serialization-form" "^1.0.0-preview.6"
+    "@microsoft/kiota-serialization-json" "^1.0.0-preview.15"
+    "@microsoft/kiota-serialization-text" "^1.0.0-preview.14"
 
 tinyduration@^3.2.2:
   version "3.2.4"
