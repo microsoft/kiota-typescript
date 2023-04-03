@@ -72,8 +72,7 @@ export interface ParseNode {
    * @return the model object value of the node.
    */
   getObjectValue<T extends Parsable>(
-    parsableFactory: ParsableFactory<T>,
-    value?: T
+    parsableFactory: ParsableFactory<T>
   ): T;
 
   /**
