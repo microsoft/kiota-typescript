@@ -13,14 +13,14 @@ import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstrac
 export function serializeMailFolder(writer: SerializationWriter, mailFolder: MailFolder | undefined = {}) : void {
         serializeEntity(writer, mailFolder)
         writer.writeNumberValue("childFolderCount", mailFolder.childFolderCount);
-        writer.writeCollectionOfObjectValues<MailFolder>("childFolders", mailFolder.childFolders, serializeMailFolder);
+        writer.writeCollectionOfObjectValues<MailFolder>("childFolders", mailFolder.childFolders);
         writer.writeStringValue("displayName", mailFolder.displayName);
         writer.writeBooleanValue("isHidden", mailFolder.isHidden);
-        writer.writeCollectionOfObjectValues<MessageRule>("messageRules", mailFolder.messageRules, serializeMessageRule);
-        writer.writeCollectionOfObjectValues<Message>("messages", mailFolder.messages, serializeMessage);
-        writer.writeCollectionOfObjectValues<MultiValueLegacyExtendedProperty>("multiValueExtendedProperties", mailFolder.multiValueExtendedProperties, serializeMultiValueLegacyExtendedProperty);
+        writer.writeCollectionOfObjectValues<MessageRule>("messageRules", mailFolder.messageRules);
+        writer.writeCollectionOfObjectValues<Message>("messages", mailFolder.messages);
+        writer.writeCollectionOfObjectValues<MultiValueLegacyExtendedProperty>("multiValueExtendedProperties", mailFolder.multiValueExtendedProperties);
         writer.writeStringValue("parentFolderId", mailFolder.parentFolderId);
-        writer.writeCollectionOfObjectValues<SingleValueLegacyExtendedProperty>("singleValueExtendedProperties", mailFolder.singleValueExtendedProperties, serializeSingleValueLegacyExtendedProperty);
+        writer.writeCollectionOfObjectValues<SingleValueLegacyExtendedProperty>("singleValueExtendedProperties", mailFolder.singleValueExtendedProperties);
         writer.writeNumberValue("totalItemCount", mailFolder.totalItemCount);
         writer.writeNumberValue("unreadItemCount", mailFolder.unreadItemCount);
 }
