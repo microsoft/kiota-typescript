@@ -70,9 +70,9 @@ export class FormParseNode implements ParseNode {
     );
   };
   public getObjectValue = <T extends Parsable>(
-    parsableFactory: ParsableFactory<T>,
-    value: T = {} as T
+    parsableFactory: ParsableFactory<T>
   ): T => {
+    const value: T = {} as T;
     if (this.onBeforeAssignFieldValues) {
       this.onBeforeAssignFieldValues(value);
     }

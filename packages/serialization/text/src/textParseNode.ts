@@ -59,8 +59,7 @@ export class TextParseNode implements ParseNode {
 
   /* eslint-disable @typescript-eslint/no-unused-vars */
   public getObjectValue<T extends Parsable>(
-    parsableFactory: ParsableFactory<T>,
-    value?: T
+    parsableFactory: ParsableFactory<T>
   ): T {
     throw new Error(TextParseNode.noStructuredDataMessage);
   }

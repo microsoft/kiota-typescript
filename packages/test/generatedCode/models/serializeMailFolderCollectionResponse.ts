@@ -5,6 +5,6 @@ import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@m
 
 export function serializeMailFolderCollectionResponse(writer: SerializationWriter, mailFolderCollectionResponse: MailFolderCollectionResponse | undefined = {}) : void {
         writer.writeStringValue("@odata.nextLink", mailFolderCollectionResponse.odataNextLink);
-        writer.writeCollectionOfObjectValues<MailFolder>("value", mailFolderCollectionResponse.value);
+        writer.writeCollectionOfObjectValues<MailFolder>("value", mailFolderCollectionResponse.value, serializeMailFolder);
         writer.writeAdditionalData(mailFolderCollectionResponse.additionalData);
 }
