@@ -118,7 +118,7 @@ export class JsonSerializationWriter implements SerializationWriter {
 
     this.onStartObjectSerialization &&
       this.onStartObjectSerialization(value as unknown as Parsable, this);
-    value && serializerMethod && serializerMethod(this, value);
+    value && serializerMethod(this, value);
     this.onAfterObjectSerialization &&
       this.onAfterObjectSerialization(value as unknown as Parsable);
 
