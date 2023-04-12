@@ -1,6 +1,6 @@
 {
   "name": "test-kiota-typescript-libraries",
-  "description": "",
+  "description": "Sample Project",
   "version": "0.0.1-preview.5",
   "main": "index.js",
   "private": true,
