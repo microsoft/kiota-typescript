@@ -6,7 +6,8 @@ import {deserializeIntoAttachment} from '../../../../../../../../../models/deser
 import {serializeAttachment} from '../../../../../../../../../models/serializeAttachment';
 import {AttachmentsRequestBuilderGetRequestConfiguration} from './attachmentsRequestBuilderGetRequestConfiguration';
 import {AttachmentsRequestBuilderPostRequestConfiguration} from './attachmentsRequestBuilderPostRequestConfiguration';
-import {BaseRequestBuilder, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
+import {AttachmentItemRequestBuilder} from './item/attachmentItemRequestBuilder';
+import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/mailFolders/{mailFolder-id}/childFolders/{mailFolder-id1}/messages/{message-id}/attachments
@@ -85,5 +86,16 @@ export class AttachmentsRequestBuilder extends BaseRequestBuilder {
         }
         requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body as any, serializeAttachment);
         return requestInfo;
+    };
+    /**
+     * Gets an item from the ApiSdk.users.item.mailFolders.item.childFolders.item.messages.item.attachments.item collection
+     * @param attachmentId Unique identifier of the item
+     * @returns a AttachmentItemRequestBuilder
+     */
+    public withAttachmentId(attachmentId: string) : AttachmentItemRequestBuilder {
+        if(!attachmentId) throw new Error("attachmentId cannot be undefined");
+        const urlTplParams = getPathParameters(this.pathParameters);
+        urlTplParams["attachment%2Did"] = attachmentId
+        return new AttachmentItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
 }

@@ -4,9 +4,10 @@ import {createInferenceClassificationOverrideFromDiscriminatorValue} from '../..
 import {deserializeIntoInferenceClassificationOverride} from '../../../../models/deserializeIntoInferenceClassificationOverride';
 import {InferenceClassificationOverride} from '../../../../models/inferenceClassificationOverride';
 import {serializeInferenceClassificationOverride} from '../../../../models/serializeInferenceClassificationOverride';
+import {InferenceClassificationOverrideItemRequestBuilder} from './item/inferenceClassificationOverrideItemRequestBuilder';
 import {OverridesRequestBuilderGetRequestConfiguration} from './overridesRequestBuilderGetRequestConfiguration';
 import {OverridesRequestBuilderPostRequestConfiguration} from './overridesRequestBuilderPostRequestConfiguration';
-import {BaseRequestBuilder, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
+import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/inferenceClassification/overrides
@@ -85,5 +86,16 @@ export class OverridesRequestBuilder extends BaseRequestBuilder {
         }
         requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body as any, serializeInferenceClassificationOverride);
         return requestInfo;
+    };
+    /**
+     * Gets an item from the ApiSdk.users.item.inferenceClassification.overrides.item collection
+     * @param inferenceClassificationOverrideId Unique identifier of the item
+     * @returns a InferenceClassificationOverrideItemRequestBuilder
+     */
+    public withInferenceClassificationOverrideId(inferenceClassificationOverrideId: string) : InferenceClassificationOverrideItemRequestBuilder {
+        if(!inferenceClassificationOverrideId) throw new Error("inferenceClassificationOverrideId cannot be undefined");
+        const urlTplParams = getPathParameters(this.pathParameters);
+        urlTplParams["inferenceClassificationOverride%2Did"] = inferenceClassificationOverrideId
+        return new InferenceClassificationOverrideItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
 }

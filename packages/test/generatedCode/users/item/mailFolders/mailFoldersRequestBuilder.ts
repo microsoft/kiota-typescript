@@ -4,9 +4,10 @@ import {createMailFolderFromDiscriminatorValue} from '../../../models/createMail
 import {deserializeIntoMailFolder} from '../../../models/deserializeIntoMailFolder';
 import {MailFolder} from '../../../models/mailFolder';
 import {serializeMailFolder} from '../../../models/serializeMailFolder';
+import {MailFolderItemRequestBuilder} from './item/mailFolderItemRequestBuilder';
 import {MailFoldersRequestBuilderGetRequestConfiguration} from './mailFoldersRequestBuilderGetRequestConfiguration';
 import {MailFoldersRequestBuilderPostRequestConfiguration} from './mailFoldersRequestBuilderPostRequestConfiguration';
-import {BaseRequestBuilder, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
+import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/mailFolders
@@ -85,5 +86,16 @@ export class MailFoldersRequestBuilder extends BaseRequestBuilder {
         }
         requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body as any, serializeMailFolder);
         return requestInfo;
+    };
+    /**
+     * Gets an item from the ApiSdk.users.item.mailFolders.item collection
+     * @param mailFolderId Unique identifier of the item
+     * @returns a MailFolderItemRequestBuilder
+     */
+    public withMailFolderId(mailFolderId: string) : MailFolderItemRequestBuilder {
+        if(!mailFolderId) throw new Error("mailFolderId cannot be undefined");
+        const urlTplParams = getPathParameters(this.pathParameters);
+        urlTplParams["mailFolder%2Did"] = mailFolderId
+        return new MailFolderItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
 }

@@ -4,9 +4,10 @@ import {createMessageRuleFromDiscriminatorValue} from '../../../../../../../mode
 import {deserializeIntoMessageRule} from '../../../../../../../models/deserializeIntoMessageRule';
 import {MessageRule} from '../../../../../../../models/messageRule';
 import {serializeMessageRule} from '../../../../../../../models/serializeMessageRule';
+import {MessageRuleItemRequestBuilder} from './item/messageRuleItemRequestBuilder';
 import {MessageRulesRequestBuilderGetRequestConfiguration} from './messageRulesRequestBuilderGetRequestConfiguration';
 import {MessageRulesRequestBuilderPostRequestConfiguration} from './messageRulesRequestBuilderPostRequestConfiguration';
-import {BaseRequestBuilder, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
+import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/mailFolders/{mailFolder-id}/childFolders/{mailFolder-id1}/messageRules
@@ -85,5 +86,16 @@ export class MessageRulesRequestBuilder extends BaseRequestBuilder {
         }
         requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body as any, serializeMessageRule);
         return requestInfo;
+    };
+    /**
+     * Gets an item from the ApiSdk.users.item.mailFolders.item.childFolders.item.messageRules.item collection
+     * @param messageRuleId Unique identifier of the item
+     * @returns a MessageRuleItemRequestBuilder
+     */
+    public withMessageRuleId(messageRuleId: string) : MessageRuleItemRequestBuilder {
+        if(!messageRuleId) throw new Error("messageRuleId cannot be undefined");
+        const urlTplParams = getPathParameters(this.pathParameters);
+        urlTplParams["messageRule%2Did"] = messageRuleId
+        return new MessageRuleItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
 }

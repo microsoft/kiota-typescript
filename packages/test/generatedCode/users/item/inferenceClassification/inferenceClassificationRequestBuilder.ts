@@ -4,9 +4,8 @@ import {InferenceClassification} from '../../../models/inferenceClassification';
 import {serializeInferenceClassification} from '../../../models/serializeInferenceClassification';
 import {InferenceClassificationRequestBuilderGetRequestConfiguration} from './inferenceClassificationRequestBuilderGetRequestConfiguration';
 import {InferenceClassificationRequestBuilderPatchRequestConfiguration} from './inferenceClassificationRequestBuilderPatchRequestConfiguration';
-import {InferenceClassificationOverrideItemRequestBuilder} from './overrides/item/inferenceClassificationOverrideItemRequestBuilder';
 import {OverridesRequestBuilder} from './overrides/overridesRequestBuilder';
-import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
+import {BaseRequestBuilder, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/inferenceClassification
@@ -35,17 +34,6 @@ export class InferenceClassificationRequestBuilder extends BaseRequestBuilder {
             requestConfiguration
         );
         return this.requestAdapter?.sendAsync<InferenceClassification>(requestInfo, createInferenceClassificationFromDiscriminatorValue, responseHandler, undefined) ?? Promise.reject(new Error('request adapter is null'));
-    };
-    /**
-     * Gets an item from the ApiSdk.users.item.inferenceClassification.overrides.item collection
-     * @param id Unique identifier of the item
-     * @returns a InferenceClassificationOverrideItemRequestBuilder
-     */
-    public overridesById(id: string) : InferenceClassificationOverrideItemRequestBuilder {
-        if(!id) throw new Error("id cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["inferenceClassificationOverride%2Did"] = id
-        return new InferenceClassificationOverrideItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
     /**
      * Update the navigation property inferenceClassification in users

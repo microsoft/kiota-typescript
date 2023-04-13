@@ -6,7 +6,8 @@ import {MailFolder} from '../../../../../models/mailFolder';
 import {serializeMailFolder} from '../../../../../models/serializeMailFolder';
 import {ChildFoldersRequestBuilderGetRequestConfiguration} from './childFoldersRequestBuilderGetRequestConfiguration';
 import {ChildFoldersRequestBuilderPostRequestConfiguration} from './childFoldersRequestBuilderPostRequestConfiguration';
-import {BaseRequestBuilder, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
+import {MailFolderItemRequestBuilder} from './item/mailFolderItemRequestBuilder';
+import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/mailFolders/{mailFolder-id}/childFolders
@@ -85,5 +86,16 @@ export class ChildFoldersRequestBuilder extends BaseRequestBuilder {
         }
         requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body as any, serializeMailFolder);
         return requestInfo;
+    };
+    /**
+     * Gets an item from the ApiSdk.users.item.mailFolders.item.childFolders.item collection
+     * @param mailFolderId1 Unique identifier of the item
+     * @returns a MailFolderItemRequestBuilder
+     */
+    public withMailFolderId1(mailFolderId1: string) : MailFolderItemRequestBuilder {
+        if(!mailFolderId1) throw new Error("mailFolderId1 cannot be undefined");
+        const urlTplParams = getPathParameters(this.pathParameters);
+        urlTplParams["mailFolder%2Did1"] = mailFolderId1
+        return new MailFolderItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
 }

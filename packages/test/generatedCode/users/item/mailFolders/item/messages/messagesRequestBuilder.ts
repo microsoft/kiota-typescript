@@ -4,9 +4,10 @@ import {createMessageFromDiscriminatorValue} from '../../../../../models/createM
 import {deserializeIntoMessage} from '../../../../../models/deserializeIntoMessage';
 import {Message} from '../../../../../models/message';
 import {serializeMessage} from '../../../../../models/serializeMessage';
+import {MessageItemRequestBuilder} from './item/messageItemRequestBuilder';
 import {MessagesRequestBuilderGetRequestConfiguration} from './messagesRequestBuilderGetRequestConfiguration';
 import {MessagesRequestBuilderPostRequestConfiguration} from './messagesRequestBuilderPostRequestConfiguration';
-import {BaseRequestBuilder, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
+import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/mailFolders/{mailFolder-id}/messages
@@ -85,5 +86,16 @@ export class MessagesRequestBuilder extends BaseRequestBuilder {
         }
         requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body as any, serializeMessage);
         return requestInfo;
+    };
+    /**
+     * Gets an item from the ApiSdk.users.item.mailFolders.item.messages.item collection
+     * @param messageId Unique identifier of the item
+     * @returns a MessageItemRequestBuilder
+     */
+    public withMessageId(messageId: string) : MessageItemRequestBuilder {
+        if(!messageId) throw new Error("messageId cannot be undefined");
+        const urlTplParams = getPathParameters(this.pathParameters);
+        urlTplParams["message%2Did"] = messageId
+        return new MessageItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
 }

@@ -4,9 +4,10 @@ import {createSingleValueLegacyExtendedPropertyFromDiscriminatorValue} from '../
 import {deserializeIntoSingleValueLegacyExtendedProperty} from '../../../../../../../models/deserializeIntoSingleValueLegacyExtendedProperty';
 import {serializeSingleValueLegacyExtendedProperty} from '../../../../../../../models/serializeSingleValueLegacyExtendedProperty';
 import {SingleValueLegacyExtendedProperty} from '../../../../../../../models/singleValueLegacyExtendedProperty';
+import {SingleValueLegacyExtendedPropertyItemRequestBuilder} from './item/singleValueLegacyExtendedPropertyItemRequestBuilder';
 import {SingleValueExtendedPropertiesRequestBuilderGetRequestConfiguration} from './singleValueExtendedPropertiesRequestBuilderGetRequestConfiguration';
 import {SingleValueExtendedPropertiesRequestBuilderPostRequestConfiguration} from './singleValueExtendedPropertiesRequestBuilderPostRequestConfiguration';
-import {BaseRequestBuilder, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
+import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption, ResponseHandler} from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/mailFolders/{mailFolder-id}/messages/{message-id}/singleValueExtendedProperties
@@ -83,5 +84,16 @@ export class SingleValueExtendedPropertiesRequestBuilder extends BaseRequestBuil
         }
         requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body as any, serializeSingleValueLegacyExtendedProperty);
         return requestInfo;
+    };
+    /**
+     * Gets an item from the ApiSdk.users.item.mailFolders.item.messages.item.singleValueExtendedProperties.item collection
+     * @param singleValueLegacyExtendedPropertyId Unique identifier of the item
+     * @returns a SingleValueLegacyExtendedPropertyItemRequestBuilder
+     */
+    public withSingleValueLegacyExtendedPropertyId(singleValueLegacyExtendedPropertyId: string) : SingleValueLegacyExtendedPropertyItemRequestBuilder {
+        if(!singleValueLegacyExtendedPropertyId) throw new Error("singleValueLegacyExtendedPropertyId cannot be undefined");
+        const urlTplParams = getPathParameters(this.pathParameters);
+        urlTplParams["singleValueLegacyExtendedProperty%2Did"] = singleValueLegacyExtendedPropertyId
+        return new SingleValueLegacyExtendedPropertyItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
 }
