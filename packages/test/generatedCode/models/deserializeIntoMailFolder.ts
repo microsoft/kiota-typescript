@@ -16,7 +16,7 @@ import {serializeSingleValueLegacyExtendedProperty} from './serializeSingleValue
 import {SingleValueLegacyExtendedProperty} from './singleValueLegacyExtendedProperty';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export function deserializeIntoMailFolder(mailFolder: MailFolder | undefined = {}) : Record<string, (node: ParseNode) => void> {
+export function deserializeIntoMailFolder(mailFolder: MailFolder | undefined = {} as MailFolder) : Record<string, (node: ParseNode) => void> {
     return {
         ...deserializeIntoEntity(mailFolder),
         "childFolderCount": n => { mailFolder.childFolderCount = n.getNumberValue(); },

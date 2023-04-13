@@ -28,7 +28,7 @@ import {serializeSingleValueLegacyExtendedProperty} from './serializeSingleValue
 import {SingleValueLegacyExtendedProperty} from './singleValueLegacyExtendedProperty';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export function deserializeIntoMessage(message: Message | undefined = {}) : Record<string, (node: ParseNode) => void> {
+export function deserializeIntoMessage(message: Message | undefined = {} as Message) : Record<string, (node: ParseNode) => void> {
     return {
         ...deserializeIntoOutlookItem(message),
         "attachments": n => { message.attachments = n.getCollectionOfObjectValues<Attachment>(createAttachmentFromDiscriminatorValue); },

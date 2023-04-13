@@ -20,7 +20,7 @@ import {serializeSingleValueLegacyExtendedProperty} from './serializeSingleValue
 import {SingleValueLegacyExtendedProperty} from './singleValueLegacyExtendedProperty';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export function serializeMessage(writer: SerializationWriter, message: Message | undefined = {}) : void {
+export function serializeMessage(writer: SerializationWriter, message: Message | undefined = {} as Message) : void {
         serializeOutlookItem(writer, message)
         writer.writeCollectionOfObjectValues<Attachment>("attachments", message.attachments, serializeAttachment);
         writer.writeCollectionOfObjectValues<Recipient>("bccRecipients", message.bccRecipients, serializeRecipient);

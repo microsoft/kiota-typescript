@@ -5,7 +5,7 @@ import {Recipient} from './recipient';
 import {serializeRecipient} from './serializeRecipient';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export function deserializeIntoMessageRuleActions(messageRuleActions: MessageRuleActions | undefined = {}) : Record<string, (node: ParseNode) => void> {
+export function deserializeIntoMessageRuleActions(messageRuleActions: MessageRuleActions | undefined = {} as MessageRuleActions) : Record<string, (node: ParseNode) => void> {
     return {
         "assignCategories": n => { messageRuleActions.assignCategories = n.getCollectionOfPrimitiveValues<string>(); },
         "copyToFolder": n => { messageRuleActions.copyToFolder = n.getStringValue(); },

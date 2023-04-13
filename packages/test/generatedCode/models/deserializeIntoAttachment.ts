@@ -2,7 +2,7 @@ import {Attachment} from './attachment';
 import {deserializeIntoEntity} from './deserializeIntoEntity';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export function deserializeIntoAttachment(attachment: Attachment | undefined = {}) : Record<string, (node: ParseNode) => void> {
+export function deserializeIntoAttachment(attachment: Attachment | undefined = {} as Attachment) : Record<string, (node: ParseNode) => void> {
     return {
         ...deserializeIntoEntity(attachment),
         "contentType": n => { attachment.contentType = n.getStringValue(); },

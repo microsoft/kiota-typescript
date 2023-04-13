@@ -4,7 +4,7 @@ import {Recipient} from './recipient';
 import {serializeRecipient} from './serializeRecipient';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export function serializeMessageRuleActions(writer: SerializationWriter, messageRuleActions: MessageRuleActions | undefined = {}) : void {
+export function serializeMessageRuleActions(writer: SerializationWriter, messageRuleActions: MessageRuleActions | undefined = {} as MessageRuleActions) : void {
         writer.writeCollectionOfPrimitiveValues<string>("assignCategories", messageRuleActions.assignCategories);
         writer.writeStringValue("copyToFolder", messageRuleActions.copyToFolder);
         writer.writeBooleanValue("delete", messageRuleActions.delete);

@@ -2,7 +2,7 @@ import {MultiValueLegacyExtendedProperty} from './multiValueLegacyExtendedProper
 import {serializeEntity} from './serializeEntity';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export function serializeMultiValueLegacyExtendedProperty(writer: SerializationWriter, multiValueLegacyExtendedProperty: MultiValueLegacyExtendedProperty | undefined = {}) : void {
+export function serializeMultiValueLegacyExtendedProperty(writer: SerializationWriter, multiValueLegacyExtendedProperty: MultiValueLegacyExtendedProperty | undefined = {} as MultiValueLegacyExtendedProperty) : void {
         serializeEntity(writer, multiValueLegacyExtendedProperty)
         writer.writeCollectionOfPrimitiveValues<string>("value", multiValueLegacyExtendedProperty.value);
 }

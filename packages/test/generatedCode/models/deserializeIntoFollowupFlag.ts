@@ -5,7 +5,7 @@ import {FollowupFlagStatus} from './followupFlagStatus';
 import {serializeDateTimeTimeZone} from './serializeDateTimeTimeZone';
 import {AdditionalDataHolder, Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export function deserializeIntoFollowupFlag(followupFlag: FollowupFlag | undefined = {}) : Record<string, (node: ParseNode) => void> {
+export function deserializeIntoFollowupFlag(followupFlag: FollowupFlag | undefined = {} as FollowupFlag) : Record<string, (node: ParseNode) => void> {
     return {
         "completedDateTime": n => { followupFlag.completedDateTime = n.getObjectValue<DateTimeTimeZone>(createDateTimeTimeZoneFromDiscriminatorValue); },
         "dueDateTime": n => { followupFlag.dueDateTime = n.getObjectValue<DateTimeTimeZone>(createDateTimeTimeZoneFromDiscriminatorValue); },

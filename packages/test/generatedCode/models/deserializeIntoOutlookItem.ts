@@ -2,7 +2,7 @@ import {deserializeIntoEntity} from './deserializeIntoEntity';
 import {OutlookItem} from './outlookItem';
 import {Parsable, ParseNode, SerializationWriter} from '@microsoft/kiota-abstractions';
 
-export function deserializeIntoOutlookItem(outlookItem: OutlookItem | undefined = {}) : Record<string, (node: ParseNode) => void> {
+export function deserializeIntoOutlookItem(outlookItem: OutlookItem | undefined = {} as OutlookItem) : Record<string, (node: ParseNode) => void> {
     return {
         ...deserializeIntoEntity(outlookItem),
         "categories": n => { outlookItem.categories = n.getCollectionOfPrimitiveValues<string>(); },
