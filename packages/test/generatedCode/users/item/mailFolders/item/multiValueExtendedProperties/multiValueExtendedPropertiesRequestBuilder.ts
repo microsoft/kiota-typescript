@@ -14,6 +14,17 @@ import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFac
  */
 export class MultiValueExtendedPropertiesRequestBuilder extends BaseRequestBuilder {
     /**
+     * Gets an item from the github.com/microsoftgraph/msgraph-sdk-typescript/.users.item.mailFolders.item.multiValueExtendedProperties.item collection
+     * @param multiValueLegacyExtendedPropertyId Unique identifier of the item
+     * @returns a MultiValueLegacyExtendedPropertyItemRequestBuilder
+     */
+    public byMultiValueLegacyExtendedPropertyId(multiValueLegacyExtendedPropertyId: string) : MultiValueLegacyExtendedPropertyItemRequestBuilder {
+        if(!multiValueLegacyExtendedPropertyId) throw new Error("multiValueLegacyExtendedPropertyId cannot be undefined");
+        const urlTplParams = getPathParameters(this.pathParameters);
+        urlTplParams["multiValueLegacyExtendedProperty%2Did"] = multiValueLegacyExtendedPropertyId
+        return new MultiValueLegacyExtendedPropertyItemRequestBuilder(urlTplParams, this.requestAdapter);
+    };
+    /**
      * Instantiates a new MultiValueExtendedPropertiesRequestBuilder and sets the default values.
      * @param pathParameters The raw url or the Url template parameters for the request.
      * @param requestAdapter The request adapter to use to execute the requests.
@@ -84,16 +95,5 @@ export class MultiValueExtendedPropertiesRequestBuilder extends BaseRequestBuild
         }
         requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body as any, serializeMultiValueLegacyExtendedProperty);
         return requestInfo;
-    };
-    /**
-     * Gets an item from the ApiSdk.users.item.mailFolders.item.multiValueExtendedProperties.item collection
-     * @param multiValueLegacyExtendedPropertyId Unique identifier of the item
-     * @returns a MultiValueLegacyExtendedPropertyItemRequestBuilder
-     */
-    public withMultiValueLegacyExtendedPropertyId(multiValueLegacyExtendedPropertyId: string) : MultiValueLegacyExtendedPropertyItemRequestBuilder {
-        if(!multiValueLegacyExtendedPropertyId) throw new Error("multiValueLegacyExtendedPropertyId cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["multiValueLegacyExtendedProperty%2Did"] = multiValueLegacyExtendedPropertyId
-        return new MultiValueLegacyExtendedPropertyItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
 }

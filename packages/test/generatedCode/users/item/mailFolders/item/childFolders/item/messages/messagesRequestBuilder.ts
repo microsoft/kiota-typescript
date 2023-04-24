@@ -14,6 +14,17 @@ import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFac
  */
 export class MessagesRequestBuilder extends BaseRequestBuilder {
     /**
+     * Gets an item from the github.com/microsoftgraph/msgraph-sdk-typescript/.users.item.mailFolders.item.childFolders.item.messages.item collection
+     * @param messageId Unique identifier of the item
+     * @returns a MessageItemRequestBuilder
+     */
+    public byMessageId(messageId: string) : MessageItemRequestBuilder {
+        if(!messageId) throw new Error("messageId cannot be undefined");
+        const urlTplParams = getPathParameters(this.pathParameters);
+        urlTplParams["message%2Did"] = messageId
+        return new MessageItemRequestBuilder(urlTplParams, this.requestAdapter);
+    };
+    /**
      * Instantiates a new MessagesRequestBuilder and sets the default values.
      * @param pathParameters The raw url or the Url template parameters for the request.
      * @param requestAdapter The request adapter to use to execute the requests.
@@ -86,16 +97,5 @@ export class MessagesRequestBuilder extends BaseRequestBuilder {
         }
         requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body as any, serializeMessage);
         return requestInfo;
-    };
-    /**
-     * Gets an item from the ApiSdk.users.item.mailFolders.item.childFolders.item.messages.item collection
-     * @param messageId Unique identifier of the item
-     * @returns a MessageItemRequestBuilder
-     */
-    public withMessageId(messageId: string) : MessageItemRequestBuilder {
-        if(!messageId) throw new Error("messageId cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["message%2Did"] = messageId
-        return new MessageItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
 }

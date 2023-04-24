@@ -14,6 +14,17 @@ import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFac
  */
 export class OverridesRequestBuilder extends BaseRequestBuilder {
     /**
+     * Gets an item from the github.com/microsoftgraph/msgraph-sdk-typescript/.users.item.inferenceClassification.overrides.item collection
+     * @param inferenceClassificationOverrideId Unique identifier of the item
+     * @returns a InferenceClassificationOverrideItemRequestBuilder
+     */
+    public byInferenceClassificationOverrideId(inferenceClassificationOverrideId: string) : InferenceClassificationOverrideItemRequestBuilder {
+        if(!inferenceClassificationOverrideId) throw new Error("inferenceClassificationOverrideId cannot be undefined");
+        const urlTplParams = getPathParameters(this.pathParameters);
+        urlTplParams["inferenceClassificationOverride%2Did"] = inferenceClassificationOverrideId
+        return new InferenceClassificationOverrideItemRequestBuilder(urlTplParams, this.requestAdapter);
+    };
+    /**
      * Instantiates a new OverridesRequestBuilder and sets the default values.
      * @param pathParameters The raw url or the Url template parameters for the request.
      * @param requestAdapter The request adapter to use to execute the requests.
@@ -86,16 +97,5 @@ export class OverridesRequestBuilder extends BaseRequestBuilder {
         }
         requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body as any, serializeInferenceClassificationOverride);
         return requestInfo;
-    };
-    /**
-     * Gets an item from the ApiSdk.users.item.inferenceClassification.overrides.item collection
-     * @param inferenceClassificationOverrideId Unique identifier of the item
-     * @returns a InferenceClassificationOverrideItemRequestBuilder
-     */
-    public withInferenceClassificationOverrideId(inferenceClassificationOverrideId: string) : InferenceClassificationOverrideItemRequestBuilder {
-        if(!inferenceClassificationOverrideId) throw new Error("inferenceClassificationOverrideId cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["inferenceClassificationOverride%2Did"] = inferenceClassificationOverrideId
-        return new InferenceClassificationOverrideItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
 }

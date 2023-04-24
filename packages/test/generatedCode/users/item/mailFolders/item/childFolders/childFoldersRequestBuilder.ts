@@ -14,6 +14,17 @@ import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFac
  */
 export class ChildFoldersRequestBuilder extends BaseRequestBuilder {
     /**
+     * Gets an item from the github.com/microsoftgraph/msgraph-sdk-typescript/.users.item.mailFolders.item.childFolders.item collection
+     * @param mailFolderId1 Unique identifier of the item
+     * @returns a MailFolderItemRequestBuilder
+     */
+    public byMailFolderId1(mailFolderId1: string) : MailFolderItemRequestBuilder {
+        if(!mailFolderId1) throw new Error("mailFolderId1 cannot be undefined");
+        const urlTplParams = getPathParameters(this.pathParameters);
+        urlTplParams["mailFolder%2Did1"] = mailFolderId1
+        return new MailFolderItemRequestBuilder(urlTplParams, this.requestAdapter);
+    };
+    /**
      * Instantiates a new ChildFoldersRequestBuilder and sets the default values.
      * @param pathParameters The raw url or the Url template parameters for the request.
      * @param requestAdapter The request adapter to use to execute the requests.
@@ -86,16 +97,5 @@ export class ChildFoldersRequestBuilder extends BaseRequestBuilder {
         }
         requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body as any, serializeMailFolder);
         return requestInfo;
-    };
-    /**
-     * Gets an item from the ApiSdk.users.item.mailFolders.item.childFolders.item collection
-     * @param mailFolderId1 Unique identifier of the item
-     * @returns a MailFolderItemRequestBuilder
-     */
-    public withMailFolderId1(mailFolderId1: string) : MailFolderItemRequestBuilder {
-        if(!mailFolderId1) throw new Error("mailFolderId1 cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["mailFolder%2Did1"] = mailFolderId1
-        return new MailFolderItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
 }

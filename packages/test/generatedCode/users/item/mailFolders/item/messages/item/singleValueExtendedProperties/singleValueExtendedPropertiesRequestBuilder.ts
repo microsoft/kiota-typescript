@@ -14,6 +14,17 @@ import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFac
  */
 export class SingleValueExtendedPropertiesRequestBuilder extends BaseRequestBuilder {
     /**
+     * Gets an item from the github.com/microsoftgraph/msgraph-sdk-typescript/.users.item.mailFolders.item.messages.item.singleValueExtendedProperties.item collection
+     * @param singleValueLegacyExtendedPropertyId Unique identifier of the item
+     * @returns a SingleValueLegacyExtendedPropertyItemRequestBuilder
+     */
+    public bySingleValueLegacyExtendedPropertyId(singleValueLegacyExtendedPropertyId: string) : SingleValueLegacyExtendedPropertyItemRequestBuilder {
+        if(!singleValueLegacyExtendedPropertyId) throw new Error("singleValueLegacyExtendedPropertyId cannot be undefined");
+        const urlTplParams = getPathParameters(this.pathParameters);
+        urlTplParams["singleValueLegacyExtendedProperty%2Did"] = singleValueLegacyExtendedPropertyId
+        return new SingleValueLegacyExtendedPropertyItemRequestBuilder(urlTplParams, this.requestAdapter);
+    };
+    /**
      * Instantiates a new SingleValueExtendedPropertiesRequestBuilder and sets the default values.
      * @param pathParameters The raw url or the Url template parameters for the request.
      * @param requestAdapter The request adapter to use to execute the requests.
@@ -84,16 +95,5 @@ export class SingleValueExtendedPropertiesRequestBuilder extends BaseRequestBuil
         }
         requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body as any, serializeSingleValueLegacyExtendedProperty);
         return requestInfo;
-    };
-    /**
-     * Gets an item from the ApiSdk.users.item.mailFolders.item.messages.item.singleValueExtendedProperties.item collection
-     * @param singleValueLegacyExtendedPropertyId Unique identifier of the item
-     * @returns a SingleValueLegacyExtendedPropertyItemRequestBuilder
-     */
-    public withSingleValueLegacyExtendedPropertyId(singleValueLegacyExtendedPropertyId: string) : SingleValueLegacyExtendedPropertyItemRequestBuilder {
-        if(!singleValueLegacyExtendedPropertyId) throw new Error("singleValueLegacyExtendedPropertyId cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["singleValueLegacyExtendedProperty%2Did"] = singleValueLegacyExtendedPropertyId
-        return new SingleValueLegacyExtendedPropertyItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
 }

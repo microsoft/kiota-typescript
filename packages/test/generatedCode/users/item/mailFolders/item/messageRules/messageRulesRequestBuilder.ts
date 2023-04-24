@@ -14,6 +14,17 @@ import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFac
  */
 export class MessageRulesRequestBuilder extends BaseRequestBuilder {
     /**
+     * Gets an item from the github.com/microsoftgraph/msgraph-sdk-typescript/.users.item.mailFolders.item.messageRules.item collection
+     * @param messageRuleId Unique identifier of the item
+     * @returns a MessageRuleItemRequestBuilder
+     */
+    public byMessageRuleId(messageRuleId: string) : MessageRuleItemRequestBuilder {
+        if(!messageRuleId) throw new Error("messageRuleId cannot be undefined");
+        const urlTplParams = getPathParameters(this.pathParameters);
+        urlTplParams["messageRule%2Did"] = messageRuleId
+        return new MessageRuleItemRequestBuilder(urlTplParams, this.requestAdapter);
+    };
+    /**
      * Instantiates a new MessageRulesRequestBuilder and sets the default values.
      * @param pathParameters The raw url or the Url template parameters for the request.
      * @param requestAdapter The request adapter to use to execute the requests.
@@ -86,16 +97,5 @@ export class MessageRulesRequestBuilder extends BaseRequestBuilder {
         }
         requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body as any, serializeMessageRule);
         return requestInfo;
-    };
-    /**
-     * Gets an item from the ApiSdk.users.item.mailFolders.item.messageRules.item collection
-     * @param messageRuleId Unique identifier of the item
-     * @returns a MessageRuleItemRequestBuilder
-     */
-    public withMessageRuleId(messageRuleId: string) : MessageRuleItemRequestBuilder {
-        if(!messageRuleId) throw new Error("messageRuleId cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["messageRule%2Did"] = messageRuleId
-        return new MessageRuleItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
 }

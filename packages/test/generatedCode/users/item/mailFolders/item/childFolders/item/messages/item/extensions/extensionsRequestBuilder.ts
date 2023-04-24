@@ -14,6 +14,17 @@ import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFac
  */
 export class ExtensionsRequestBuilder extends BaseRequestBuilder {
     /**
+     * Gets an item from the github.com/microsoftgraph/msgraph-sdk-typescript/.users.item.mailFolders.item.childFolders.item.messages.item.extensions.item collection
+     * @param extensionId Unique identifier of the item
+     * @returns a ExtensionItemRequestBuilder
+     */
+    public byExtensionId(extensionId: string) : ExtensionItemRequestBuilder {
+        if(!extensionId) throw new Error("extensionId cannot be undefined");
+        const urlTplParams = getPathParameters(this.pathParameters);
+        urlTplParams["extension%2Did"] = extensionId
+        return new ExtensionItemRequestBuilder(urlTplParams, this.requestAdapter);
+    };
+    /**
      * Instantiates a new ExtensionsRequestBuilder and sets the default values.
      * @param pathParameters The raw url or the Url template parameters for the request.
      * @param requestAdapter The request adapter to use to execute the requests.
@@ -85,16 +96,5 @@ export class ExtensionsRequestBuilder extends BaseRequestBuilder {
         }
         requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body as any, serializeExtension);
         return requestInfo;
-    };
-    /**
-     * Gets an item from the ApiSdk.users.item.mailFolders.item.childFolders.item.messages.item.extensions.item collection
-     * @param extensionId Unique identifier of the item
-     * @returns a ExtensionItemRequestBuilder
-     */
-    public withExtensionId(extensionId: string) : ExtensionItemRequestBuilder {
-        if(!extensionId) throw new Error("extensionId cannot be undefined");
-        const urlTplParams = getPathParameters(this.pathParameters);
-        urlTplParams["extension%2Did"] = extensionId
-        return new ExtensionItemRequestBuilder(urlTplParams, this.requestAdapter);
     };
 }
