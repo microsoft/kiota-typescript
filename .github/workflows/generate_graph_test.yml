@@ -21,7 +21,7 @@ on:
     branches: [main]
 
 env:
-  KIOTA_BRANCH: 'nikithauc/model-as-interfaces'
+  KIOTA_BRANCH: 'main'
   KIOTA_REPO: 'https://github.com/microsoft/kiota.git'
   OPEN_API_DEF: 'https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/master/openapi/v1.0/openapi.yaml'
 
