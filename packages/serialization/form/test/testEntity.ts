@@ -8,55 +8,60 @@ import {
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
 
-export class TestEntity implements Parsable, AdditionalDataHolder {
-  public additionalData: Record<string, unknown> = {};
-  public id?: string;
-  public birthday?: DateOnly;
-  public createdDateTime?: Date;
-  public workDuration?: Duration;
-  public startWorkTime?: TimeOnly;
-  public endWorkTime?: TimeOnly;
-  public officeLocation?: string;
-  getFieldDeserializers(): Record<string, (node: ParseNode) => void> {
-    return {
-      id: (n) => {
-        this.id = n.getStringValue();
-      },
-      birthday: (n) => {
-        this.birthday = n.getDateOnlyValue();
-      },
-      createdDateTime: (n) => {
-        this.createdDateTime = n.getDateValue();
-      },
-      workDuration: (n) => {
-        this.workDuration = n.getDurationValue();
-      },
-      startWorkTime: (n) => {
-        this.startWorkTime = n.getTimeOnlyValue();
-      },
-      endWorkTime: (n) => {
-        this.endWorkTime = n.getTimeOnlyValue();
-      },
-      officeLocation: (n) => {
-        this.officeLocation = n.getStringValue();
-      },
-    };
-  }
-  serialize(writer: SerializationWriter): void {
-    writer.writeStringValue("id", this.id);
-    writer.writeDateOnlyValue("birthday", this.birthday);
-    writer.writeDateValue("createdDateTime", this.createdDateTime);
-    writer.writeDurationValue("workDuration", this.workDuration);
-    writer.writeTimeOnlyValue("startWorkTime", this.startWorkTime);
-    writer.writeTimeOnlyValue("endWorkTime", this.endWorkTime);
-    writer.writeStringValue("officeLocation", this.officeLocation);
-    writer.writeAdditionalData(this.additionalData);
-  }
+export interface TestEntity extends Parsable, AdditionalDataHolder {
+  id?: string;
+  birthday?: DateOnly;
+  createdDateTime?: Date;
+  workDuration?: Duration;
+  startWorkTime?: TimeOnly;
+  endWorkTime?: TimeOnly;
+  officeLocation?: string;
+}
+export function createTestParserFromDiscriminatorValue(
+  parseNode: ParseNode | undefined
+) {
+  if (!parseNode) throw new Error("parseNode cannot be undefined");
+  return deserializeTestEntity;
 }
 
-export function createTestEntityFromDiscriminator(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  parseNode?: ParseNode
-): Parsable {
-  return new TestEntity();
+export function deserializeTestEntity(
+  testEntity: TestEntity | undefined = {}
+): Record<string, (node: ParseNode) => void> {
+  return {
+    id: (n) => {
+      testEntity.id = n.getStringValue();
+    },
+    birthday: (n) => {
+      testEntity.birthday = n.getDateOnlyValue();
+    },
+    createdDateTime: (n) => {
+      testEntity.createdDateTime = n.getDateValue();
+    },
+    workDuration: (n) => {
+      testEntity.workDuration = n.getDurationValue();
+    },
+    startWorkTime: (n) => {
+      testEntity.startWorkTime = n.getTimeOnlyValue();
+    },
+    endWorkTime: (n) => {
+      testEntity.endWorkTime = n.getTimeOnlyValue();
+    },
+    officeLocation: (n) => {
+      testEntity.officeLocation = n.getStringValue();
+    },
+  };
+}
+
+export function serializeTestEntity(
+  writer: SerializationWriter,
+  testEntity: TestEntity | undefined = {}
+): void {
+  writer.writeStringValue("id", testEntity.id);
+  writer.writeDateOnlyValue("birthday", testEntity.birthday);
+  writer.writeDateValue("createdDateTime", testEntity.createdDateTime);
+  writer.writeDurationValue("workDuration", testEntity.workDuration);
+  writer.writeTimeOnlyValue("startWorkTime", testEntity.startWorkTime);
+  writer.writeTimeOnlyValue("endWorkTime", testEntity.endWorkTime);
+  writer.writeStringValue("officeLocation", testEntity.officeLocation);
+  writer.writeAdditionalData(testEntity.additionalData);
 }

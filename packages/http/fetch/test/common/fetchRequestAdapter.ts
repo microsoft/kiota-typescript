@@ -11,7 +11,7 @@ import { assert } from "chai";
 import { FetchRequestAdapter } from "../../src/fetchRequestAdapter";
 import { HttpClient } from "../../src/httpClient";
 import { getResponse } from "../testUtils";
-import { CreateMockEntityFromParseNode, MockEntity } from "./mockEntity";
+import { createMockEntityFromDiscriminatorValue } from "./mockEntity";
 import { MockParseNode, MockParseNodeFactory } from "./mockParseNodeFactory";
 
 // eslint-disable-next-line no-var
@@ -97,7 +97,7 @@ describe("FetchRequestAdapter.ts", () => {
 				const requestInformation = new RequestInformation();
 				requestInformation.URL = "https://www.example.com";
 				requestInformation.httpMethod = HttpMethod.GET;
-				const result = await requestAdapter.sendAsync(requestInformation, undefined, undefined, undefined);
+				const result = await requestAdapter.sendAsync(requestInformation, createMockEntityFromDiscriminatorValue, undefined, undefined);
 				assert.isUndefined(result);
 			});
 		}
@@ -113,12 +113,12 @@ describe("FetchRequestAdapter.ts", () => {
 					response.headers.set("Content-Type", "application/json");
 					return Promise.resolve(response);
 				};
-				const mockFactory = new MockParseNodeFactory(new MockParseNode(new MockEntity()));
+				const mockFactory = new MockParseNodeFactory(new MockParseNode({}));
 				const requestAdapter = new FetchRequestAdapter(new AnonymousAuthenticationProvider(), mockFactory, undefined, mockHttpClient);
 				const requestInformation = new RequestInformation();
 				requestInformation.URL = "https://www.example.com";
 				requestInformation.httpMethod = HttpMethod.GET;
-				const result = await requestAdapter.sendAsync(requestInformation, CreateMockEntityFromParseNode, undefined, undefined);
+				const result = await requestAdapter.sendAsync(requestInformation, createMockEntityFromDiscriminatorValue, undefined, undefined);
 				assert.isDefined(result);
 			});
 		}

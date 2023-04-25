@@ -2,6 +2,7 @@
 import {
   DateOnly,
   Duration,
+  ModelSerializerFunction,
   Parsable,
   SerializationWriter,
   TimeOnly,
@@ -83,14 +84,15 @@ export class JsonSerializationWriter implements SerializationWriter {
     }
   };
   public writeCollectionOfObjectValues = <T extends Parsable>(
-    key?: string,
-    values?: T[]
+    key: string,
+    values: T[],
+    serializerMethod: ModelSerializerFunction<T>
   ): void => {
     if (values) {
       key && this.writePropertyName(key);
       this.writer.push(`[`);
       values.forEach((v) => {
-        this.writeObjectValue(undefined, v);
+        this.writeObjectValue(undefined, v, serializerMethod);
         this.writer.push(JsonSerializationWriter.propertySeparator);
       });
       if (values.length > 0) {
@@ -101,33 +103,38 @@ export class JsonSerializationWriter implements SerializationWriter {
       key && this.writer.push(JsonSerializationWriter.propertySeparator);
     }
   };
-  public writeObjectValue = <T extends Parsable>(
-    key?: string,
-    value?: T
-  ): void => {
-    if (value) {
-      if (key) {
-        this.writePropertyName(key);
-      }
-      this.onBeforeObjectSerialization &&
-        this.onBeforeObjectSerialization(value);
-      this.writer.push(`{`);
-      this.onStartObjectSerialization &&
-        this.onStartObjectSerialization(value, this);
-      value.serialize(this);
-      this.onAfterObjectSerialization && this.onAfterObjectSerialization(value);
-      if (
-        this.writer.length > 0 &&
-        this.writer[this.writer.length - 1] ===
-          JsonSerializationWriter.propertySeparator
-      ) {
-        //removing the last separator
-        this.writer.pop();
-      }
-      this.writer.push(`}`);
-      key && this.writer.push(JsonSerializationWriter.propertySeparator);
+
+  public writeObjectValue<T extends Parsable>(
+    key: string | undefined,
+    value: T,
+    serializerMethod: ModelSerializerFunction<T>
+  ): void {
+    if (key) {
+      this.writePropertyName(key);
     }
-  };
+    this.onBeforeObjectSerialization &&
+      this.onBeforeObjectSerialization(value as unknown as Parsable);
+    this.writer.push(`{`);
+
+    this.onStartObjectSerialization &&
+      this.onStartObjectSerialization(value as unknown as Parsable, this);
+    value && serializerMethod && serializerMethod(this, value);
+    this.onAfterObjectSerialization &&
+      this.onAfterObjectSerialization(value as unknown as Parsable);
+
+    if (
+      this.writer.length > 0 &&
+      this.writer[this.writer.length - 1] ===
+        JsonSerializationWriter.propertySeparator
+    ) {
+      //removing the last separator
+      this.writer.pop();
+    }
+    this.writer.push(`}`);
+
+    key && this.writer.push(JsonSerializationWriter.propertySeparator);
+  }
+
   public writeEnumValue = <T>(
     key?: string | undefined,
     ...values: (T | undefined)[]
@@ -157,13 +164,16 @@ export class JsonSerializationWriter implements SerializationWriter {
     return arrayBuffer;
   };
 
-  public writeAdditionalData = (value: Record<string, unknown>): void => {
-    if (!value) return;
-
-    for (const key in value) {
-      this.writeAnyValue(key, value[key]);
+  public writeAdditionalData = (
+    additionalData: Record<string, unknown> | undefined
+  ): void => {
+    // !value will fail to serialize false and null values which can be valid input
+    if (additionalData === undefined) return;
+    for (const key in additionalData) {
+      this.writeAnyValue(key, additionalData[key]);
     }
   };
+
   private writeNonParsableObjectValue = (
     key?: string | undefined,
     value?: object | undefined

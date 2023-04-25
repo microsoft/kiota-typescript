@@ -1,29 +1,31 @@
 {
-  "descriptionHash": "F596AEE180E3F5E630E95E91134E5F51300268288352AD41F209515486123F460BB400675277991DDB81462B72C196FEB70CB2E148E9209DA2AA9ADBFA8F9233",
+  "descriptionHash": "63A7B8ADD7952B2A179EBEB047AE58C5A8AB3B73FAAA3D2A6B09D72D931E93D7762CE3AC8A5CFC5BD54C8C83F2494F69C5D97C2A386FB030FAFAA9CAF9AE4AF1",
   "descriptionLocation": "https://raw.githubusercontent.com/microsoftgraph/msgraph-sdk-powershell/dev/openApiDocs/v1.0/Mail.yml",
   "lockFileVersion": "1.0.0",
-  "kiotaVersion": "0.8.3.0",
+  "kiotaVersion": "1.1.3",
   "clientClassName": "ApiClient",
-  "clientNamespaceName": "ApiSdk",
+  "clientNamespaceName": "github.com/microsoftgraph/msgraph-sdk-typescript/",
   "language": "TypeScript",
   "usesBackingStore": false,
   "includeAdditionalData": true,
   "serializers": [
     "Microsoft.Kiota.Serialization.Json.JsonSerializationWriterFactory",
-    "Microsoft.Kiota.Serialization.Text.TextSerializationWriterFactory"
+    "Microsoft.Kiota.Serialization.Text.TextSerializationWriterFactory",
+    "Microsoft.Kiota.Serialization.Form.FormSerializationWriterFactory"
   ],
   "deserializers": [
     "Microsoft.Kiota.Serialization.Json.JsonParseNodeFactory",
-    "Microsoft.Kiota.Serialization.Text.TextParseNodeFactory"
+    "Microsoft.Kiota.Serialization.Text.TextParseNodeFactory",
+    "Microsoft.Kiota.Serialization.Form.FormParseNodeFactory"
   ],
   "structuredMimeTypes": [
     "application/json",
-    "application/xml",
     "text/plain",
-    "text/xml",
-    "text/yaml"
+    "application/x-www-form-urlencoded"
   ],
   "includePatterns": [],
   "excludePatterns": [],
-  "disabledValidationRules": []
+  "disabledValidationRules": [
+    "all"
+  ]
 }

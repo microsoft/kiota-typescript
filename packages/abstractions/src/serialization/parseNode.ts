@@ -1,8 +1,8 @@
 import { DateOnly } from "../dateOnly";
 import { Duration } from "../duration";
 import { TimeOnly } from "../timeOnly";
-import { ParsableFactory } from ".";
 import { Parsable } from "./parsable";
+import { ParsableFactory } from "./parsableFactory";
 
 /**
  * Interface for a deserialization node in a parse tree. This interface provides an abstraction layer over serialization formats, libraries and implementations.
@@ -64,13 +64,17 @@ export interface ParseNode {
    * @return the collection of object values of the node.
    */
   getCollectionOfObjectValues<T extends Parsable>(
-    type: ParsableFactory<T>
+    parsableFactory: ParsableFactory<T>
   ): T[] | undefined;
+
   /**
    * Gets the model object value of the node.
    * @return the model object value of the node.
    */
-  getObjectValue<T extends Parsable>(type: ParsableFactory<T>): T;
+  getObjectValue<T extends Parsable>(
+    parsableFactory: ParsableFactory<T>
+  ): T;
+
   /**
    * Gets the Enum values of the node.
    * @return the Enum values of the node.
@@ -87,7 +91,7 @@ export interface ParseNode {
    */
   onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
   /**
-   * Gets the callback called after the node is deseserialized.
+   * Gets the callback called after the node is deserialized.
    * @return the callback called after the node is deserialized.
    */
   onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;

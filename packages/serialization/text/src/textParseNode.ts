@@ -24,6 +24,7 @@ export class TextParseNode implements ParseNode {
       this.text = this.text.substring(1, this.text.length - 2);
     }
   }
+
   public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
   public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
   public getStringValue = () => this.text;
@@ -49,16 +50,20 @@ export class TextParseNode implements ParseNode {
   public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
     throw new Error(TextParseNode.noStructuredDataMessage);
   };
-  public getCollectionOfObjectValues = <T extends Parsable>(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    type: ParsableFactory<T>
-  ): T[] | undefined => {
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  public getCollectionOfObjectValues<T extends Parsable>(
+    parsableFactory: ParsableFactory<T>
+  ): T[] | undefined {
     throw new Error(TextParseNode.noStructuredDataMessage);
-  };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public getObjectValue = <T extends Parsable>(type: ParsableFactory<T>): T => {
+  }
+
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  public getObjectValue<T extends Parsable>(
+    parsableFactory: ParsableFactory<T>
+  ): T {
     throw new Error(TextParseNode.noStructuredDataMessage);
-  };
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public getEnumValues = <T>(type: any): T[] => {
     throw new Error(TextParseNode.noStructuredDataMessage);

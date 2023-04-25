@@ -2,6 +2,7 @@
 import {
   DateOnly,
   Duration,
+  ModelSerializerFunction,
   Parsable,
   SerializationWriter,
   TimeOnly,
@@ -73,8 +74,9 @@ export class FormSerializationWriter implements SerializationWriter {
     );
   };
   public writeObjectValue = <T extends Parsable>(
-    key?: string,
-    value?: T
+    key: string | undefined,
+    value: T | undefined,
+    serializerMethod: ModelSerializerFunction<T>
   ): void => {
     if (++this.depth > 0) {
       throw new Error(
@@ -89,7 +91,7 @@ export class FormSerializationWriter implements SerializationWriter {
         this.onBeforeObjectSerialization(value);
       this.onStartObjectSerialization &&
         this.onStartObjectSerialization(value, this);
-      value.serialize(this);
+      serializerMethod(this, value);
       this.onAfterObjectSerialization && this.onAfterObjectSerialization(value);
       if (
         this.writer.length > 0 &&
@@ -131,18 +133,21 @@ export class FormSerializationWriter implements SerializationWriter {
     return arrayBuffer;
   };
 
-  public writeAdditionalData = (value: Record<string, unknown>): void => {
-    if (!value) return;
-
-    for (const key in value) {
-      this.writeAnyValue(key, value[key]);
+  public writeAdditionalData = (
+    additionalData: Record<string, unknown> | undefined
+  ): void => {
+    // Do not use !value here, because value can be `false`.
+    if (additionalData === undefined) return;
+    for (const key in additionalData) {
+      this.writeAnyValue(key, additionalData[key]);
     }
   };
+
   private writeAnyValue = (
     key?: string | undefined,
     value?: unknown | undefined
   ): void => {
-    if (value !== undefined && value !== null) {
+    if (value !== null && value !== undefined) {
       const valueType = typeof value;
       if (valueType === "boolean") {
         this.writeBooleanValue(key, value as any as boolean);
@@ -160,7 +165,7 @@ export class FormSerializationWriter implements SerializationWriter {
         this.writeNumberValue(key, value as any as number);
       } else {
         throw new Error(
-          `encountered unknown value type during serialization ${valueType}`
+          `encountered unknown ${value} value type during serialization ${valueType} for key ${key}`
         );
       }
     } else {

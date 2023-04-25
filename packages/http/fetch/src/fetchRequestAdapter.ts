@@ -101,7 +101,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		});
 	};
-	public sendCollectionAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, type: ParsableFactory<ModelType>, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType[] | undefined> => {
+	public sendCollectionAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, deserialization: ParsableFactory<ModelType>, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType[] | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
@@ -118,7 +118,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 						const rootNode = await this.getRootParseNode(response);
 						return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getCollectionOfObjectValues", (deserializeSpan) => {
 							try {
-								const result = rootNode.getCollectionOfObjectValues(type);
+								const result = rootNode.getCollectionOfObjectValues(deserialization);
 								span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "object[]");
 								return result as unknown as ModelType[];
 							} finally {
@@ -147,7 +147,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		});
 	};
 	public static readonly eventResponseHandlerInvokedKey = "com.microsoft.kiota.response_handler_invoked";
-	public sendAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, type: ParsableFactory<ModelType>, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType | undefined> => {
+	public sendAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, deserializer: ParsableFactory<ModelType>, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
@@ -165,7 +165,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 						return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getObjectValue", (deserializeSpan) => {
 							try {
 								span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "object");
-								const result = rootNode.getObjectValue(type);
+								const result = rootNode.getObjectValue(deserializer);
 								return result as unknown as ModelType;
 							} finally {
 								deserializeSpan.end();
