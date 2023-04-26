@@ -38,7 +38,7 @@
     "@opentelemetry/api": "^1.2.0",
     "tinyduration": "^3.2.2",
     "tslib": "^2.3.1",
-    "uri-template-lite": "^22.1.0",
+    "uri-template-lite": "23.4.0",
     "uuid": "^9.0.0"
   },
   "publishConfig": {
