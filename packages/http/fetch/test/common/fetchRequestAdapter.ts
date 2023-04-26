@@ -123,4 +123,28 @@ describe("FetchRequestAdapter.ts", () => {
 			});
 		}
 	});
+	describe("Throws API error", () => {
+		it("should throw API error", async () => {
+			const mockHttpClient = new HttpClient();
+			mockHttpClient.executeFetch = async (url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>) => {
+				const response = new Response("", {
+					status: 500,
+				} as ResponseInit);
+				response.headers.set("client-request-id", "example-guid");
+				return Promise.resolve(response);
+			};
+			const requestAdapter = new FetchRequestAdapter(new AnonymousAuthenticationProvider(), undefined, undefined, mockHttpClient);
+			const requestInformation = new RequestInformation();
+			requestInformation.URL = "https://www.example.com";
+			requestInformation.httpMethod = HttpMethod.GET;
+
+			try {
+				await requestAdapter.sendNoResponseContentAsync(requestInformation, undefined, undefined);
+				assert.fail("Should have thrown an error");
+			} catch (error) {
+				assert.equal(error.responseStatusCode, 500);
+				assert.equal(error.responseHeaders["client-request-id"], "example-guid");
+			}
+		});
+	});
 });
