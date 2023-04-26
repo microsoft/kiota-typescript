@@ -305,10 +305,16 @@ export class FetchRequestAdapter implements RequestAdapter {
 				});
 
 				const statusCode = response.status;
+				const responseHeaders: Record<string, string[]> = {};
+				response.headers.forEach((value, key) => {
+					responseHeaders[key] = value.split(",");
+				});
 				const statusCodeAsString = statusCode.toString();
 				if (!errorMappings || (!errorMappings[statusCodeAsString] && !(statusCode >= 400 && statusCode < 500 && errorMappings["4XX"]) && !(statusCode >= 500 && statusCode < 600 && errorMappings["5XX"]))) {
 					spanForAttributes.setAttribute(FetchRequestAdapter.errorMappingFoundAttributeName, false);
 					const error = new ApiError("the server returned an unexpected status code and no error class is registered for this code " + statusCode);
+					error.responseStatusCode = statusCode;
+					error.responseHeaders = responseHeaders;
 					spanForAttributes.recordException(error);
 					throw error;
 				}
@@ -327,8 +333,11 @@ export class FetchRequestAdapter implements RequestAdapter {
 				spanForAttributes.setAttribute(FetchRequestAdapter.errorBodyFoundAttributeName, !!error);
 
 				if (!error) error = new ApiError("unexpected error type" + typeof error) as unknown as Parsable;
-				spanForAttributes.recordException(error as unknown as Error);
-				throw error;
+				const errorObject = error as unknown as ApiError;
+				errorObject.responseStatusCode = statusCode;
+				errorObject.responseHeaders = responseHeaders;
+				spanForAttributes.recordException(errorObject);
+				throw errorObject;
 			} finally {
 				span.end();
 			}
