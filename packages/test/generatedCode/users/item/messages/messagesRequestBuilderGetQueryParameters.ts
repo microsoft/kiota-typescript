@@ -6,6 +6,8 @@ export interface MessagesRequestBuilderGetQueryParameters {
     expand?: string[] | undefined;
     /** Filter items by property values */
     filter?: string | undefined;
+    /** Include Hidden Messages */
+    includeHiddenMessages?: string | undefined;
     /** Order items by property values */
     orderby?: string[] | undefined;
     /** Search items by search phrases */

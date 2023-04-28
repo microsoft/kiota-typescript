@@ -6,6 +6,8 @@ export interface MailFoldersRequestBuilderGetQueryParameters {
     expand?: string[] | undefined;
     /** Filter items by property values */
     filter?: string | undefined;
+    /** Include Hidden Folders */
+    includeHiddenFolders?: string | undefined;
     /** Order items by property values */
     orderby?: string[] | undefined;
     /** Select properties to be returned */
