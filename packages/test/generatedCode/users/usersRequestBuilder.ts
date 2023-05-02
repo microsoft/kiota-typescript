@@ -6,7 +6,7 @@ import {BaseRequestBuilder, getPathParameters, RequestAdapter} from '@microsoft/
  */
 export class UsersRequestBuilder extends BaseRequestBuilder {
     /**
-     * Gets an item from the github.com/microsoftgraph/msgraph-sdk-typescript/.users.item collection
+     * Gets an item from the ApiSdk.users.item collection
      * @param userId Unique identifier of the item
      * @returns a UserItemRequestBuilder
      */

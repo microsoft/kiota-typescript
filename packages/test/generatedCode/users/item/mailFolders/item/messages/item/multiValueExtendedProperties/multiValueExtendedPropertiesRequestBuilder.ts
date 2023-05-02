@@ -14,7 +14,7 @@ import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFac
  */
 export class MultiValueExtendedPropertiesRequestBuilder extends BaseRequestBuilder {
     /**
-     * Gets an item from the github.com/microsoftgraph/msgraph-sdk-typescript/.users.item.mailFolders.item.messages.item.multiValueExtendedProperties.item collection
+     * Gets an item from the ApiSdk.users.item.mailFolders.item.messages.item.multiValueExtendedProperties.item collection
      * @param multiValueLegacyExtendedPropertyId Unique identifier of the item
      * @returns a MultiValueLegacyExtendedPropertyItemRequestBuilder
      */
