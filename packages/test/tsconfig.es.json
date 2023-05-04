@@ -56,9 +56,6 @@
         ],"@microsoft/kiota-authentication-spfx": [
             "../authentication/spfx"
         ],
-        "@microsoft/kiota-serialization-form": [
-            "../serialization/form"
-        ],
     },
 	"include": ["./generatedCode/**/*.ts", "./tests/**/*.ts"]
 }
