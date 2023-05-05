@@ -27,9 +27,6 @@
         "@microsoft/kiota-authentication-spfx": [
             "../authentication/spfx"
         ],
-        "@microsoft/kiota-serialization-form": [
-            "../serialization/form"
-        ],
     },
     "files": [],
     "references": [
