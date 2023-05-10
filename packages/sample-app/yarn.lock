@@ -164,10 +164,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@microsoft/kiota-abstractions@1.0.0-preview.16":
-  version "1.0.0-preview.16"
-  resolved "https://registry.yarnpkg.com/@microsoft/kiota-abstractions/-/kiota-abstractions-1.0.0-preview.16.tgz#805442ab50544b6ddbed3d5a6ae6df6c62157630"
-  integrity sha512-n1BmB4p0MWy0kKti1xwg/BrfVjjOcFX3DPB+PPNpaZqYsrIpnhQXLjRq/j3V6EjK7Y43hhJsalzQR9usaBkW3Q==
+"@microsoft/kiota-abstractions@1.0.0-preview.18":
+  version "1.0.0-preview.18"
+  resolved "https://registry.yarnpkg.com/@microsoft/kiota-abstractions/-/kiota-abstractions-1.0.0-preview.18.tgz#a5b3f6963327f4894379547cd58611d2d76e59a4"
+  integrity sha512-dMgy+YnaH+55nAqYdvKLTzeZLhECy2P3QNNDaJLT8gv9Uci7KZ9KtbQ74oc2s8cFNjQUd05HfqOtGYz8eo18/Q==
   dependencies:
     "@opentelemetry/api" "^1.2.0"
     tinyduration "^3.2.2"
@@ -175,59 +175,48 @@
     uri-template-lite "^22.1.0"
     uuid "^9.0.0"
 
-"@microsoft/kiota-abstractions@^1.0.0-preview.14":
-  version "1.0.0-preview.14"
-  resolved "https://registry.yarnpkg.com/@microsoft/kiota-abstractions/-/kiota-abstractions-1.0.0-preview.14.tgz#368b5002e4bc11fdcc00f29305de51a6c67f9f98"
-  integrity sha512-oBVLfoqIvZQvkReYzUGrOFrKf6ooh+kVgmOFiv1PPFB76MeTCW93gbm3nCa1PKjuiYCyxSIYL7uYJnapFtk3+w==
-  dependencies:
-    "@opentelemetry/api" "^1.2.0"
-    tinyduration "^3.2.2"
-    tslib "^2.3.1"
-    uri-template-lite "^22.1.0"
-    uuid "^9.0.0"
-
-"@microsoft/kiota-authentication-azure@1.0.0-preview.12", "@microsoft/kiota-authentication-azure@^1.0.0-preview.12":
-  version "1.0.0-preview.12"
-  resolved "https://registry.yarnpkg.com/@microsoft/kiota-authentication-azure/-/kiota-authentication-azure-1.0.0-preview.12.tgz#574dd74c243e982158beb2ac3539f4c1b5dbcfdb"
-  integrity sha512-qzJz8/+mBwnnZgE+seoQCOE2J0q0HeNzkCVnxuJ+RlD/jq1BWRpyHFcJXwdpCoTaIUR5/VsqLy8FM8yuiFU/7Q==
+"@microsoft/kiota-authentication-azure@1.0.0-preview.13", "@microsoft/kiota-authentication-azure@^1.0.0-preview.13":
+  version "1.0.0-preview.13"
+  resolved "https://registry.yarnpkg.com/@microsoft/kiota-authentication-azure/-/kiota-authentication-azure-1.0.0-preview.13.tgz#498b12673655eac212761785bc8259dc8a8f8f34"
+  integrity sha512-hv26vye9IxeAZKv0EORpJEBck6hWwMCc8xnfR6BONXsP4/wdTPiHiyJQRvLe9DzLF3H4/snOnrQuK866N09yQw==
   dependencies:
     "@azure/core-auth" "^1.3.2"
-    "@microsoft/kiota-abstractions" "^1.0.0-preview.14"
+    "@microsoft/kiota-abstractions" "1.0.0-preview.18"
     "@opentelemetry/api" "^1.2.0"
     tslib "^2.3.1"
 
-"@microsoft/kiota-http-fetchlibrary@1.0.0-preview.15", "@microsoft/kiota-http-fetchlibrary@^1.0.0-preview.15":
-  version "1.0.0-preview.15"
-  resolved "https://registry.yarnpkg.com/@microsoft/kiota-http-fetchlibrary/-/kiota-http-fetchlibrary-1.0.0-preview.15.tgz#283ef720a5cbd7e1b2269a4f0a1a9d4311eed9ae"
-  integrity sha512-Ht8Oz0EmM2+LmUMyX/NhZoKvgwNbrIZ9kqGQTV6jLYkxvAP8d2QamiwoE6jXYhB4elc0GgZuy5FcyTmrJFr+PA==
+"@microsoft/kiota-http-fetchlibrary@1.0.0-preview.17", "@microsoft/kiota-http-fetchlibrary@^1.0.0-preview.17":
+  version "1.0.0-preview.17"
+  resolved "https://registry.yarnpkg.com/@microsoft/kiota-http-fetchlibrary/-/kiota-http-fetchlibrary-1.0.0-preview.17.tgz#e12cafcff7e9220b49ca21a28816687579566809"
+  integrity sha512-LRzGA3VHPcJ79F+3IKQaEIt6HNFZVATdZZqxBMqS7GhA6ol2RojmG8sb0F3Q8VDvw/wVwPJs9iqYIWLacYoBaw==
   dependencies:
-    "@microsoft/kiota-abstractions" "^1.0.0-preview.14"
+    "@microsoft/kiota-abstractions" "1.0.0-preview.18"
     "@opentelemetry/api" "^1.2.0"
     node-fetch "^2.6.5"
     tslib "^2.3.1"
 
-"@microsoft/kiota-serialization-form@1.0.0-preview.6":
-  version "1.0.0-preview.6"
-  resolved "https://registry.yarnpkg.com/@microsoft/kiota-serialization-form/-/kiota-serialization-form-1.0.0-preview.6.tgz#a0024592be2fcbbaaa6adb31362e531ebb19beae"
-  integrity sha512-Z/+oC+g+TY+OX+ToQEMKCkfQ+UyEggcfQE7yYebBAJXlVyD5++ZD6D4/dE5No6cGg9/2x8ODNFnSk+WyN4okuQ==
+"@microsoft/kiota-serialization-form@1.0.0-preview.7":
+  version "1.0.0-preview.7"
+  resolved "https://registry.yarnpkg.com/@microsoft/kiota-serialization-form/-/kiota-serialization-form-1.0.0-preview.7.tgz#ab9bc9fa045b32742d9eb0ced52f7b2eeb39ea95"
+  integrity sha512-qwyeyLsyDghjZRjmi9NFPcUGHMTeV2lqi2MmTI71B/Hs9alZHdgz9SXYcgkAjXtYn+zaq7d/Y10Q2c9oxOnYXQ==
   dependencies:
-    "@microsoft/kiota-abstractions" "^1.0.0-preview.14"
+    "@microsoft/kiota-abstractions" "1.0.0-preview.18"
     tslib "^2.3.1"
 
-"@microsoft/kiota-serialization-json@1.0.0-preview.15":
+"@microsoft/kiota-serialization-json@1.0.0-preview.16":
+  version "1.0.0-preview.16"
+  resolved "https://registry.yarnpkg.com/@microsoft/kiota-serialization-json/-/kiota-serialization-json-1.0.0-preview.16.tgz#517ae8a659dc210882306188454a8bf675a25f65"
+  integrity sha512-LDznp3a5kgxf1tgW1Zn8rPaFYZqYdWDWyipSNbaS3H9wtgRpLjpXz6dXr4mAw0Ye8w3Vxu3JJJ6BlXwEuGY+Aw==
+  dependencies:
+    "@microsoft/kiota-abstractions" "1.0.0-preview.18"
+    tslib "^2.3.1"
+
+"@microsoft/kiota-serialization-text@1.0.0-preview.15":
   version "1.0.0-preview.15"
-  resolved "https://registry.yarnpkg.com/@microsoft/kiota-serialization-json/-/kiota-serialization-json-1.0.0-preview.15.tgz#ca3c51249cb02567f5e217de574819e2ad0b5273"
-  integrity sha512-/BhEGXdAYIOJ0bMMuE8lIHzJaXWBikXCaHVCP1JI8XwGjJrbdJEvaeMQ/tSPUG4i4GEhWtg+72Og7XBGTZnzmQ==
+  resolved "https://registry.yarnpkg.com/@microsoft/kiota-serialization-text/-/kiota-serialization-text-1.0.0-preview.15.tgz#fd1f83b9944c8f2dfba7f589119aeac7778dc0c4"
+  integrity sha512-0zOby+SYQRJxMij1g3CwCBqxPAvr+EI78mbfJCOnwaQIDGM1jaiRHJhekqn2e3h4GNLoNT49/E37zNh4jEtr/g==
   dependencies:
-    "@microsoft/kiota-abstractions" "^1.0.0-preview.14"
-    tslib "^2.3.1"
-
-"@microsoft/kiota-serialization-text@1.0.0-preview.14":
-  version "1.0.0-preview.14"
-  resolved "https://registry.yarnpkg.com/@microsoft/kiota-serialization-text/-/kiota-serialization-text-1.0.0-preview.14.tgz#29c4358362e2bd9f5ee61cf9db650f06ae3e3b82"
-  integrity sha512-kUNhF3NXTnMcsijJc/70Xqee8Ma692iEswVKt2b/si+eiwteVE/OhVnQ3YSMS7QJLnL/zsKawzA3dCRjnHsv+Q==
-  dependencies:
-    "@microsoft/kiota-abstractions" "^1.0.0-preview.14"
+    "@microsoft/kiota-abstractions" "1.0.0-preview.18"
     tslib "^2.3.1"
 
 "@opentelemetry/api@^1.2.0":
@@ -402,20 +391,20 @@
     "@webassemblyjs/ast" "1.11.5"
     "@xtuc/long" "4.2.2"
 
-"@webpack-cli/configtest@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@webpack-cli/configtest/-/configtest-2.0.1.tgz#a69720f6c9bad6aef54a8fa6ba9c3533e7ef4c7f"
-  integrity sha512-njsdJXJSiS2iNbQVS0eT8A/KPnmyH4pv1APj2K0d1wrZcBLw+yppxOy4CGqa0OxDJkzfL/XELDhD8rocnIwB5A==
+"@webpack-cli/configtest@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@webpack-cli/configtest/-/configtest-2.1.0.tgz#b59b33377b1b896a9a7357cfc643b39c1524b1e6"
+  integrity sha512-K/vuv72vpfSEZoo5KIU0a2FsEoYdW0DUMtMpB5X3LlUwshetMZRZRxB7sCsVji/lFaSxtQQ3aM9O4eMolXkU9w==
 
 "@webpack-cli/info@^2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@webpack-cli/info/-/info-2.0.1.tgz#eed745799c910d20081e06e5177c2b2569f166c0"
   integrity sha512-fE1UEWTwsAxRhrJNikE7v4EotYflkEhBL7EbajfkPlf6E37/2QshOy/D48Mw8G5XMFlQtS6YV42vtbG9zBpIQA==
 
-"@webpack-cli/serve@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-2.0.2.tgz#10aa290e44a182c02e173a89452781b1acbc86d9"
-  integrity sha512-S9h3GmOmzUseyeFW3tYNnWS7gNUuwxZ3mmMq0JyW78Vx1SGKPSkt5bT4pB0rUnVfHjP0EL9gW2bOzmtiTfQt0A==
+"@webpack-cli/serve@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-2.0.4.tgz#3982ee6f8b42845437fc4d391e93ac5d9da52f0f"
+  integrity sha512-0xRgjgDLdz6G7+vvDLlaRpFatJaJ69uTalZLRSMX5B3VUrDmXcrVA3+6fXXQgmYz7bY9AAgs348XQdmtLsK41A==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -1514,14 +1503,14 @@ webpack-bundle-analyzer@^4.7.0:
     ws "^7.3.1"
 
 webpack-cli@^5.0.1:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-5.0.2.tgz#2954c10ecb61c5d4dad6f68ee2d77f051741946c"
-  integrity sha512-4y3W5Dawri5+8dXm3+diW6Mn1Ya+Dei6eEVAdIduAmYNLzv1koKVAqsfgrrc9P2mhrYHQphx5htnGkcNwtubyQ==
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-5.1.1.tgz#c211ac6d911e77c512978f7132f0d735d4a97ace"
+  integrity sha512-OLJwVMoXnXYH2ncNGU8gxVpUtm3ybvdioiTvHgUyBuyMLKiVvWy+QObzBsMtp5pH7qQoEuWgeEUQ/sU3ZJFzAw==
   dependencies:
     "@discoveryjs/json-ext" "^0.5.0"
-    "@webpack-cli/configtest" "^2.0.1"
+    "@webpack-cli/configtest" "^2.1.0"
     "@webpack-cli/info" "^2.0.1"
-    "@webpack-cli/serve" "^2.0.2"
+    "@webpack-cli/serve" "^2.0.4"
     colorette "^2.0.14"
     commander "^10.0.1"
     cross-spawn "^7.0.3"
