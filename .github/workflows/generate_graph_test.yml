@@ -86,7 +86,7 @@ jobs:
             echo $PKG_DATA
         - name: Comment PR Bundle Size
           uses: thollander/actions-comment-pull-request@v2
-          if: ${{ github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' }}
+          if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner.login == 'microsoft' }}
           with:
             message: |
               Generated ${{ env.PKG_NAME }} SDK package:
@@ -113,7 +113,7 @@ jobs:
             echo $APP_DATA
         - name: Comment PR Sample App Size
           uses: thollander/actions-comment-pull-request@v2
-          if: ${{ github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' }}
+          if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner.login == 'microsoft' }}
           with:
             message: |
               Generated sample app bundle:
