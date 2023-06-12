@@ -1,5 +1,5 @@
 import { trace } from "@opentelemetry/api";
-import * as urlTpl from "uri-template-lite";
+import * as Template from "uri-template-lite";
 
 import { DateOnly } from "./dateOnly";
 import { Duration } from "./duration";
@@ -39,7 +39,7 @@ export class RequestInformation {
     } else if (!this.urlTemplate) {
       throw new Error("urlTemplate cannot be undefined");
     } else {
-      const template = new urlTpl.URI.Template(this.urlTemplate);
+      const template = new (Template as any)(this.urlTemplate);
       const data = {} as { [key: string]: unknown };
       for (const key in this.queryParameters) {
         if (this.queryParameters[key]) {

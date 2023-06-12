@@ -7393,10 +7393,10 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
-uri-template-lite@^22.1.0:
-  version "22.9.0"
-  resolved "https://registry.yarnpkg.com/uri-template-lite/-/uri-template-lite-22.9.0.tgz#98a1d0a6941cc7898aeca802315a6c5b24d31809"
-  integrity sha512-cmGZaykSWEQ5UXKaGKnUS8zFvfp8j1Jvn7dlq3P7tGd5XeybXcfo0xnVBRWiNEp80nO1GYgCLwoaRJ8WMmmk3Q==
+uri-template-lite@^23.4.0:
+  version "23.4.0"
+  resolved "https://registry.yarnpkg.com/uri-template-lite/-/uri-template-lite-23.4.0.tgz#989158b76dba91dafbb2d558153f5359d0b04f48"
+  integrity sha512-JsAjquFMpSyZRWAUQguhHIRuh4jb/xDhwQyb1/7C42YLJgkc5WoBF3UkRRM1QtL6Vr9xBa9fB7q3xPzXRwvuUA==
 
 url@^0.11.0:
   version "0.11.0"
