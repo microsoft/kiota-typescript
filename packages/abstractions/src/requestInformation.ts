@@ -39,7 +39,6 @@ export class RequestInformation {
     } else if (!this.urlTemplate) {
       throw new Error("urlTemplate cannot be undefined");
     } else {
-      const template = new (Template as any)(this.urlTemplate);
       const data = {} as { [key: string]: unknown };
       for (const key in this.queryParameters) {
         if (this.queryParameters[key]) {
@@ -51,7 +50,7 @@ export class RequestInformation {
           data[key] = this.pathParameters[key];
         }
       }
-      return template.expand(data);
+      return Template.expand(this.urlTemplate, data);
     }
   }
   /** Sets the URL of the request */

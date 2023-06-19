@@ -1,5 +1,3 @@
 declare module 'uri-template-lite' {
-  class Template {
-    constructor(template: string);
-  }
+  function expand(template: string, data: { [key: string]: unknown }): string;
 }
