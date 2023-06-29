@@ -7136,9 +7136,9 @@ timsort@~0.3.0:
   integrity sha512-qsdtZH+vMoCARQtyod4imc2nIJwg9Cc7lPRrw9CzF8ZKR0khdr8+2nX80PBhET3tcyTtJDxAffGh2rXH4tyU8A==
 
 tinyduration@^3.2.2:
-  version "3.2.6"
-  resolved "https://registry.yarnpkg.com/tinyduration/-/tinyduration-3.2.6.tgz#7f7a1b8751ce580fd616e4a5a0e598b9e1230d0c"
-  integrity sha512-M0mu/0SBKhS/wMHdiH5Z608AYMz/92KUxUYKRaA+cNy3wDSZSAd0hTPlIzAZPkFyt4i3twPh3kDm/Be5ISRG2Q==
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/tinyduration/-/tinyduration-3.3.0.tgz#f36ea583b9a0dd2027a1cf8810c931e37541fe80"
+  integrity sha512-sLR0iVUnnnyGEX/a3jhTA0QMK7UvakBqQJFLiibiuEYL6U1L85W+qApTZj6DcL1uoWQntYuL0gExoe9NU5B3PA==
 
 tmp@^0.0.33:
   version "0.0.33"
