@@ -2,10 +2,16 @@ import {MailFolderItemRequestBuilderGetQueryParameters} from './mailFolderItemRe
 import {RequestOption} from '@microsoft/kiota-abstractions';
 
 export interface MailFolderItemRequestBuilderGetRequestConfiguration {
-    /** Request headers */
+    /**
+     * Request headers
+     */
     headers?: Record<string, string[]> | undefined;
-    /** Request options */
+    /**
+     * Request options
+     */
     options?: RequestOption[] | undefined;
-    /** Request query parameters */
+    /**
+     * Request query parameters
+     */
     queryParameters?: MailFolderItemRequestBuilderGetQueryParameters | undefined;
 }
