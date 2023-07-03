@@ -23,7 +23,7 @@ export const RetryHandlerOptionKey = "RetryHandlerOptionKey";
 
 /**
  * @class
- * @implements Middleware
+ * @implements RequestOption
  * Options
  * Class for RetryHandlerOptions
  */

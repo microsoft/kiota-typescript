@@ -1,0 +1,27 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+import { RequestOption } from "./requestOption";
+import { ResponseHandler } from "./responseHandler";
+
+export const ResponseHandlerOptionKey = "ResponseHandlerOptionKey";
+
+/**
+ * @class
+ * @implements RequestOption
+ * Options to intercept the request from the main pipeline.
+ */
+export class ResponseHandlerOption implements RequestOption {
+  /**
+   * @public
+   * The response handler to be used when processing the response.
+   */
+  public responseHandler?: ResponseHandler;
+  public getKey(): string {
+    return ResponseHandlerOptionKey;
+  }
+}
