@@ -4,9 +4,7 @@
     "packages/sample-app",
     "packages/abstractions",
     "packages/http/*",
-    "packages/serialization/form/",
-    "packages/serialization/json/",
-    "packages/serialization/text/",
+    "packages/serialization/*",
     "packages/authentication/*"
   ],
   "npmClient": "yarn",
