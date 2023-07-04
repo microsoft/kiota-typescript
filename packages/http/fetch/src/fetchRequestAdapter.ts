@@ -1,4 +1,4 @@
-import { ApiError, AuthenticationProvider, BackingStoreFactory, BackingStoreFactorySingleton, DateOnly, Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, Parsable, ParsableFactory, ParseNode, ParseNodeFactory, ParseNodeFactoryRegistry, RequestAdapter, RequestInformation, ResponseHandler, SerializationWriterFactory, SerializationWriterFactoryRegistry, TimeOnly } from "@microsoft/kiota-abstractions";
+import { ApiError, AuthenticationProvider, BackingStoreFactory, BackingStoreFactorySingleton, DateOnly, Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, Parsable, ParsableFactory, ParseNode, ParseNodeFactory, ParseNodeFactoryRegistry, RequestAdapter, RequestInformation, ResponseHandler, ResponseHandlerOption, ResponseHandlerOptionKey, SerializationWriterFactory, SerializationWriterFactoryRegistry, TimeOnly } from "@microsoft/kiota-abstractions";
 import { Span, SpanStatusCode, trace } from "@opentelemetry/api";
 
 import { HttpClient } from "./httpClient";
@@ -45,14 +45,20 @@ export class FetchRequestAdapter implements RequestAdapter {
 		if (segments.length === 0) return undefined;
 		else return segments[0];
 	};
+	private getResponseHandler = (response: RequestInformation): ResponseHandler | undefined => {
+		const options = response.getRequestOptions();
+		const responseHandlerOption = options[ResponseHandlerOptionKey] as ResponseHandlerOption;
+		return responseHandlerOption?.responseHandler;
+	};
 	private static readonly responseTypeAttributeKey = "com.microsoft.kiota.response.type";
-	public sendCollectionOfPrimitiveAsync = <ResponseType>(requestInfo: RequestInformation, responseType: "string" | "number" | "boolean" | "Date", responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType[] | undefined> => {
+	public sendCollectionOfPrimitiveAsync = <ResponseType>(requestInfo: RequestInformation, responseType: "string" | "number" | "boolean" | "Date", errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType[] | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
 		return this.startTracingSpan(requestInfo, "sendCollectionOfPrimitiveAsync", async (span) => {
 			try {
 				const response = await this.getHttpResponseMessage(requestInfo, span);
+				const responseHandler = this.getResponseHandler(requestInfo);
 				if (responseHandler) {
 					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
 					return await responseHandler.handleResponseAsync(response, errorMappings);
@@ -101,13 +107,14 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		});
 	};
-	public sendCollectionAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, deserialization: ParsableFactory<ModelType>, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType[] | undefined> => {
+	public sendCollectionAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, deserialization: ParsableFactory<ModelType>, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType[] | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
 		return this.startTracingSpan(requestInfo, "sendCollectionAsync", async (span) => {
 			try {
 				const response = await this.getHttpResponseMessage(requestInfo, span);
+				const responseHandler = this.getResponseHandler(requestInfo);
 				if (responseHandler) {
 					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
 					return await responseHandler.handleResponseAsync(response, errorMappings);
@@ -147,13 +154,14 @@ export class FetchRequestAdapter implements RequestAdapter {
 		});
 	};
 	public static readonly eventResponseHandlerInvokedKey = "com.microsoft.kiota.response_handler_invoked";
-	public sendAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, deserializer: ParsableFactory<ModelType>, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType | undefined> => {
+	public sendAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, deserializer: ParsableFactory<ModelType>, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
 		return this.startTracingSpan(requestInfo, "sendAsync", async (span) => {
 			try {
 				const response = await this.getHttpResponseMessage(requestInfo, span);
+				const responseHandler = this.getResponseHandler(requestInfo);
 				if (responseHandler) {
 					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
 					return await responseHandler.handleResponseAsync(response, errorMappings);
@@ -180,13 +188,14 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		}) as Promise<ModelType>;
 	};
-	public sendPrimitiveAsync = <ResponseType>(requestInfo: RequestInformation, responseType: "string" | "number" | "boolean" | "Date" | "ArrayBuffer", responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType | undefined> => {
+	public sendPrimitiveAsync = <ResponseType>(requestInfo: RequestInformation, responseType: "string" | "number" | "boolean" | "Date" | "ArrayBuffer", errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
 		return this.startTracingSpan(requestInfo, "sendPrimitiveAsync", async (span) => {
 			try {
 				const response = await this.getHttpResponseMessage(requestInfo, span);
+				const responseHandler = this.getResponseHandler(requestInfo);
 				if (responseHandler) {
 					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
 					return await responseHandler.handleResponseAsync(response, errorMappings);
@@ -241,13 +250,14 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		}) as Promise<ResponseType>;
 	};
-	public sendNoResponseContentAsync = (requestInfo: RequestInformation, responseHandler: ResponseHandler | undefined, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<void> => {
+	public sendNoResponseContentAsync = (requestInfo: RequestInformation, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<void> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
 		return this.startTracingSpan(requestInfo, "sendNoResponseContentAsync", async (span) => {
 			try {
 				const response = await this.getHttpResponseMessage(requestInfo, span);
+				const responseHandler = this.getResponseHandler(requestInfo);
 				if (responseHandler) {
 					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
 					return await responseHandler.handleResponseAsync(response, errorMappings);

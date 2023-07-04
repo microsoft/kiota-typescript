@@ -4,8 +4,12 @@ import {InferenceClassificationType} from './inferenceClassificationType';
 import {Parsable} from '@microsoft/kiota-abstractions';
 
 export interface InferenceClassificationOverride extends Entity, Parsable {
-    /** The classifyAs property */
+    /**
+     * The classifyAs property
+     */
     classifyAs?: InferenceClassificationType | undefined;
-    /** The senderEmailAddress property */
+    /**
+     * The senderEmailAddress property
+     */
     senderEmailAddress?: EmailAddress | undefined;
 }

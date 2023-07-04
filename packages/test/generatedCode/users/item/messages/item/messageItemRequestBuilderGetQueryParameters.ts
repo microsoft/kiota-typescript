@@ -1,9 +1,15 @@
 
 export interface MessageItemRequestBuilderGetQueryParameters {
-    /** Expand related entities */
+    /**
+     * Expand related entities
+     */
     expand?: string[] | undefined;
-    /** Include Hidden Messages */
+    /**
+     * Include Hidden Messages
+     */
     includeHiddenMessages?: string | undefined;
-    /** Select properties to be returned */
+    /**
+     * Select properties to be returned
+     */
     select?: string[] | undefined;
 }
