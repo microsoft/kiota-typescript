@@ -3,6 +3,7 @@ import { Duration } from "../duration";
 import { TimeOnly } from "../timeOnly";
 import { Parsable } from "./parsable";
 import { ParsableFactory } from "./parsableFactory";
+import { Guid } from "guid-typescript";
 
 /**
  * Interface for a deserialization node in a parse tree. This interface provides an abstraction layer over serialization formats, libraries and implementations.
@@ -33,7 +34,7 @@ export interface ParseNode {
    * Gets the Guid value of the node.
    * @return the Guid value of the node.
    */
-  getGuidValue(): string | undefined; //TODO https://www.npmjs.com/package/guid-typescript
+  getGuidValue(): Guid | undefined;
   /**
    * Gets the Date value of the node.
    * @return the Date value of the node.

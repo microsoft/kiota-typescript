@@ -7,6 +7,7 @@ import {
   TimeOnly,
   toFirstCharacterUpper,
 } from "@microsoft/kiota-abstractions";
+import { Guid } from "guid-typescript";
 
 export class TextParseNode implements ParseNode {
   private static noStructuredDataMessage =
@@ -42,7 +43,7 @@ export class TextParseNode implements ParseNode {
     return undefined;
   };
   public getNumberValue = () => Number(this.text);
-  public getGuidValue = () => this.text;
+  public getGuidValue = () => Guid.parse(this.text);
   public getDateValue = () => new Date(Date.parse(this.text));
   public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
   public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
