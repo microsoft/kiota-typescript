@@ -3,6 +3,7 @@ import { Duration } from "../duration";
 import { TimeOnly } from "../timeOnly";
 import { Parsable } from "./parsable";
 import { ModelSerializerFunction } from "./serializationFunctionTypes";
+import { Guid } from "guid-typescript";
 
 /** Defines an interface for serialization of objects to a stream. */
 export interface SerializationWriter {
@@ -32,7 +33,7 @@ export interface SerializationWriter {
    * @param key the key to write the value with.
    * @param value the value to write to the stream.
    */
-  writeGuidValue(key?: string | undefined, value?: string | undefined): void;
+  writeGuidValue(key?: string | undefined, value?: Guid | undefined): void;
   /**
    * Writes the specified Date value to the stream with an optional given key.
    * @param key the key to write the value with.
