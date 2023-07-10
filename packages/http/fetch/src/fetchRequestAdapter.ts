@@ -1,4 +1,4 @@
-import { ApiError, AuthenticationProvider, BackingStoreFactory, BackingStoreFactorySingleton, DateOnly, Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, Parsable, ParsableFactory, ParseNode, ParseNodeFactory, ParseNodeFactoryRegistry, RequestAdapter, RequestInformation, ResponseHandler, ResponseHandlerOption, ResponseHandlerOptionKey, SerializationWriterFactory, SerializationWriterFactoryRegistry, TimeOnly } from "@microsoft/kiota-abstractions";
+import { ApiError, AuthenticationProvider, BackingStoreFactory, BackingStoreFactorySingleton, DateOnly, DefaultApiError, Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, Parsable, ParsableFactory, ParseNode, ParseNodeFactory, ParseNodeFactoryRegistry, RequestAdapter, RequestInformation, ResponseHandler, ResponseHandlerOption, ResponseHandlerOptionKey, SerializationWriterFactory, SerializationWriterFactoryRegistry, TimeOnly } from "@microsoft/kiota-abstractions";
 import { Span, SpanStatusCode, trace } from "@opentelemetry/api";
 
 import { HttpClient } from "./httpClient";
@@ -322,7 +322,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				const statusCodeAsString = statusCode.toString();
 				if (!errorMappings || (!errorMappings[statusCodeAsString] && !(statusCode >= 400 && statusCode < 500 && errorMappings["4XX"]) && !(statusCode >= 500 && statusCode < 600 && errorMappings["5XX"]))) {
 					spanForAttributes.setAttribute(FetchRequestAdapter.errorMappingFoundAttributeName, false);
-					const error = new ApiError("the server returned an unexpected status code and no error class is registered for this code " + statusCode);
+					const error = new DefaultApiError("the server returned an unexpected status code and no error class is registered for this code " + statusCode);
 					error.responseStatusCode = statusCode;
 					error.responseHeaders = responseHeaders;
 					spanForAttributes.recordException(error);
@@ -342,7 +342,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				});
 				spanForAttributes.setAttribute(FetchRequestAdapter.errorBodyFoundAttributeName, !!error);
 
-				if (!error) error = new ApiError("unexpected error type" + typeof error) as unknown as Parsable;
+				if (!error) error = new DefaultApiError("unexpected error type" + typeof error) as unknown as Parsable;
 				const errorObject = error as unknown as ApiError;
 				errorObject.responseStatusCode = statusCode;
 				errorObject.responseHeaders = responseHeaders;
