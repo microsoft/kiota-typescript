@@ -5,9 +5,9 @@ import {
   ParsableFactory,
   ParseNode,
   TimeOnly,
+  parseGuidString,
   toFirstCharacterUpper,
 } from "@microsoft/kiota-abstractions";
-import { Guid } from "guid-typescript";
 
 export class JsonParseNode implements ParseNode {
   /**
@@ -21,7 +21,7 @@ export class JsonParseNode implements ParseNode {
     new JsonParseNode((this._jsonNode as any)[identifier]);
   public getBooleanValue = () => this._jsonNode as boolean;
   public getNumberValue = () => this._jsonNode as number;
-  public getGuidValue = () => Guid.parse(this.getStringValue());
+  public getGuidValue = () => parseGuidString(this.getStringValue());
   public getDateValue = () => this._jsonNode as Date;
   public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
   public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());

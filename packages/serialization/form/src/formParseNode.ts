@@ -5,9 +5,9 @@ import {
   ParsableFactory,
   ParseNode,
   TimeOnly,
+  parseGuidString,
   toFirstCharacterUpper,
 } from "@microsoft/kiota-abstractions";
-import { Guid } from "guid-typescript";
 
 export class FormParseNode implements ParseNode {
   private readonly _fields: Record<string, string> = {};
@@ -52,7 +52,7 @@ export class FormParseNode implements ParseNode {
     return undefined;
   };
   public getNumberValue = () => parseFloat(this.getStringValue());
-  public getGuidValue = () => Guid.parse(this.getStringValue());
+  public getGuidValue = () => parseGuidString(this.getStringValue());
   public getDateValue = () => new Date(Date.parse(this.getStringValue()));
   public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
   public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
