@@ -40,6 +40,7 @@
   "homepage": "https://github.com/microsoft/kiota-typescript#readme",
   "dependencies": {
     "@microsoft/kiota-abstractions": "^1.0.0-preview.23",
+    "guid-typescript": "^1.0.9",
     "tslib": "^2.3.1"
   },
   "publishConfig": {

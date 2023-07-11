@@ -40,6 +40,7 @@
 	"dependencies": {
 		"@microsoft/kiota-abstractions": "^1.0.0-preview.23",
 		"@opentelemetry/api": "^1.2.0",
+		"guid-typescript": "^1.0.9",
 		"node-fetch": "^2.6.5",
 		"tslib": "^2.3.1"
 	},
