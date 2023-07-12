@@ -26,4 +26,28 @@ describe("JsonParseNode", () => {
     assert.equal(stringValueResult.testCollection?.length, 2);
     assert.equal(stringValueResult.testCollection?.shift(), "2");
   });
+
+  it("Test enum values", async () => {
+    enum TestEnum {
+      A = "a",
+      B = "b",
+      C = "c"
+    }
+
+    const result = new JsonParseNode([
+      "a",
+      "b",
+      "c"
+    ]).getCollectionOfEnumValues(TestEnum) as TestEnum[];
+    assert.equal(result.length, 3);
+    assert.equal(result.shift(), "a");
+
+    const enumValuesResult = new JsonParseNode([
+      "d",
+      "b",
+      "c"
+    ]).getCollectionOfEnumValues(TestEnum) as TestEnum[];
+    assert.equal(enumValuesResult.length, 2);
+    assert.equal(enumValuesResult.shift(), "b");
+  });
 });

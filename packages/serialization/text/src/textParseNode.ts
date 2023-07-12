@@ -66,7 +66,7 @@ export class TextParseNode implements ParseNode {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public getEnumValues = <T>(type: any): T[] => {
+  public getCollectionOfEnumValues = <T>(type: any): T[] => {
     throw new Error(TextParseNode.noStructuredDataMessage);
   };
   public getEnumValue = <T>(type: any): T | undefined => {
