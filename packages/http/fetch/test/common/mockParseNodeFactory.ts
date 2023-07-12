@@ -62,7 +62,7 @@ export class MockParseNode implements ParseNode {
 	getObjectValue<T extends Parsable>(type: ParsableFactory<T>): T {
 		return this.returnObjectValue as unknown as T;
 	}
-	getEnumValues<T>(type: any): T[] {
+	getCollectionOfEnumValues<T>(type: any): T[] {
 		throw new Error("Method not implemented.");
 	}
 	getEnumValue<T>(type: any): T | undefined {

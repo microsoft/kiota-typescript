@@ -94,17 +94,18 @@ export class JsonParseNode implements ParseNode {
   };
   public getCollectionOfEnumValues = <T>(type: any): T[] => {
     if (Array.isArray(this._jsonNode)) {
-      const values = this._jsonNode.map(x => {
+      return this._jsonNode.map(x => {
         const node = new JsonParseNode(x)
         return node.getEnumValue(type) as T
-      })
-      return values.filter(Boolean)
+      }).filter(Boolean)
     }
     return []
   };
   public getEnumValue = <T>(type: any): T | undefined => {
     const rawValue = this.getStringValue()
-    const value = type[toFirstCharacterUpper(rawValue)]
-    return value
+    if (!rawValue) {
+      return undefined
+    }
+    return type[toFirstCharacterUpper(rawValue)]
   };
 }
