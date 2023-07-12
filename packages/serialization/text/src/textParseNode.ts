@@ -5,6 +5,7 @@ import {
   ParsableFactory,
   ParseNode,
   TimeOnly,
+  parseGuidString,
   toFirstCharacterUpper,
 } from "@microsoft/kiota-abstractions";
 
@@ -42,7 +43,7 @@ export class TextParseNode implements ParseNode {
     return undefined;
   };
   public getNumberValue = () => Number(this.text);
-  public getGuidValue = () => this.text;
+  public getGuidValue = () => parseGuidString(this.text);
   public getDateValue = () => new Date(Date.parse(this.text));
   public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
   public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());

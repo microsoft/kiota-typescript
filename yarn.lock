@@ -3627,6 +3627,11 @@ graphemer@^1.4.0:
   resolved "https://registry.yarnpkg.com/graphemer/-/graphemer-1.4.0.tgz#fb2f1d55e0e3a1849aeffc90c4fa0dd53a0e66c6"
   integrity sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==
 
+guid-typescript@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/guid-typescript/-/guid-typescript-1.0.9.tgz#e35f77003535b0297ea08548f5ace6adb1480ddc"
+  integrity sha512-Y8T4vYhEfwJOTbouREvG+3XDsjr8E3kIr7uf+JZ0BYloFsttiHU0WfvANVsR7TxNUJa/WpCnw/Ino/p+DeBhBQ==
+
 gzip-size@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/gzip-size/-/gzip-size-6.0.0.tgz#065367fd50c239c0671cbcbad5be3e2eeb10e462"
@@ -7095,10 +7100,10 @@ terser@^5.10.0, terser@^5.14.1:
     "@azure/identity" "^3.0.0"
     "@microsoft/kiota-abstractions" "^1.0.0-preview.20"
     "@microsoft/kiota-authentication-azure" "^1.0.0-preview.15"
-    "@microsoft/kiota-http-fetchlibrary" "^1.0.0-preview.19"
+    "@microsoft/kiota-http-fetchlibrary" "^1.0.0-preview.22"
     "@microsoft/kiota-serialization-form" "^1.0.0-preview.9"
-    "@microsoft/kiota-serialization-json" "^1.0.0-preview.18"
-    "@microsoft/kiota-serialization-text" "^1.0.0-preview.17"
+    "@microsoft/kiota-serialization-json" "^1.0.0-preview.21"
+    "@microsoft/kiota-serialization-text" "^1.0.0-preview.20"
 
 text-extensions@^1.0.0:
   version "1.9.0"

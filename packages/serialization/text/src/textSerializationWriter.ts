@@ -7,6 +7,8 @@ import {
   SerializationWriter,
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
+import { Guid } from "guid-typescript";
+
 export class TextSerializationWriter implements SerializationWriter {
   private static noStructuredDataMessage =
     "text does not support structured data";
@@ -40,7 +42,7 @@ export class TextSerializationWriter implements SerializationWriter {
       this.writeStringValue(key, `${value}`);
     }
   };
-  public writeGuidValue = (key?: string, value?: string): void => {
+  public writeGuidValue = (key?: string, value?: Guid): void => {
     if (value) {
       this.writeStringValue(key, `"${value}"`);
     }

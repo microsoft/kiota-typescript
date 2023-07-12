@@ -7,6 +7,7 @@ import {
   SerializationWriter,
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
+import { Guid } from "guid-typescript";
 
 export class FormSerializationWriter implements SerializationWriter {
   private readonly writer: string[] = [];
@@ -35,8 +36,8 @@ export class FormSerializationWriter implements SerializationWriter {
   public writeNumberValue = (key?: string, value?: number): void => {
     value && this.writeStringValue(key, `${value}`);
   };
-  public writeGuidValue = (key?: string, value?: string): void => {
-    value && this.writeStringValue(key, value);
+  public writeGuidValue = (key?: string, value?: Guid): void => {
+    value && this.writeStringValue(key, `${value}`);
   };
   public writeDateValue = (key?: string, value?: Date): void => {
     value && this.writeStringValue(key, value.toISOString());

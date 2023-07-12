@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { DateOnly, Duration, Parsable, ParsableFactory, ParseNode, ParseNodeFactory, TimeOnly } from "@microsoft/kiota-abstractions";
+import { Guid } from "guid-typescript";
 
 export class MockParseNodeFactory implements ParseNodeFactory {
 	parseNodeValue: ParseNode;
@@ -37,7 +38,7 @@ export class MockParseNode implements ParseNode {
 	getNumberValue(): number {
 		throw new Error("Method not implemented.");
 	}
-	getGuidValue(): string {
+	getGuidValue(): Guid {
 		throw new Error("Method not implemented.");
 	}
 	getDateValue(): Date {

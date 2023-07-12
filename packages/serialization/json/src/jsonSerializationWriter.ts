@@ -7,6 +7,7 @@ import {
   SerializationWriter,
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
+import { Guid } from "guid-typescript";
 
 export class JsonSerializationWriter implements SerializationWriter {
   private readonly writer: string[] = [];
@@ -37,7 +38,7 @@ export class JsonSerializationWriter implements SerializationWriter {
     value && this.writer.push(`${value}`);
     key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
   };
-  public writeGuidValue = (key?: string, value?: string): void => {
+  public writeGuidValue = (key?: string, value?: Guid): void => {
     key && value && this.writePropertyName(key);
     value && this.writer.push(`"${value}"`);
     key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
