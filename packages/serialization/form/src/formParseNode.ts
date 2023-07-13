@@ -83,7 +83,7 @@ export class FormParseNode implements ParseNode {
     }
     return value;
   };
-  public getEnumValues = <T>(type: any): T[] => {
+  public getCollectionOfEnumValues = <T>(type: any): T[] => {
     const rawValues = this.getStringValue();
     if (!rawValues) {
       return [];
@@ -91,7 +91,7 @@ export class FormParseNode implements ParseNode {
     return rawValues.split(",").map((x) => type[toFirstCharacterUpper(x)] as T);
   };
   public getEnumValue = <T>(type: any): T | undefined => {
-    const values = this.getEnumValues(type);
+    const values = this.getCollectionOfEnumValues(type);
     if (values.length > 0) {
       return values[0] as T;
     } else {

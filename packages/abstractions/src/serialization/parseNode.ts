@@ -80,7 +80,7 @@ export interface ParseNode {
    * Gets the Enum values of the node.
    * @return the Enum values of the node.
    */
-  getEnumValues<T>(type: any): T[];
+  getCollectionOfEnumValues<T>(type: any): T[];
   /**
    * Gets the Enum value of the node.
    * @return the Enum value of the node.
