@@ -5,5 +5,5 @@ export function validateProtocol(url: string): void {
 }
 function windowUrlStartsWithHttps(): boolean {
     // @ts-ignore
-    return window && window.location && (window.location.protocol as string).toLowerCase() !== 'https:';
+    return typeof window !== 'undefined' && typeof window.location !== 'undefined' && (window.location.protocol as string).toLowerCase() !== 'https:';
 }
