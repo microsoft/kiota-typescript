@@ -19,7 +19,7 @@ export class RequestInformation {
   /** The URI of the request. */
   private uri?: string;
   /** The path parameters for the request. */
-  public pathParameters: Record<string, unknown> = createRecordWithCaseInsensitiveKeys<unknown>({});
+  public pathParameters: Record<string, unknown> = createRecordWithCaseInsensitiveKeys<unknown>();
   /** The URL template for the request */
   public urlTemplate?: string;
   /** Gets the URL of the request  */
@@ -70,10 +70,10 @@ export class RequestInformation {
   public queryParameters: Record<
     string,
     string | number | boolean | undefined
-  > = createRecordWithCaseInsensitiveKeys<string | number | boolean | undefined>({});
+  > = createRecordWithCaseInsensitiveKeys<string | number | boolean | undefined>();
   /** The Request Headers. */
   public headers: Record<string, string[]> = {};
-  private _requestOptions: Record<string, RequestOption> = createRecordWithCaseInsensitiveKeys<RequestOption>({});
+  private _requestOptions: Record<string, RequestOption> = createRecordWithCaseInsensitiveKeys<RequestOption>();
   /** Gets the request options for the request. */
   public getRequestOptions() {
     return this._requestOptions;
