@@ -55,6 +55,17 @@ describe("RequestInformation", () => {
     );
   });
 
+  it("Should conserve parameters casing", () => {
+    const requestInformation = new RequestInformation();
+    requestInformation.pathParameters["BaseUrl"] = baseUrl;
+    requestInformation.urlTemplate = "{+BaseUrl}/users";
+    assert.isNotNull(URL);
+    assert.equal(
+      requestInformation.URL,
+      "https://graph.microsoft.com/v1.0/users"
+    );
+  });
+
   it("Sets select query parameter", () => {
     const requestInformation = new RequestInformation();
     requestInformation.pathParameters["baseurl"] = baseUrl;
