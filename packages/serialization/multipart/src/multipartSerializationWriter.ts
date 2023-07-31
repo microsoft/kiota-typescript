@@ -3,12 +3,15 @@ import {
   DateOnly,
   Duration,
   ModelSerializerFunction,
+  MultipartBody,
   Parsable,
   SerializationWriter,
+  serializeMultipartBody,
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
 import { Guid } from "guid-typescript";
 
+/** Serialization writer for multipart/form-data */
 export class MultipartSerializationWriter implements SerializationWriter {
   public writeByteArrayValue(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -16,53 +19,82 @@ export class MultipartSerializationWriter implements SerializationWriter {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     value?: Uint8Array | undefined,
   ): void {
-    throw new Error(
-      "serialization of byt arrays is not supported with URI encoding",
-    );
+    if (!value) {
+      throw new Error("value cannot be undefined");
+    }
+    this.writer.push(...value);
   }
-  private readonly writer: string[] = [];
+  private readonly writer: number[] = [];
   private static propertySeparator = `&`;
-  private depth = -1;
   public onBeforeObjectSerialization: ((value: Parsable) => void) | undefined;
   public onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
   public onStartObjectSerialization:
     | ((value: Parsable, writer: SerializationWriter) => void)
     | undefined;
   public writeStringValue = (key?: string, value?: string): void => {
-    if (key && value) {
-      this.writePropertyName(key);
-      this.writer.push(`=${encodeURIComponent(value)}`);
-      this.writer.push(MultipartSerializationWriter.propertySeparator);
+    if (key) {
+      this.writeRawStringValue(key);
+    }
+    if (value) {
+      if (key) {
+        this.writeRawStringValue(": ");
+      }
+      this.writeRawStringValue(value);
+    }
+    this.writeRawStringValue("\r\n");
+  };
+  private writeRawStringValue = (value?: string): void => {
+    if (value) {
+      this.writeByteArrayValue(undefined, new TextEncoder().encode(value));
     }
   };
-  private writePropertyName = (key: string): void => {
-    this.writer.push(encodeURIComponent(key));
-  };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public writeBooleanValue = (key?: string, value?: boolean): void => {
-    value !== null &&
-      value !== undefined &&
-      this.writeStringValue(key, `${value}`);
+    throw new Error(
+      `serialization of boolean values is not supported with multipart`,
+    );
   };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public writeNumberValue = (key?: string, value?: number): void => {
-    value && this.writeStringValue(key, `${value}`);
+    throw new Error(
+      `serialization of number values is not supported with multipart`,
+    );
   };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public writeGuidValue = (key?: string, value?: Guid): void => {
-    value && this.writeStringValue(key, `${value}`);
+    throw new Error(
+      `serialization of guid values is not supported with multipart`,
+    );
   };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public writeDateValue = (key?: string, value?: Date): void => {
-    value && this.writeStringValue(key, value.toISOString());
+    throw new Error(
+      `serialization of date values is not supported with multipart`,
+    );
   };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public writeDateOnlyValue = (key?: string, value?: DateOnly): void => {
-    value && this.writeStringValue(key, value.toString());
+    throw new Error(
+      `serialization of date only values is not supported with multipart`,
+    );
   };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public writeTimeOnlyValue = (key?: string, value?: TimeOnly): void => {
-    value && this.writeStringValue(key, value.toString());
+    throw new Error(
+      `serialization of time only values is not supported with multipart`,
+    );
   };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public writeDurationValue = (key?: string, value?: Duration): void => {
-    value && this.writeStringValue(key, value.toString());
+    throw new Error(
+      `serialization of duration values is not supported with multipart`,
+    );
   };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public writeNullValue = (key?: string): void => {
-    this.writeStringValue(key, `null`);
+    throw new Error(
+      `serialization of null values is not supported with multipart`,
+    );
   };
   public writeCollectionOfPrimitiveValues = <T>(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -71,7 +103,7 @@ export class MultipartSerializationWriter implements SerializationWriter {
     _values?: T[],
   ): void => {
     throw new Error(
-      `serialization of collections is not supported with URI encoding`,
+      `serialization of collections is not supported with multipart`,
     );
   };
   public writeCollectionOfObjectValues = <T extends Parsable>(
@@ -81,7 +113,7 @@ export class MultipartSerializationWriter implements SerializationWriter {
     _values?: T[],
   ): void => {
     throw new Error(
-      `serialization of collections is not supported with URI encoding`,
+      `serialization of collections is not supported with multipart`,
     );
   };
   public writeObjectValue = <T extends Parsable>(
@@ -89,98 +121,38 @@ export class MultipartSerializationWriter implements SerializationWriter {
     value: T | undefined,
     serializerMethod: ModelSerializerFunction<T>,
   ): void => {
-    if (++this.depth > 0) {
-      throw new Error(
-        `serialization of nested objects is not supported with URI encoding`,
-      );
+    if (
+      !value ||
+      (value as unknown as MultipartBody).getBoundary === undefined
+    ) {
+      throw new Error(`expected MultipartBody instance`);
     }
-    if (value) {
-      if (key) {
-        this.writePropertyName(key);
-      }
-      this.onBeforeObjectSerialization &&
-        this.onBeforeObjectSerialization(value);
-      this.onStartObjectSerialization &&
-        this.onStartObjectSerialization(value, this);
-      serializerMethod(this, value);
-      this.onAfterObjectSerialization && this.onAfterObjectSerialization(value);
-      if (
-        this.writer.length > 0 &&
-        this.writer[this.writer.length - 1] ===
-          MultipartSerializationWriter.propertySeparator
-      ) {
-        //removing the last separator
-        this.writer.pop();
-      }
-      key && this.writer.push(MultipartSerializationWriter.propertySeparator);
-    }
+    this.onBeforeObjectSerialization && this.onBeforeObjectSerialization(value);
+    this.onStartObjectSerialization &&
+      this.onStartObjectSerialization(value, this);
+    serializerMethod(this, value);
+    this.onAfterObjectSerialization && this.onAfterObjectSerialization(value);
   };
   public writeEnumValue = <T>(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     key?: string | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ...values: (T | undefined)[]
   ): void => {
-    if (values.length > 0) {
-      const rawValues = values
-        .filter((x) => x !== undefined)
-        .map((x) => `${x}`);
-      if (rawValues.length > 0) {
-        this.writeStringValue(
-          key,
-          rawValues.reduce((x, y) => `${x}, ${y}`),
-        );
-      }
-    }
+    throw new Error(
+      `serialization of enum values is not supported with multipart`,
+    );
   };
   public getSerializedContent = (): ArrayBuffer => {
-    return this.convertStringToArrayBuffer(this.writer.join(``));
-  };
-
-  private convertStringToArrayBuffer = (str: string): ArrayBuffer => {
-    const arrayBuffer = new ArrayBuffer(str.length);
-    const uint8Array = new Uint8Array(arrayBuffer);
-    for (let i = 0; i < str.length; i++) {
-      uint8Array[i] = str.charCodeAt(i);
-    }
-    return arrayBuffer;
+    return new Uint8Array(this.writer).buffer;
   };
 
   public writeAdditionalData = (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     additionalData: Record<string, unknown> | undefined,
   ): void => {
-    // Do not use !value here, because value can be `false`.
-    if (additionalData === undefined) return;
-    for (const key in additionalData) {
-      this.writeAnyValue(key, additionalData[key]);
-    }
-  };
-
-  private writeAnyValue = (
-    key?: string | undefined,
-    value?: unknown | undefined,
-  ): void => {
-    if (value !== null && value !== undefined) {
-      const valueType = typeof value;
-      if (valueType === "boolean") {
-        this.writeBooleanValue(key, value as any as boolean);
-      } else if (valueType === "string") {
-        this.writeStringValue(key, value as any as string);
-      } else if (value instanceof Date) {
-        this.writeDateValue(key, value as any as Date);
-      } else if (value instanceof DateOnly) {
-        this.writeDateOnlyValue(key, value as any as DateOnly);
-      } else if (value instanceof TimeOnly) {
-        this.writeTimeOnlyValue(key, value as any as TimeOnly);
-      } else if (value instanceof Duration) {
-        this.writeDurationValue(key, value as any as Duration);
-      } else if (valueType === "number") {
-        this.writeNumberValue(key, value as any as number);
-      } else {
-        throw new Error(
-          `encountered unknown ${value} value type during serialization ${valueType} for key ${key}`,
-        );
-      }
-    } else {
-      this.writeNullValue(key);
-    }
+    throw new Error(
+      `serialization of additional data is not supported with multipart`,
+    );
   };
 }
