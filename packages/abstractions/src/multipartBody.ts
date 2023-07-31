@@ -1,7 +1,11 @@
 import { Guid } from "guid-typescript";
 
 import type { RequestAdapter } from "./requestAdapter";
-import type { ParseNode, SerializationWriter } from "./serialization";
+import type {
+  ModelSerializerFunction,
+  ParseNode,
+  SerializationWriter,
+} from "./serialization";
 import type { Parsable } from "./serialization/parsable";
 /**
  * Defines an interface for a multipart body for request or response.
@@ -21,11 +25,13 @@ export class MultipartBody implements Parsable {
    * @param partName the name of the part to add or replace.
    * @param partContentType the content type of the part to add or replace.
    * @param content the content of the part to add or replace.
+   * @param serializationCallback the serialization callback to use when serializing the part.
    */
   public addOrReplacePart<T>(
     partName: string,
     partContentType: string,
     content: T,
+    serializationCallback?: ModelSerializerFunction<Parsable>,
   ): void {
     if (!partName) throw new Error("partName cannot be undefined");
     if (!partContentType) {
@@ -37,6 +43,7 @@ export class MultipartBody implements Parsable {
       contentType: partContentType,
       content,
       originalName: partName,
+      serializationCallback,
     };
   }
   /**
@@ -87,11 +94,12 @@ interface MultipartEntry {
   contentType: string;
   content: any;
   originalName: string;
+  serializationCallback?: ModelSerializerFunction<Parsable>;
 }
 
 export function serializeMultipartBody(
   writer: SerializationWriter,
-  multipartBody: MultipartBody | undefined = new MultipartBody(),
+  multipartBody: MultipartBody | undefined,
 ): void {
   if (!writer) {
     throw new Error("writer cannot be undefined");
@@ -119,14 +127,26 @@ export function serializeMultipartBody(
       'form-data; name="' + part.originalName + '"',
     );
     writer.writeStringValue("", "");
-    //TODO parsable
-    //TODO byte array
     if (typeof part.content === "string") {
       writer.writeStringValue("", part.content);
     } else if (part.content instanceof ArrayBuffer) {
-      // missing writeByteArrayValue method???
+      writer.writeByteArrayValue("", new Uint8Array(part.content));
+    } else if (part.content instanceof Uint8Array) {
+      writer.writeByteArrayValue("", part.content);
+    } else if (part.serializationCallback) {
+      writer.writeObjectValue(
+        "",
+        part.content as Parsable,
+        part.serializationCallback,
+      );
+    } else {
+      throw new Error(
+        "unsupported content type for multipart body: " + typeof part.content,
+      );
     }
   }
+  writer.writeStringValue("", "");
+  writer.writeStringValue("", "--" + boundary + "--");
 }
 
 export function deserializeIntoMultipartBody(
