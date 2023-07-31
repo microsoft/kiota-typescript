@@ -36,6 +36,7 @@ jobs:
               packages/abstractions/dist
               packages/serialization/form/dist
               packages/serialization/json/dist
+              packages/serialization/multipart/dist
               packages/serialization/text/dist
               packages/http/fetch/dist
               packages/authentication/azure/dist
