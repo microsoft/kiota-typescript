@@ -10,6 +10,16 @@ import {
 import { Guid } from "guid-typescript";
 
 export class TextSerializationWriter implements SerializationWriter {
+  public writeByteArrayValue(
+    key?: string | undefined,
+    value?: Uint8Array | undefined,
+  ): void {
+    if (!value) {
+      throw new Error("value cannot be undefined");
+    }
+    const b64 = Buffer.from(value).toString("base64");
+    this.writeStringValue(key, b64);
+  }
   private static noStructuredDataMessage =
     "text does not support structured data";
   private readonly writer: string[] = [];

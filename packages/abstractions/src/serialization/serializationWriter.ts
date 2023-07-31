@@ -1,12 +1,19 @@
+import { Guid } from "guid-typescript";
+
 import { DateOnly } from "../dateOnly";
 import { Duration } from "../duration";
 import { TimeOnly } from "../timeOnly";
 import { Parsable } from "./parsable";
 import { ModelSerializerFunction } from "./serializationFunctionTypes";
-import { Guid } from "guid-typescript";
 
 /** Defines an interface for serialization of objects to a stream. */
 export interface SerializationWriter {
+  /**
+   * Writes the specified byte array value to the stream with an optional given key.
+   * @param key the key to write the value with.
+   * @param value the value to write to the stream.
+   */
+  writeByteArrayValue(key?: string | undefined, value?: Uint8Array): void;
   /**
    * Writes the specified string value to the stream with an optional given key.
    * @param key the key to write the value with.
@@ -20,7 +27,7 @@ export interface SerializationWriter {
    */
   writeBooleanValue(
     key?: string | undefined,
-    value?: boolean | undefined
+    value?: boolean | undefined,
   ): void;
   /**
    * Writes the specified number value to the stream with an optional given key.
@@ -47,7 +54,7 @@ export interface SerializationWriter {
    */
   writeDurationValue(
     key?: string | undefined,
-    value?: Duration | undefined
+    value?: Duration | undefined,
   ): void;
   /**
    * Writes the specified TimeOnly value to the stream with an optional given key.
@@ -56,7 +63,7 @@ export interface SerializationWriter {
    */
   writeTimeOnlyValue(
     key?: string | undefined,
-    value?: TimeOnly | undefined
+    value?: TimeOnly | undefined,
   ): void;
   /**
    * Writes the specified DateOnly value to the stream with an optional given key.
@@ -65,7 +72,7 @@ export interface SerializationWriter {
    */
   writeDateOnlyValue(
     key?: string | undefined,
-    value?: DateOnly | undefined
+    value?: DateOnly | undefined,
   ): void;
   /**
    * Writes the specified collection of primitive values to the stream with an optional given key.
@@ -74,7 +81,7 @@ export interface SerializationWriter {
    */
   writeCollectionOfPrimitiveValues<T>(
     key?: string | undefined,
-    values?: T[] | undefined
+    values?: T[] | undefined,
   ): void;
   /**
    * Writes the specified collection of object values to the stream with an optional given key.
@@ -84,7 +91,7 @@ export interface SerializationWriter {
   writeCollectionOfObjectValues<T extends Parsable>(
     key?: string | undefined,
     values?: T[],
-    serializerMethod?: ModelSerializerFunction<T>
+    serializerMethod?: ModelSerializerFunction<T>,
   ): void;
   /**
    * Writes the specified model object value to the stream with an optional given key.
@@ -94,7 +101,7 @@ export interface SerializationWriter {
   writeObjectValue<T extends Parsable>(
     key?: string | undefined,
     value?: T | undefined,
-    serializerMethod?: ModelSerializerFunction<T>
+    serializerMethod?: ModelSerializerFunction<T>,
   ): void;
 
   /**

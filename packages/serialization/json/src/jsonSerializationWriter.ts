@@ -10,6 +10,16 @@ import {
 import { Guid } from "guid-typescript";
 
 export class JsonSerializationWriter implements SerializationWriter {
+  public writeByteArrayValue(
+    key?: string | undefined,
+    value?: Uint8Array | undefined,
+  ): void {
+    if (!value) {
+      throw new Error("value cannot be undefined");
+    }
+    const b64 = Buffer.from(value).toString("base64");
+    this.writeStringValue(key, b64);
+  }
   private readonly writer: string[] = [];
   private static propertySeparator = `,`;
   public onBeforeObjectSerialization: ((value: Parsable) => void) | undefined;
@@ -70,7 +80,7 @@ export class JsonSerializationWriter implements SerializationWriter {
   };
   public writeCollectionOfPrimitiveValues = <T>(
     key?: string,
-    values?: T[]
+    values?: T[],
   ): void => {
     if (values) {
       key && this.writePropertyName(key);
@@ -87,7 +97,7 @@ export class JsonSerializationWriter implements SerializationWriter {
   public writeCollectionOfObjectValues = <T extends Parsable>(
     key: string,
     values: T[],
-    serializerMethod: ModelSerializerFunction<T>
+    serializerMethod: ModelSerializerFunction<T>,
   ): void => {
     if (values) {
       key && this.writePropertyName(key);
@@ -108,7 +118,7 @@ export class JsonSerializationWriter implements SerializationWriter {
   public writeObjectValue<T extends Parsable>(
     key: string | undefined,
     value: T,
-    serializerMethod: ModelSerializerFunction<T>
+    serializerMethod: ModelSerializerFunction<T>,
   ): void {
     if (key) {
       this.writePropertyName(key);
@@ -147,7 +157,7 @@ export class JsonSerializationWriter implements SerializationWriter {
       if (rawValues.length > 0) {
         this.writeStringValue(
           key,
-          rawValues.reduce((x, y) => `${x}, ${y}`)
+          rawValues.reduce((x, y) => `${x}, ${y}`),
         );
       }
     }
@@ -166,7 +176,7 @@ export class JsonSerializationWriter implements SerializationWriter {
   };
 
   public writeAdditionalData = (
-    additionalData: Record<string, unknown> | undefined
+    additionalData: Record<string, unknown> | undefined,
   ): void => {
     // !value will fail to serialize false and null values which can be valid input
     if (additionalData === undefined) return;
@@ -177,19 +187,19 @@ export class JsonSerializationWriter implements SerializationWriter {
 
   private writeNonParsableObjectValue = (
     key?: string | undefined,
-    value?: object | undefined
+    value?: object | undefined,
   ) => {
     if (key) {
       this.writePropertyName(key);
     }
     this.writer.push(
       JSON.stringify(value),
-      JsonSerializationWriter.propertySeparator
+      JsonSerializationWriter.propertySeparator,
     );
   };
   private writeAnyValue = (
     key?: string | undefined,
-    value?: unknown | undefined
+    value?: unknown | undefined,
   ): void => {
     if (value !== undefined && value !== null) {
       const valueType = typeof value;
@@ -213,7 +223,7 @@ export class JsonSerializationWriter implements SerializationWriter {
         this.writeNonParsableObjectValue(key, value as any as object);
       } else {
         throw new Error(
-          `encountered unknown value type during serialization ${valueType}`
+          `encountered unknown value type during serialization ${valueType}`,
         );
       }
     } else {
