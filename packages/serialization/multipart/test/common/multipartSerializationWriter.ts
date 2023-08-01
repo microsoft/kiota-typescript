@@ -48,13 +48,20 @@ describe("MultipartSerializationWriter", () => {
     const multipartContent =
       multipartSerializationWriter.getSerializedContent();
     const multipart = new TextDecoder().decode(multipartContent);
-    assert.equal(multipart, `${Buffer.from(byteForTest).toString()}`);
+    assert.equal(
+      multipart,
+      byteForTest
+        .toString()
+        .split(",")
+        .map((x) => String.fromCharCode(parseInt(x)))
+        .join(""),
+    );
   });
   it("writes a structured object", () => {
     const testEntity = {} as TestEntity;
     testEntity.id = "48d31887-5fad-4d73-a9f5-3c356e68a038";
     testEntity.workDuration = new Duration({
-      hours: 1,
+      months: 1,
     });
     testEntity.startWorkTime = new TimeOnly({
       hours: 8,
@@ -97,9 +104,9 @@ describe("MultipartSerializationWriter", () => {
       new TextDecoder().decode(byteForTest) +
       "\r\n--" +
       mpBody.getBoundary() +
-      '\r\nContent-Type: application/json\r\nContent-Disposition: form-data; name="testEntity"\r\n\r\n{"id":"48d31887-5fad-4d73-a9f5-3c356e68a038","birthDay":"2017-09-04","workDuration":"P1M","startWorkTime":"08:00:00","deviceNames":["device1","device2"],"mobilePhone":null,"jobTitle":"Author","createdDateTime":"-999999999-01-01T00:00:00+18:00","otherPhones":[["device1","device2"]],"accountEnabled":false}\r\n--' +
+      '\r\nContent-Type: application/json\r\nContent-Disposition: form-data; name="testEntity"\r\n\r\n{"id":"48d31887-5fad-4d73-a9f5-3c356e68a038","birthday":"2017-09-04","workDuration":"P1M","startWorkTime":"08:00:00.000000000000","mobilePhone":null,"accountEnabled":false,"jobTitle":"Author","createdDateTime":"1970-01-01T00:00:00.000Z"}\r\n--' +
       mpBody.getBoundary() +
-      "--";
+      "--\r\n";
     assert.equal(result, expectedString);
   });
 

@@ -6,7 +6,6 @@ import {
   MultipartBody,
   Parsable,
   SerializationWriter,
-  serializeMultipartBody,
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
 import { Guid } from "guid-typescript";
@@ -121,11 +120,14 @@ export class MultipartSerializationWriter implements SerializationWriter {
     value: T | undefined,
     serializerMethod: ModelSerializerFunction<T>,
   ): void => {
-    if (
-      !value ||
-      (value as unknown as MultipartBody).getBoundary === undefined
-    ) {
+    if (!value) {
+      throw new Error(`value cannot be undefined`);
+    }
+    if (!(value instanceof MultipartBody)) {
       throw new Error(`expected MultipartBody instance`);
+    }
+    if (!serializerMethod) {
+      throw new Error(`serializer method cannot be undefined`);
     }
     this.onBeforeObjectSerialization && this.onBeforeObjectSerialization(value);
     this.onStartObjectSerialization &&
