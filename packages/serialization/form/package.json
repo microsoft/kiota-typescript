@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/kiota-serialization-form",
-  "version": "1.0.0-preview.13",
+  "version": "1.0.0-preview.14",
   "description": "Implementation of Kiota Serialization interfaces for URI from encoded",
   "main": "dist/cjs/src/index.js",
   "browser": {
@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/microsoft/kiota-typescript#readme",
   "dependencies": {
-    "@microsoft/kiota-abstractions": "^1.0.0-preview.24",
+    "@microsoft/kiota-abstractions": "^1.0.0-preview.25",
     "guid-typescript": "^1.0.9",
     "tslib": "^2.3.1"
   },
