@@ -21,9 +21,13 @@ export class MultipartSerializationWriter implements SerializationWriter {
     if (!value) {
       throw new Error("value cannot be undefined");
     }
-    this.writer.push(...new Uint8Array(value));
+    const previousValue = this.writer;
+    this.writer = new ArrayBuffer(previousValue.byteLength + value.byteLength);
+    const pipe = new Uint8Array(this.writer);
+    pipe.set(new Uint8Array(previousValue), 0);
+    pipe.set(new Uint8Array(value), previousValue.byteLength);
   }
-  private readonly writer: number[] = [];
+  private writer: ArrayBuffer = new ArrayBuffer(0);
   public onBeforeObjectSerialization: ((value: Parsable) => void) | undefined;
   public onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
   public onStartObjectSerialization:
@@ -43,7 +47,10 @@ export class MultipartSerializationWriter implements SerializationWriter {
   };
   private writeRawStringValue = (value?: string): void => {
     if (value) {
-      this.writeByteArrayValue(undefined, new TextEncoder().encode(value));
+      this.writeByteArrayValue(
+        undefined,
+        new TextEncoder().encode(value).buffer,
+      );
     }
   };
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -145,7 +152,7 @@ export class MultipartSerializationWriter implements SerializationWriter {
     );
   };
   public getSerializedContent = (): ArrayBuffer => {
-    return new Uint8Array(this.writer).buffer;
+    return this.writer;
   };
 
   public writeAdditionalData = (
