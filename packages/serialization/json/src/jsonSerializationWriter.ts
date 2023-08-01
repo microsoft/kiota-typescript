@@ -12,7 +12,7 @@ import { Guid } from "guid-typescript";
 export class JsonSerializationWriter implements SerializationWriter {
   public writeByteArrayValue(
     key?: string | undefined,
-    value?: Uint8Array | undefined,
+    value?: ArrayBuffer | undefined,
   ): void {
     if (!value) {
       throw new Error("value cannot be undefined");

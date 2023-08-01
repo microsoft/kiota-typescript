@@ -51,10 +51,10 @@ export class JsonParseNode implements ParseNode {
       }
     });
   };
-  public getByteArrayValue(): Uint8Array | undefined {
+  public getByteArrayValue(): ArrayBuffer | undefined {
     const strValue = this.getStringValue();
     if (strValue && strValue.length > 0) {
-      return Buffer.from(strValue, "base64");
+      return Buffer.from(strValue, "base64").buffer;
     }
     return undefined;
   }

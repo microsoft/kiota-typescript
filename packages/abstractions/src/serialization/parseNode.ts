@@ -99,5 +99,5 @@ export interface ParseNode {
    * Gets the byte array value of the node.
    * @return the byte array value of the node.
    */
-  getByteArrayValue(): Uint8Array | undefined;
+  getByteArrayValue(): ArrayBuffer | undefined;
 }

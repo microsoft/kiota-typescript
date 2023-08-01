@@ -16,15 +16,14 @@ export class MultipartSerializationWriter implements SerializationWriter {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     key?: string | undefined,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    value?: Uint8Array | undefined,
+    value?: ArrayBuffer | undefined,
   ): void {
     if (!value) {
       throw new Error("value cannot be undefined");
     }
-    this.writer.push(...value);
+    this.writer.push(...new Uint8Array(value));
   }
   private readonly writer: number[] = [];
-  private static propertySeparator = `&`;
   public onBeforeObjectSerialization: ((value: Parsable) => void) | undefined;
   public onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
   public onStartObjectSerialization:

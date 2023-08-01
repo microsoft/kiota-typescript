@@ -14,7 +14,7 @@ export class FormSerializationWriter implements SerializationWriter {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     key?: string | undefined,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    value?: Uint8Array | undefined,
+    value?: ArrayBuffer | undefined,
   ): void {
     throw new Error(
       "serialization of byt arrays is not supported with URI encoding",

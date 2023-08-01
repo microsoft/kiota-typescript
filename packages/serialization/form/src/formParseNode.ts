@@ -33,7 +33,7 @@ export class FormParseNode implements ParseNode {
   }
   private normalizeKey = (key: string): string =>
     decodeURIComponent(key).trim();
-  public getByteArrayValue(): Uint8Array | undefined {
+  public getByteArrayValue(): ArrayBuffer | undefined {
     throw new Error(
       "serialization of byt arrays is not supported with URI encoding",
     );

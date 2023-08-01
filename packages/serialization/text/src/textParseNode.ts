@@ -25,10 +25,10 @@ export class TextParseNode implements ParseNode {
       this.text = this.text.substring(1, this.text.length - 2);
     }
   }
-  public getByteArrayValue(): Uint8Array | undefined {
+  public getByteArrayValue(): ArrayBuffer | undefined {
     const strValue = this.getStringValue();
     if (strValue && strValue.length > 0) {
-      return Buffer.from(strValue, "base64");
+      return Buffer.from(strValue, "base64").buffer;
     }
     return undefined;
   }
