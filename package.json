@@ -35,7 +35,7 @@
     "packages/sample-app/",
     "packages/abstractions",
     "packages/http/*",
-    "packages/serialization/*/",
+    "packages/serialization/*",
     "packages/authentication/*"
   ],
   "scripts": {
