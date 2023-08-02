@@ -54,9 +54,6 @@ jobs:
         environment:
           name: production_feed
         runs-on: ubuntu-latest
-        defaults:
-            run:
-                working-directory: packages/abstractions
         steps:
           - uses: actions/checkout@v3
           - uses: actions/setup-node@v3
@@ -71,7 +68,6 @@ jobs:
                 GITHUB_ACTOR: ${{ secrets.GIT_USERNAME }}
           - run: yarn install --frozen-lockfile
           - run: yarn run build
-          - run: lerna run test --parallel
           - run: lerna publish from-package --yes
             env:
               NODE_AUTH_TOKEN: ${{secrets.npm_token}}
