@@ -1,11 +1,11 @@
-[![npm version badge](https://img.shields.io/npm/v/@microsoft/kiota-serialization-json?color=blue)](https://www.npmjs.com/package/@microsoft/kiota-serialization-form)
+[![npm version badge](https://img.shields.io/npm/v/@microsoft/kiota-serialization-multipart?color=blue)](https://www.npmjs.com/package/@microsoft/kiota-serialization-multipart)
 
-The JSON Serialization Library is an implementation to handle URI form encoded payloads.
+The Multipart Serialization Library is an implementation to handle multipart form data payloads.
 
-A [Kiota](https://github.com/microsoft/kiota) generated project will need a reference to a form serialization package to handle URI form encoded payloads from an API endpoint.
+A [Kiota](https://github.com/microsoft/kiota) generated project will need a reference to a form serialization package to handle multipart encoded payloads from an API endpoint.
 
 Read more about Kiota [here](https://github.com/microsoft/kiota/blob/main/README.md).
 
-## Using the Serialization JSON implementations
+## Using the Serialization Multipart implementations
 
-1. `npm i @microsoft/kiota-serialization-form`.
+1. `npm i @microsoft/kiota-serialization-multipart`.
