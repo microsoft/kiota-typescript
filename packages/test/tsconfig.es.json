@@ -19,7 +19,7 @@
             "path": "../serialization/text/tsconfig.es.json"
         },
         {
-            "path": "../serialization/form/tsconfig.es.json"
+            "path": "../serialization/multipart/tsconfig.es.json"
         },
         {
             "path": "../http/fetch/tsconfig.es.json"
@@ -41,6 +41,9 @@
         ],
         "@microsoft/kiota-serialization-json": [
             "../serialization/json"
+        ],
+        "@microsoft/kiota-serialization-multipart": [
+            "../serialization/multipart"
         ],
         "@microsoft/kiota-http-fetchlibrary": [
             "../http/fetchlibrary"

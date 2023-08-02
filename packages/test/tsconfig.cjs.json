@@ -12,6 +12,9 @@
         "@microsoft/kiota-serialization-form": [
             "../serialization/form"
         ],
+        "@microsoft/kiota-serialization-multipart": [
+            "../serialization/multipart"
+        ],
         "@microsoft/kiota-serialization-json": [
             "../serialization/json"
         ],
@@ -41,10 +44,9 @@
         },
         {
             "path": "../serialization/text/tsconfig.cjs.json"
-        }
-        ,
+        },
         {
-            "path": "../serialization/form/tsconfig.cjs.json"
+            "path": "../serialization/multipart/tsconfig.cjs.json"
         },
         {
             "path": "../http/fetch/tsconfig.cjs.json"
