@@ -11,12 +11,14 @@ import { URL } from "url";
 const assert = chai.assert;
 
 import {
+  HttpMethod,
   Parsable,
   RequestAdapter,
   RequestInformation,
   SerializationWriter,
   SerializationWriterFactory,
 } from "../../src";
+import { MultipartBody } from "../../src/multipartBody";
 
 class GetQueryParameters {
   select?: string[];
@@ -51,7 +53,7 @@ describe("RequestInformation", () => {
     assert.isNotNull(URL);
     assert.equal(
       requestInformation.URL,
-      "https://graph.microsoft.com/v1.0/users"
+      "https://graph.microsoft.com/v1.0/users",
     );
   });
 
@@ -62,7 +64,7 @@ describe("RequestInformation", () => {
     assert.isNotNull(URL);
     assert.equal(
       requestInformation.URL,
-      "https://graph.microsoft.com/v1.0/users"
+      "https://graph.microsoft.com/v1.0/users",
     );
   });
 
@@ -75,7 +77,7 @@ describe("RequestInformation", () => {
     requestInformation.setQueryStringParametersFromRawObject(qs);
     assert.equal(
       requestInformation.URL,
-      "http://localhost/me?%24select=id,displayName"
+      "http://localhost/me?%24select=id,displayName",
     );
   });
 
@@ -124,7 +126,7 @@ describe("RequestInformation", () => {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 key?: string | undefined,
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                value?: T | undefined
+                value?: T | undefined,
               ) => {
                 methodCalledCount++;
               },
@@ -139,7 +141,7 @@ describe("RequestInformation", () => {
     requestInformation.setContentFromParsable(
       mockRequestAdapter,
       "application/json",
-      {} as unknown as Parsable
+      {} as unknown as Parsable,
     );
     const headers: Record<string, string[]> = {
       ConsistencyLevel: ["eventual"],
@@ -162,7 +164,7 @@ describe("RequestInformation", () => {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 key?: string | undefined,
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                values?: T[]
+                values?: T[],
               ) => {
                 methodCalledCount++;
               },
@@ -177,7 +179,7 @@ describe("RequestInformation", () => {
     requestInformation.setContentFromParsable(
       mockRequestAdapter,
       "application/json",
-      [{} as unknown as Parsable]
+      [{} as unknown as Parsable],
     );
     const headers: Record<string, string[]> = {
       ConsistencyLevel: ["eventual"],
@@ -198,7 +200,7 @@ describe("RequestInformation", () => {
             return {
               writeStringValue: (
                 key?: string | undefined,
-                value?: string | undefined
+                value?: string | undefined,
               ) => {
                 writtenValue = value as unknown as string;
               },
@@ -213,7 +215,7 @@ describe("RequestInformation", () => {
     requestInformation.setContentFromScalar(
       mockRequestAdapter,
       "application/json",
-      "some content"
+      "some content",
     );
     const headers: Record<string, string[]> = {
       ConsistencyLevel: ["eventual"],
@@ -234,7 +236,7 @@ describe("RequestInformation", () => {
             return {
               writeCollectionOfPrimitiveValues: <T>(
                 key?: string | undefined,
-                values?: T[] | undefined
+                values?: T[] | undefined,
               ) => {
                 writtenValue = JSON.stringify(values);
               },
@@ -249,7 +251,7 @@ describe("RequestInformation", () => {
     requestInformation.setContentFromScalar(
       mockRequestAdapter,
       "application/json",
-      ["some content"]
+      ["some content"],
     );
     const headers: Record<string, string[]> = {
       ConsistencyLevel: ["eventual"],
@@ -257,5 +259,47 @@ describe("RequestInformation", () => {
     requestInformation.addRequestHeaders(headers);
     assert.isNotEmpty(requestInformation.headers);
     assert.equal(writtenValue, '["some content"]');
+  });
+
+  it("Sets the boundary on multipart content", () => {
+    const requestInformation = new RequestInformation();
+    requestInformation.urlTemplate =
+      "http://localhost/{URITemplate}/ParameterMapping?IsCaseSensitive={IsCaseSensitive}";
+    requestInformation.httpMethod = HttpMethod.POST;
+    const mpBody = new MultipartBody();
+    const mockRequestAdapter = {
+      getSerializationWriterFactory: () => {
+        return {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          getSerializationWriter: (_: string) => {
+            return {
+              writeObjectValue: <T>(
+                key?: string | undefined,
+                value?: T | undefined,
+              ) => {
+                if (key === "value") {
+                  mpBody.addOrReplacePart("1", "application/json", value);
+                }
+              },
+              getSerializedContent: () => {
+                return new ArrayBuffer(0);
+              },
+            } as unknown as SerializationWriter;
+          },
+        } as SerializationWriterFactory;
+      },
+    } as RequestAdapter;
+    requestInformation.setContentFromParsable(
+      mockRequestAdapter,
+      "multipart/form-data",
+      mpBody,
+    );
+    const contentTypeHeaderValue =
+      requestInformation.headers["Content-Type"][0];
+    assert.equal(
+      contentTypeHeaderValue,
+      `multipart/form-data; boundary=${mpBody.getBoundary()}`,
+    );
+    assert.isNotEmpty(mpBody.getBoundary());
   });
 });

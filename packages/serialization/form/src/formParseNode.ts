@@ -3,9 +3,9 @@ import {
   Duration,
   Parsable,
   ParsableFactory,
+  parseGuidString,
   ParseNode,
   TimeOnly,
-  parseGuidString,
   toFirstCharacterUpper,
 } from "@microsoft/kiota-abstractions";
 
@@ -33,6 +33,11 @@ export class FormParseNode implements ParseNode {
   }
   private normalizeKey = (key: string): string =>
     decodeURIComponent(key).trim();
+  public getByteArrayValue(): ArrayBuffer | undefined {
+    throw new Error(
+      "serialization of byt arrays is not supported with URI encoding",
+    );
+  }
   public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
   public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
   public getStringValue = (): string => decodeURIComponent(this._rawString);
@@ -59,19 +64,19 @@ export class FormParseNode implements ParseNode {
   public getDurationValue = () => Duration.parse(this.getStringValue());
   public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
     throw new Error(
-      `serialization of collections is not supported with URI encoding`
+      `serialization of collections is not supported with URI encoding`,
     );
   };
   public getCollectionOfObjectValues = <T extends Parsable>(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    parsableFactory: ParsableFactory<T>
+    parsableFactory: ParsableFactory<T>,
   ): T[] | undefined => {
     throw new Error(
-      `serialization of collections is not supported with URI encoding`
+      `serialization of collections is not supported with URI encoding`,
     );
   };
   public getObjectValue = <T extends Parsable>(
-    parsableFactory: ParsableFactory<T>
+    parsableFactory: ParsableFactory<T>,
   ): T => {
     const value: T = {} as T;
     if (this.onBeforeAssignFieldValues) {
@@ -100,7 +105,7 @@ export class FormParseNode implements ParseNode {
   };
   private assignFieldValues = <T extends Parsable>(
     model: T,
-    parsableFactory: ParsableFactory<T>
+    parsableFactory: ParsableFactory<T>,
   ): void => {
     const fields = parsableFactory(this)(model);
     Object.entries(this._fields)

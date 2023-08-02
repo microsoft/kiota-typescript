@@ -6,6 +6,7 @@ export * from "./dateOnly";
 export * from "./duration";
 export * from "./getPathParameters";
 export * from "./httpMethod";
+export * from "./multipartBody";
 export * from "./nativeResponseHandler";
 export * from "./nativeResponseWrapper";
 export * from "./requestAdapter";

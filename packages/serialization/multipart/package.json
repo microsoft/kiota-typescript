@@ -1,12 +1,8 @@
 {
-  "name": "@microsoft/kiota-serialization-form",
-  "version": "1.0.0-preview.14",
-  "description": "Implementation of Kiota Serialization interfaces for URI from encoded",
+  "name": "@microsoft/kiota-serialization-multipart",
+  "version": "1.0.0-preview.2",
+  "description": "Implementation of Kiota Serialization interfaces for multipart form data",
   "main": "dist/cjs/src/index.js",
-  "browser": {
-    "./dist/es/src/index.js": "./dist/es/src/browser/index.js",
-    "./dist/es/src/formParseNodeFactory.js": "./dist/es/src/browser/formParseNodeFactory.js"
-  },
   "module": "dist/es/src/index.js",
   "types": "dist/cjs/src/index.d.ts",
   "scripts": {
@@ -30,7 +26,7 @@
     "openAPI",
     "Microsoft",
     "Graph",
-    "form"
+    "multipart"
   ],
   "author": "Microsoft",
   "license": "MIT",
@@ -42,6 +38,9 @@
     "@microsoft/kiota-abstractions": "^1.0.0-preview.25",
     "guid-typescript": "^1.0.9",
     "tslib": "^2.3.1"
+  },
+  "devDependencies": {
+    "@microsoft/kiota-serialization-json": "^1.0.0-preview.23"
   },
   "publishConfig": {
     "access": "public"

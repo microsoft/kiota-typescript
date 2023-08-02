@@ -1,1 +1,1 @@
-export const libraryVersion = "1.0.0-preview.12";
+export const libraryVersion = "1.0.0-preview.24";

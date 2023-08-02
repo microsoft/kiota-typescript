@@ -1,9 +1,10 @@
+import { Guid } from "guid-typescript";
+
 import { DateOnly } from "../dateOnly";
 import { Duration } from "../duration";
 import { TimeOnly } from "../timeOnly";
 import { Parsable } from "./parsable";
 import { ParsableFactory } from "./parsableFactory";
-import { Guid } from "guid-typescript";
 
 /**
  * Interface for a deserialization node in a parse tree. This interface provides an abstraction layer over serialization formats, libraries and implementations.
@@ -65,16 +66,14 @@ export interface ParseNode {
    * @return the collection of object values of the node.
    */
   getCollectionOfObjectValues<T extends Parsable>(
-    parsableFactory: ParsableFactory<T>
+    parsableFactory: ParsableFactory<T>,
   ): T[] | undefined;
 
   /**
    * Gets the model object value of the node.
    * @return the model object value of the node.
    */
-  getObjectValue<T extends Parsable>(
-    parsableFactory: ParsableFactory<T>
-  ): T;
+  getObjectValue<T extends Parsable>(parsableFactory: ParsableFactory<T>): T;
 
   /**
    * Gets the Enum values of the node.
@@ -96,4 +95,9 @@ export interface ParseNode {
    * @return the callback called after the node is deserialized.
    */
   onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
+  /**
+   * Gets the byte array value of the node.
+   * @return the byte array value of the node.
+   */
+  getByteArrayValue(): ArrayBuffer | undefined;
 }

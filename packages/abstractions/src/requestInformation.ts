@@ -4,6 +4,8 @@ import * as Template from "uri-template-lite";
 import { DateOnly } from "./dateOnly";
 import { Duration } from "./duration";
 import { HttpMethod } from "./httpMethod";
+import { MultipartBody } from "./multipartBody";
+import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitiveKeys";
 import { RequestAdapter } from "./requestAdapter";
 import { RequestOption } from "./requestOption";
 import {
@@ -12,14 +14,14 @@ import {
   SerializationWriter,
 } from "./serialization";
 import { TimeOnly } from "./timeOnly";
-import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitiveKeys";
 
 /** This class represents an abstract HTTP request. */
 export class RequestInformation {
   /** The URI of the request. */
   private uri?: string;
   /** The path parameters for the request. */
-  public pathParameters: Record<string, unknown> = createRecordWithCaseInsensitiveKeys<unknown>();
+  public pathParameters: Record<string, unknown> =
+    createRecordWithCaseInsensitiveKeys<unknown>();
   /** The URL template for the request */
   public urlTemplate?: string;
   /** Gets the URL of the request  */
@@ -70,10 +72,13 @@ export class RequestInformation {
   public queryParameters: Record<
     string,
     string | number | boolean | undefined
-  > = createRecordWithCaseInsensitiveKeys<string | number | boolean | undefined>();
+  > = createRecordWithCaseInsensitiveKeys<
+    string | number | boolean | undefined
+  >();
   /** The Request Headers. */
   public headers: Record<string, string[]> = {};
-  private _requestOptions: Record<string, RequestOption> = createRecordWithCaseInsensitiveKeys<RequestOption>();
+  private _requestOptions: Record<string, RequestOption> =
+    createRecordWithCaseInsensitiveKeys<RequestOption>();
   /** Gets the request options for the request. */
   public getRequestOptions() {
     return this._requestOptions;
@@ -114,7 +119,7 @@ export class RequestInformation {
     requestAdapter?: RequestAdapter | undefined,
     contentType?: string | undefined,
     value?: T[] | T,
-    modelSerializerFunction?: ModelSerializerFunction<T>
+    modelSerializerFunction?: ModelSerializerFunction<T>,
   ): void => {
     trace
       .getTracer(RequestInformation.tracerKey)
@@ -123,8 +128,11 @@ export class RequestInformation {
           const writer = this.getSerializationWriter(
             requestAdapter,
             contentType,
-            value
+            value,
           );
+          if (value instanceof MultipartBody) {
+            contentType += "; boundary=" + value.getBoundary();
+          }
           if (!this.headers) {
             this.headers = {};
           }
@@ -135,7 +143,7 @@ export class RequestInformation {
               undefined,
               value,
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              modelSerializerFunction!
+              modelSerializerFunction!,
             );
           } else {
             span.setAttribute(RequestInformation.requestTypeKey, "object");
@@ -149,7 +157,7 @@ export class RequestInformation {
   };
   private setContentAndContentType = (
     writer: SerializationWriter,
-    contentType?: string | undefined
+    contentType?: string | undefined,
   ) => {
     if (contentType) {
       this.headers[RequestInformation.contentTypeHeader] = [contentType];
@@ -180,7 +188,7 @@ export class RequestInformation {
   public setContentFromScalar = <T>(
     requestAdapter?: RequestAdapter | undefined,
     contentType?: string | undefined,
-    value?: T[] | T
+    value?: T[] | T,
   ): void => {
     trace
       .getTracer(RequestInformation.tracerKey)
@@ -189,7 +197,7 @@ export class RequestInformation {
           const writer = this.getSerializationWriter(
             requestAdapter,
             contentType,
-            value
+            value,
           );
           if (!this.headers) {
             this.headers = {};
@@ -221,7 +229,7 @@ export class RequestInformation {
               writer.writeCollectionOfPrimitiveValues(undefined, value);
             } else {
               throw new Error(
-                `encountered unknown value type during serialization ${valueType}`
+                `encountered unknown value type during serialization ${valueType}`,
               );
             }
           }
@@ -246,7 +254,7 @@ export class RequestInformation {
    * @param parameters the parameters.
    */
   public setQueryStringParametersFromRawObject = (
-    q: object | undefined
+    q: object | undefined,
   ): void => {
     if (!q) return;
     Object.entries(q).forEach(([k, v]) => {

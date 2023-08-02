@@ -10,6 +10,16 @@ import {
 import { Guid } from "guid-typescript";
 
 export class FormSerializationWriter implements SerializationWriter {
+  public writeByteArrayValue(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    key?: string | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    value?: ArrayBuffer | undefined,
+  ): void {
+    throw new Error(
+      "serialization of byt arrays is not supported with URI encoding",
+    );
+  }
   private readonly writer: string[] = [];
   private static propertySeparator = `&`;
   private depth = -1;

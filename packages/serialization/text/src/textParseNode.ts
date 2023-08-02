@@ -3,9 +3,9 @@ import {
   Duration,
   Parsable,
   ParsableFactory,
+  parseGuidString,
   ParseNode,
   TimeOnly,
-  parseGuidString,
   toFirstCharacterUpper,
 } from "@microsoft/kiota-abstractions";
 
@@ -25,7 +25,13 @@ export class TextParseNode implements ParseNode {
       this.text = this.text.substring(1, this.text.length - 2);
     }
   }
-
+  public getByteArrayValue(): ArrayBuffer | undefined {
+    const strValue = this.getStringValue();
+    if (strValue && strValue.length > 0) {
+      return Buffer.from(strValue, "base64").buffer;
+    }
+    return undefined;
+  }
   public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
   public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
   public getStringValue = () => this.text;

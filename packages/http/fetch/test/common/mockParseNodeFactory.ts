@@ -26,6 +26,9 @@ export class MockParseNode implements ParseNode {
 	constructor(returnObjectValue: Parsable) {
 		this.returnObjectValue = returnObjectValue;
 	}
+	getByteArrayValue(): ArrayBuffer | undefined {
+		throw new Error("Method not implemented.");
+	}
 	getStringValue(): string {
 		throw new Error("Method not implemented.");
 	}

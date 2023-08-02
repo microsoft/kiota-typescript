@@ -3,9 +3,9 @@ import {
   Duration,
   Parsable,
   ParsableFactory,
+  parseGuidString,
   ParseNode,
   TimeOnly,
-  parseGuidString,
   toFirstCharacterUpper,
 } from "@microsoft/kiota-abstractions";
 
@@ -46,14 +46,20 @@ export class JsonParseNode implements ParseNode {
         return currentParseNode.getDateValue() as unknown as T;
       } else {
         throw new Error(
-          `encountered an unknown type during deserialization ${typeof x}`
+          `encountered an unknown type during deserialization ${typeof x}`,
         );
       }
     });
   };
-
+  public getByteArrayValue(): ArrayBuffer | undefined {
+    const strValue = this.getStringValue();
+    if (strValue && strValue.length > 0) {
+      return Buffer.from(strValue, "base64").buffer;
+    }
+    return undefined;
+  }
   public getCollectionOfObjectValues = <T extends Parsable>(
-    method: ParsableFactory<T>
+    method: ParsableFactory<T>,
   ): T[] | undefined => {
     return (this._jsonNode as unknown[])
       .map((x) => new JsonParseNode(x))
@@ -61,7 +67,7 @@ export class JsonParseNode implements ParseNode {
   };
 
   public getObjectValue = <T extends Parsable>(
-    parsableFactory: ParsableFactory<T>
+    parsableFactory: ParsableFactory<T>,
   ): T => {
     const value: T = {} as T;
     if (this.onBeforeAssignFieldValues) {
@@ -76,7 +82,7 @@ export class JsonParseNode implements ParseNode {
 
   private assignFieldValues = <T extends Parsable>(
     model: T,
-    parsableFactory: ParsableFactory<T>
+    parsableFactory: ParsableFactory<T>,
   ): void => {
     const fields = parsableFactory(this)(model);
 
@@ -94,18 +100,20 @@ export class JsonParseNode implements ParseNode {
   };
   public getCollectionOfEnumValues = <T>(type: any): T[] => {
     if (Array.isArray(this._jsonNode)) {
-      return this._jsonNode.map(x => {
-        const node = new JsonParseNode(x)
-        return node.getEnumValue(type) as T
-      }).filter(Boolean)
+      return this._jsonNode
+        .map((x) => {
+          const node = new JsonParseNode(x);
+          return node.getEnumValue(type) as T;
+        })
+        .filter(Boolean);
     }
-    return []
+    return [];
   };
   public getEnumValue = <T>(type: any): T | undefined => {
-    const rawValue = this.getStringValue()
+    const rawValue = this.getStringValue();
     if (!rawValue) {
-      return undefined
+      return undefined;
     }
-    return type[toFirstCharacterUpper(rawValue)]
+    return type[toFirstCharacterUpper(rawValue)];
   };
 }
