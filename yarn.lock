@@ -23,11 +23,12 @@
     tslib "^2.2.0"
 
 "@azure/core-auth@^1.3.0", "@azure/core-auth@^1.3.2", "@azure/core-auth@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@azure/core-auth/-/core-auth-1.4.0.tgz#6fa9661c1705857820dbc216df5ba5665ac36a9e"
-  integrity sha512-HFrcTgmuSuukRf/EdPmqBrc5l6Q5Uu+2TbuhaKbgaCpP2TfAeiNaQPAadxO+CYBRHGUzIDteMAjFspFLDLnKVQ==
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@azure/core-auth/-/core-auth-1.5.0.tgz#a41848c5c31cb3b7c84c409885267d55a2c92e44"
+  integrity sha512-udzoBuYG1VBoHVohDTrvKjyzel34zt77Bhp7dQntVGGD0ehVq48owENbBG8fIgkHRNUBQH5k1r0hpoMu5L8+kw==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
+    "@azure/core-util" "^1.1.0"
     tslib "^2.2.0"
 
 "@azure/core-client@^1.4.0":
@@ -66,10 +67,10 @@
   dependencies:
     tslib "^2.2.0"
 
-"@azure/core-util@^1.0.0":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@azure/core-util/-/core-util-1.1.1.tgz#8f87b3dd468795df0f0849d9f096c3e7b29452c1"
-  integrity sha512-A4TBYVQCtHOigFb2ETiiKFDocBoI1Zk2Ui1KpI42aJSIDexF7DHQFpnjonltXAIU/ceH+1fsZAWWgvX6/AKzog==
+"@azure/core-util@^1.0.0", "@azure/core-util@^1.1.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@azure/core-util/-/core-util-1.4.0.tgz#c120a56b3e48a9e4d20619a0b00268ae9de891c7"
+  integrity sha512-eGAyJpm3skVQoLiRqm/xPa+SXi/NPDdSHMxbRAz2lSprd+Zs+qrpQGQQ2VQ3Nttu+nSZR4XoYQC71LbEI7jsig==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
     tslib "^2.2.0"
