@@ -75,7 +75,8 @@ export class RequestInformation {
     string | number | boolean | undefined
   >();
   /** The Request Headers. */
-  public headers: Record<string, string[]> = {};
+  public headers: Record<string, string[]> =
+    createRecordWithCaseInsensitiveKeys<string[]>();
   private _requestOptions: Record<string, RequestOption> =
     createRecordWithCaseInsensitiveKeys<RequestOption>();
   /** Gets the request options for the request. */

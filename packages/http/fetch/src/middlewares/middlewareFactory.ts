@@ -16,6 +16,7 @@ import { ParametersNameDecodingHandler } from "./parametersNameDecodingHandler";
 import { RedirectHandler } from "./redirectHandler";
 import { RetryHandler } from "./retryHandler";
 import { UserAgentHandler } from "./userAgentHandler";
+import { HeadersInspectionHandler } from "./headersInspectionHandler";
 
 /**
  * @class
@@ -30,7 +31,7 @@ export class MiddlewareFactory {
 	 * @returns an array of the middleware handlers of the default middleware chain
 	 */
 	public static getDefaultMiddlewareChain(customFetch: (request: string, init: RequestInit) => Promise<Response> = fetch as any): Middleware[] {
-		const middlewareArray: Middleware[] = [new RetryHandler(), new RedirectHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new CustomFetchHandler(customFetch)];
+		const middlewareArray: Middleware[] = [new RetryHandler(), new RedirectHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new HeadersInspectionHandler(), new CustomFetchHandler(customFetch)];
 
 		return middlewareArray;
 	}
