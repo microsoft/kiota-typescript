@@ -1,4 +1,4 @@
-import { SerializationWriter } from "./serializationWriter";
+import type { SerializationWriter } from "./serializationWriter";
 
 /** Defines the contract for a factory that creates SerializationWriter instances. */
 export interface SerializationWriterFactory {

@@ -1,6 +1,6 @@
-import { Parsable } from "./parsable";
-import { ParseNode } from "./parseNode";
-import { SerializationWriter } from "./serializationWriter";
+import type { Parsable } from "./parsable";
+import type { ParseNode } from "./parseNode";
+import type { SerializationWriter } from "./serializationWriter";
 
 export type ModelSerializerFunction<T extends Parsable> = (
   writer: SerializationWriter,

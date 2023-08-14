@@ -1,5 +1,4 @@
-import { ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
-
+import type { ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
 export interface TestParser {
   testCollection?: string[] | undefined;
   testString?: string | undefined;

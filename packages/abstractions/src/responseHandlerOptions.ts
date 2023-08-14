@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { RequestOption } from "./requestOption";
-import { ResponseHandler } from "./responseHandler";
+import type { RequestOption } from "./requestOption";
+import type { ResponseHandler } from "./responseHandler";
 
 export const ResponseHandlerOptionKey = "ResponseHandlerOptionKey";
 

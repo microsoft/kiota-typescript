@@ -9,14 +9,15 @@
  * @module ChaosHandler
  */
 
-import { HttpMethod, RequestOption } from "@microsoft/kiota-abstractions";
+import { HttpMethod } from "@microsoft/kiota-abstractions";
+import type { RequestOption } from "@microsoft/kiota-abstractions";
 import { Span, trace } from "@opentelemetry/api";
 
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import { FetchHeaders, FetchRequestInit } from "../utils/fetchDefinitions";
-import { Middleware } from "./middleware";
+import type { Middleware } from "./middleware";
 import { httpStatusCode, methodStatusCode } from "./options/ChaosHandlerData";
-import { ChaosHandlerOptions } from "./options/chaosHandlerOptions";
+import type { ChaosHandlerOptions } from "./options/chaosHandlerOptions";
 import { ChaosStrategy } from "./options/chaosStrategy";
 
 /**

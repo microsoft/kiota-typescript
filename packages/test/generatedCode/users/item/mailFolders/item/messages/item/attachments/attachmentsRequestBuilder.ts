@@ -1,5 +1,5 @@
 import {AttachmentCollectionResponse} from '../../../../../../../models/';
-import {Attachment} from '../../../../../../../models/attachment';
+import type {Attachment} from '../../../../../../../models/attachment';
 import {createAttachmentCollectionResponseFromDiscriminatorValue} from '../../../../../../../models/createAttachmentCollectionResponseFromDiscriminatorValue';
 import {createAttachmentFromDiscriminatorValue} from '../../../../../../../models/createAttachmentFromDiscriminatorValue';
 import {deserializeIntoAttachment} from '../../../../../../../models/deserializeIntoAttachment';
@@ -8,7 +8,8 @@ import {AttachmentsRequestBuilderGetRequestConfiguration} from './attachmentsReq
 import {AttachmentsRequestBuilderPostRequestConfiguration} from './attachmentsRequestBuilderPostRequestConfiguration';
 import {CountRequestBuilder} from './count/countRequestBuilder';
 import {AttachmentItemRequestBuilder} from './item/attachmentItemRequestBuilder';
-import {BaseRequestBuilder, getPathParameters, HttpMethod, Parsable, ParsableFactory, RequestAdapter, RequestInformation, RequestOption} from '@microsoft/kiota-abstractions';
+import type {Parsable, ParsableFactory, RequestAdapter, RequestOption} from '@microsoft/kiota-abstractions';
+import {BaseRequestBuilder, HttpMethod, RequestInformation, getPathParameters} from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/mailFolders/{mailFolder-id}/messages/{message-id}/attachments
@@ -22,7 +23,7 @@ export class AttachmentsRequestBuilder extends BaseRequestBuilder {
     }
     /**
      * Gets an item from the ApiSdk.users.item.mailFolders.item.messages.item.attachments.item collection
-     * @param attachmentId Unique identifier of the item
+     * @param attachmentId The unique identifier of attachment
      * @returns a AttachmentItemRequestBuilder
      */
     public byAttachmentId(attachmentId: string) : AttachmentItemRequestBuilder {
@@ -43,7 +44,7 @@ export class AttachmentsRequestBuilder extends BaseRequestBuilder {
      * Retrieve a list of attachment objects.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of AttachmentCollectionResponse
-     * @see {@link https://docs.microsoft.com/graph/api/eventmessage-list-attachments?view=graph-rest-1.0|Find more info here}
+     * @see {@link https://learn.microsoft.com/graph/api/eventmessage-list-attachments?view=graph-rest-1.0|Find more info here}
      */
     public get(requestConfiguration?: AttachmentsRequestBuilderGetRequestConfiguration | undefined) : Promise<AttachmentCollectionResponse | undefined> {
         const requestInfo = this.toGetRequestInformation(
@@ -56,10 +57,9 @@ export class AttachmentsRequestBuilder extends BaseRequestBuilder {
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of Attachment
-     * @see {@link https://docs.microsoft.com/graph/api/message-post-attachments?view=graph-rest-1.0|Find more info here}
+     * @see {@link https://learn.microsoft.com/graph/api/message-post-attachments?view=graph-rest-1.0|Find more info here}
      */
-    public post(body: Attachment | undefined, requestConfiguration?: AttachmentsRequestBuilderPostRequestConfiguration | undefined) : Promise<Attachment | undefined> {
-        if(!body) throw new Error("body cannot be undefined");
+    public post(body: Attachment, requestConfiguration?: AttachmentsRequestBuilderPostRequestConfiguration | undefined) : Promise<Attachment | undefined> {
         const requestInfo = this.toPostRequestInformation(
             body, requestConfiguration
         );
@@ -89,7 +89,7 @@ export class AttachmentsRequestBuilder extends BaseRequestBuilder {
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
      */
-    public toPostRequestInformation(body: Attachment | undefined, requestConfiguration?: AttachmentsRequestBuilderPostRequestConfiguration | undefined) : RequestInformation {
+    public toPostRequestInformation(body: Attachment, requestConfiguration?: AttachmentsRequestBuilderPostRequestConfiguration | undefined) : RequestInformation {
         if(!body) throw new Error("body cannot be undefined");
         const requestInfo = new RequestInformation();
         requestInfo.urlTemplate = this.urlTemplate;
@@ -100,7 +100,7 @@ export class AttachmentsRequestBuilder extends BaseRequestBuilder {
             requestInfo.addRequestHeaders(requestConfiguration.headers);
             requestInfo.addRequestOptions(requestConfiguration.options);
         }
-        requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body as any, serializeAttachment);
+        requestInfo.setContentFromParsable(this.requestAdapter, "application/json", body, serializeAttachment);
         return requestInfo;
     };
 }

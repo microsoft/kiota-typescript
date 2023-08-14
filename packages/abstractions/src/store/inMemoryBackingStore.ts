@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { BackingStore } from "./backingStore";
+import type { BackingStore } from "./backingStore";
 
 interface storeEntryWrapper {
   changed: boolean;

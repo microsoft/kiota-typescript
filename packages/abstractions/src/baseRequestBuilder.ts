@@ -1,5 +1,5 @@
 import { getPathParameters } from "./getPathParameters";
-import { RequestAdapter } from "./requestAdapter";
+import type { RequestAdapter } from "./requestAdapter";
 
 export abstract class BaseRequestBuilder {
   /** Path parameters for the request */

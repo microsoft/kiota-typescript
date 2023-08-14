@@ -6,13 +6,12 @@ import { Duration } from "./duration";
 import { HttpMethod } from "./httpMethod";
 import { MultipartBody } from "./multipartBody";
 import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitiveKeys";
-import { RequestAdapter } from "./requestAdapter";
-import { RequestOption } from "./requestOption";
+import type { RequestAdapter } from "./requestAdapter";
+import type { RequestOption } from "./requestOption";
 import {
   ModelSerializerFunction,
-  Parsable,
-  SerializationWriter,
 } from "./serialization";
+import type { Parsable, SerializationWriter } from "./serialization";
 import { TimeOnly } from "./timeOnly";
 
 /** This class represents an abstract HTTP request. */

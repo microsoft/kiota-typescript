@@ -15,9 +15,9 @@ import { ChaosStrategy } from "./chaosStrategy";
 export const ChaosHandlerOptionsKey = "ChaosHandlerOptionsKey";
 
 /**
- * Class representing ChaosHandlerOptions
- * @class
- * Class
+ * interface representing ChaosHandlerOptions
+ * @interface
+ * interface
  * @implements MiddlewareOptions
  */
 export interface ChaosHandlerOptions {

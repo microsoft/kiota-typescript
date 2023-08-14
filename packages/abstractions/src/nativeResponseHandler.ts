@@ -1,5 +1,6 @@
-import { ResponseHandler } from "./responseHandler";
-import { Parsable, ParsableFactory } from "./serialization";
+import type { ResponseHandler } from "./responseHandler";
+import { ParsableFactory } from "./serialization";
+import type { Parsable } from "./serialization";
 
 /** Default response handler to access the native response object. */
 export class NativeResponseHandler implements ResponseHandler {

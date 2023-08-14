@@ -9,13 +9,13 @@
  * @module UserAgentHandler
  */
 
-import { RequestOption } from "@microsoft/kiota-abstractions";
+import type { RequestOption } from "@microsoft/kiota-abstractions";
 import { trace } from "@opentelemetry/api";
 
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import { FetchRequestInit } from "../utils/fetchDefinitions";
 import { appendRequestHeader, getRequestHeader } from "../utils/headersUtil";
-import { Middleware } from "./middleware";
+import type { Middleware } from "./middleware";
 import { UserAgentHandlerOptions, UserAgentHandlerOptionsKey } from "./options/userAgentHandlerOptions";
 
 const USER_AGENT_HEADER_KEY = "User-Agent";

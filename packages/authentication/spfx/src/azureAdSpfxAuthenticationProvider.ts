@@ -1,7 +1,8 @@
 import { BaseBearerTokenAuthenticationProvider } from "@microsoft/kiota-abstractions";
 import { AadTokenProvider } from "@microsoft/sp-http";
 import { AzureAdSpfxAccessTokenProvider } from "./azureAdSpfxAccessTokenProvider";
-import { ObservabilityOptions, ObservabilityOptionsImpl } from "./observabilityOptions";
+import { ObservabilityOptionsImpl } from "./observabilityOptions";
+import type { ObservabilityOptions } from "./observabilityOptions";
 
 export class AzureAdSpfxAuthenticationProvider extends BaseBearerTokenAuthenticationProvider {
   /**

@@ -1,8 +1,11 @@
-import { ApiError, AuthenticationProvider, BackingStoreFactory, BackingStoreFactorySingleton, DateOnly, DefaultApiError, Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, Parsable, ParsableFactory, ParseNode, ParseNodeFactory, ParseNodeFactoryRegistry, RequestAdapter, RequestInformation, ResponseHandler, ResponseHandlerOption, ResponseHandlerOptionKey, SerializationWriterFactory, SerializationWriterFactoryRegistry, TimeOnly } from "@microsoft/kiota-abstractions";
+import { BackingStoreFactorySingleton, DateOnly, DefaultApiError, Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, ParsableFactory, ParseNodeFactoryRegistry, RequestInformation, ResponseHandlerOption, ResponseHandlerOptionKey, SerializationWriterFactoryRegistry, TimeOnly } from "@microsoft/kiota-abstractions";
+import type { AuthenticationProvider, BackingStoreFactory, Parsable, ParseNode, ParseNodeFactory, SerializationWriterFactory } from "@microsoft/kiota-abstractions";
+import type { ApiError, RequestAdapter, ResponseHandler } from "@microsoft/kiota-abstractions";
 import { Span, SpanStatusCode, trace } from "@opentelemetry/api";
 
 import { HttpClient } from "./httpClient";
-import { ObservabilityOptions, ObservabilityOptionsImpl } from "./observabilityOptions";
+import { ObservabilityOptionsImpl } from "./observabilityOptions";
+import type { ObservabilityOptions } from "./observabilityOptions";
 
 export class FetchRequestAdapter implements RequestAdapter {
 	/** The base url for every request. */

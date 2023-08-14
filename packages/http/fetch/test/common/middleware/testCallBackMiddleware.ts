@@ -1,6 +1,6 @@
-import { RequestOption } from "@microsoft/kiota-abstractions";
+import type { RequestOption } from "@microsoft/kiota-abstractions";
 
-import { Middleware } from "../../../src/middlewares/middleware";
+import type { Middleware } from "../../../src/middlewares/middleware";
 import { DummyFetchHandler } from "./dummyFetchHandler";
 import { getResponse } from "../../testUtils";
 

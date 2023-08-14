@@ -5,11 +5,11 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { RequestOption } from "@microsoft/kiota-abstractions";
+import type { RequestOption } from "@microsoft/kiota-abstractions";
 import { trace } from "@opentelemetry/api";
 
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
-import { Middleware } from "./middleware";
+import type { Middleware } from "./middleware";
 import { ParametersNameDecodingHandlerOptions, ParametersNameDecodingHandlerOptionsKey } from "./options/parametersNameDecodingOptions";
 
 /**

@@ -1,7 +1,7 @@
 import { assert } from "chai";
 
 import { MultipartBody, serializeMultipartBody } from "../../src/multipartBody";
-import { SerializationWriter } from "../../src/serialization";
+import type { SerializationWriter } from "../../src/serialization";
 describe("multipartBody", () => {
   it("implements defensive programming", () => {
     const mpBody = new MultipartBody();

@@ -1,6 +1,6 @@
 import { RequestInformation } from "../requestInformation";
 import { AllowedHostsValidator } from "./allowedHostsValidator";
-import { AuthenticationProvider } from "./authenticationProvider";
+import type { AuthenticationProvider } from "./authenticationProvider";
 import { validateProtocol } from "./validateProtocol";
 
 /** Authenticate a request by using an API Key */

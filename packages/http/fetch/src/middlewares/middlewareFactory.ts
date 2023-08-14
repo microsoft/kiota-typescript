@@ -11,7 +11,7 @@
 import fetch from "node-fetch";
 
 import { CustomFetchHandler } from "./customFetchHandler";
-import { Middleware } from "./middleware";
+import type { Middleware } from "./middleware";
 import { ParametersNameDecodingHandler } from "./parametersNameDecodingHandler";
 import { RedirectHandler } from "./redirectHandler";
 import { RetryHandler } from "./retryHandler";

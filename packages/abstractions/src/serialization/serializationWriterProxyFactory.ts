@@ -1,6 +1,6 @@
-import { Parsable } from "./parsable";
-import { SerializationWriter } from "./serializationWriter";
-import { SerializationWriterFactory } from "./serializationWriterFactory";
+import type { Parsable } from "./parsable";
+import type { SerializationWriter } from "./serializationWriter";
+import type { SerializationWriterFactory } from "./serializationWriterFactory";
 
 /** Proxy factory that allows the composition of before and after callbacks on existing factories. */
 export abstract class SerializationWriterProxyFactory

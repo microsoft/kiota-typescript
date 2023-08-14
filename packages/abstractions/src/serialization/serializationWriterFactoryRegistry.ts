@@ -1,5 +1,5 @@
-import { SerializationWriter } from "./serializationWriter";
-import { SerializationWriterFactory } from "./serializationWriterFactory";
+import type { SerializationWriter } from "./serializationWriter";
+import type { SerializationWriterFactory } from "./serializationWriterFactory";
 
 /** This factory holds a list of all the registered factories for the various types of nodes. */
 export class SerializationWriterFactoryRegistry

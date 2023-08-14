@@ -1,15 +1,13 @@
 import {
-  AccessTokenProvider,
   AllowedHostsValidator,
   validateProtocol,
 } from "@microsoft/kiota-abstractions";
+import type { AccessTokenProvider } from "@microsoft/kiota-abstractions";
 import { AadTokenProvider } from "@microsoft/sp-http";
 import { Span, trace } from "@opentelemetry/api";
 
-import {
-  ObservabilityOptions,
-  ObservabilityOptionsImpl,
-} from "./observabilityOptions";
+import { ObservabilityOptionsImpl } from "./observabilityOptions";
+import type { ObservabilityOptions } from "./observabilityOptions";
 
 export class AzureAdSpfxAccessTokenProvider implements AccessTokenProvider {
   private readonly allowedHostsValidator: AllowedHostsValidator;

@@ -2,7 +2,8 @@ import { DateOnly, Duration, TimeOnly } from "@microsoft/kiota-abstractions";
 import { assert } from "chai";
 
 import { FormSerializationWriter } from "../../src";
-import { serializeTestEntity, TestEntity } from "../testEntity";
+import { serializeTestEntity } from "../testEntity";
+import type { TestEntity } from "../testEntity";
 
 describe("FormSerializationWriter", () => {
   it("writesSampleObjectValue", () => {

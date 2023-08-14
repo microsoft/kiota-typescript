@@ -1,4 +1,4 @@
-import { Middleware } from "./middlewares/middleware";
+import type { Middleware } from "./middlewares/middleware";
 import { MiddlewareFactory } from "./middlewares/middlewareFactory";
 
 /**

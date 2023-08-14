@@ -1,5 +1,5 @@
-import { BackingStore } from "./backingStore";
-import { BackingStoreFactory } from "./backingStoreFactory";
+import type { BackingStore } from "./backingStore";
+import type { BackingStoreFactory } from "./backingStoreFactory";
 import { InMemoryBackingStore } from "./inMemoryBackingStore";
 
 /** This class is used to create instances of InMemoryBackingStore */

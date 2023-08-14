@@ -1,8 +1,6 @@
-import {
-  SerializationWriterFactory,
-  SerializationWriterProxyFactory,
-} from "../serialization";
-import { BackedModel } from "./backedModel";
+import { SerializationWriterProxyFactory } from "../serialization";
+import type { SerializationWriterFactory } from "../serialization";
+import type { BackedModel } from "./backedModel";
 
 /**Proxy implementation of SerializationWriterFactory for the backing store that automatically sets the state of the backing store when serializing. */
 export class BackingStoreSerializationWriterProxyFactory extends SerializationWriterProxyFactory {

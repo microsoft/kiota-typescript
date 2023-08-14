@@ -1,4 +1,4 @@
-import { ParseNode } from "./parseNode";
+import type { ParseNode } from "./parseNode";
 
 /**
  * Defines the contract for a factory that is used to create {@link ParseNode}s.

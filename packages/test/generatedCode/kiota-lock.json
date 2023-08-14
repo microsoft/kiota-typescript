@@ -1,8 +1,8 @@
 {
-  "descriptionHash": "B9068CFB8EB21E8E1E4918F684CAE3C993B2E99585B544918BB5BDF398ECCE5DBC1ABCDA6EA77D048439C29014AA7668B276ED98B8E92740931963F3A7701241",
+  "descriptionHash": "BCA660F549E6B77563972121CEBDD92906DA590C37483649B859B2179089FD72457541C7D14A626F0144756386186D90CC2FE47E7DBF4A483C47507A82971D4C",
   "descriptionLocation": "https://raw.githubusercontent.com/microsoftgraph/msgraph-sdk-powershell/dev/openApiDocs/v1.0/Mail.yml",
   "lockFileVersion": "1.0.0",
-  "kiotaVersion": "1.3.0",
+  "kiotaVersion": "1.6.0",
   "clientClassName": "ApiClient",
   "clientNamespaceName": "ApiSdk",
   "language": "TypeScript",
@@ -11,7 +11,8 @@
   "serializers": [
     "Microsoft.Kiota.Serialization.Json.JsonSerializationWriterFactory",
     "Microsoft.Kiota.Serialization.Text.TextSerializationWriterFactory",
-    "Microsoft.Kiota.Serialization.Form.FormSerializationWriterFactory"
+    "Microsoft.Kiota.Serialization.Form.FormSerializationWriterFactory",
+    "Microsoft.Kiota.Serialization.Multipart.MultipartSerializationWriterFactory"
   ],
   "deserializers": [
     "Microsoft.Kiota.Serialization.Json.JsonParseNodeFactory",
@@ -21,7 +22,8 @@
   "structuredMimeTypes": [
     "application/json",
     "text/plain",
-    "application/x-www-form-urlencoded"
+    "application/x-www-form-urlencoded",
+    "multipart/form-data"
   ],
   "includePatterns": [],
   "excludePatterns": [],

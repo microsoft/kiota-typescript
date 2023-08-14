@@ -1,6 +1,6 @@
-import { Parsable } from "./parsable";
-import { ParseNode } from "./parseNode";
-import { ParseNodeFactory } from "./parseNodeFactory";
+import type { Parsable } from "./parsable";
+import type { ParseNode } from "./parseNode";
+import type { ParseNodeFactory } from "./parseNodeFactory";
 
 /** Proxy factory that allows the composition of before and after callbacks on existing factories. */
 export abstract class ParseNodeProxyFactory implements ParseNodeFactory {

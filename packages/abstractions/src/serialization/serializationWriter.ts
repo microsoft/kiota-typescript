@@ -3,7 +3,7 @@ import { Guid } from "guid-typescript";
 import { DateOnly } from "../dateOnly";
 import { Duration } from "../duration";
 import { TimeOnly } from "../timeOnly";
-import { Parsable } from "./parsable";
+import type { Parsable } from "./parsable";
 import { ModelSerializerFunction } from "./serializationFunctionTypes";
 
 /** Defines an interface for serialization of objects to a stream. */

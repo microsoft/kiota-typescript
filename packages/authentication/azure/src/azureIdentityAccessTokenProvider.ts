@@ -1,15 +1,13 @@
 import { GetTokenOptions, TokenCredential } from "@azure/core-auth";
 import {
-  AccessTokenProvider,
   AllowedHostsValidator,
   validateProtocol,
 } from "@microsoft/kiota-abstractions";
+import type { AccessTokenProvider } from "@microsoft/kiota-abstractions";
 import { Span, trace } from "@opentelemetry/api";
 
-import {
-  ObservabilityOptions,
-  ObservabilityOptionsImpl,
-} from "./observabilityOptions";
+import { ObservabilityOptionsImpl } from "./observabilityOptions";
+import type { ObservabilityOptions } from "./observabilityOptions";
 
 /** Access token provider that leverages the Azure Identity library to retrieve an access token. */
 export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {

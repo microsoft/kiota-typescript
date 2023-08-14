@@ -1,5 +1,4 @@
-import { ParseNode, ParseNodeFactory } from "@microsoft/kiota-abstractions";
-
+import type { ParseNode, ParseNodeFactory } from "@microsoft/kiota-abstractions";
 import { TextParseNode } from "./../textParseNode";
 
 export class TextParseNodeFactory implements ParseNodeFactory {

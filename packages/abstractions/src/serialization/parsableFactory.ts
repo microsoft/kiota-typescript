@@ -1,5 +1,5 @@
-import { Parsable } from "./parsable";
-import { ParseNode } from "./parseNode";
+import type { Parsable } from "./parsable";
+import type { ParseNode } from "./parseNode";
 import { DeserializeIntoModelFunction } from "./serializationFunctionTypes";
 
 /**
