@@ -53,8 +53,11 @@ export class JsonSerializationWriter implements SerializationWriter {
   public writeDateOnlyValue = (key?: string, value?: DateOnly): void => this.writeStringValue(key, value?.toString());
   public writeTimeOnlyValue = (key?: string, value?: TimeOnly): void => this.writeStringValue(key, value?.toString());
   public writeDurationValue = (key?: string, value?: Duration): void => this.writeStringValue(key, value?.toString());
-  public writeNullValue = (key?: string): void => this.writeStringValue(key, `null`);
-
+  public writeNullValue = (key?: string): void => {
+    key && this.writePropertyName(key);
+    this.writer.push(`null`);
+    key && this.writer.push(JsonSerializationWriter.propertySeparator);
+  };
   public writeCollectionOfPrimitiveValues = <T>(
     key?: string,
     values?: T[],
