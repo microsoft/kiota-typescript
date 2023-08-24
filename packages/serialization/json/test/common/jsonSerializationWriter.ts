@@ -12,6 +12,7 @@ describe("JsonParseNode", () => {
     const inputObject: TestParser = {
       testCollection: ["2", "3"],
       testString: "test",
+      testComplexString: "A more \"complex\" string with \r\nlinebreaks and 'weird' characters",
       testObject: {
         additionalData: {
           testObjectName: "str",
@@ -24,6 +25,7 @@ describe("JsonParseNode", () => {
     const expectedObject: TestParser = {
       testCollection: ["2", "3"],
       testString: "test",
+      testComplexString: "A more \"complex\" string with \r\nlinebreaks and 'weird' characters",
       testObject: {
         testObjectName: "str",
         testObjectProp: {
