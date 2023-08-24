@@ -29,7 +29,7 @@ export class JsonSerializationWriter implements SerializationWriter {
     | undefined;
   public writeStringValue = (key?: string, value?: string): void => {
     key && value && this.writePropertyName(key);
-    value && this.writer.push(`"${value}"`);
+    value && this.writer.push(JSON.stringify(value));
     key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
   };
   private writePropertyName = (key: string): void => {
