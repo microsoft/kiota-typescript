@@ -43,7 +43,11 @@ export class JsonSerializationWriter implements SerializationWriter {
       isValuePresent &&
       this.writer.push(JsonSerializationWriter.propertySeparator);
   };
-  public writeNumberValue = (key?: string, value?: number): void => this.writeStringValue(key, value?.toString());
+  public writeNumberValue = (key?: string, value?: number): void => {
+    key && value && this.writePropertyName(key);
+    value && this.writer.push(`${value}`);
+    key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
+  };
   public writeGuidValue = (key?: string, value?: Guid): void => {
     key && value && this.writePropertyName(key);
     value && this.writer.push(`"${value}"`);
