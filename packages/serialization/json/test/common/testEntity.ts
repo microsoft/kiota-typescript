@@ -2,6 +2,7 @@ import type { ParseNode, SerializationWriter } from "@microsoft/kiota-abstractio
 export interface TestParser {
   testCollection?: string[] | undefined;
   testString?: string | undefined;
+  testComplexString?: string | undefined;
   testObject?: Record<string, unknown> | undefined;
   additionalData?: Record<string, unknown>;
 }
@@ -23,6 +24,9 @@ export function deserializeTestParser(
     testString: (n) => {
       testParser.testString = n.getStringValue();
     },
+    textComlexString: (n) => {
+      testParser.testComplexString = n.getStringValue();
+    }
   };
 }
 
@@ -41,6 +45,7 @@ export function serializeTestParser(
     entity.testCollection
   );
   writer.writeStringValue("testString", entity.testString);
+  writer.writeStringValue("testComplexString", entity.testComplexString);
 
   writer.writeObjectValue("testObject", entity.testObject, serializeTestObject);
   writer.writeAdditionalData(entity.additionalData);

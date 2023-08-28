@@ -31,7 +31,7 @@ export class JsonSerializationWriter implements SerializationWriter {
     | undefined;
   public writeStringValue = (key?: string, value?: string): void => {
     key && value && this.writePropertyName(key);
-    value && this.writer.push(`"${value}"`);
+    value && this.writer.push(JSON.stringify(value));
     key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
   };
   private writePropertyName = (key: string): void => {
@@ -55,26 +55,10 @@ export class JsonSerializationWriter implements SerializationWriter {
     value && this.writer.push(`"${value}"`);
     key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
   };
-  public writeDateValue = (key?: string, value?: Date): void => {
-    key && value && this.writePropertyName(key);
-    value && this.writer.push(`"${value.toISOString()}"`);
-    key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
-  };
-  public writeDateOnlyValue = (key?: string, value?: DateOnly): void => {
-    key && value && this.writePropertyName(key);
-    value && this.writer.push(`"${value.toString()}"`);
-    key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
-  };
-  public writeTimeOnlyValue = (key?: string, value?: TimeOnly): void => {
-    key && value && this.writePropertyName(key);
-    value && this.writer.push(`"${value.toString()}"`);
-    key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
-  };
-  public writeDurationValue = (key?: string, value?: Duration): void => {
-    key && value && this.writePropertyName(key);
-    value && this.writer.push(`"${value.toString()}"`);
-    key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
-  };
+  public writeDateValue = (key?: string, value?: Date): void => this.writeStringValue(key, value?.toISOString());
+  public writeDateOnlyValue = (key?: string, value?: DateOnly): void => this.writeStringValue(key, value?.toString());
+  public writeTimeOnlyValue = (key?: string, value?: TimeOnly): void => this.writeStringValue(key, value?.toString());
+  public writeDurationValue = (key?: string, value?: Duration): void => this.writeStringValue(key, value?.toString());
   public writeNullValue = (key?: string): void => {
     key && this.writePropertyName(key);
     this.writer.push(`null`);
@@ -138,7 +122,7 @@ export class JsonSerializationWriter implements SerializationWriter {
     if (
       this.writer.length > 0 &&
       this.writer[this.writer.length - 1] ===
-        JsonSerializationWriter.propertySeparator
+      JsonSerializationWriter.propertySeparator
     ) {
       //removing the last separator
       this.writer.pop();
