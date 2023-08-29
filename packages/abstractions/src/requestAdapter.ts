@@ -1,5 +1,5 @@
-import { RequestInformation } from "./requestInformation";
-import { ParsableFactory } from "./serialization";
+import type { RequestInformation } from "./requestInformation";
+import type { ParsableFactory } from "./serialization";
 import type { Parsable, SerializationWriterFactory } from "./serialization";
 import type { BackingStoreFactory } from "./store";
 

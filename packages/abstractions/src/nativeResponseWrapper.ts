@@ -1,5 +1,5 @@
 import { NativeResponseHandler } from "./nativeResponseHandler";
-import { RequestOption } from "./requestOption";
+import type { RequestOption } from "./requestOption";
 import type { ResponseHandler } from "./responseHandler";
 
 type originalCallType<modelType, queryParametersType, headersType> = (
