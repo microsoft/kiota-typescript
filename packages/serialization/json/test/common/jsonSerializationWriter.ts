@@ -4,9 +4,7 @@ import { JsonParseNode, JsonSerializationWriter } from "../../src/index";
 import {
   createTestParserFromDiscriminatorValue,
   serializeTestParser,
-} from "./testEntity";
-import type {
-  TestParser
+  type TestParser
 } from "./testEntity";
 
 describe("JsonParseNode", () => {

@@ -9,8 +9,7 @@
  * @module RedirectHandler
  */
 
-import { HttpMethod } from "@microsoft/kiota-abstractions";
-import type { RequestOption } from "@microsoft/kiota-abstractions";
+import { HttpMethod, type RequestOption } from "@microsoft/kiota-abstractions";
 import { trace } from "@opentelemetry/api";
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import { FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions";

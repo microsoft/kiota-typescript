@@ -1,8 +1,8 @@
 import {
+  type AccessTokenProvider,
   AllowedHostsValidator,
   validateProtocol,
 } from "@microsoft/kiota-abstractions";
-import type { AccessTokenProvider } from "@microsoft/kiota-abstractions";
 import { AadTokenProvider } from "@microsoft/sp-http";
 import { Span, trace } from "@opentelemetry/api";
 import { type ObservabilityOptions, ObservabilityOptionsImpl } from "./observabilityOptions";
