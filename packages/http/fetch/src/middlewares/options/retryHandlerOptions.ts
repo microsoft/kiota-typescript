@@ -10,7 +10,6 @@
  */
 
 import type { RequestOption } from "@microsoft/kiota-abstractions";
-
 import { FetchResponse } from "../../utils/fetchDefinitions";
 
 /**

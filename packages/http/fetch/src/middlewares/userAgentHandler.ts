@@ -11,7 +11,6 @@
 
 import type { RequestOption } from "@microsoft/kiota-abstractions";
 import { trace } from "@opentelemetry/api";
-
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import { FetchRequestInit } from "../utils/fetchDefinitions";
 import { appendRequestHeader, getRequestHeader } from "../utils/headersUtil";

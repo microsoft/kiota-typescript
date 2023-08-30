@@ -1,5 +1,4 @@
 import type { RequestOption } from "@microsoft/kiota-abstractions";
-
 import type { Middleware } from "../../../src/middlewares/middleware";
 import { DummyFetchHandler } from "./dummyFetchHandler";
 import { getResponse } from "../../testUtils";

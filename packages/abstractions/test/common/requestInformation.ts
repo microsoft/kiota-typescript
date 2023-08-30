@@ -10,15 +10,13 @@ import { URL } from "url";
 
 const assert = chai.assert;
 
-import {
+import { 
   HttpMethod,
-  RequestInformation
-} from "../../src";
-import type { 
-  RequestAdapter,
-  Parsable,
-  SerializationWriter,
-  SerializationWriterFactory
+  type RequestAdapter,
+  RequestInformation,
+  type Parsable,
+  type SerializationWriter,
+  type SerializationWriterFactory
 } from "../../src";
 import { MultipartBody } from "../../src/multipartBody";
 

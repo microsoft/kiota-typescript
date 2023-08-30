@@ -1,4 +1,4 @@
-import type { AllowedHostsValidator } from "./allowedHostsValidator";
+import { AllowedHostsValidator } from "./allowedHostsValidator";
 
 /**
  * @interface

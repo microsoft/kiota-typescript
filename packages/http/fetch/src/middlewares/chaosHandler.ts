@@ -12,7 +12,6 @@
 import { HttpMethod } from "@microsoft/kiota-abstractions";
 import type { RequestOption } from "@microsoft/kiota-abstractions";
 import { Span, trace } from "@opentelemetry/api";
-
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import { FetchHeaders, FetchRequestInit } from "../utils/fetchDefinitions";
 import type { Middleware } from "./middleware";

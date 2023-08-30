@@ -3,9 +3,10 @@ import {
   DateOnly,
   Duration,
   ModelSerializerFunction,
+  type Parsable,
+  type SerializationWriter,
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
-import type { Parsable, SerializationWriter } from "@microsoft/kiota-abstractions";
 import { Guid } from "guid-typescript";
 
 export class TextSerializationWriter implements SerializationWriter {

@@ -6,9 +6,7 @@
  */
 
 import type { RequestOption } from "@microsoft/kiota-abstractions";
-
 import { libraryVersion } from "./version";
-
 export const UserAgentHandlerOptionsKey = "UserAgentHandlerOptionKey";
 
 export class UserAgentHandlerOptions implements RequestOption {

@@ -1,6 +1,5 @@
 import type { ParseNode, ParseNodeFactory} from "@microsoft/kiota-abstractions";
 import { TextDecoder } from "util";
-
 import { FormParseNode } from "./formParseNode";
 
 export class FormParseNodeFactory implements ParseNodeFactory {

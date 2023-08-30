@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { DateOnly, Duration, ParsableFactory, TimeOnly } from "@microsoft/kiota-abstractions";
-import type { Parsable, ParseNode, ParseNodeFactory } from "@microsoft/kiota-abstractions";
+import { DateOnly, Duration, type Parsable, type ParseNode, ParsableFactory, type ParseNodeFactory, TimeOnly } from "@microsoft/kiota-abstractions";
 import { Guid } from "guid-typescript";
 
 export class MockParseNodeFactory implements ParseNodeFactory {

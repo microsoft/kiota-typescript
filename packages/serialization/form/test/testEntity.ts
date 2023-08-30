@@ -1,13 +1,11 @@
 import {
+  type AdditionalDataHolder,
   DateOnly,
   Duration,
+  type Parsable,
+  type ParseNode,
+  type SerializationWriter,
   TimeOnly,
-} from "@microsoft/kiota-abstractions";
-import type { 
-  AdditionalDataHolder,
-  Parsable,
-  ParseNode,
-  SerializationWriter
 } from "@microsoft/kiota-abstractions";
 
 export interface TestEntity extends Parsable, AdditionalDataHolder {

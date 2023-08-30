@@ -1,4 +1,4 @@
-import type { RequestInformation } from "../requestInformation";
+import { RequestInformation } from "../requestInformation";
 
 /**
  * @interface

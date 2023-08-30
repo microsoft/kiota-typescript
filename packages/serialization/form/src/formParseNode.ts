@@ -1,12 +1,13 @@
 import {
   DateOnly,
   Duration,
+  type Parsable,
+  type ParseNode,
   ParsableFactory,
   parseGuidString,
   TimeOnly,
   toFirstCharacterUpper,
 } from "@microsoft/kiota-abstractions";
-import type { Parsable, ParseNode } from "@microsoft/kiota-abstractions";
 
 export class FormParseNode implements ParseNode {
   private readonly _fields: Record<string, string> = {};

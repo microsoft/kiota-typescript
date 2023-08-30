@@ -9,7 +9,6 @@
  * @module MiddlewareFactory
  */
 import fetch from "node-fetch";
-
 import { CustomFetchHandler } from "./customFetchHandler";
 import type { Middleware } from "./middleware";
 import { ParametersNameDecodingHandler } from "./parametersNameDecodingHandler";

@@ -1,9 +1,7 @@
 import { GetTokenOptions, TokenCredential } from "@azure/core-auth";
 import { BaseBearerTokenAuthenticationProvider } from "@microsoft/kiota-abstractions";
-
 import { AzureIdentityAccessTokenProvider } from "./azureIdentityAccessTokenProvider";
-import { ObservabilityOptionsImpl } from "./observabilityOptions";
-import type { ObservabilityOptions } from "./observabilityOptions";
+import { type ObservabilityOptions, ObservabilityOptionsImpl } from "./observabilityOptions";
 
 export class AzureIdentityAuthenticationProvider extends BaseBearerTokenAuthenticationProvider {
   /**

@@ -3,15 +3,12 @@ import * as Template from "uri-template-lite";
 
 import { DateOnly } from "./dateOnly";
 import { Duration } from "./duration";
-import type { HttpMethod } from "./httpMethod";
+import { HttpMethod } from "./httpMethod";
 import { MultipartBody } from "./multipartBody";
 import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitiveKeys";
 import type { RequestAdapter } from "./requestAdapter";
 import type { RequestOption } from "./requestOption";
-import type {
-  ModelSerializerFunction,
-} from "./serialization";
-import type { Parsable, SerializationWriter } from "./serialization";
+import type { ModelSerializerFunction, Parsable, SerializationWriter } from "./serialization";
 import { TimeOnly } from "./timeOnly";
 
 /** This class represents an abstract HTTP request. */

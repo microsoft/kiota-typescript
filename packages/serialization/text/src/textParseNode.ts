@@ -1,12 +1,13 @@
 import {
   DateOnly,
   Duration,
+  type Parsable,
   ParsableFactory,
+  type ParseNode,
   parseGuidString,
   TimeOnly,
   toFirstCharacterUpper,
 } from "@microsoft/kiota-abstractions";
-import type { Parsable, ParseNode } from "@microsoft/kiota-abstractions";
 
 export class TextParseNode implements ParseNode {
   private static noStructuredDataMessage =
