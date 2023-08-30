@@ -5,3 +5,11 @@ lib/
 kiota-linux-x64/
 kiota_tool/
 *.log
+
+# Editor and IDE files
+.vscode/
+.idea/
+*.sublime-*
+*.swp
+
+```
