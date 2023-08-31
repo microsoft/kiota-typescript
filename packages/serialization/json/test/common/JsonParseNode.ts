@@ -38,6 +38,15 @@ describe("JsonParseNode", () => {
     assert.equal(stringValueResult.testDate?.getTime(), jsDate.getTime());
   });
 
+  it("Test undefined dates staying as undefined", async () => {
+    const stringValueResult = new JsonParseNode({
+      testDate: undefined
+    }).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
+
+    assert.equal(stringValueResult.testDate, undefined);
+
+  });
+
   it("Test enum values", async () => {
     enum TestEnum {
       A = "a",
