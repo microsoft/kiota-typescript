@@ -27,6 +27,17 @@ describe("JsonParseNode", () => {
     assert.equal(stringValueResult.testCollection?.shift(), "2");
   });
 
+  it("Test date value hydration", async () => {
+    const dateStr = "2023-08-31T00:00:00Z";
+    const jsDate = new Date(dateStr);
+
+    const stringValueResult = new JsonParseNode({
+      testDate: dateStr
+    }).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
+
+    assert.equal(stringValueResult.testDate?.getTime(), jsDate.getTime());
+  });
+
   it("Test enum values", async () => {
     enum TestEnum {
       A = "a",
