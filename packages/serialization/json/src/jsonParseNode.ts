@@ -22,7 +22,7 @@ export class JsonParseNode implements ParseNode {
   public getBooleanValue = () => this._jsonNode as boolean;
   public getNumberValue = () => this._jsonNode as number;
   public getGuidValue = () => parseGuidString(this.getStringValue());
-  public getDateValue = () => this._jsonNode as Date;
+  public getDateValue = () => this._jsonNode ? new Date(this._jsonNode as string) : undefined;
   public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
   public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
   public getDurationValue = () => Duration.parse(this.getStringValue());

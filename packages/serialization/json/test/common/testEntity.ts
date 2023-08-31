@@ -6,6 +6,7 @@ export interface TestParser {
   testComplexString?: string | undefined;
   testObject?: Record<string, unknown> | undefined;
   additionalData?: Record<string, unknown>;
+  testDate?: Date | undefined;
 }
 
 export function createTestParserFromDiscriminatorValue(
@@ -25,8 +26,11 @@ export function deserializeTestParser(
     testString: (n) => {
       testParser.testString = n.getStringValue();
     },
-    textComlexString: (n) => {
+    textComplexString: (n) => {
       testParser.testComplexString = n.getStringValue();
+    },
+    testDate: (n) => {
+      testParser.testDate = n.getDateValue()
     }
   };
 }
@@ -48,6 +52,7 @@ export function serializeTestParser(
   writer.writeStringValue("testString", entity.testString);
   writer.writeStringValue("testComplexString", entity.testComplexString);
 
+  writer.writeDateValue("testDate", entity.testDate);
   writer.writeObjectValue("testObject", entity.testObject, serializeTestObject);
   writer.writeAdditionalData(entity.additionalData);
 }
