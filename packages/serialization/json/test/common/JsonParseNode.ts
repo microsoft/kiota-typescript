@@ -70,4 +70,34 @@ describe("JsonParseNode", () => {
     assert.equal(enumValuesResult.length, 2);
     assert.equal(enumValuesResult.shift(), "b");
   });
+
+  it("Test a null collection of object values", async () => {
+    const result = new JsonParseNode({
+      "foos": [
+          {
+            "id": "b089d1f1-e527-4b8a-ba96-094922af6e40",
+            "bars": null
+          }
+      ]
+    }).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
+    assert.equal(result.foos![0].bars, undefined);
+  });
+
+  it("Test collection of object values", async () => {
+    const result = new JsonParseNode({
+      "foos": [
+          {
+            "id": "b089d1f1-e527-4b8a-ba96-094922af6e40",
+            "bars": [
+              {
+                "propA": "property A test value",
+                "propB": "property B test value",
+                "propC": null
+              }
+            ]
+          }
+      ]
+    }).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
+    assert.equal(result.foos![0].bars![0].propA, "property A test value");
+  });
 });

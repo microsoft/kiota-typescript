@@ -1,4 +1,4 @@
-import { ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
+import { Parsable, ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
 
 export interface TestParser {
   testCollection?: string[] | undefined;
@@ -7,6 +7,16 @@ export interface TestParser {
   testObject?: Record<string, unknown> | undefined;
   additionalData?: Record<string, unknown>;
   testDate?: Date | undefined;
+  foos?: FooResponse[] | undefined;
+}
+export interface FooResponse extends Parsable {
+  id?: string | undefined;
+  bars?: BarResponse[] | undefined;
+}
+export interface BarResponse extends Parsable {
+  propA?: string | undefined;
+  propB?: string | undefined;
+  propC?: Date | undefined;
 }
 
 export function createTestParserFromDiscriminatorValue(
@@ -14,6 +24,20 @@ export function createTestParserFromDiscriminatorValue(
 ) {
   if (!parseNode) throw new Error("parseNode cannot be undefined");
   return deserializeTestParser;
+}
+
+export function createFooParserFromDiscriminatorValue(
+  parseNode: ParseNode | undefined
+) {
+  if (!parseNode) throw new Error("parseNode cannot be undefined");
+  return deserializeFooParser;
+}
+
+export function createBarParserFromDiscriminatorValue(
+  parseNode: ParseNode | undefined
+) {
+  if (!parseNode) throw new Error("parseNode cannot be undefined");
+  return deserializeBarParser;
 }
 
 export function deserializeTestParser(
@@ -31,6 +55,38 @@ export function deserializeTestParser(
     },
     testDate: (n) => {
       testParser.testDate = n.getDateValue()
+    },
+    foos: (n) => {
+      testParser.foos = n.getCollectionOfObjectValues(createFooParserFromDiscriminatorValue);
+    }
+  };
+}
+
+export function deserializeFooParser(
+  fooResponse: FooResponse | undefined = {}
+): Record<string, (node: ParseNode) => void> {
+  return {
+    id: (n) => {
+      fooResponse.id = n.getStringValue();
+    },
+    bars: (n) => {
+      fooResponse.bars = n.getCollectionOfObjectValues(createBarParserFromDiscriminatorValue);
+    }
+  };
+}
+
+export function deserializeBarParser(
+  barResponse: BarResponse | undefined = {}
+): Record<string, (node: ParseNode) => void> {
+  return {
+    propA: (n) => {
+      barResponse.propA = n.getStringValue();
+    },
+    propB: (n) => {
+      barResponse.propB = n.getStringValue();
+    },
+    propC: (n) => {
+      barResponse.propC = n.getDateValue();
     }
   };
 }
