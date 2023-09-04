@@ -61,9 +61,9 @@ export class JsonParseNode implements ParseNode {
   public getCollectionOfObjectValues = <T extends Parsable>(
     method: ParsableFactory<T>,
   ): T[] | undefined => {
-    return (this._jsonNode as unknown[])
+    return this._jsonNode ? (this._jsonNode as unknown[])
       .map((x) => new JsonParseNode(x))
-      .map((x) => x.getObjectValue<T>(method));
+      .map((x) => x.getObjectValue<T>(method)) : undefined;
   };
 
   public getObjectValue = <T extends Parsable>(
