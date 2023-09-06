@@ -9,6 +9,8 @@ import {
 
 describe("JsonParseNode", () => {
   it("Test object serialization", async () => {
+    const testDate = new Date();
+
     const inputObject: TestParser = {
       testCollection: ["2", "3"],
       testString: "test",
@@ -21,6 +23,7 @@ describe("JsonParseNode", () => {
           },
         },
       },
+      testDate: testDate
     };
     const expectedObject: TestParser = {
       testCollection: ["2", "3"],
@@ -32,6 +35,7 @@ describe("JsonParseNode", () => {
           someValue: 123,
         },
       },
+      testDate: testDate
     };
 
     const writer = new JsonSerializationWriter();

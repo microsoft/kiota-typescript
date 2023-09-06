@@ -22,7 +22,7 @@ export class JsonParseNode implements ParseNode {
   public getBooleanValue = () => this._jsonNode as boolean;
   public getNumberValue = () => this._jsonNode as number;
   public getGuidValue = () => parseGuidString(this.getStringValue());
-  public getDateValue = () => this._jsonNode as Date;
+  public getDateValue = () => this._jsonNode ? new Date(this._jsonNode as string) : undefined;
   public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
   public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
   public getDurationValue = () => Duration.parse(this.getStringValue());
@@ -61,9 +61,9 @@ export class JsonParseNode implements ParseNode {
   public getCollectionOfObjectValues = <T extends Parsable>(
     method: ParsableFactory<T>,
   ): T[] | undefined => {
-    return (this._jsonNode as unknown[])
+    return this._jsonNode ? (this._jsonNode as unknown[])
       .map((x) => new JsonParseNode(x))
-      .map((x) => x.getObjectValue<T>(method));
+      .map((x) => x.getObjectValue<T>(method)) : undefined;
   };
 
   public getObjectValue = <T extends Parsable>(
