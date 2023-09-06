@@ -31,15 +31,14 @@
   "homepage": "https://github.com/microsoft/kiota#readme",
   "devDependencies": {
     "@types/node": "^20.1.1",
-    "@types/uri-template-lite": "^19.12.1",
     "@types/uuid": "^9.0.0"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.2.0",
+    "@std-uritemplate/std-uritemplate": "^0.0.31",
     "guid-typescript": "^1.0.9",
     "tinyduration": "^3.2.2",
     "tslib": "^2.3.1",
-    "uri-template-lite": "^23.4.0",
     "uuid": "^9.0.0"
   },
   "publishConfig": {

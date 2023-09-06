@@ -1085,6 +1085,11 @@
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz#96116f2a912e0c02817345b3c10751069920d553"
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
 
+"@std-uritemplate/std-uritemplate@^0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@std-uritemplate/std-uritemplate/-/std-uritemplate-0.0.31.tgz#ad49fe40e7c9c7644dd32675d3dc589901f9eede"
+  integrity sha512-zw+T6E/5RTRYiuDuRrpSpntl2LpikQZseyrcZ4lSNy+p1D4fzZMyNdPFwW4JJDzC3ADeKY8qH6qGpBkBZAlraQ==
+
 "@tootallnate/once@2":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
@@ -1228,11 +1233,6 @@
   version "8.1.2"
   resolved "https://registry.yarnpkg.com/@types/sinonjs__fake-timers/-/sinonjs__fake-timers-8.1.2.tgz#bf2e02a3dbd4aecaf95942ecd99b7402e03fad5e"
   integrity sha512-9GcLXF0/v3t80caGs5p2rRfkB+a8VBGLJZVih6CNFkx8IZ994wiKKLSRs9nuFwk1HevWs/1mnUmkApGrSGsShA==
-
-"@types/uri-template-lite@^19.12.1":
-  version "19.12.1"
-  resolved "https://registry.yarnpkg.com/@types/uri-template-lite/-/uri-template-lite-19.12.1.tgz#61dbb86d1bac6549e653cf4c167772b06353fa43"
-  integrity sha512-tOeSAqiOup+ztD4w6FHLHq9nBDytgiQFRx0JSDzhZT9QL6wO0qZwSdC5O2WOhQRNGxnfrGi0GrB/Ruc2qbapMw==
 
 "@types/uuid@^9.0.0":
   version "9.0.3"
@@ -7617,11 +7617,6 @@ uri-js@^4.2.2:
   integrity sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==
   dependencies:
     punycode "^2.1.0"
-
-uri-template-lite@^23.4.0:
-  version "23.4.0"
-  resolved "https://registry.yarnpkg.com/uri-template-lite/-/uri-template-lite-23.4.0.tgz#989158b76dba91dafbb2d558153f5359d0b04f48"
-  integrity sha512-JsAjquFMpSyZRWAUQguhHIRuh4jb/xDhwQyb1/7C42YLJgkc5WoBF3UkRRM1QtL6Vr9xBa9fB7q3xPzXRwvuUA==
 
 url@^0.11.0:
   version "0.11.0"

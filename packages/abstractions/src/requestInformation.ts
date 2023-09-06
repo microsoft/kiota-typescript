@@ -1,5 +1,5 @@
 import { trace } from "@opentelemetry/api";
-import * as Template from "uri-template-lite";
+import { StdUriTemplate } from "@std-uritemplate/std-uritemplate";
 
 import { DateOnly } from "./dateOnly";
 import { Duration } from "./duration";
@@ -49,7 +49,7 @@ export class RequestInformation {
           data[key] = this.pathParameters[key];
         }
       }
-      return Template.expand(this.urlTemplate, data);
+      return StdUriTemplate.expand(this.urlTemplate, data);
     }
   }
   /** Sets the URL of the request */
