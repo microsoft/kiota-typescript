@@ -1,4 +1,4 @@
-import { RequestInformation } from "../requestInformation";
+import { type RequestInformation } from "../requestInformation";
 import { AllowedHostsValidator } from "./allowedHostsValidator";
 import type { AuthenticationProvider } from "./authenticationProvider";
 import { validateProtocol } from "./validateProtocol";

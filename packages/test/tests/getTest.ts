@@ -1,7 +1,7 @@
 import { apiClient } from "./testClient";
 
 import { assert } from "chai";
-import { MessagesRequestBuilderGetQueryParameters } from "../generatedCode/users/item/messages/messagesRequestBuilderGetQueryParameters";
+import { type MessagesRequestBuilderGetQueryParameters } from "../generatedCode/users/item/messages/messagesRequestBuilderGetQueryParameters";
 
 describe("TestGet", () => {
 

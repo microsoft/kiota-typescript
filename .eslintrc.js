@@ -30,9 +30,6 @@ module.exports = {
         "@typescript-eslint"
     ],
     "rules": {
-        "@typescript-eslint/consistent-type-imports": "error",
-        "no-unused-vars": "warn",
-        "@typescript-eslint/no-unused-vars": "warn",
-        "no-extra-semi" : "warn"
+        "@typescript-eslint/consistent-type-imports": "error"
     }
 }

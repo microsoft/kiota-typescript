@@ -1,5 +1,5 @@
-import { RequestInformation } from "../requestInformation";
-import type { AuthenticationProvider } from "./authenticationProvider";
+import { type RequestInformation } from "../requestInformation";
+import { type AuthenticationProvider } from "./authenticationProvider";
 
 /** This authentication provider does not perform any authentication.   */
 export class AnonymousAuthenticationProvider implements AuthenticationProvider {
