@@ -1085,10 +1085,10 @@
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz#96116f2a912e0c02817345b3c10751069920d553"
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
 
-"@std-uritemplate/std-uritemplate@^0.0.41":
-  version "0.0.41"
-  resolved "https://registry.yarnpkg.com/@std-uritemplate/std-uritemplate/-/std-uritemplate-0.0.41.tgz#21376ceb5316c96d3fa8fd791a43b9d6fb297471"
-  integrity sha512-V2WgZCS7fylMtShPOGgKh7PGTeVGTR7U0vNThJnGJYqLolPamuuNve21HQ1pwE0vfiCxyrNfv16XCh0PscSgJg==
+"@std-uritemplate/std-uritemplate@^0.0.42":
+  version "0.0.42"
+  resolved "https://registry.yarnpkg.com/@std-uritemplate/std-uritemplate/-/std-uritemplate-0.0.42.tgz#a21c505a665913f4539b0c7f7b564908dbd875f3"
+  integrity sha512-zH+ZOKkGi/79qKOEAEN3JKS+a3+fezsynDH1sdMWan40nw1VYmwTs9xrBk6qt3m6OEu89yi/cJ9sSouoT1UAjQ==
 
 "@tootallnate/once@2":
   version "2.0.0"
