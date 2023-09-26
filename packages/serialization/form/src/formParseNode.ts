@@ -1,4 +1,5 @@
 import {
+  BackedModel,
   DateOnly,
   Duration,
   Parsable,
@@ -8,6 +9,7 @@ import {
   TimeOnly,
   toFirstCharacterUpper,
 } from "@microsoft/kiota-abstractions";
+import { createBackedModelProxyHandler } from "@microsoft/kiota-abstractions/src/store/backedModelProxy";
 
 export class FormParseNode implements ParseNode {
   private readonly _fields: Record<string, string> = {};
@@ -78,7 +80,8 @@ export class FormParseNode implements ParseNode {
   public getObjectValue = <T extends Parsable>(
     parsableFactory: ParsableFactory<T>,
   ): T => {
-    const value: T = {} as T;
+    const temp: T = {} as T;
+    const value: T = this.isBackingStoreEnabled(temp) ? new Proxy({}, createBackedModelProxyHandler<T>()) as T : temp;
     if (this.onBeforeAssignFieldValues) {
       this.onBeforeAssignFieldValues(value);
     }
@@ -87,6 +90,15 @@ export class FormParseNode implements ParseNode {
       this.onAfterAssignFieldValues(value);
     }
     return value;
+  };
+  /**
+   * Check if the object is an instance a BackedModel
+   * @param obj 
+   * @returns 
+   */
+  private isBackingStoreEnabled = (obj): boolean => {
+    // TODO: check if the object is a BackedModel
+    return true;
   };
   public getCollectionOfEnumValues = <T>(type: any): T[] => {
     const rawValues = this.getStringValue();
