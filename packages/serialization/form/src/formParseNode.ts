@@ -96,7 +96,7 @@ export class FormParseNode implements ParseNode {
    * @param obj 
    * @returns 
    */
-  private isBackingStoreEnabled = (obj): boolean => {
+  private isBackingStoreEnabled = <T extends Parsable>(obj: T): boolean => {
     // TODO: check if the object is a BackedModel
     return true;
   };
