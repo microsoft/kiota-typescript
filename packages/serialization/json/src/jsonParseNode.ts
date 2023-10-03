@@ -1,4 +1,5 @@
 import {
+  createBackedModelProxyHandler,
   DateOnly,
   Duration,
   Parsable,
@@ -6,6 +7,7 @@ import {
   parseGuidString,
   ParseNode,
   TimeOnly,
+  isBackingStoreEnabled,
   toFirstCharacterUpper,
 } from "@microsoft/kiota-abstractions";
 
@@ -69,7 +71,8 @@ export class JsonParseNode implements ParseNode {
   public getObjectValue = <T extends Parsable>(
     parsableFactory: ParsableFactory<T>,
   ): T => {
-    const value: T = {} as T;
+    const temp: T = {} as T;
+    const value: T = isBackingStoreEnabled(temp) ? new Proxy({}, createBackedModelProxyHandler<T>()) as T : temp;
     if (this.onBeforeAssignFieldValues) {
       this.onBeforeAssignFieldValues(value);
     }

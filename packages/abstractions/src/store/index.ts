@@ -6,3 +6,5 @@ export * from "./backingStoreParseNodeFactory";
 export * from "./backingStoreSerializationWriterProxyFactory";
 export * from "./inMemoryBackingStore";
 export * from "./inMemoryBackingStoreFactory";
+export * from "./backedModelProxy";
+export * from "./backingStoreUtils";
