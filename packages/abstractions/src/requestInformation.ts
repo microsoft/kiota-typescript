@@ -90,6 +90,16 @@ export class RequestInformation {
       this.headers[key] = source[key];
     }
   }
+  /** Try to add the header for the request if it's not already present. */
+  public tryAddRequestHeaders(key: string, value: string): boolean {
+    if (!key || !value) return false;
+    if (Object.keys(this.headers).find((k) => k === key) !== undefined) {
+      return false;
+    } else {
+      this.headers[key] = [value];
+      return true;
+    }
+  }
   /** Adds the request options for the request. */
   public addRequestOptions(options: RequestOption[] | undefined) {
     if (!options || options.length === 0) return;
