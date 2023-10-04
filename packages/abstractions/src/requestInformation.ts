@@ -170,7 +170,7 @@ export class RequestInformation {
     contentType?: string | undefined,
   ) => {
     if (contentType) {
-      this.headers[RequestInformation.contentTypeHeader] = [contentType];
+      this.tryAddRequestHeaders(RequestInformation.contentTypeHeader, contentType);
     }
     this.content = writer.getSerializedContent();
   };
@@ -254,9 +254,7 @@ export class RequestInformation {
    * @param value the binary stream
    */
   public setStreamContent = (value: ArrayBuffer): void => {
-    this.headers[RequestInformation.contentTypeHeader] = [
-      RequestInformation.binaryContentType,
-    ];
+    this.tryAddRequestHeaders(RequestInformation.contentTypeHeader, RequestInformation.binaryContentType);
     this.content = value;
   };
   /**
