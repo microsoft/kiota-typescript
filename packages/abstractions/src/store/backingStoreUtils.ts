@@ -6,6 +6,6 @@ import { Parsable } from "../serialization";
    * @returns 
    */
 export function isBackingStoreEnabled<T extends Parsable>(obj: T): boolean {
-    // TODO: check if the object is a BackedModel
-    return true;
+    // Check if the object is a BackedModel
+    return obj && typeof obj === 'object' && 'backingStore' in obj;
 };
