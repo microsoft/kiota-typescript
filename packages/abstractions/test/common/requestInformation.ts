@@ -113,6 +113,21 @@ describe("RequestInformation", () => {
     assert.equal(requestInformation.headers["ConsistencyLevel"][0], "eventual");
   });
 
+  it("Try to add headers to requestInformation", () => {
+    const requestInformation = new RequestInformation();
+    requestInformation.pathParameters["baseurl"] = baseUrl;
+    requestInformation.urlTemplate = "http://localhost/me{?%24select}";
+    assert.isTrue(requestInformation.tryAddRequestHeaders("key", "value1"));
+    assert.isNotEmpty(requestInformation.headers);
+    assert.equal(Object.keys(requestInformation.headers).length, 1);
+    assert.equal(requestInformation.headers["key"].length, 1);
+    assert.equal(requestInformation.headers["key"][0], "value1");
+    assert.isFalse(requestInformation.tryAddRequestHeaders("key", "value2"));
+    assert.equal(Object.keys(requestInformation.headers).length, 1);
+    assert.equal(requestInformation.headers["key"].length, 1);
+    assert.equal(requestInformation.headers["key"][0], "value1");
+  });
+
   it("Sets a parsable content", () => {
     const requestInformation = new RequestInformation();
     let methodCalledCount = 0;

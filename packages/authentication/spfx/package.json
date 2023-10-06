@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/kiota-authentication-spfx",
-  "version": "1.0.0-preview.16",
+  "version": "1.0.0-preview.17",
   "description": "Authentication provider for using Kiota in SPFx solutions",
   "main": "dist/cjs/src/index.js",
   "module": "dist/es/src/index.js",
@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/microsoft/kiota-typescript#readme",
   "dependencies": {
-    "@microsoft/kiota-abstractions": "^1.0.0-preview.26",
+    "@microsoft/kiota-abstractions": "^1.0.0-preview.27",
     "@microsoft/sp-http": "^1.15.2",
     "@opentelemetry/api": "^1.2.0",
     "tslib": "^2.3.1"
