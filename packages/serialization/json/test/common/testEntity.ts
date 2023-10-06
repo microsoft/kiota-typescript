@@ -54,7 +54,7 @@ export function deserializeTestParser(
       testParser.testComplexString = n.getStringValue();
     },
     testDate: (n) => {
-      testParser.testDate = n.getDateValue()
+      testParser.testDate = n.getDateValue();
     },
     foos: (n) => {
       testParser.foos = n.getCollectionOfObjectValues(createFooParserFromDiscriminatorValue);

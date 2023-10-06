@@ -1,25 +1,25 @@
 import { RequestInformation } from "@microsoft/kiota-abstractions";
 import { assert } from "chai";
 
-import { AzureAdSpfxAuthenticationProvider, AzureAdSpfxAccessTokenProvider } from "../src";
+import { AzureAdSpfxAccessTokenProvider,AzureAdSpfxAuthenticationProvider } from "../src";
 import { MockAadTokenProvider } from "./mockAadTokenProvider";
 
 describe("Test authentication using SharePoint Framework", () => {
 
     it("AccessToken is returned correctly from getAuthorizationToken function", async () => {
-        const expectedToken: string = "dummy_valid_token"
-        const appIdUri: string = "api://api_client_id";
+        const expectedToken = "dummy_valid_token";
+        const appIdUri = "api://api_client_id";
         const allowedHosts: Set<string> = new Set<string>([
             "myapi.azurewebsites.net"
         ]);
 
         const mockTokenProvider = new MockAadTokenProvider(expectedToken);
-    
+
         const accessTokenProvider = new AzureAdSpfxAccessTokenProvider(
-            mockTokenProvider as any, 
+            mockTokenProvider as any,
             appIdUri,
             allowedHosts);
-        
+
         const accessToken: string = await accessTokenProvider.getAuthorizationToken(
             "https://myapi.azurewebsites.net/endpoint");
 
@@ -27,28 +27,28 @@ describe("Test authentication using SharePoint Framework", () => {
     });
 
     it("AccessToken is empty when requested URL is not in allowedHosts", async () => {
-        const expectedToken: string = "dummy_valid_token"
-        const appIdUri: string = "api://api_client_id";
+        const expectedToken = "dummy_valid_token";
+        const appIdUri = "api://api_client_id";
         const allowedHosts: Set<string> = new Set<string>([
             "myapi.azurewebsites.net"
         ]);
 
         const mockTokenProvider = new MockAadTokenProvider(expectedToken);
-    
+
         const accessTokenProvider = new AzureAdSpfxAccessTokenProvider(
-            mockTokenProvider as any, 
+            mockTokenProvider as any,
             appIdUri,
             allowedHosts);
-        
+
         const accessToken: string = await accessTokenProvider.getAuthorizationToken(
             "https://notallowedhost.azurewebsites.net/endpoint");
 
-        assert.equal('', accessToken);
-    });    
+        assert.equal("", accessToken);
+    });
 
-    it("AccessToken is appended correctly in header by AzureAdSpfxAuthenticationProvider", async () => {    
-        const expectedToken: string = "dummy_valid_token"
-        const appIdUri: string = "api://api_client_id";
+    it("AccessToken is appended correctly in header by AzureAdSpfxAuthenticationProvider", async () => {
+        const expectedToken = "dummy_valid_token";
+        const appIdUri = "api://api_client_id";
         const allowedHosts: Set<string> = new Set<string>([
             "myapi.azurewebsites.net"
         ]);

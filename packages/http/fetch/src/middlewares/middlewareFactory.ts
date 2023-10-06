@@ -9,13 +9,14 @@
  * @module MiddlewareFactory
  */
 import fetch from "node-fetch";
+
 import { CustomFetchHandler } from "./customFetchHandler";
+import { HeadersInspectionHandler } from "./headersInspectionHandler";
 import type { Middleware } from "./middleware";
 import { ParametersNameDecodingHandler } from "./parametersNameDecodingHandler";
 import { RedirectHandler } from "./redirectHandler";
 import { RetryHandler } from "./retryHandler";
 import { UserAgentHandler } from "./userAgentHandler";
-import { HeadersInspectionHandler } from "./headersInspectionHandler";
 
 /**
  * @class

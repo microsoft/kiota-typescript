@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { FetchRequestInit } from "./fetchDefinitions";
+import type { FetchRequestInit } from "./fetchDefinitions";
 
 /**
  * @module MiddlewareUtil

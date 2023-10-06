@@ -7,6 +7,7 @@
 
 import { type RequestOption } from "@microsoft/kiota-abstractions";
 import { trace } from "@opentelemetry/api";
+
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import type { Middleware } from "./middleware";
 import { HeadersInspectionOptions, HeadersInspectionOptionsKey } from "./options/headersInspectionOptions";

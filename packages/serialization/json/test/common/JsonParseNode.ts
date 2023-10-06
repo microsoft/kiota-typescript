@@ -1,8 +1,7 @@
 import { assert } from "chai";
 
 import { JsonParseNode } from "../../src/index";
-import { createTestParserFromDiscriminatorValue } from "./testEntity";
-import type { TestParser } from "./testEntity";
+import { createTestParserFromDiscriminatorValue, type TestParser } from "./testEntity";
 
 describe("JsonParseNode", () => {
   it("jsonParseNode:initializes", async () => {

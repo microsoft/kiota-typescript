@@ -5,6 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 import type { RequestOption } from "@microsoft/kiota-abstractions";
+
 import type { Middleware } from "./middleware";
 import type { TelemetryHandlerOptions } from "./options/telemetryHandlerOptions";
 

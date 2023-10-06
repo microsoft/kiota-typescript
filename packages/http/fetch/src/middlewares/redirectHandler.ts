@@ -11,8 +11,9 @@
 
 import { HttpMethod, type RequestOption } from "@microsoft/kiota-abstractions";
 import { trace } from "@opentelemetry/api";
+
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
-import { FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions";
+import type { FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions";
 import type { Middleware } from "./middleware";
 import { RedirectHandlerOptionKey, RedirectHandlerOptions } from "./options/redirectHandlerOptions";
 

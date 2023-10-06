@@ -10,6 +10,7 @@
  */
 
 import type { RequestOption } from "@microsoft/kiota-abstractions";
+
 import type { Middleware } from "../../../src/middlewares/middleware";
 
 /**

@@ -1,4 +1,5 @@
 import { Guid } from "guid-typescript";
+
 import type { RequestAdapter } from "./requestAdapter";
 import type { ModelSerializerFunction, Parsable, ParseNode, SerializationWriter } from "./serialization";
 /**

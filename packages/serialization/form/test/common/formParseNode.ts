@@ -1,8 +1,7 @@
 import { assert } from "chai";
 
 import { FormParseNode } from "../../src/index";
-import { createTestParserFromDiscriminatorValue } from "../testEntity";
-import type { TestEntity } from "../testEntity";
+import { createTestParserFromDiscriminatorValue,type TestEntity } from "../testEntity";
 
 describe("FormParseNode", () => {
   const testUserForm =

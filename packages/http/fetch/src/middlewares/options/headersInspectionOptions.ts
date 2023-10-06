@@ -1,4 +1,4 @@
-import { createRecordWithCaseInsensitiveKeys, type RequestOption } from "@microsoft/kiota-abstractions";
+import { createRecordWithCaseInsensitiveKeys,type RequestOption } from "@microsoft/kiota-abstractions";
 export const HeadersInspectionOptionsKey = "HeadersInspectionOptionsKey";
 /**
  * @class

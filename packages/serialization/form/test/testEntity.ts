@@ -1,10 +1,10 @@
-import {
-  type AdditionalDataHolder,
+import type {
+  AdditionalDataHolder,
   DateOnly,
   Duration,
-  type Parsable,
-  type ParseNode,
-  type SerializationWriter,
+  Parsable,
+  ParseNode,
+  SerializationWriter,
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
 

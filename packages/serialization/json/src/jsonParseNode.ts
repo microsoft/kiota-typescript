@@ -2,9 +2,9 @@ import {
   DateOnly,
   Duration,
   type Parsable,
-  ParsableFactory,
-  type ParseNode,
+  type ParsableFactory,
   parseGuidString,
+  type ParseNode,
   TimeOnly,
   toFirstCharacterUpper,
 } from "@microsoft/kiota-abstractions";

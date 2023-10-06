@@ -8,7 +8,7 @@
 
 import { assert } from "chai";
 
-import { FetchRequestInit } from "../../../src/utils/fetchDefinitions";
+import type { FetchRequestInit } from "../../../src/utils/fetchDefinitions";
 import { appendRequestHeader, getRequestHeader, setRequestHeader } from "../../../src/utils/headersUtil";
 
 describe("HeaderUtil", async () => {

@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import {
+import type {
   DateOnly,
   Duration,
-  ModelSerializerFunction,
-  type Parsable,
   MultipartBody,
-  type SerializationWriter,
-  TimeOnly,
-} from "@microsoft/kiota-abstractions";
-import { Guid } from "guid-typescript";
+  type Parsable,
+  type SerializationWriter
+  ModelSerializerFunction,
+  TimeOnly } from "@microsoft/kiota-abstractions";
+import type { Guid } from "guid-typescript";
 
 /** Serialization writer for multipart/form-data */
 export class MultipartSerializationWriter implements SerializationWriter {
