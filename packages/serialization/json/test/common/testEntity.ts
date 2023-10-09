@@ -1,4 +1,6 @@
-import { Parsable, ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
+import { BackedModel, BackingStore, Parsable, ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
+
+const fakeBackingStore: BackingStore = {} as BackingStore;
 
 export interface TestParser {
   testCollection?: string[] | undefined;
@@ -8,6 +10,8 @@ export interface TestParser {
   additionalData?: Record<string, unknown>;
   testDate?: Date | undefined;
   foos?: FooResponse[] | undefined;
+}
+export interface TestBackedModel extends TestParser, BackedModel {
 }
 export interface FooResponse extends Parsable {
   id?: string | undefined;
@@ -24,6 +28,13 @@ export function createTestParserFromDiscriminatorValue(
 ) {
   if (!parseNode) throw new Error("parseNode cannot be undefined");
   return deserializeTestParser;
+}
+
+export function createTestBackedModelFromDiscriminatorValue(
+  parseNode: ParseNode | undefined
+) {
+  if (!parseNode) throw new Error("parseNode cannot be undefined");
+  return deserializeTestBackedModel;
 }
 
 export function createFooParserFromDiscriminatorValue(
@@ -44,6 +55,31 @@ export function deserializeTestParser(
   testParser: TestParser | undefined = {}
 ): Record<string, (node: ParseNode) => void> {
   return {
+    testCollection: (n) => {
+      testParser.testCollection = n.getCollectionOfPrimitiveValues();
+    },
+    testString: (n) => {
+      testParser.testString = n.getStringValue();
+    },
+    textComplexString: (n) => {
+      testParser.testComplexString = n.getStringValue();
+    },
+    testDate: (n) => {
+      testParser.testDate = n.getDateValue()
+    },
+    foos: (n) => {
+      testParser.foos = n.getCollectionOfObjectValues(createFooParserFromDiscriminatorValue);
+    }
+  };
+}
+
+export function deserializeTestBackedModel(
+  testParser: TestBackedModel | undefined = { backingStore: fakeBackingStore }
+): Record<string, (node: ParseNode) => void> {
+  return {
+    backingStore: (n) => {
+      testParser.backingStore = fakeBackingStore;
+    },
     testCollection: (n) => {
       testParser.testCollection = n.getCollectionOfPrimitiveValues();
     },

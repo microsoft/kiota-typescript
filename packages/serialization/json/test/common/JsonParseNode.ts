@@ -4,6 +4,8 @@ import { JsonParseNode } from "../../src/index";
 import {
   createTestParserFromDiscriminatorValue,
   TestParser,
+  TestBackedModel,
+  createTestBackedModelFromDiscriminatorValue,
 } from "./testEntity";
 
 describe("JsonParseNode", () => {
@@ -100,4 +102,28 @@ describe("JsonParseNode", () => {
     }).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
     assert.equal(result.foos![0].bars![0].propA, "property A test value");
   });
+
+  it("Test collection of backed object values", async () => {
+    const result = new JsonParseNode({
+      "foos": [
+          {
+            "id": "b089d1f1-e527-4b8a-ba96-094922af6e40",
+            "bars": [
+              {
+                "propA": "property A test value",
+                "propB": "property B test value",
+                "propC": null
+              }
+            ]
+          }
+      ]
+    }).getObjectValue(createTestBackedModelFromDiscriminatorValue) as TestBackedModel;
+    assert.equal(result.foos![0].bars![0].propA, "property A test value");
+
+    const backingStore = result.backingStore;
+    result.testString = "test";
+    assert.equal(backingStore.get("testString"), "test");
+
+  });
+
 });

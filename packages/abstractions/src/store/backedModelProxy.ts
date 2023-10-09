@@ -1,5 +1,4 @@
 import { BackingStoreFactorySingleton } from "./backingStoreFactorySingleton";
-import { BackedModel } from "./backedModel";
 
 // A method that creates a ProxyHandler for a generic model T and attaches it to a backing store.
 export function createBackedModelProxyHandler<T extends {}>(): ProxyHandler<T> {

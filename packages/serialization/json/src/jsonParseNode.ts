@@ -72,11 +72,11 @@ export class JsonParseNode implements ParseNode {
     parsableFactory: ParsableFactory<T>,
   ): T => {
     const temp: T = {} as T;
-    const value: T = isBackingStoreEnabled(temp) ? new Proxy({}, createBackedModelProxyHandler<T>()) as T : temp;
     if (this.onBeforeAssignFieldValues) {
-      this.onBeforeAssignFieldValues(value);
+      this.onBeforeAssignFieldValues(temp);
     }
-    this.assignFieldValues(value, parsableFactory);
+    this.assignFieldValues(temp, parsableFactory);
+    const value: T = isBackingStoreEnabled(temp) ? new Proxy({}, createBackedModelProxyHandler<T>()) as T : temp;
     if (this.onAfterAssignFieldValues) {
       this.onAfterAssignFieldValues(value);
     }
