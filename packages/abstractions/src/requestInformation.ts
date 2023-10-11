@@ -249,9 +249,19 @@ export class RequestInformation {
   /**
    * Sets the request body to be a binary stream.
    * @param value the binary stream
+   * @param contentType the content type.
    */
-  public setStreamContent = (value: ArrayBuffer): void => {
-    this.tryAddRequestHeaders(RequestInformation.contentTypeHeader, RequestInformation.binaryContentType);
+  public setStreamContent = (
+    value: ArrayBuffer,
+    contentType?: string,
+  ): void => {
+    if (!contentType) {
+      contentType = RequestInformation.binaryContentType;
+    }
+    this.tryAddRequestHeaders(
+      RequestInformation.contentTypeHeader,
+      contentType,
+    );
     this.content = value;
   };
   /**
