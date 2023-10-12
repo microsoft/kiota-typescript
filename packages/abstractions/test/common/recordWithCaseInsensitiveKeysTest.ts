@@ -1,4 +1,5 @@
 import { assert } from "chai";
+
 import { createRecordWithCaseInsensitiveKeys } from "../../src/recordWithCaseInsensitiveKeys";
 
 describe("RecordWithCaseInsensitiveKeys", () => {

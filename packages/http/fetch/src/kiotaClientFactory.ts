@@ -1,5 +1,4 @@
-import { Middleware } from "./middlewares/middleware";
-import { MiddlewareFactory } from "./middlewares/middlewareFactory";
+import type { Middleware } from "./middlewares/middleware";
 
 /**
  * Gets the default middlewares in use for the client.

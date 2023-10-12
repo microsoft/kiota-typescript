@@ -1,4 +1,4 @@
-import { BackingStore } from "./backingStore";
+import type { BackingStore } from "./backingStore";
 
 /** Defines the contracts for a model that is backed by a store. */
 export interface BackedModel {

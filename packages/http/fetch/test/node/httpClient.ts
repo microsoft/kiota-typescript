@@ -7,7 +7,7 @@
 
 import { assert } from "chai";
 
-import { CustomFetchHandler, HttpClient, ParametersNameDecodingHandler, RedirectHandler, RetryHandler, UserAgentHandler } from "../../src";
+import { CustomFetchHandler, HeadersInspectionHandler, HttpClient, ParametersNameDecodingHandler, RedirectHandler, RetryHandler, UserAgentHandler } from "../../src";
 import { DummyFetchHandler } from "../common/middleware/dummyFetchHandler";
 
 describe("node - HTTPClient.ts", () => {
@@ -39,7 +39,8 @@ describe("node - HTTPClient.ts", () => {
 			assert.isTrue(next instanceof RedirectHandler);
 			assert.isTrue(next?.next instanceof ParametersNameDecodingHandler);
 			assert.isTrue(next?.next?.next instanceof UserAgentHandler);
-			assert.isTrue(next?.next?.next?.next instanceof CustomFetchHandler);
+			assert.isTrue(next?.next?.next?.next instanceof HeadersInspectionHandler);
+			assert.isTrue(next?.next?.next?.next?.next instanceof CustomFetchHandler);
 		});
 
 		it("Should set default middleware array with customFetchHandler if middleware parameter is undefined && customFetch is defined", () => {
@@ -54,7 +55,8 @@ describe("node - HTTPClient.ts", () => {
 			assert.isTrue(next instanceof RedirectHandler);
 			assert.isTrue(next?.next instanceof ParametersNameDecodingHandler);
 			assert.isTrue(next?.next?.next instanceof UserAgentHandler);
-			assert.isTrue(next?.next?.next?.next instanceof CustomFetchHandler);
+			assert.isTrue(next?.next?.next?.next instanceof HeadersInspectionHandler);
+			assert.isTrue(next?.next?.next?.next?.next instanceof CustomFetchHandler);
 		});
 
 		it("Should set to default fetch handler middleware array if middleware parameter is null && customFetch is undefined", () => {

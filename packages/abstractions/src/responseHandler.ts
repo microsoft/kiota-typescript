@@ -1,4 +1,4 @@
-import { Parsable, ParsableFactory } from "./serialization";
+import type { Parsable, ParsableFactory } from "./serialization";
 
 /** Defines the contract for a response handler. */
 export interface ResponseHandler {

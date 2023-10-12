@@ -2,7 +2,7 @@ import {
   DateOnly,
   Duration,
   MultipartBody,
-  RequestAdapter,
+  type RequestAdapter,
   serializeMultipartBody,
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
@@ -10,7 +10,7 @@ import { JsonSerializationWriterFactory } from "@microsoft/kiota-serialization-j
 import { assert } from "chai";
 
 import { MultipartSerializationWriter } from "../../src";
-import { serializeTestEntity, TestEntity } from "../testEntity";
+import { serializeTestEntity, type TestEntity } from "../testEntity";
 
 describe("MultipartSerializationWriter", () => {
   it("throws on parsable serialization", () => {

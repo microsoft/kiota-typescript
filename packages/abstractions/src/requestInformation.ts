@@ -3,16 +3,12 @@ import { StdUriTemplate } from "@std-uritemplate/std-uritemplate";
 
 import { DateOnly } from "./dateOnly";
 import { Duration } from "./duration";
-import { HttpMethod } from "./httpMethod";
+import { type HttpMethod } from "./httpMethod";
 import { MultipartBody } from "./multipartBody";
 import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitiveKeys";
-import { RequestAdapter } from "./requestAdapter";
-import { RequestOption } from "./requestOption";
-import {
-  ModelSerializerFunction,
-  Parsable,
-  SerializationWriter,
-} from "./serialization";
+import type { RequestAdapter } from "./requestAdapter";
+import type { RequestOption } from "./requestOption";
+import type { ModelSerializerFunction, Parsable, SerializationWriter } from "./serialization";
 import { TimeOnly } from "./timeOnly";
 
 /** This class represents an abstract HTTP request. */
@@ -76,7 +72,8 @@ export class RequestInformation {
     string | number | boolean | undefined
   >();
   /** The Request Headers. */
-  public headers: Record<string, string[]> = {};
+  public headers: Record<string, string[]> =
+    createRecordWithCaseInsensitiveKeys<string[]>();
   private _requestOptions: Record<string, RequestOption> =
     createRecordWithCaseInsensitiveKeys<RequestOption>();
   /** Gets the request options for the request. */
@@ -88,6 +85,16 @@ export class RequestInformation {
     if (!source) return;
     for (const key in source) {
       this.headers[key] = source[key];
+    }
+  }
+  /** Try to add the header for the request if it's not already present. */
+  public tryAddRequestHeaders(key: string, value: string): boolean {
+    if (!key || !value) return false;
+    if (Object.keys(this.headers).find((k) => k === key) !== undefined) {
+      return false;
+    } else {
+      this.headers[key] = [value];
+      return true;
     }
   }
   /** Adds the request options for the request. */
@@ -160,7 +167,7 @@ export class RequestInformation {
     contentType?: string | undefined,
   ) => {
     if (contentType) {
-      this.headers[RequestInformation.contentTypeHeader] = [contentType];
+      this.tryAddRequestHeaders(RequestInformation.contentTypeHeader, contentType);
     }
     this.content = writer.getSerializedContent();
   };
@@ -242,11 +249,19 @@ export class RequestInformation {
   /**
    * Sets the request body to be a binary stream.
    * @param value the binary stream
+   * @param contentType the content type.
    */
-  public setStreamContent = (value: ArrayBuffer): void => {
-    this.headers[RequestInformation.contentTypeHeader] = [
-      RequestInformation.binaryContentType,
-    ];
+  public setStreamContent = (
+    value: ArrayBuffer,
+    contentType?: string,
+  ): void => {
+    if (!contentType) {
+      contentType = RequestInformation.binaryContentType;
+    }
+    this.tryAddRequestHeaders(
+      RequestInformation.contentTypeHeader,
+      contentType,
+    );
     this.content = value;
   };
   /**

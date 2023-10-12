@@ -9,8 +9,9 @@
  * @module DummyHTTPMessageHandler
  */
 
-import { RequestOption } from "@microsoft/kiota-abstractions";
-import { Middleware } from "../../../src/middlewares/middleware";
+import type { RequestOption } from "@microsoft/kiota-abstractions";
+
+import type { Middleware } from "../../../src/middlewares/middleware";
 
 /**
  * @class

@@ -2,10 +2,7 @@ import { assert } from "chai";
 
 import { JsonParseNode, JsonSerializationWriter } from "../../src/index";
 import {
-  createTestParserFromDiscriminatorValue,
-  serializeTestParser,
-  TestParser,
-} from "./testEntity";
+createTestParserFromDiscriminatorValue,  serializeTestParser,type TestParser} from "./testEntity";
 
 describe("JsonParseNode", () => {
   it("Test object serialization", async () => {
@@ -23,7 +20,7 @@ describe("JsonParseNode", () => {
           },
         },
       },
-      testDate: testDate
+      testDate
     };
     const expectedObject: TestParser = {
       testCollection: ["2", "3"],
@@ -35,7 +32,7 @@ describe("JsonParseNode", () => {
           someValue: 123,
         },
       },
-      testDate: testDate
+      testDate
     };
 
     const writer = new JsonSerializationWriter();

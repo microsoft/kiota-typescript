@@ -2,7 +2,7 @@ import { DateOnly, Duration, TimeOnly } from "@microsoft/kiota-abstractions";
 import { assert } from "chai";
 
 import { FormSerializationWriter } from "../../src";
-import { serializeTestEntity, TestEntity } from "../testEntity";
+import { serializeTestEntity,type TestEntity } from "../testEntity";
 
 describe("FormSerializationWriter", () => {
   it("writesSampleObjectValue", () => {
@@ -55,7 +55,7 @@ describe("FormSerializationWriter", () => {
     assert.equal(expectedString.length, count);
     assert.equal(arr.length, 0);
   });
-  
+
   it("writesSampleCollectionOfObjectValues", () => {
     const testEntity = {} as TestEntity;
     testEntity.id = "48d31887-5fad-4d73-a9f5-3c356e68a038";

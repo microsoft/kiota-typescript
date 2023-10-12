@@ -1,6 +1,7 @@
 import { assert } from "chai";
+import { v1 as uuidv1, v4 as uuidv4, v5 as uuidv5} from "uuid";
+
 import { TextParseNode } from "../../src/index";
-import { v1 as uuidv1, v4 as uuidv4, v5 as uuidv5} from 'uuid';
 
 describe("textParseNode", () => {
   it("textParseNode", async () => {

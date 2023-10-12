@@ -1,10 +1,10 @@
-import { Guid } from "guid-typescript";
+import type { Guid } from "guid-typescript";
 
-import { DateOnly } from "../dateOnly";
-import { Duration } from "../duration";
-import { TimeOnly } from "../timeOnly";
-import { Parsable } from "./parsable";
-import { ParsableFactory } from "./parsableFactory";
+import type { DateOnly } from "../dateOnly";
+import type { Duration } from "../duration";
+import type { TimeOnly } from "../timeOnly";
+import type { Parsable } from "./parsable";
+import type { ParsableFactory } from "./parsableFactory";
 
 /**
  * Interface for a deserialization node in a parse tree. This interface provides an abstraction layer over serialization formats, libraries and implementations.

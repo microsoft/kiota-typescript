@@ -3,9 +3,9 @@ import { assert } from "chai";
 import { JsonParseNode } from "../../src/index";
 import {
   createTestParserFromDiscriminatorValue,
-  TestParser,
   TestBackedModel,
   createTestBackedModelFromDiscriminatorValue,
+  type TestParser 
 } from "./testEntity";
 
 describe("JsonParseNode", () => {

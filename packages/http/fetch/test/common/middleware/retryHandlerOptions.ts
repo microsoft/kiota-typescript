@@ -7,7 +7,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars*/
 import { assert } from "chai";
 
-import { RetryHandlerOptions, ShouldRetry } from "../../../src/middlewares/options/retryHandlerOptions";
+import { RetryHandlerOptions, type ShouldRetry } from "../../../src/middlewares/options/retryHandlerOptions";
 
 describe("RetryHandlerOptions.ts", () => {
 	describe("Constructor", () => {

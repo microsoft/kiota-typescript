@@ -6,9 +6,9 @@
  */
 import { assert } from "chai";
 
-import { RetryHandlerOptionKey, RetryHandlerOptions, ShouldRetry } from "../../../src/middlewares/options/retryHandlerOptions";
+import { RetryHandlerOptionKey, RetryHandlerOptions, type ShouldRetry } from "../../../src/middlewares/options/retryHandlerOptions";
 import { RetryHandler } from "../../../src/middlewares/retryHandler";
-import { FetchRequestInit } from "../../../src/utils/fetchDefinitions";
+import type { FetchRequestInit } from "../../../src/utils/fetchDefinitions";
 import { getResponse } from "../../testUtils";
 import { DummyFetchHandler } from "./dummyFetchHandler";
 

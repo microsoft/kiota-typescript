@@ -1,10 +1,11 @@
+import type {
+  ParsableFactory} from "@microsoft/kiota-abstractions";
 import {
   DateOnly,
   Duration,
-  Parsable,
-  ParsableFactory,
+  type Parsable,
   parseGuidString,
-  ParseNode,
+  type ParseNode,
   TimeOnly,
   toFirstCharacterUpper,
 } from "@microsoft/kiota-abstractions";

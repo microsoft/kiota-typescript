@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
+import type {
   DateOnly,
   Duration,
   ModelSerializerFunction,
@@ -7,7 +7,7 @@ import {
   SerializationWriter,
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
-import { Guid } from "guid-typescript";
+import type { Guid } from "guid-typescript";
 
 export class TextSerializationWriter implements SerializationWriter {
   public writeByteArrayValue(

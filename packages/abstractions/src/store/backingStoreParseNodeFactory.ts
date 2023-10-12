@@ -1,5 +1,5 @@
-import { ParseNodeFactory, ParseNodeProxyFactory } from "../serialization";
-import { BackedModel } from "./backedModel";
+import { type ParseNodeFactory, ParseNodeProxyFactory } from "../serialization";
+import type { BackedModel } from "./backedModel";
 
 /** Proxy implementation of ParseNodeFactory for the backing store that automatically sets the state of the backing store when deserializing. */
 export class BackingStoreParseNodeFactory extends ParseNodeProxyFactory {
