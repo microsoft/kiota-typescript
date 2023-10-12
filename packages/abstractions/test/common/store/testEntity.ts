@@ -1,14 +1,9 @@
-import { BackedModel, BackingStore, Parsable, ParseNode, SerializationWriter } from "../../../src";
+import { BackedModel, BackingStore, DateOnly, Duration, Parsable, ParsableFactory, ParseNode, SerializationWriter, TimeOnly, createBackedModelProxyHandler, isBackingStoreEnabled, parseGuidString } from "../../../src";
 
 const fakeBackingStore: BackingStore = {} as BackingStore;
 
 export interface TestParser {
-  testCollection?: string[] | undefined;
   testString?: string | undefined;
-  testComplexString?: string | undefined;
-  testObject?: Record<string, unknown> | undefined;
-  additionalData?: Record<string, unknown>;
-  testDate?: Date | undefined;
   foos?: FooResponse[] | undefined;
 }
 export interface TestBackedModel extends TestParser, BackedModel {
@@ -55,18 +50,6 @@ export function deserializeTestParser(
   testParser: TestParser | undefined = {}
 ): Record<string, (node: ParseNode) => void> {
   return {
-    testCollection: (n) => {
-      testParser.testCollection = n.getCollectionOfPrimitiveValues();
-    },
-    testString: (n) => {
-      testParser.testString = n.getStringValue();
-    },
-    textComplexString: (n) => {
-      testParser.testComplexString = n.getStringValue();
-    },
-    testDate: (n) => {
-      testParser.testDate = n.getDateValue()
-    },
     foos: (n) => {
       testParser.foos = n.getCollectionOfObjectValues(createFooParserFromDiscriminatorValue);
     }
@@ -79,18 +62,6 @@ export function deserializeTestBackedModel(
   return {
     backingStore: (n) => {
       testParser.backingStore = fakeBackingStore;
-    },
-    testCollection: (n) => {
-      testParser.testCollection = n.getCollectionOfPrimitiveValues();
-    },
-    testString: (n) => {
-      testParser.testString = n.getStringValue();
-    },
-    textComplexString: (n) => {
-      testParser.testComplexString = n.getStringValue();
-    },
-    testDate: (n) => {
-      testParser.testDate = n.getDateValue()
     },
     foos: (n) => {
       testParser.foos = n.getCollectionOfObjectValues(createFooParserFromDiscriminatorValue);
@@ -125,26 +96,4 @@ export function deserializeBarParser(
       barResponse.propC = n.getDateValue();
     }
   };
-}
-
-export function serializeTestObject(
-  writer: SerializationWriter,
-  entity: { additionalData?: Record<string, unknown> } | undefined = {}
-): void {
-  writer.writeAdditionalData(entity.additionalData);
-}
-export function serializeTestParser(
-  writer: SerializationWriter,
-  entity: TestParser | undefined = {}
-): void {
-  writer.writeCollectionOfPrimitiveValues(
-    "testCollection",
-    entity.testCollection
-  );
-  writer.writeStringValue("testString", entity.testString);
-  writer.writeStringValue("testComplexString", entity.testComplexString);
-
-  writer.writeDateValue("testDate", entity.testDate);
-  writer.writeObjectValue("testObject", entity.testObject, serializeTestObject);
-  writer.writeAdditionalData(entity.additionalData);
 }
