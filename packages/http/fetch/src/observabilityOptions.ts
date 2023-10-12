@@ -1,4 +1,4 @@
-import { RequestOption } from "@microsoft/kiota-abstractions";
+import type { RequestOption } from "@microsoft/kiota-abstractions";
 
 /** Holds the tracing, metrics and logging configuration for the request adapter */
 export interface ObservabilityOptions {

@@ -1,12 +1,7 @@
 import { Guid } from "guid-typescript";
 
 import type { RequestAdapter } from "./requestAdapter";
-import type {
-  ModelSerializerFunction,
-  ParseNode,
-  SerializationWriter,
-} from "./serialization";
-import type { Parsable } from "./serialization/parsable";
+import type { ModelSerializerFunction, Parsable, ParseNode, SerializationWriter } from "./serialization";
 /**
  * Defines an interface for a multipart body for request or response.
  */

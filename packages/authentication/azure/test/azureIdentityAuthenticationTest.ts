@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { AccessToken, ClientSecretCredential } from "@azure/identity";
+import { type AccessToken, ClientSecretCredential } from "@azure/identity";
 import {
   BaseBearerTokenAuthenticationProvider,
   RequestInformation,

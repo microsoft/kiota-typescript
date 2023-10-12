@@ -4,10 +4,10 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-import { RequestOption } from "@microsoft/kiota-abstractions";
+import type { RequestOption } from "@microsoft/kiota-abstractions";
 
-import { Middleware } from "./middleware";
-import { TelemetryHandlerOptions } from "./options/telemetryHandlerOptions";
+import type { Middleware } from "./middleware";
+import type { TelemetryHandlerOptions } from "./options/telemetryHandlerOptions";
 
 export const TelemetryHandlerOptionsKey = "TelemetryHandlerOptionsKey";
 export class TelemetryHandler implements Middleware {

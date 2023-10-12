@@ -1,11 +1,12 @@
 import { assert } from "chai";
+import { v1 as uuidv1, v4 as uuidv4, v5 as uuidv5} from "uuid";
+
 import { parseGuidString } from "../../src/utils/guidUtils";
-import { v1 as uuidv1, v4 as uuidv4, v5 as uuidv5} from 'uuid';
 
 
 describe("ParseGuidString", () => {
   it("parses a guid string", () => {
-    var result = parseGuidString("");
+    let result = parseGuidString("");
     assert.isUndefined(result);
 
     result = parseGuidString(undefined);

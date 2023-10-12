@@ -1,8 +1,8 @@
 import {
-  ParseNodeFactory,
+  type ParseNodeFactory,
   ParseNodeFactoryRegistry,
-  SerializationWriterFactory,
-  SerializationWriterFactoryRegistry,
+  type SerializationWriterFactory,
+  SerializationWriterFactoryRegistry
 } from "./serialization";
 import {
   BackingStoreParseNodeFactory,

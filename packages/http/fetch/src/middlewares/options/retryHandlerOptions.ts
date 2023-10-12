@@ -9,9 +9,9 @@
  * @module RetryHandlerOptions
  */
 
-import { RequestOption } from "@microsoft/kiota-abstractions";
+import type { RequestOption } from "@microsoft/kiota-abstractions";
 
-import { FetchResponse } from "../../utils/fetchDefinitions";
+import type { FetchResponse } from "../../utils/fetchDefinitions";
 
 /**
  * @type

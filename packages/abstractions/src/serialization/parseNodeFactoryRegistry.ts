@@ -1,5 +1,5 @@
-import { ParseNode } from "./parseNode";
-import { ParseNodeFactory } from "./parseNodeFactory";
+import type { ParseNode } from "./parseNode";
+import type { ParseNodeFactory } from "./parseNodeFactory";
 
 /**
  * This factory holds a list of all the registered factories for the various types of nodes.

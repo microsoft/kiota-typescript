@@ -1,4 +1,4 @@
-import { Parsable, ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
+import type { Parsable, ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
 
 export interface TestParser {
   testCollection?: string[] | undefined;
@@ -54,7 +54,7 @@ export function deserializeTestParser(
       testParser.testComplexString = n.getStringValue();
     },
     testDate: (n) => {
-      testParser.testDate = n.getDateValue()
+      testParser.testDate = n.getDateValue();
     },
     foos: (n) => {
       testParser.foos = n.getCollectionOfObjectValues(createFooParserFromDiscriminatorValue);

@@ -9,15 +9,15 @@
  * @module ChaosHandlerOptions
  */
 
-import { FetchHeaders } from "../../utils/fetchDefinitions";
-import { ChaosStrategy } from "./chaosStrategy";
+import { type FetchHeaders } from "../../utils/fetchDefinitions";
+import { type ChaosStrategy } from "./chaosStrategy";
 
 export const ChaosHandlerOptionsKey = "ChaosHandlerOptionsKey";
 
 /**
- * Class representing ChaosHandlerOptions
- * @class
- * Class
+ * interface representing ChaosHandlerOptions
+ * @interface
+ * interface
  * @implements MiddlewareOptions
  */
 export interface ChaosHandlerOptions {

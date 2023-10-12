@@ -49,6 +49,8 @@
     "build:sdk:cjs": "tsc -b packages/test/tsconfig.sdk.cjs.json",
     "build:watch:es": "tsc -b packages/test/tsconfig.es.json -w",
     "test": "lerna run test --parallel",
-    "tsc:version": "tsc --version"
+    "tsc:version": "tsc --version",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix"
   }
 }

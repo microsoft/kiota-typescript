@@ -182,13 +182,13 @@ describe("RedirectHandler.ts", () => {
 			};
 
 			dummyFetchHandler.setResponses([
-				new Response(null, {
+				new Response(undefined, {
 					status: 301,
 					headers: {
 						[RedirectHandler["LOCATION_HEADER"]]: "/location",
 					},
 				}),
-				new Response(null, {
+				new Response(undefined, {
 					status: 301,
 					headers: {
 						[RedirectHandler["LOCATION_HEADER"]]: "/location",
@@ -220,7 +220,7 @@ describe("RedirectHandler.ts", () => {
 			};
 			const arr = [];
 			for (let i = 0; i < 5; i++) {
-				arr[i] = new Response(null, {
+				arr[i] = new Response(undefined, {
 					status: 301,
 					headers: {
 						[RedirectHandler["LOCATION_HEADER"]]: "/location",

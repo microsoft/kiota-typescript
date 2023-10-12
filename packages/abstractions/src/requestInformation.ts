@@ -3,16 +3,12 @@ import { StdUriTemplate } from "@std-uritemplate/std-uritemplate";
 
 import { DateOnly } from "./dateOnly";
 import { Duration } from "./duration";
-import { HttpMethod } from "./httpMethod";
+import { type HttpMethod } from "./httpMethod";
 import { MultipartBody } from "./multipartBody";
 import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitiveKeys";
-import { RequestAdapter } from "./requestAdapter";
-import { RequestOption } from "./requestOption";
-import {
-  ModelSerializerFunction,
-  Parsable,
-  SerializationWriter,
-} from "./serialization";
+import type { RequestAdapter } from "./requestAdapter";
+import type { RequestOption } from "./requestOption";
+import type { ModelSerializerFunction, Parsable, SerializationWriter } from "./serialization";
 import { TimeOnly } from "./timeOnly";
 
 /** This class represents an abstract HTTP request. */
@@ -76,7 +72,8 @@ export class RequestInformation {
     string | number | boolean | undefined
   >();
   /** The Request Headers. */
-  public headers: Record<string, string[]> = {};
+  public headers: Record<string, string[]> =
+    createRecordWithCaseInsensitiveKeys<string[]>();
   private _requestOptions: Record<string, RequestOption> =
     createRecordWithCaseInsensitiveKeys<RequestOption>();
   /** Gets the request options for the request. */

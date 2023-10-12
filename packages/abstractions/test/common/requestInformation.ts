@@ -12,11 +12,11 @@ const assert = chai.assert;
 
 import {
   HttpMethod,
-  Parsable,
-  RequestAdapter,
+  type Parsable,
+  type RequestAdapter,
   RequestInformation,
-  SerializationWriter,
-  SerializationWriterFactory,
+  type SerializationWriter,
+  type SerializationWriterFactory
 } from "../../src";
 import { MultipartBody } from "../../src/multipartBody";
 

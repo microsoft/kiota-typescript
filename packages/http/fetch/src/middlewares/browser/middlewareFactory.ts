@@ -10,7 +10,8 @@
  */
 
 import { CustomFetchHandler } from "../customFetchHandler";
-import { Middleware } from "../middleware";
+import { HeadersInspectionHandler } from "../headersInspectionHandler";
+import type { Middleware } from "../middleware";
 import { ParametersNameDecodingHandler } from "../parametersNameDecodingHandler";
 import { RetryHandler } from "../retryHandler";
 import { UserAgentHandler } from "../userAgentHandler";
@@ -30,7 +31,7 @@ export class MiddlewareFactory {
 	public static getDefaultMiddlewareChain(customFetch: (request: string, init: RequestInit) => Promise<Response> = fetch as any): Middleware[] {
 		// Browsers handles redirection automatically and do not require the redirectionHandler
 
-		const middlewareArray: Middleware[] = [new RetryHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new CustomFetchHandler(customFetch)];
+		const middlewareArray: Middleware[] = [new RetryHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new HeadersInspectionHandler(), new CustomFetchHandler(customFetch)];
 		return middlewareArray;
 	}
 }

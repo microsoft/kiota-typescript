@@ -1,4 +1,4 @@
-import { BackingStoreFactory } from "./backingStoreFactory";
+import type { BackingStoreFactory } from "./backingStoreFactory";
 import { InMemoryBackingStoreFactory } from "./inMemoryBackingStoreFactory";
 
 export class BackingStoreFactorySingleton {

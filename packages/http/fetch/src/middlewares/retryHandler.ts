@@ -9,13 +9,13 @@
  * @module RetryHandler
  */
 
-import { HttpMethod, RequestOption } from "@microsoft/kiota-abstractions";
+import { HttpMethod, type RequestOption } from "@microsoft/kiota-abstractions";
 import { trace } from "@opentelemetry/api";
 
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
-import { FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions";
+import type { FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions";
 import { getRequestHeader, setRequestHeader } from "../utils/headersUtil";
-import { Middleware } from "./middleware";
+import { type Middleware } from "./middleware";
 import { RetryHandlerOptionKey, RetryHandlerOptions } from "./options/retryHandlerOptions";
 
 /**

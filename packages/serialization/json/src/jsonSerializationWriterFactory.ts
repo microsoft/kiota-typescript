@@ -1,4 +1,4 @@
-import {
+import type {
   SerializationWriter,
   SerializationWriterFactory,
 } from "@microsoft/kiota-abstractions";

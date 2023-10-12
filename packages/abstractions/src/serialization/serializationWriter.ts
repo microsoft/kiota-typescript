@@ -1,10 +1,10 @@
-import { Guid } from "guid-typescript";
+import type { Guid } from "guid-typescript";
 
-import { DateOnly } from "../dateOnly";
-import { Duration } from "../duration";
-import { TimeOnly } from "../timeOnly";
-import { Parsable } from "./parsable";
-import { ModelSerializerFunction } from "./serializationFunctionTypes";
+import type { DateOnly } from "../dateOnly";
+import type { Duration } from "../duration";
+import type { TimeOnly } from "../timeOnly";
+import type { Parsable } from "./parsable";
+import type { ModelSerializerFunction } from "./serializationFunctionTypes";
 
 /** Defines an interface for serialization of objects to a stream. */
 export interface SerializationWriter {

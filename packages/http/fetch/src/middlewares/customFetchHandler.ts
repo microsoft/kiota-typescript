@@ -9,7 +9,7 @@
  * @module FetchHandler
  */
 
-import { Middleware } from "./middleware";
+import type { Middleware } from "./middleware";
 
 /**
  * @class

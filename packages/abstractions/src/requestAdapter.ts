@@ -1,10 +1,6 @@
-import { RequestInformation } from "./requestInformation";
-import {
-  Parsable,
-  ParsableFactory,
-  SerializationWriterFactory,
-} from "./serialization";
-import { BackingStoreFactory } from "./store";
+import { type RequestInformation } from "./requestInformation";
+import type { Parsable, ParsableFactory, SerializationWriterFactory } from "./serialization";
+import { type BackingStoreFactory } from "./store";
 
 /** Service responsible for translating abstract Request Info into concrete native HTTP requests. */
 export interface RequestAdapter {

@@ -1,4 +1,4 @@
-import { BackingStore } from "./backingStore";
+import type { BackingStore } from "./backingStore";
 
 /** Defines the contract for a factory that creates backing stores. */
 export interface BackingStoreFactory {
