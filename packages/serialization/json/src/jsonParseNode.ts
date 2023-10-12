@@ -72,11 +72,11 @@ export class JsonParseNode implements ParseNode {
     parsableFactory: ParsableFactory<T>,
   ): T => {
     const temp: T = {} as T;
+    const value: T = isBackingStoreEnabled(temp, parsableFactory) ? new Proxy({}, createBackedModelProxyHandler<T>()) as T : temp;
     if (this.onBeforeAssignFieldValues) {
-      this.onBeforeAssignFieldValues(temp);
+      this.onBeforeAssignFieldValues(value);
     }
-    this.assignFieldValues(temp, parsableFactory);
-    const value: T = isBackingStoreEnabled(temp) ? new Proxy({}, createBackedModelProxyHandler<T>()) as T : temp;
+    this.assignFieldValues(value, parsableFactory);
     if (this.onAfterAssignFieldValues) {
       this.onAfterAssignFieldValues(value);
     }
@@ -88,11 +88,9 @@ export class JsonParseNode implements ParseNode {
     parsableFactory: ParsableFactory<T>,
   ): void => {
     const fields = parsableFactory(this)(model);
-
     if (!this._jsonNode) return;
     Object.entries(this._jsonNode as any).forEach(([k, v]) => {
       const deserializer = fields[k];
-
       if (deserializer) {
         deserializer(new JsonParseNode(v));
       } else {

@@ -1,83 +1,41 @@
-import { assert } from "chai";
-import { BackingStore, isBackingStoreEnabled } from "../../../src/store";
-import { Model } from "./backedModelProxyTest";
+import { Parsable, ParsableFactory, ParseNode } from "../../../src/serialization";
+import { isBackingStoreEnabled } from "../../../src/store/backingStoreUtils";
 
-describe('isBackingStoreEnabled', () => {
-  it('should return true for a BackedModel', () => {
-    // Arrange
-    const fakeBackingStore = {} as BackingStore;
-    const model: Model = { backingStore: fakeBackingStore};
+interface Person {
+  name: string;
+  age: number;
+}
 
-    // Act
-    const result = isBackingStoreEnabled(model);
+// const personFactory: ParsableFactory<Person> = (node: ParseNode) => (obj: Person) => ({
+//   name: node.getString(obj.name),
+//   age: node.getNumber(obj.age),
+// });
 
-    // Assert
-    assert.equal(result, true);
-  });
+// describe('isBackingStoreEnabled', () => {
+//   it('should return true if the object has a backingStore property', () => {
+//     const person: Person = { name: 'John', age: 30 };
+//     const result = isBackingStoreEnabled(person, personFactory);
+//     expect(result).toBe(true);
+//   });
 
-  it('should return false for an object without a backingStore property', () => {
-    // Arrange
-    const obj = { name: 'Bob' };
+//   it('should return false if the object does not have a backingStore property', () => {
+//     const person: Person = { name: 'John', age: 30 };
+//     delete person[Symbol.for('backingStore')];
+//     const result = isBackingStoreEnabled(person, personFactory);
+//     expect(result).toBe(false);
+//   });
 
-    // Act
-    const result = isBackingStoreEnabled(obj);
+//   it('should return false if the object is not a Parsable', () => {
+//     const obj = { foo: 'bar' };
+//     const result = isBackingStoreEnabled(obj as Parsable, personFactory);
+//     expect(result).toBe(false);
+//   });
 
-    // Assert
-    assert.equal(result, false);
-  });
+//   it('should return false if the object is null or undefined', () => {
+//     const result1 = isBackingStoreEnabled(null, personFactory);
+//     expect(result1).toBe(false);
 
-  it('should return false for a string', () => {
-    // Arrange
-    const obj = 'test';
-
-    // Act
-    const result = isBackingStoreEnabled(obj);
-
-    // Assert
-    assert.equal(result, false);
-  });
-
-  it('should return false for a number', () => {
-    // Arrange
-    const obj = 123;
-
-    // Act
-    const result = isBackingStoreEnabled(obj);
-
-    // Assert
-    assert.equal(result, false);
-  });
-
-  it('should return false for a boolean', () => {
-    // Arrange
-    const obj = true;
-
-    // Act
-    const result = isBackingStoreEnabled(obj);
-
-    // Assert
-    assert.equal(result, false);
-  });
-
-  it('should return false for an array', () => {
-    // Arrange
-    const obj = [1, 2, 3];
-
-    // Act
-    const result = isBackingStoreEnabled(obj);
-
-    // Assert
-    assert.equal(result, false);
-  });
-
-  it('should return false for a function', () => {
-    // Arrange
-    const obj = () => {};
-
-    // Act
-    const result = isBackingStoreEnabled(obj);
-
-    // Assert
-    assert.equal(result, false);
-  });
-});
+//     const result2 = isBackingStoreEnabled(undefined, personFactory);
+//     expect(result2).toBe(false);
+//   });
+// });

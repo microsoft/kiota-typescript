@@ -119,11 +119,9 @@ describe("JsonParseNode", () => {
       ]
     }).getObjectValue(createTestBackedModelFromDiscriminatorValue) as TestBackedModel;
     assert.equal(result.foos![0].bars![0].propA, "property A test value");
-
     const backingStore = result.backingStore;
     result.testString = "test";
     assert.equal(backingStore.get("testString"), "test");
-
   });
 
 });

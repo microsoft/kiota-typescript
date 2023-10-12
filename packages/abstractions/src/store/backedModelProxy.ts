@@ -12,10 +12,10 @@ export function createBackedModelProxyHandler<T extends {}>(): ProxyHandler<T> {
   const handler: ProxyHandler<T> = {
     get(target, prop, receiver) {
       console.debug(`BackingStore - Getting property '${prop.toString()}' from backing store`);
-      const value = backingStore.get(prop.toString());
       if (prop === 'backingStore') {
         return backingStore;
       }
+      const value = backingStore.get(prop.toString());
       return value;
     },
     set(target, prop, value, receiver) {
