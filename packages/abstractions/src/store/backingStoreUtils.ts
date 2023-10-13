@@ -7,8 +7,7 @@ export const BackingStoreKey = "backingStore";
    * @param obj 
    * @returns 
    */
-export function isBackingStoreEnabled<T extends Parsable>(obj: T, parsableFactory: ParsableFactory<T>): boolean {
-    // Check if the object has a backingStore property
-    const fields = parsableFactory({} as ParseNode)(obj);
+export function isBackingStoreEnabled(fields: Record<string, (node: ParseNode) => void> ): boolean {
+    // Check if the fields contain the backing store key
     return Object.keys(fields).includes(BackingStoreKey);
 };

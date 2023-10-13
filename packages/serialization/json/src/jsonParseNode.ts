@@ -72,7 +72,8 @@ export class JsonParseNode implements ParseNode {
     parsableFactory: ParsableFactory<T>,
   ): T => {
     const temp: T = {} as T;
-    const value: T = isBackingStoreEnabled(temp, parsableFactory) ? new Proxy({}, createBackedModelProxyHandler<T>()) as T : temp;
+    const enableBackingStore = isBackingStoreEnabled(parsableFactory(this)(temp));
+    const value: T = enableBackingStore ? new Proxy({}, createBackedModelProxyHandler<T>()) as T : temp;
     if (this.onBeforeAssignFieldValues) {
       this.onBeforeAssignFieldValues(value);
     }
