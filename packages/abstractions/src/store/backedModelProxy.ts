@@ -15,15 +15,14 @@ export function createBackedModelProxyHandler<T extends {}>(): ProxyHandler<T> {
       if (prop === 'backingStore') {
         return backingStore;
       }
-      const value = backingStore.get(prop.toString());
-      return value;
+      return backingStore.get(prop.toString());
     },
     set(target, prop, value, receiver) {
       if (prop === 'backingStore') {
         console.warn(`BackingStore - Ignoring attempt to set 'backingStore' property`);
         return true;
       }
-      // set the value on the target object as well to allow target object to have keys needed for serialization
+      // set the value on the target object as well to allow it to have keys needed for serialization/deserialization
       Reflect.set(target, prop, value, receiver);
       console.debug(`BackingStore - Setting property '${prop.toString()}'`);
       backingStore.set(prop.toString(), value);
