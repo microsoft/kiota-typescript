@@ -124,4 +124,42 @@ describe("JsonParseNode", () => {
     assert.equal(backingStore.get("testString"), "test");
   });
 
+  it("backing store shouldn't interfere with JSON.stringify", async () => {
+
+    const jsonObject = {
+      "foos": [
+          {
+            "id": "b089d1f1-e527-4b8a-ba96-094922af6e40",
+            "bars": [
+              {
+                "propA": "property A test value",
+                "propB": "property B test value"
+              }
+            ]
+          }
+      ]
+    };
+
+    const result = new JsonParseNode(jsonObject).getObjectValue(createTestBackedModelFromDiscriminatorValue) as TestBackedModel;
+    assert.equal(result.foos![0].bars![0].propA, "property A test value");
+    let jsonObjectStr = JSON.stringify(jsonObject);
+    let resultStr = JSON.stringify(result);
+    assert.equal(jsonObjectStr, resultStr);
+
+    // update the object then check stringify again
+    result.testString = "testStringValue";
+    jsonObjectStr = JSON.stringify(jsonObject);
+    resultStr = JSON.stringify(result);
+    assert.notEqual(jsonObjectStr, resultStr);
+
+    // update the backing store and check stringify again
+    const updateTestStrValue = "test string value";
+    const backingStore = result.backingStore;
+    backingStore.set("testString", updateTestStrValue);
+    const updatedJsonObject = {...jsonObject, testString: updateTestStrValue};
+    jsonObjectStr = JSON.stringify(updatedJsonObject);
+    resultStr = JSON.stringify(result);
+    assert.equal(jsonObjectStr, resultStr);
+  });
+
 });
