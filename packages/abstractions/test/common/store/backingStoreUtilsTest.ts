@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import { isBackingStoreEnabled } from "../../../src/store/backingStoreUtils";
-import { TestBackedModel, createTestBackedModelFromDiscriminatorValue, createTestParserFromDiscriminatorValue } from "./testEntity";
-import { ParseNode } from "../../../src";
+import { type TestBackedModel, createTestBackedModelFromDiscriminatorValue, createTestParserFromDiscriminatorValue } from "./testEntity";
+import { type ParseNode } from "../../../src";
 
 it("Test backing store should be enabled if the parsableFactory has backingStore property", async () => {
     const testBackedModel = {} as TestBackedModel;

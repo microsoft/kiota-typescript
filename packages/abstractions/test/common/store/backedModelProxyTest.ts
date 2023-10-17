@@ -1,4 +1,4 @@
-import { BackedModel, BackingStore, BackingStoreFactorySingleton, createBackedModelProxyHandler } from "../../../src/store";
+import { type BackedModel, type BackingStore, BackingStoreFactorySingleton, createBackedModelProxyHandler } from "../../../src/store";
 import { assert } from "chai";
 
 export interface Model extends BackedModel {

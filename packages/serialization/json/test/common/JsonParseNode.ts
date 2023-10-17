@@ -3,7 +3,7 @@ import { assert } from "chai";
 import { JsonParseNode } from "../../src/index";
 import {
   createTestParserFromDiscriminatorValue,
-  TestBackedModel,
+  type TestBackedModel,
   createTestBackedModelFromDiscriminatorValue,
   type TestParser 
 } from "./testEntity";
