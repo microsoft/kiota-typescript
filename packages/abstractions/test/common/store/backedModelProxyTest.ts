@@ -24,10 +24,10 @@ describe('createBackedModelProxyHandler', () => {
     const model = new Proxy<Model>({backingStore: fakeBackingStore}, handler);
 
     // Act
-    model.backingStore.set("name", "Bob");
+    model.backingStore?.set("name", "Bob");
 
     // Assert
-    assert.equal(model.backingStore.get("name"), 'Bob');
+    assert.equal(model.backingStore?.get("name"), 'Bob');
   });
 
   it('should set a property in the backing store', () => {
@@ -39,7 +39,7 @@ describe('createBackedModelProxyHandler', () => {
     model.name = 'Bob';
 
     // Assert
-    assert.equal(model.backingStore.get("name"), 'Bob');
+    assert.equal(model.backingStore?.get("name"), 'Bob');
   });
 
   it('should get and set multiple properties in the backing store', () => {
@@ -54,8 +54,8 @@ describe('createBackedModelProxyHandler', () => {
     const age = model.age;
 
     // Assert
-    assert.equal(model.backingStore.get("name"), name);
-    assert.equal(model.backingStore.get("age"), age);
+    assert.equal(model.backingStore?.get("name"), name);
+    assert.equal(model.backingStore?.get("age"), age);
   });
 
   it('should ignore setting the backingStore property', () => {

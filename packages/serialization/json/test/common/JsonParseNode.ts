@@ -121,7 +121,7 @@ describe("JsonParseNode", () => {
     assert.equal(result.foos![0].bars![0].propA, "property A test value");
     const backingStore = result.backingStore;
     result.testString = "test";
-    assert.equal(backingStore.get("testString"), "test");
+    assert.equal(backingStore?.get("testString"), "test");
   });
 
   it("backing store shouldn't interfere with JSON.stringify", async () => {
@@ -155,7 +155,7 @@ describe("JsonParseNode", () => {
     // update the backing store and check stringify again
     const updateTestStrValue = "test string value";
     const backingStore = result.backingStore;
-    backingStore.set("testString", updateTestStrValue);
+    backingStore?.set("testString", updateTestStrValue);
     const updatedJsonObject = {...jsonObject, testString: updateTestStrValue};
     jsonObjectStr = JSON.stringify(updatedJsonObject);
     resultStr = JSON.stringify(result);
