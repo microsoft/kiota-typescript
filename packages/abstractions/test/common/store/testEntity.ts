@@ -7,6 +7,7 @@ export interface TestParser {
   foos?: FooResponse[] | undefined;
 }
 export interface TestBackedModel extends TestParser, BackedModel {
+  backingStoreEnabled?: boolean | undefined;
 }
 export interface FooResponse extends Parsable {
   id?: string | undefined;
@@ -57,11 +58,11 @@ export function deserializeTestParser(
 }
 
 export function deserializeTestBackedModel(
-  testParser: TestBackedModel | undefined = { backingStore: fakeBackingStore }
+  testParser: TestBackedModel | undefined = {}
 ): Record<string, (node: ParseNode) => void> {
   return {
-    backingStore: (n) => {
-      testParser.backingStore = fakeBackingStore;
+    backingStoreEnabled: (n) => {
+      testParser.backingStoreEnabled = true;
     },
     foos: (n) => {
       testParser.foos = n.getCollectionOfObjectValues(createFooParserFromDiscriminatorValue);

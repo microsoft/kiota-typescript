@@ -1,6 +1,6 @@
 import { type ParseNode } from "../serialization";
 
-export const BackingStoreKey = "backingStore";
+export const BackingStoreKey = "backingStoreEnabled";
 
 /**
    * Check if the object is an instance a BackedModel
