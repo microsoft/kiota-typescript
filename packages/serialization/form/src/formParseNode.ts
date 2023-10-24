@@ -1,4 +1,6 @@
 import {
+  BackedModel,
+  createBackedModelProxyHandler,
   DateOnly,
   Duration,
   type Parsable,
@@ -6,6 +8,7 @@ import {
   parseGuidString,
   type ParseNode,
   TimeOnly,
+  isBackingStoreEnabled,
   toFirstCharacterUpper,
 } from "@microsoft/kiota-abstractions";
 
@@ -78,7 +81,9 @@ export class FormParseNode implements ParseNode {
   public getObjectValue = <T extends Parsable>(
     parsableFactory: ParsableFactory<T>,
   ): T => {
-    const value: T = {} as T;
+    const temp: T = {} as T;
+    const enableBackingStore = isBackingStoreEnabled(parsableFactory(this)(temp));
+    const value: T = enableBackingStore ? new Proxy(temp, createBackedModelProxyHandler<T>()) : temp;
     if (this.onBeforeAssignFieldValues) {
       this.onBeforeAssignFieldValues(value);
     }

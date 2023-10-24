@@ -5,5 +5,5 @@ export interface BackedModel {
   /**
    * Gets the store that is backing the model.
    */
-  backingStore: BackingStore;
+  backingStore?: BackingStore;
 }
