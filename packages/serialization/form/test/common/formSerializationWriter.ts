@@ -33,9 +33,6 @@ describe("FormSerializationWriter", () => {
     );
     const formContent = formSerializationWriter.getSerializedContent();
     const form = new TextDecoder().decode(formContent);
-
-    console.log("\n\n-----------------" + form + "-----------------\n\n");
-
     const expectedString = [
       "id=48d31887-5fad-4d73-a9f5-3c356e68a038",
       "birthday=2017-09-04", // Serializes dates
