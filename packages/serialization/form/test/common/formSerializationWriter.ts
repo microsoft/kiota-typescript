@@ -24,6 +24,7 @@ describe("FormSerializationWriter", () => {
     testEntity.additionalData["accountEnabled"] = false;
     testEntity.additionalData["jobTitle"] = "Author";
     testEntity.additionalData["createdDateTime"] = new Date(0);
+    testEntity.deviceNames = ["device1", "device2"];
     const formSerializationWriter = new FormSerializationWriter();
     formSerializationWriter.writeObjectValue(
       undefined,
@@ -32,6 +33,8 @@ describe("FormSerializationWriter", () => {
     );
     const formContent = formSerializationWriter.getSerializedContent();
     const form = new TextDecoder().decode(formContent);
+
+    console.log("\n\n-----------------" + form + "-----------------\n\n");
 
     const expectedString = [
       "id=48d31887-5fad-4d73-a9f5-3c356e68a038",
@@ -42,6 +45,8 @@ describe("FormSerializationWriter", () => {
       "accountEnabled=false",
       "jobTitle=Author",
       "createdDateTime=1970-01-01T00%3A00%3A00.000Z",
+      "deviceNames=device1",
+      "deviceNames=device2", // Serializes collections
     ];
     const arr = form.split("&");
     let count = 0;

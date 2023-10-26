@@ -65,14 +65,14 @@ export class FormSerializationWriter implements SerializationWriter {
     this.writeStringValue(key, `null`);
   };
   public writeCollectionOfPrimitiveValues = <T>(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _key?: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _values?: T[]
   ): void => {
-    throw new Error(
-      `serialization of collections is not supported with URI encoding`
-    );
+    if (_key && _values) {
+      _values.forEach((val) => {
+        this.writeAnyValue(_key, val);
+      });
+    }
   };
   public writeCollectionOfObjectValues = <T extends Parsable>(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
