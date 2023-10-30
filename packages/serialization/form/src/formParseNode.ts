@@ -66,9 +66,29 @@ export class FormParseNode implements ParseNode {
   public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
   public getDurationValue = () => Duration.parse(this.getStringValue());
   public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
-    throw new Error(
-      `serialization of collections is not supported with URI encoding`,
-    );
+    return (this._rawString.split(",") as unknown[]).map((x) => {
+      const currentParseNode = new FormParseNode(x as string);
+      const typeOfX = typeof x;
+      if (typeOfX === "boolean") {
+        return currentParseNode.getBooleanValue() as unknown as T;
+      } else if (typeOfX === "string") {
+        return currentParseNode.getStringValue() as unknown as T;
+      } else if (typeOfX === "number") {
+        return currentParseNode.getNumberValue() as unknown as T;
+      } else if (x instanceof Date) {
+        return currentParseNode.getDateValue() as unknown as T;
+      } else if (x instanceof DateOnly) {
+        return currentParseNode.getDateValue() as unknown as T;
+      } else if (x instanceof TimeOnly) {
+        return currentParseNode.getDateValue() as unknown as T;
+      } else if (x instanceof Duration) {
+        return currentParseNode.getDateValue() as unknown as T;
+      } else {
+        throw new Error(
+          `encountered an unknown type during deserialization ${typeof x}`,
+        );
+      }
+    });
   };
   public getCollectionOfObjectValues = <T extends Parsable>(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

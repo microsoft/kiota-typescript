@@ -16,6 +16,7 @@ export interface TestEntity extends Parsable, AdditionalDataHolder {
   startWorkTime?: TimeOnly;
   endWorkTime?: TimeOnly;
   officeLocation?: string;
+  deviceNames?: string[];
 }
 export function createTestParserFromDiscriminatorValue(
   parseNode: ParseNode | undefined
@@ -49,6 +50,9 @@ export function deserializeTestEntity(
     officeLocation: (n) => {
       testEntity.officeLocation = n.getStringValue();
     },
+    deviceNames: (n) => {
+      testEntity.deviceNames = n.getCollectionOfPrimitiveValues();
+    },
   };
 }
 
@@ -64,4 +68,5 @@ export function serializeTestEntity(
   writer.writeTimeOnlyValue("endWorkTime", testEntity.endWorkTime);
   writer.writeStringValue("officeLocation", testEntity.officeLocation);
   writer.writeAdditionalData(testEntity.additionalData);
+  writer.writeCollectionOfPrimitiveValues("deviceNames",testEntity.deviceNames);
 }
