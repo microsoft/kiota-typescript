@@ -150,12 +150,9 @@ export class JsonSerializationWriter implements SerializationWriter {
   };
 
   private convertStringToArrayBuffer = (str: string): ArrayBuffer => {
-    const arrayBuffer = new ArrayBuffer(str.length);
-    const uint8Array = new Uint8Array(arrayBuffer);
-    for (let i = 0; i < str.length; i++) {
-      uint8Array[i] = str.charCodeAt(i);
-    }
-    return arrayBuffer;
+    const encoder = new TextEncoder();
+    const encodedString = encoder.encode(str);
+    return encodedString.buffer;
   };
 
   public writeAdditionalData = (
