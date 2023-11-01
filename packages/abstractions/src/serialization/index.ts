@@ -1,4 +1,6 @@
 export * from "./additionalDataHolder";
+export * from "./kiotaJsonSerializer";
+export * from "./kiotaSerializer";
 export * from "./parsable";
 export * from "./parsableFactory";
 export * from "./parseNode";
