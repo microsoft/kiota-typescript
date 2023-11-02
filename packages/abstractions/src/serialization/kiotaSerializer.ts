@@ -2,6 +2,7 @@ import type { Parsable } from "./parsable";
 import type { ParsableFactory } from "./parsableFactory";
 import type { ParseNode } from "./parseNode";
 import { ParseNodeFactoryRegistry } from "./parseNodeFactoryRegistry";
+import type { ModelSerializerFunction } from "./serializationFunctionTypes";
 import type { SerializationWriter } from "./serializationWriter";
 import { SerializationWriterFactoryRegistry } from "./serializationWriterFactoryRegistry";
 
@@ -9,41 +10,59 @@ import { SerializationWriterFactoryRegistry } from "./serializationWriterFactory
  * Serializes a parsable object into a buffer
  * @param contentType the content type to serialize to
  * @param value the value to serialize
+ * @param serializationFunction the serialization function for the model type
  * @returns a buffer containing the serialized value
  */
 export function serialize<T extends Parsable>(
   contentType: string,
   value: T,
+  serializationFunction: ModelSerializerFunction<T>,
 ): ArrayBuffer {
-  const writer = getSerializationWriter(contentType, value);
-  writer.writeObjectValue(undefined, value);
+  const writer = getSerializationWriter(
+    contentType,
+    value,
+    serializationFunction,
+  );
+  writer.writeObjectValue(undefined, value, serializationFunction);
   return writer.getSerializedContent();
 }
 /**
  * Serializes a parsable object into a string representation
  * @param contentType the content type to serialize to
  * @param value the value to serialize
+ * @param serializationFunction the serialization function for the model type
  * @returns a string representing the serialized value
  */
 export function serializeToString<T extends Parsable>(
   contentType: string,
   value: T,
+  serializationFunction: ModelSerializerFunction<T>,
 ): string {
-  const buffer = serialize(contentType, value);
+  const buffer = serialize(contentType, value, serializationFunction);
   return getStringValueFromBuffer(buffer);
 }
 /**
  * Serializes a collection of parsable objects into a buffer
  * @param contentType the content type to serialize to
  * @param value the value to serialize
+ * @param serializationFunction the serialization function for the model type
  * @returns a string representing the serialized value
  */
 export function serializeCollection<T extends Parsable>(
   contentType: string,
   values: T[],
+  serializationFunction: ModelSerializerFunction<T>,
 ): ArrayBuffer {
-  const writer = getSerializationWriter(contentType, values);
-  writer.writeCollectionOfObjectValues(undefined, values);
+  const writer = getSerializationWriter(
+    contentType,
+    values,
+    serializationFunction,
+  );
+  writer.writeCollectionOfObjectValues(
+    undefined,
+    values,
+    serializationFunction,
+  );
   return writer.getSerializedContent();
 }
 
@@ -51,25 +70,35 @@ export function serializeCollection<T extends Parsable>(
  * Serializes a collection of parsable objects into a string representation
  * @param contentType the content type to serialize to
  * @param value the value to serialize
+ * @param serializationFunction the serialization function for the model type
  * @returns a string representing the serialized value
  */
 export function serializeCollectionToString<T extends Parsable>(
   contentType: string,
   values: T[],
+  serializationFunction: ModelSerializerFunction<T>,
 ): string {
-  const buffer = serializeCollection(contentType, values);
+  const buffer = serializeCollection(
+    contentType,
+    values,
+    serializationFunction,
+  );
   return getStringValueFromBuffer(buffer);
 }
 
 function getSerializationWriter(
   contentType: string,
   value: unknown,
+  serializationFunction: unknown,
 ): SerializationWriter {
   if (!contentType) {
     throw new Error("content type cannot be undefined or empty");
   }
   if (!value) {
     throw new Error("value cannot be undefined");
+  }
+  if (!serializationFunction) {
+    throw new Error("serializationFunction cannot be undefined");
   }
   return SerializationWriterFactoryRegistry.defaultInstance.getSerializationWriter(
     contentType,

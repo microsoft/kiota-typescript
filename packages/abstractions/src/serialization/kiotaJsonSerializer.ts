@@ -8,46 +8,63 @@ import {
 } from "./kiotaSerializer";
 import type { Parsable } from "./parsable";
 import type { ParsableFactory } from "./parsableFactory";
+import type { ModelSerializerFunction } from "./serializationFunctionTypes";
 
 const jsonContentType = "application/json";
 /**
  * Serializes a parsable object into a buffer
  * @param value the value to serialize
+ * @param serializationFunction the serialization function for the model type
  * @returns a buffer containing the serialized value
  */
-export function serializeToJson<T extends Parsable>(value: T): ArrayBuffer {
-  return serialize(jsonContentType, value);
+export function serializeToJson<T extends Parsable>(
+  value: T,
+  serializationFunction: ModelSerializerFunction<T>,
+): ArrayBuffer {
+  return serialize(jsonContentType, value, serializationFunction);
 }
 
 /**
  * Serializes a parsable object into a string representation
  * @param value the value to serialize
+ * @param serializationFunction the serialization function for the model type
  * @returns a string representing the serialized value
  */
-export function serializeToJsonAsString<T extends Parsable>(value: T): string {
-  return serializeAsString(jsonContentType, value);
+export function serializeToJsonAsString<T extends Parsable>(
+  value: T,
+  serializationFunction: ModelSerializerFunction<T>,
+): string {
+  return serializeAsString(jsonContentType, value, serializationFunction);
 }
 
 /**
  * Serializes a collection of parsable objects into a buffer
  * @param value the value to serialize
+ * @param serializationFunction the serialization function for the model type
  * @returns a string representing the serialized value
  */
 export function serializeCollectionToJson<T extends Parsable>(
   values: T[],
+  serializationFunction: ModelSerializerFunction<T>,
 ): ArrayBuffer {
-  return serializeCollection(jsonContentType, values);
+  return serializeCollection(jsonContentType, values, serializationFunction);
 }
 
 /**
  * Serializes a collection of parsable objects into a string representation
  * @param value the value to serialize
+ * @param serializationFunction the serialization function for the model type
  * @returns a string representing the serialized value
  */
 export function serializeCollectionToJsonAsString<T extends Parsable>(
   values: T[],
+  serializationFunction: ModelSerializerFunction<T>,
 ): string {
-  return serializeCollectionAsString(jsonContentType, values);
+  return serializeCollectionAsString(
+    jsonContentType,
+    values,
+    serializationFunction,
+  );
 }
 
 /**
