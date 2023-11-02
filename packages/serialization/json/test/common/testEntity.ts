@@ -96,7 +96,10 @@ export function deserializeTestBackedModel(
     },
     foos: (n) => {
       testParser.foos = n.getCollectionOfObjectValues(createFooParserFromDiscriminatorValue);
-    }
+    },
+    id: (n) => {
+      testParser.id = n.getStringValue();
+    },
   };
 }
 

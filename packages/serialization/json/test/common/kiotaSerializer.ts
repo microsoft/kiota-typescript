@@ -1,9 +1,13 @@
 import {
   deserialize,
   deserializeCollection,
+  deserializeFromJson,
   type ModelSerializerFunction,
   type Parsable,
   type ParsableFactory,
+  type ParseNode,
+  type ParseNodeFactory,
+  ParseNodeFactoryRegistry,
   type SerializationWriter,
   type SerializationWriterFactory,
   SerializationWriterFactoryRegistry,
@@ -16,7 +20,11 @@ import {
 } from "@microsoft/kiota-abstractions";
 import { assert } from "chai";
 
-import { serializeTestBackModel, type TestBackedModel } from "./testEntity";
+import {
+  createTestBackedModelFromDiscriminatorValue,
+  serializeTestBackModel,
+  type TestBackedModel,
+} from "./testEntity";
 const jsonContentType = "application/json";
 describe("kiotaSerializer", () => {
   it("defends serialize", () => {
@@ -176,7 +184,71 @@ describe("kiotaSerializer", () => {
 
     SerializationWriterFactoryRegistry.defaultInstance.contentTypeAssociatedFactories.clear();
   });
+  it("Deserializes an object", () => {
+    registerMockParseNode({
+      id: "123",
+    } as TestBackedModel);
+    const result = deserializeFromJson(
+      `{"id": "123"}`,
+      createTestBackedModelFromDiscriminatorValue,
+    );
+
+    assert.deepEqual(result, {
+      id: "123",
+    } as TestBackedModel);
+
+    ParseNodeFactoryRegistry.defaultInstance.contentTypeAssociatedFactories.clear();
+  });
+  it("Deserializes a collection", () => {
+    registerMockParseNode([
+      {
+        id: "123",
+      } as TestBackedModel,
+    ]);
+    const result = deserializeFromJson(
+      `[{"id": "123"}]`,
+      createTestBackedModelFromDiscriminatorValue,
+    );
+
+    assert.deepEqual(result, [
+      {
+        id: "123",
+      } as TestBackedModel,
+    ]);
+
+    ParseNodeFactoryRegistry.defaultInstance.contentTypeAssociatedFactories.clear();
+  });
 });
+function registerMockParseNode(value: unknown): void {
+  const mockParseNode = {
+    getObjectValue<T extends Parsable>(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      parsableFactory: ParsableFactory<T>,
+    ): T {
+      return value as T;
+    },
+    getCollectionOfObjectValues<T extends Parsable>(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      parsableFactory: ParsableFactory<T>,
+    ): T[] | undefined {
+      return value as T[];
+    },
+  } as unknown as ParseNode;
+  const mockParseNodeFactory = {
+    getRootParseNode(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      contentType: string,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      buffer: ArrayBuffer,
+    ) {
+      return mockParseNode;
+    },
+  } as unknown as ParseNodeFactory;
+  ParseNodeFactoryRegistry.defaultInstance.contentTypeAssociatedFactories.set(
+    jsonContentType,
+    mockParseNodeFactory,
+  );
+}
 function registerMockSerializer(value: string): void {
   const mockSerializationWriter = {
     getSerializedContent(): ArrayBuffer {
