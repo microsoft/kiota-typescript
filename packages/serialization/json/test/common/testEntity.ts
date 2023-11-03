@@ -10,6 +10,7 @@ export interface TestParser {
   additionalData?: Record<string, unknown>;
   testDate?: Date | undefined;
   foos?: FooResponse[] | undefined;
+  id?: string | undefined;
 }
 export interface TestBackedModel extends TestParser, BackedModel {
   backingStoreEnabled?: boolean | undefined;
@@ -95,7 +96,10 @@ export function deserializeTestBackedModel(
     },
     foos: (n) => {
       testParser.foos = n.getCollectionOfObjectValues(createFooParserFromDiscriminatorValue);
-    }
+    },
+    id: (n) => {
+      testParser.id = n.getStringValue();
+    },
   };
 }
 
@@ -144,6 +148,23 @@ export function serializeTestParser(
   );
   writer.writeStringValue("testString", entity.testString);
   writer.writeStringValue("testComplexString", entity.testComplexString);
+
+  writer.writeDateValue("testDate", entity.testDate);
+  writer.writeObjectValue("testObject", entity.testObject, serializeTestObject);
+  writer.writeAdditionalData(entity.additionalData);
+}
+
+export function serializeTestBackModel(
+  writer: SerializationWriter,
+  entity: TestBackedModel | undefined = {},
+): void {
+  writer.writeCollectionOfPrimitiveValues(
+    "testCollection",
+    entity.testCollection,
+  );
+  writer.writeStringValue("testString", entity.testString);
+  writer.writeStringValue("testComplexString", entity.testComplexString);
+  writer.writeStringValue("id", entity.id);
 
   writer.writeDateValue("testDate", entity.testDate);
   writer.writeObjectValue("testObject", entity.testObject, serializeTestObject);
