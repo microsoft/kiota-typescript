@@ -1034,9 +1034,9 @@
     "@octokit/openapi-types" "^17.2.0"
 
 "@opentelemetry/api@^1.2.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@opentelemetry/api/-/api-1.6.0.tgz#de2c6823203d6f319511898bb5de7e70f5267e19"
-  integrity sha512-OWlrQAnWn9577PhVgqjUvMr1pg57Bc4jv0iL4w0PRuOSRvq67rvHW9Ie/dZVMvCzhSCB+UxhcY/PmCmFj33Q+g==
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@opentelemetry/api/-/api-1.7.0.tgz#b139c81999c23e3c8d3c0a7234480e945920fc40"
+  integrity sha512-AdY5wvN0P2vXBi3b29hxZgSFvdhdxPB9+f0B6s//P9Q8nibRWeA3cHm8UmLpio9ABigkVHJ5NMPk+Mz8VCCyrw==
 
 "@parcel/watcher@2.0.4":
   version "2.0.4"
