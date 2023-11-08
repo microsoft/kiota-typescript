@@ -19,7 +19,7 @@
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
-    "@azure/identity": "^3.0.0",
+    "@azure/identity": "^4.0.0",
     "@microsoft/kiota-authentication-azure": "^1.0.0-preview.18",
     "@microsoft/kiota-http-fetchlibrary": "^1.0.0-preview.22",
     "test-kiota-typescript-libraries": "file:../test/"
