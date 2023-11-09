@@ -105,7 +105,7 @@ describe("RequestInformation", () => {
     };
     requestInformation.addRequestHeaders(headers);
     assert.isNotEmpty(requestInformation.headers);
-    assert.equal(requestInformation.headers["ConsistencyLevel"][0], "eventual");
+    assert.equal(requestInformation.headers.tryGetValue("ConsistencyLevel")![0], "eventual");
   });
 
   it("Try to add headers to requestInformation", () => {
@@ -115,12 +115,12 @@ describe("RequestInformation", () => {
     assert.isTrue(requestInformation.tryAddRequestHeaders("key", "value1"));
     assert.isNotEmpty(requestInformation.headers);
     assert.equal(Object.keys(requestInformation.headers).length, 1);
-    assert.equal(requestInformation.headers["key"].length, 1);
-    assert.equal(requestInformation.headers["key"][0], "value1");
+    assert.equal(requestInformation.headers.tryGetValue("key")!.length, 1);
+    assert.equal(requestInformation.headers.tryGetValue("key")![0], "value1");
     assert.isFalse(requestInformation.tryAddRequestHeaders("key", "value2"));
     assert.equal(Object.keys(requestInformation.headers).length, 1);
-    assert.equal(requestInformation.headers["key"].length, 1);
-    assert.equal(requestInformation.headers["key"][0], "value1");
+    assert.equal(requestInformation.headers.tryGetValue("key")!.length, 1);
+    assert.equal(requestInformation.headers.tryGetValue("key")![0], "value1");
   });
 
   it("Sets a parsable content", () => {
@@ -305,7 +305,7 @@ describe("RequestInformation", () => {
       mpBody,
     );
     const contentTypeHeaderValue =
-      requestInformation.headers["Content-Type"][0];
+      requestInformation.headers.tryGetValue("Content-Type")![0];
     assert.equal(
       contentTypeHeaderValue,
       `multipart/form-data; boundary=${mpBody.getBoundary()}`,

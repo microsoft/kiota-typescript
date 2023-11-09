@@ -444,11 +444,11 @@ export class FetchRequestAdapter implements RequestAdapter {
 				if (this.observabilityOptions.includeEUIIAttributes) {
 					spanForAttributes.setAttribute("http.uri", decodeURIComponent(uri));
 				}
-				const requestContentLength = requestInfo.headers["Content-Length"];
+				const requestContentLength = requestInfo.headers.tryGetValue("Content-Length");
 				if (requestContentLength) {
 					spanForAttributes.setAttribute("http.request_content_length", parseInt(requestContentLength[0]));
 				}
-				const requestContentType = requestInfo.headers["Content-Type"];
+				const requestContentType = requestInfo.headers.tryGetValue("Content-Type");
 				if (requestContentType) {
 					spanForAttributes.setAttribute("http.request_content_type", requestContentType);
 				}

@@ -76,7 +76,7 @@ describe("Test authentication using @azure/identity", () => {
       new AzureIdentityAuthenticationProvider(clientCredential, scopes);
     await tokenCredentialAuthenticationProvider.authenticateRequest(request);
     assert.equal(
-      request.headers["Authorization"][0],
+      request.headers.tryGetValue("Authorization")![0],
       "Bearer " + accessToken.token
     );
   });
@@ -110,7 +110,7 @@ describe("Test authentication using @azure/identity", () => {
       new BaseBearerTokenAuthenticationProvider(accessTokenProvider);
     await tokenCredentialAuthenticationProvider.authenticateRequest(request);
     assert.equal(
-      request.headers["Authorization"][0],
+      request.headers.tryGetValue("Authorization")![0],
       "Bearer " + accessToken.token
     );
   });
@@ -140,7 +140,7 @@ describe("Test authentication using @azure/identity", () => {
     const request: RequestInformation = new RequestInformation();
     request.urlTemplate = "test";
     request.URL = "https://graph.microsoft.com/v1.0";
-    request.headers.Authorization = ["Bearer dummy_valid_token"];
+    request.headers.tryAdd("Authorization", ...["Bearer dummy_valid_token"]);
     const tokenCredentialAuthenticationProvider =
       new AzureIdentityAuthenticationProvider(clientCredential, scopes);
     await tokenCredentialAuthenticationProvider.authenticateRequest(request, {

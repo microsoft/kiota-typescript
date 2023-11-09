@@ -1,4 +1,4 @@
-import { createRecordWithCaseInsensitiveKeys,type RequestOption } from "@microsoft/kiota-abstractions";
+import { createRecordWithCaseInsensitiveKeys, type RequestOption, RequestHeaders } from "@microsoft/kiota-abstractions";
 export const HeadersInspectionOptionsKey = "HeadersInspectionOptionsKey";
 /**
  * @class
@@ -7,7 +7,7 @@ export const HeadersInspectionOptionsKey = "HeadersInspectionOptionsKey";
  * Options to inspect headers
  */
 export class HeadersInspectionOptions implements RequestOption {
-	private readonly requestHeaders = createRecordWithCaseInsensitiveKeys<string[]>();
+	private readonly requestHeaders: RequestHeaders = new RequestHeaders();
 	private readonly responseHeaders = createRecordWithCaseInsensitiveKeys<string[]>();
 	/**
 	 * @public

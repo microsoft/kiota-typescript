@@ -15,6 +15,7 @@ import type {
   SerializationWriter,
 } from "./serialization";
 import { TimeOnly } from "./timeOnly";
+import { RequestHeaders } from "./requestHeaders";
 
 /** This class represents an abstract HTTP request. */
 export class RequestInformation {
@@ -98,8 +99,7 @@ export class RequestInformation {
     string | number | boolean | undefined
   >();
   /** The Request Headers. */
-  public headers: Record<string, string[]> =
-    createRecordWithCaseInsensitiveKeys<string[]>();
+  public headers: RequestHeaders = new RequestHeaders();
   private _requestOptions: Record<string, RequestOption> =
     createRecordWithCaseInsensitiveKeys<RequestOption>();
   /** Gets the request options for the request. */
@@ -110,16 +110,16 @@ export class RequestInformation {
   public addRequestHeaders(source: Record<string, string[]> | undefined) {
     if (!source) return;
     for (const key in source) {
-      this.headers[key] = source[key];
+      this.headers.add(key, ...source[key]);
     }
   }
   /** Try to add the header for the request if it's not already present. */
   public tryAddRequestHeaders(key: string, value: string): boolean {
     if (!key || !value) return false;
-    if (Object.keys(this.headers).find((k) => k === key) !== undefined) {
+    if (!this.headers.has(key)) {
       return false;
     } else {
-      this.headers[key] = [value];
+      this.headers.tryAdd(key, value);
       return true;
     }
   }
@@ -167,7 +167,7 @@ export class RequestInformation {
             contentType += "; boundary=" + value.getBoundary();
           }
           if (!this.headers) {
-            this.headers = {};
+            this.headers = new RequestHeaders();
           }
 
           if (Array.isArray(value)) {
@@ -236,7 +236,7 @@ export class RequestInformation {
             value,
           );
           if (!this.headers) {
-            this.headers = {};
+            this.headers = new RequestHeaders();
           }
 
           if (Array.isArray(value)) {

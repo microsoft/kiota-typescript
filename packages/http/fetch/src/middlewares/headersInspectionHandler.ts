@@ -54,7 +54,7 @@ export class HeadersInspectionHandler implements Middleware {
 		}
 		if (currentOptions.inspectRequestHeaders && requestInit.headers) {
 			for (const [key, value] of requestInit.headers as [string, string][]) {
-				currentOptions.getRequestHeaders()[key] = [value];
+				currentOptions.getRequestHeaders().add(key, value);
 			}
 		}
 

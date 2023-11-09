@@ -13,6 +13,7 @@ export * from "./recordWithCaseInsensitiveKeys";
 export * from "./requestAdapter";
 export * from "./requestConfiguration";
 export * from "./requestInformation";
+export * from "./requestHeaders";
 export * from "./requestOption";
 export * from "./responseHandler";
 export * from "./responseHandlerOptions";
