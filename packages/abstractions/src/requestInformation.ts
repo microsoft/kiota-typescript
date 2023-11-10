@@ -298,10 +298,10 @@ export class RequestInformation {
    * @param parameters the parameters.
    * @param p the mapping from code symbol to URI template parameter name.
    */
-  public setQueryStringParametersFromRawObject = (
-    q: object | undefined,
+  public setQueryStringParametersFromRawObject<T extends object>(
+    q?: T,
     p?: Record<string, string>,
-  ): void => {
+  ): void {
     if (!q) return;
     Object.entries(q).forEach(([k, v]) => {
       let key = k;
