@@ -8,11 +8,36 @@ import { MultipartBody } from "./multipartBody";
 import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitiveKeys";
 import type { RequestAdapter } from "./requestAdapter";
 import type { RequestOption } from "./requestOption";
-import type { ModelSerializerFunction, Parsable, SerializationWriter } from "./serialization";
+import type {
+  ModelSerializerFunction,
+  Parsable,
+  SerializationWriter,
+} from "./serialization";
 import { TimeOnly } from "./timeOnly";
 
 /** This class represents an abstract HTTP request. */
 export class RequestInformation {
+  /**
+   * Initializes a request information instance with the provided values.
+   * @param httpMethod The HTTP method for the request.
+   * @param urlTemplate The URL template for the request.
+   * @param pathParameters The path parameters for the request.
+   */
+  public constructor(
+    httpMethod?: HttpMethod,
+    urlTemplate?: string,
+    pathParameters?: Record<string, unknown>,
+  ) {
+    if (httpMethod) {
+      this.httpMethod = httpMethod;
+    }
+    if (urlTemplate) {
+      this.urlTemplate = urlTemplate;
+    }
+    if (pathParameters) {
+      this.pathParameters = pathParameters;
+    }
+  }
   /** The URI of the request. */
   private uri?: string;
   /** The path parameters for the request. */
@@ -167,7 +192,10 @@ export class RequestInformation {
     contentType?: string | undefined,
   ) => {
     if (contentType) {
-      this.tryAddRequestHeaders(RequestInformation.contentTypeHeader, contentType);
+      this.tryAddRequestHeaders(
+        RequestInformation.contentTypeHeader,
+        contentType,
+      );
     }
     this.content = writer.getSerializedContent();
   };
