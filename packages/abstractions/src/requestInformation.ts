@@ -320,16 +320,15 @@ export class RequestInformation {
    * @param queryParametersMapper mapping between code symbols and URI template parameter names.
    */
   public configure<T extends object>(
-    config: RequestConfiguration<T>,
+    config?: RequestConfiguration<T>,
     queryParametersMapper?: Record<string, string>,
   ): void {
-    if (config) {
-      this.addRequestHeaders(config.headers);
-      this.setQueryStringParametersFromRawObject(
-        config.queryParameters,
-        queryParametersMapper,
-      );
-      this.addRequestOptions(config.options);
-    }
+    if (!config) return;
+    this.addRequestHeaders(config.headers);
+    this.setQueryStringParametersFromRawObject(
+      config.queryParameters,
+      queryParametersMapper,
+    );
+    this.addRequestOptions(config.options);
   }
 }
