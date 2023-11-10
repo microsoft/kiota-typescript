@@ -7,6 +7,7 @@ import { type HttpMethod } from "./httpMethod";
 import { MultipartBody } from "./multipartBody";
 import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitiveKeys";
 import type { RequestAdapter } from "./requestAdapter";
+import type { RequestConfiguration } from "./requestConfiguration";
 import type { RequestOption } from "./requestOption";
 import type {
   ModelSerializerFunction,
@@ -313,4 +314,22 @@ export class RequestInformation {
       this.queryParameters[key] = v;
     });
   };
+  /**
+   * Configure the current request with headers, query parameters and options.
+   * @param config the configuration object to use.
+   * @param queryParametersMapper mapping between code symbols and URI template parameter names.
+   */
+  public configure<T extends object>(
+    config: RequestConfiguration<T>,
+    queryParametersMapper?: Record<string, string>,
+  ): void {
+    if (config) {
+      this.addRequestHeaders(config.headers);
+      this.setQueryStringParametersFromRawObject(
+        config.queryParameters,
+        queryParametersMapper,
+      );
+      this.addRequestOptions(config.options);
+    }
+  }
 }
