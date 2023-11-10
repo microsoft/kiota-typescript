@@ -252,17 +252,20 @@ export class RequestInformation {
   /**
    * Sets the query string parameters from a raw object.
    * @param parameters the parameters.
-   * @param oarameterNames the parametersName.
+   * @param p the mapping from code symbol to URI template parameter name.
    */
   public setQueryStringParametersFromRawObject = (
     q: object | undefined,
-    p?: Map<string,string> | undefined
+    p?: Record<string, string>,
   ): void => {
     if (!q) return;
     Object.entries(q).forEach(([k, v]) => {
       let key = k;
-      if(p != null && p.has(key)){
-        key = p.get(key);
+      if (p) {
+        const keyCandidate = p[key];
+        if (keyCandidate) {
+          key = keyCandidate;
+        }
       }
       this.queryParameters[key] = v;
     });
