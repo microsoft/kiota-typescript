@@ -86,18 +86,19 @@ export class RequestHeaders extends Map<string, Set<string>> {
      * Adds values to the header with the specified name.
      * @param headerName The name of the header to add values to.
      * @param headerValues The values to add to the header.
-     * @throws Error if headerName is null or empty
-     * @throws Error if headerValues is null
+     * @returns Whether or not the values were added to the header.
      */
-    add(headerName: string, ...headerValues: string[]): void {
+    add(headerName: string, ...headerValues: string[]): boolean {
       if (!headerName) {
-        throw new Error("headerName cannot be null or empty");
+        console.error("headerName cannot be null or empty");
+        return false;
       }
       if (!headerValues) {
-        throw new Error("headerValues cannot be null");
+        console.error("headerValues cannot be null");
+        return false;
       }
       if (headerValues.length === 0) {
-        return;
+        return false;
       }
       if (this.singleValueHeaders.has(headerName)) {
         this.headers[headerName] = new Set([headerValues[0]]);
@@ -106,6 +107,7 @@ export class RequestHeaders extends Map<string, Set<string>> {
       } else {
         this.headers[headerName] = new Set(headerValues);
       }
+      return true;
     }
 
     /**
@@ -178,5 +180,30 @@ export class RequestHeaders extends Map<string, Set<string>> {
         throw new Error("key cannot be null or empty");
       }
       return this.headers[key] ? Array.from(this.headers[key]) : null;
+    }
+
+    toString(): string {    
+      return JSON.stringify(this.headers);
+    }
+
+    /**
+     * check if the headers collection is empty
+     */ 
+    isEmpty(): boolean {
+      return Object.keys(this.headers).length === 0;  
+    }
+
+    /**
+     * get the headers collection size
+     */
+    keys(): IterableIterator<string> {
+      return Object.keys(this.headers)[Symbol.iterator]();
+    }
+
+    /**
+     * get entries
+     */
+    entries(): IterableIterator<[string, Set<string>]> {
+      return Object.entries(this.headers)[Symbol.iterator]();
     }
 }

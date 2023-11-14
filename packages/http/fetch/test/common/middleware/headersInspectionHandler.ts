@@ -41,7 +41,7 @@ describe("HeadersInspectionHandler.ts", () => {
 			const headers = options.getRequestHeaders();
 			assert.isDefined(headers);
 			assert.isEmpty(options.getResponseHeaders());
-			assert.equal(headers["test"][0], "test");
+			assert.equal(headers.tryGetValue("test")![0], "test");
 		});
 		it("Should return response headers", async () => {
 			const options = new HeadersInspectionOptions(false, true);
@@ -60,7 +60,7 @@ describe("HeadersInspectionHandler.ts", () => {
 			const headers = options.getResponseHeaders();
 			assert.isDefined(headers);
 			assert.isEmpty(options.getRequestHeaders());
-			assert.equal(headers["test"][0], "test");
+			assert.equal(headers.tryGetValue("test")![0], "test");
 		});
 	});
 });

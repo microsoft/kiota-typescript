@@ -115,13 +115,7 @@ export class RequestInformation {
   }
   /** Try to add the header for the request if it's not already present. */
   public tryAddRequestHeaders(key: string, value: string): boolean {
-    if (!key || !value) return false;
-    if (!this.headers.has(key)) {
-      return false;
-    } else {
-      this.headers.tryAdd(key, value);
-      return true;
-    }
+    return this.headers.add(key, value);
   }
   /** Adds the request options for the request. */
   public addRequestOptions(options: RequestOption[] | undefined) {

@@ -61,7 +61,7 @@ export class HeadersInspectionHandler implements Middleware {
 		const response = await this.next.execute(url, requestInit, requestOptions);
 		if (currentOptions.inspectResponseHeaders && response.headers) {
 			for (const [key, value] of response.headers.entries()) {
-				currentOptions.getResponseHeaders()[key] = [value];
+				currentOptions.getResponseHeaders().add(key, value);
 			}
 		}
 
