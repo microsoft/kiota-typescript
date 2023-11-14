@@ -7,12 +7,38 @@ import { type HttpMethod } from "./httpMethod";
 import { MultipartBody } from "./multipartBody";
 import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitiveKeys";
 import type { RequestAdapter } from "./requestAdapter";
+import type { RequestConfiguration } from "./requestConfiguration";
 import type { RequestOption } from "./requestOption";
-import type { ModelSerializerFunction, Parsable, SerializationWriter } from "./serialization";
+import type {
+  ModelSerializerFunction,
+  Parsable,
+  SerializationWriter,
+} from "./serialization";
 import { TimeOnly } from "./timeOnly";
 
 /** This class represents an abstract HTTP request. */
 export class RequestInformation {
+  /**
+   * Initializes a request information instance with the provided values.
+   * @param httpMethod The HTTP method for the request.
+   * @param urlTemplate The URL template for the request.
+   * @param pathParameters The path parameters for the request.
+   */
+  public constructor(
+    httpMethod?: HttpMethod,
+    urlTemplate?: string,
+    pathParameters?: Record<string, unknown>,
+  ) {
+    if (httpMethod) {
+      this.httpMethod = httpMethod;
+    }
+    if (urlTemplate) {
+      this.urlTemplate = urlTemplate;
+    }
+    if (pathParameters) {
+      this.pathParameters = pathParameters;
+    }
+  }
   /** The URI of the request. */
   private uri?: string;
   /** The path parameters for the request. */
@@ -167,7 +193,10 @@ export class RequestInformation {
     contentType?: string | undefined,
   ) => {
     if (contentType) {
-      this.tryAddRequestHeaders(RequestInformation.contentTypeHeader, contentType);
+      this.tryAddRequestHeaders(
+        RequestInformation.contentTypeHeader,
+        contentType,
+      );
     }
     this.content = writer.getSerializedContent();
   };
@@ -267,20 +296,39 @@ export class RequestInformation {
   /**
    * Sets the query string parameters from a raw object.
    * @param parameters the parameters.
+   * @param p the mapping from code symbol to URI template parameter name.
    */
-  public setQueryStringParametersFromRawObject = (
-    q: object | undefined,
-  ): void => {
+  public setQueryStringParametersFromRawObject<T extends object>(
+    q?: T,
+    p?: Record<string, string>,
+  ): void {
     if (!q) return;
     Object.entries(q).forEach(([k, v]) => {
       let key = k;
-      if ((q as any).getQueryParameter) {
-        const serializationKey = (q as any).getQueryParameter(key) as string;
-        if (serializationKey) {
-          key = serializationKey;
+      if (p) {
+        const keyCandidate = p[key];
+        if (keyCandidate) {
+          key = keyCandidate;
         }
       }
       this.queryParameters[key] = v;
     });
   };
+  /**
+   * Configure the current request with headers, query parameters and options.
+   * @param config the configuration object to use.
+   * @param queryParametersMapper mapping between code symbols and URI template parameter names.
+   */
+  public configure<T extends object>(
+    config?: RequestConfiguration<T>,
+    queryParametersMapper?: Record<string, string>,
+  ): void {
+    if (!config) return;
+    this.addRequestHeaders(config.headers);
+    this.setQueryStringParametersFromRawObject(
+      config.queryParameters,
+      queryParametersMapper,
+    );
+    this.addRequestOptions(config.options);
+  }
 }
