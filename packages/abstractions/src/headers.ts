@@ -188,8 +188,15 @@ export class Headers extends Map<string, Set<string>> {
       return this.headers[key] ? Array.from(this.headers[key]) : null;
     }
 
-    toString(): string {    
-      return JSON.stringify(this.headers);
+    /**
+     * Override toString method for the headers collection
+     * @returns a string representation of the headers collection
+     */
+    toString(): string {
+      return JSON.stringify(
+        this.headers,
+        (_key, value) => (value instanceof Set ? [...value] : value)
+      );
     }
 
     /**
@@ -200,7 +207,8 @@ export class Headers extends Map<string, Set<string>> {
     }
 
     /**
-     * get the headers collection size
+     * get keys of the headers collection
+     * @returns an iterator of keys
      */
     keys(): IterableIterator<string> {
       return Object.keys(this.headers)[Symbol.iterator]();
@@ -208,6 +216,7 @@ export class Headers extends Map<string, Set<string>> {
 
     /**
      * get entries
+     * @returns an iterator of entries
      */
     entries(): IterableIterator<[string, Set<string>]> {
       return Object.entries(this.headers)[Symbol.iterator]();
