@@ -1,7 +1,7 @@
 
 import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitiveKeys";
 
-export class RequestHeaders extends Map<string, Set<string>> {
+export class Headers extends Map<string, Set<string>> {
 
     private headers: Record<string, Set<string>> = createRecordWithCaseInsensitiveKeys<Set<string>>();
     private singleValueHeaders: Set<string> = new Set([
@@ -19,9 +19,15 @@ export class RequestHeaders extends Map<string, Set<string>> {
       }
     }
     
+    /**
+     * Sets a header with the specified name and value. If a header with the same name already exists, its value is appended with the specified value.
+     * @param headerName the name of the header to set
+     * @param headerValue the value of the header to set
+     * @returns Headers object
+     */
     set(headerName: string, headerValue: Set<string>): this {
-        this.add(headerName, ...headerValue);
-        return this;
+      this.add(headerName, ...headerValue);
+      return this;
     }
     
     /**
@@ -160,7 +166,7 @@ export class RequestHeaders extends Map<string, Set<string>> {
      * @param headers The headers to update the current headers with.
      * @throws Error if headers is null
      */
-    addAll(headers: RequestHeaders): void {
+    addAll(headers: Headers): void {
       if (!headers) {
         throw new Error("headers cannot be null");
       }

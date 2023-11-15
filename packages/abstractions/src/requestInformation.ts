@@ -15,7 +15,7 @@ import type {
   SerializationWriter,
 } from "./serialization";
 import { TimeOnly } from "./timeOnly";
-import { RequestHeaders } from "./requestHeaders";
+import { Headers } from "./headers";
 
 /** This class represents an abstract HTTP request. */
 export class RequestInformation {
@@ -99,7 +99,7 @@ export class RequestInformation {
     string | number | boolean | undefined
   >();
   /** The Request Headers. */
-  public headers: RequestHeaders = new RequestHeaders();
+  public headers: Headers = new Headers();
   private _requestOptions: Record<string, RequestOption> =
     createRecordWithCaseInsensitiveKeys<RequestOption>();
   /** Gets the request options for the request. */
@@ -161,7 +161,7 @@ export class RequestInformation {
             contentType += "; boundary=" + value.getBoundary();
           }
           if (!this.headers) {
-            this.headers = new RequestHeaders();
+            this.headers = new Headers();
           }
 
           if (Array.isArray(value)) {
@@ -230,7 +230,7 @@ export class RequestInformation {
             value,
           );
           if (!this.headers) {
-            this.headers = new RequestHeaders();
+            this.headers = new Headers();
           }
 
           if (Array.isArray(value)) {

@@ -1,11 +1,11 @@
-import { RequestHeaders } from "../../src";
+import { Headers } from "../../src";
 import { assert, expect } from "chai";
 
 describe('RequestHeaders', () => {
-  let headers: RequestHeaders;
+  let headers: Headers;
 
   beforeEach(() => {
-    headers = new RequestHeaders();
+    headers = new Headers();
   });
 
   it('should add a header with multiple values', () => {

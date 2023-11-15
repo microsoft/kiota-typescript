@@ -1,4 +1,4 @@
-import { type RequestOption, RequestHeaders } from "@microsoft/kiota-abstractions";
+import { type RequestOption, Headers } from "@microsoft/kiota-abstractions";
 export const HeadersInspectionOptionsKey = "HeadersInspectionOptionsKey";
 /**
  * @class
@@ -7,8 +7,8 @@ export const HeadersInspectionOptionsKey = "HeadersInspectionOptionsKey";
  * Options to inspect headers
  */
 export class HeadersInspectionOptions implements RequestOption {
-	private readonly requestHeaders: RequestHeaders = new RequestHeaders();
-	private readonly responseHeaders = new RequestHeaders();
+	private readonly requestHeaders: Headers = new Headers();
+	private readonly responseHeaders = new Headers();
 	/**
 	 * @public
 	 * @getter

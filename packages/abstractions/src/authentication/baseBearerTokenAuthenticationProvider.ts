@@ -1,4 +1,4 @@
-import { RequestHeaders } from "../requestHeaders";
+import { Headers } from "../headers";
 import { type RequestInformation } from "../requestInformation";
 import type { AccessTokenProvider } from "./accessTokenProvider";
 import type { AuthenticationProvider } from "./authenticationProvider";
@@ -45,7 +45,7 @@ export class BaseBearerTokenAuthenticationProvider
         additionalAuthenticationContext
       );
       if (!request.headers) {
-        request.headers = new RequestHeaders();
+        request.headers = new Headers();
       }
       if (token) {
         request.headers.tryAdd(
