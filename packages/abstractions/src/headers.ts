@@ -10,7 +10,7 @@ export class Headers extends Map<string, Set<string>> {
         "Content-Length"
     ]);
 
-    constructor(entries?: readonly (readonly [string, Set<string>])[] | null) {
+    public constructor(entries?: readonly (readonly [string, Set<string>])[] | null) {
       super(entries);
       if (entries) {
           entries.forEach(([key, value]) => {
@@ -25,7 +25,7 @@ export class Headers extends Map<string, Set<string>> {
      * @param headerValue the value of the header to set
      * @returns Headers object
      */
-    set(headerName: string, headerValue: Set<string>): this {
+    public set(headerName: string, headerValue: Set<string>): this {
       this.add(headerName, ...headerValue);
       return this;
     }
@@ -36,7 +36,7 @@ export class Headers extends Map<string, Set<string>> {
      * @returns The values for the header with the specified name.
      * @throws Error if headerName is null or empty
      */
-    get(headerName: string): Set<string> | undefined {
+    public get(headerName: string): Set<string> | undefined {
       if (!headerName) {
         throw new Error("headerName cannot be null or empty");
       }
@@ -47,7 +47,7 @@ export class Headers extends Map<string, Set<string>> {
      * Checks if a header exists.
      * @param key The name of the header to check for.
      */
-    has(key: string): boolean {
+    public has(key: string): boolean {
       return !!key && !!this.headers[key];;
     }
     
@@ -57,7 +57,7 @@ export class Headers extends Map<string, Set<string>> {
      * @returns Whether or not the header existed and was deleted.
      * @throws Error if headerName is null or empty
      */
-    delete(headerName: string): boolean {
+    public delete(headerName: string): boolean {
       if (!headerName) {
         throw new Error("headerName cannot be null or empty");
       }
@@ -71,7 +71,7 @@ export class Headers extends Map<string, Set<string>> {
     /**
      * clear the headers collection
      */
-    clear(): void {
+    public clear(): void {
       for (const header in this.headers) {
         delete this.headers[header];
       }
@@ -82,7 +82,7 @@ export class Headers extends Map<string, Set<string>> {
      * @param callbackfn A function that accepts up to three arguments. forEach calls the callbackfn function one time for each header in the dictionary.
      * @param thisArg An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
      */
-    forEach(callbackfn: (value: Set<string>, key: string, map: Map<string, Set<string>>) => void, thisArg?: any): void {
+    public forEach(callbackfn: (value: Set<string>, key: string, map: Map<string, Set<string>>) => void, thisArg?: any): void {
       for (const header in this.headers) {
         callbackfn.call(thisArg, this.headers[header], header, this);
       }
@@ -94,7 +94,7 @@ export class Headers extends Map<string, Set<string>> {
      * @param headerValues The values to add to the header.
      * @returns Whether or not the values were added to the header.
      */
-    add(headerName: string, ...headerValues: string[]): boolean {
+    public add(headerName: string, ...headerValues: string[]): boolean {
       if (!headerName) {
         console.error("headerName cannot be null or empty");
         return false;
@@ -122,7 +122,7 @@ export class Headers extends Map<string, Set<string>> {
      * @param headerValue The values to add to the header.
      * @returns If the headerValue have been added to the Dictionary.
      */
-    tryAdd(headerName: string, headerValue: string): boolean {
+    public tryAdd(headerName: string, headerValue: string): boolean {
       if (!headerName) {
         throw new Error("headerName cannot be null or empty");
       }
@@ -144,7 +144,7 @@ export class Headers extends Map<string, Set<string>> {
      * @throws Error if headerName is null or empty
      * @throws Error if headerValue is null
      */
-    remove(headerName: string, headerValue: string): boolean {
+    public remove(headerName: string, headerValue: string): boolean {
       if (!headerName) {
         throw new Error("headerName cannot be null or empty");
       }
@@ -166,7 +166,7 @@ export class Headers extends Map<string, Set<string>> {
      * @param headers The headers to update the current headers with.
      * @throws Error if headers is null
      */
-    addAll(headers: Headers): void {
+    public addAll(headers: Headers): void {
       if (!headers) {
         throw new Error("headers cannot be null");
       }
@@ -181,7 +181,7 @@ export class Headers extends Map<string, Set<string>> {
      * @returns The values for the header with the specified name.
      * @throws Error if key is null or empty
      */
-    tryGetValue(key: string): string[] | null {
+    public tryGetValue(key: string): string[] | null {
       if (!key) {
         throw new Error("key cannot be null or empty");
       }
@@ -192,7 +192,7 @@ export class Headers extends Map<string, Set<string>> {
      * Override toString method for the headers collection
      * @returns a string representation of the headers collection
      */
-    toString(): string {
+    public toString(): string {
       return JSON.stringify(
         this.headers,
         (_key, value) => (value instanceof Set ? [...value] : value)
@@ -202,7 +202,7 @@ export class Headers extends Map<string, Set<string>> {
     /**
      * check if the headers collection is empty
      */ 
-    isEmpty(): boolean {
+    public isEmpty(): boolean {
       return Object.keys(this.headers).length === 0;  
     }
 
@@ -210,7 +210,7 @@ export class Headers extends Map<string, Set<string>> {
      * get keys of the headers collection
      * @returns an iterator of keys
      */
-    keys(): IterableIterator<string> {
+    public keys(): IterableIterator<string> {
       return Object.keys(this.headers)[Symbol.iterator]();
     }
 
@@ -218,7 +218,7 @@ export class Headers extends Map<string, Set<string>> {
      * get entries
      * @returns an iterator of entries
      */
-    entries(): IterableIterator<[string, Set<string>]> {
+    public entries(): IterableIterator<[string, Set<string>]> {
       return Object.entries(this.headers)[Symbol.iterator]();
     }
 }

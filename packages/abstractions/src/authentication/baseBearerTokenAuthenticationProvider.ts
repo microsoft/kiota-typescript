@@ -48,7 +48,7 @@ export class BaseBearerTokenAuthenticationProvider
         request.headers = new Headers();
       }
       if (token) {
-        request.headers.tryAdd(
+        request.headers.add(
           BaseBearerTokenAuthenticationProvider.authorizationHeaderKey,
           `Bearer ${token}`);
       }
