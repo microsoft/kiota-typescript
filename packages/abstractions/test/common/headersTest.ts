@@ -161,4 +161,25 @@ describe('RequestHeaders', () => {
     const entriesArray = Array.from(entriesIterator);
     expect(JSON.stringify(entriesArray)).eq(JSON.stringify([]));
   });
+  
+  it('should initialize without entries', () => {
+    const headers = new Headers();
+    assert.isDefined(headers);
+  });
+
+  it('should initialize with entries', () => {
+    const entries: [string, Set<string>][] = [
+      ['header1', new Set(['value1'])],
+      ['header2', new Set(['value2', 'value3'])]
+    ];
+    const headers = new Headers(entries);
+    assert.isDefined(headers);
+    expect(JSON.stringify(Array.from(headers.entries()))).eq(JSON.stringify(entries));
+  });
+
+  it('should ignore null entries', () => {
+    const headers = new Headers(null);
+    assert.isDefined(headers);
+    expect(JSON.stringify(Array.from(headers.entries()))).eq(JSON.stringify([]));
+  });
 });

@@ -1,6 +1,15 @@
 
 import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitiveKeys";
 
+/**
+ * A collection class for HTTP headers. The keys are case-insensitive.
+ * @extends Map
+ * @example
+ * ```typescript
+ * const headers = new Headers();
+ * headers.add("header1", "value1");
+ * ```
+ */
 export class Headers extends Map<string, Set<string>> {
 
     private headers: Record<string, Set<string>> = createRecordWithCaseInsensitiveKeys<Set<string>>();
@@ -10,8 +19,20 @@ export class Headers extends Map<string, Set<string>> {
         "Content-Length"
     ]);
 
+    /**
+    * Creates a new Headers object.
+    * @param entries An iterable object that contains key-value pairs. Each key-value pair must be an array with two elements: the key of the header, and the value of the header. 
+    * @example
+    * ```typescript
+    *  const entries: [string, Set<string>][] = [
+    *    ['header1', new Set(['value1'])],
+    *    ['header2', new Set(['value2', 'value3'])]
+    *  ];
+    *  const headers = new Headers(entries);
+    * ```
+    */
     public constructor(entries?: readonly (readonly [string, Set<string>])[] | null) {
-      super(entries);
+      super();
       if (entries) {
           entries.forEach(([key, value]) => {
             this.headers[key] = value;
@@ -48,7 +69,7 @@ export class Headers extends Map<string, Set<string>> {
      * @param key The name of the header to check for.
      */
     public has(key: string): boolean {
-      return !!key && !!this.headers[key];;
+      return !!key && !!this.headers[key];
     }
     
     /**
