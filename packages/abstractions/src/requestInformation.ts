@@ -107,10 +107,9 @@ export class RequestInformation {
     return this._requestOptions;
   }
   /** Adds the headers for the request. */
-  public addRequestHeaders(source: Record<string, string[]> | undefined) {
-    if (!source) return;
-    for (const key in source) {
-      this.headers.add(key, ...source[key]);
+  public addRequestHeaders(source: Headers | undefined) {
+    if (source) {
+      this.headers.addAll(source);
     }
   }
   /** Try to add the header for the request if it's not already present. */

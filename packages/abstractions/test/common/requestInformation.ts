@@ -17,6 +17,7 @@ import {
   RequestInformation,
   type SerializationWriter,
   type SerializationWriterFactory,
+  Headers,
 } from "../../src";
 import { MultipartBody } from "../../src/multipartBody";
 
@@ -100,9 +101,8 @@ describe("RequestInformation", () => {
     const requestInformation = new RequestInformation();
     requestInformation.pathParameters["baseurl"] = baseUrl;
     requestInformation.urlTemplate = "http://localhost/me{?%24select}";
-    const headers: Record<string, string[]> = {
-      ConsistencyLevel: ["eventual"],
-    };
+    const headers = new Headers();
+    headers.add("ConsistencyLevel", "eventual"); 
     requestInformation.addRequestHeaders(headers);
     assert.isTrue(requestInformation.headers.has("ConsistencyLevel"));
     assert.equal(requestInformation.headers.tryGetValue("ConsistencyLevel")![0], "eventual");
@@ -153,9 +153,8 @@ describe("RequestInformation", () => {
       "application/json",
       {} as unknown as Parsable,
     );
-    const headers: Record<string, string[]> = {
-      ConsistencyLevel: ["eventual"],
-    };
+    const headers = new Headers();
+    headers.add("ConsistencyLevel", "eventual"); 
     requestInformation.addRequestHeaders(headers);
     //assert.isNotEmpty(requestInformation.headers.entries());
     assert.equal(methodCalledCount, 1);
@@ -191,11 +190,9 @@ describe("RequestInformation", () => {
       "application/json",
       [{} as unknown as Parsable],
     );
-    const headers: Record<string, string[]> = {
-      ConsistencyLevel: ["eventual"],
-    };
+    const headers = new Headers();
+    headers.add("ConsistencyLevel", "eventual"); 
     requestInformation.addRequestHeaders(headers);
-    //assert.isNotEmpty(requestInformation.headers);
     assert.equal(methodCalledCount, 1);
   });
 
@@ -227,11 +224,9 @@ describe("RequestInformation", () => {
       "application/json",
       "some content",
     );
-    const headers: Record<string, string[]> = {
-      ConsistencyLevel: ["eventual"],
-    };
+    const headers = new Headers();
+    headers.add("ConsistencyLevel", "eventual"); 
     requestInformation.addRequestHeaders(headers);
-    //assert.isNotEmpty(requestInformation.headers);
     assert.equal(writtenValue, "some content");
   });
 
@@ -263,11 +258,9 @@ describe("RequestInformation", () => {
       "application/json",
       ["some content"],
     );
-    const headers: Record<string, string[]> = {
-      ConsistencyLevel: ["eventual"],
-    };
+    const headers = new Headers();
+    headers.add("ConsistencyLevel", "eventual"); 
     requestInformation.addRequestHeaders(headers);
-    //assert.isNotEmpty(requestInformation.headers);
     assert.equal(writtenValue, '["some content"]');
   });
 

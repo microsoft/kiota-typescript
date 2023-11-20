@@ -365,7 +365,6 @@ export class FetchRequestAdapter implements RequestAdapter {
 					additionalContext["claims"] = claims;
 				}
 				await this.authenticationProvider.authenticateRequest(requestInfo, additionalContext);
-
 				const request = await this.getRequestFromRequestInformation(requestInfo, spanForAttributes);
 				if (this.observabilityOptions) {
 					requestInfo.addRequestOptions([this.observabilityOptions]);
@@ -452,7 +451,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				if (requestContentType) {
 					spanForAttributes.setAttribute("http.request_content_type", requestContentType);
 				}
-				const headers: [string, string][] | undefined = requestInfo.headers ? Array.from(requestInfo.headers).map(([key, value]) => [key.toLocaleLowerCase(), Array.from(value).join(',')]) : undefined;
+				const headers: [string, string][] | undefined = requestInfo.headers ? Array.from(requestInfo.headers.keys()).map((key) => [key.toString().toLocaleLowerCase(), this.foldHeaderValue(requestInfo.headers.tryGetValue(key))]) : undefined;
 				const request = {
 					method,
 					headers,
@@ -463,6 +462,15 @@ export class FetchRequestAdapter implements RequestAdapter {
 				span.end();
 			}
 		});
+	};
+	private foldHeaderValue = (value: string[] | null): string => {
+		if (!value || value.length < 1) {
+			return "";
+		} else if (value.length === 1) {
+			return value[0];
+		} else {
+			return value.reduce((acc, val) => acc + val, ",");
+		}
 	};
 	/**
 	 * @inheritdoc
