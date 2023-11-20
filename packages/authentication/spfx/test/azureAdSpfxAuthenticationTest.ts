@@ -65,7 +65,7 @@ describe("Test authentication using SharePoint Framework", () => {
         await azureAdSpfxAuthProvider.authenticateRequest(request);
 
         assert.equal(
-            request.headers["Authorization"][0],
+            request.headers.tryGetValue("Authorization")![0],
             "Bearer " + expectedToken
           );
     });

@@ -51,7 +51,7 @@ describe("ApiKeyAuthenticationProvider", () => {
     request.urlTemplate = "https://localhost{?param1}";
     await provider.authenticateRequest(request);
     assert.equal(request.URL, "https://localhost?param=key");
-    assert.isUndefined(request.headers["param"]);
+    assert.isNull(request.headers.tryGetValue("param"));
   });
   it("Adds in query parameters with other parameters", async () => {
     const provider = new ApiKeyAuthenticationProvider(
@@ -64,7 +64,7 @@ describe("ApiKeyAuthenticationProvider", () => {
     request.queryParameters["param1"] = "value1";
     await provider.authenticateRequest(request);
     assert.equal(request.URL, "https://localhost?param1=value1&param=key");
-    assert.isUndefined(request.headers["param"]);
+    assert.isNull(request.headers.tryGetValue("param"));
   });
   it("Adds in headers", async () => {
     const provider = new ApiKeyAuthenticationProvider(
@@ -76,6 +76,6 @@ describe("ApiKeyAuthenticationProvider", () => {
     request.urlTemplate = "https://localhost{?param1}";
     await provider.authenticateRequest(request);
     assert.equal(request.URL, "https://localhost");
-    assert.equal(request.headers["param"][0], "key");
+    assert.equal(request.headers.tryGetValue("param")![0], "key");
   });
 });

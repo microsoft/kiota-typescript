@@ -52,11 +52,7 @@ export class ApiKeyAuthenticationProvider implements AuthenticationProvider {
           this.apiKey;
         break;
       case ApiKeyLocation.Header:
-        if (request.headers[this.parameterName]) {
-          request.headers[this.parameterName].push(this.apiKey);
-        } else {
-          request.headers[this.parameterName] = [this.apiKey];
-        }
+        request.headers.add(this.parameterName, this.apiKey);
         break;
     }
     return Promise.resolve();

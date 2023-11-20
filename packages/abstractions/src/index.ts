@@ -5,6 +5,7 @@ export * from "./baseRequestBuilder";
 export * from "./dateOnly";
 export * from "./duration";
 export * from "./getPathParameters";
+export * from "./headers";
 export * from "./httpMethod";
 export * from "./multipartBody";
 export * from "./nativeResponseHandler";

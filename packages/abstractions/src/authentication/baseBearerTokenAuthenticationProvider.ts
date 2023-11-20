@@ -1,3 +1,4 @@
+import { Headers } from "../headers";
 import { type RequestInformation } from "../requestInformation";
 import type { AccessTokenProvider } from "./accessTokenProvider";
 import type { AuthenticationProvider } from "./authenticationProvider";
@@ -25,31 +26,31 @@ export class BaseBearerTokenAuthenticationProvider
     if (
       additionalAuthenticationContext &&
       additionalAuthenticationContext["claims"] &&
-      request.headers[
+      request.headers.has(
         BaseBearerTokenAuthenticationProvider.authorizationHeaderKey
-      ]
+      )
     ) {
-      delete request.headers[
+      request.headers.delete(
         BaseBearerTokenAuthenticationProvider.authorizationHeaderKey
-      ];
+      );
     }
     if (
       !request.headers ||
-      !request.headers[
+      !request.headers.has(
         BaseBearerTokenAuthenticationProvider.authorizationHeaderKey
-      ]
+      )
     ) {
       const token = await this.accessTokenProvider.getAuthorizationToken(
         request.URL,
         additionalAuthenticationContext
       );
       if (!request.headers) {
-        request.headers = {};
+        request.headers = new Headers();
       }
       if (token) {
-        request.headers[
-          BaseBearerTokenAuthenticationProvider.authorizationHeaderKey
-        ] = [`Bearer ${token}`];
+        request.headers.add(
+          BaseBearerTokenAuthenticationProvider.authorizationHeaderKey,
+          `Bearer ${token}`);
       }
     }
   };

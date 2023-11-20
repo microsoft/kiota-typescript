@@ -365,7 +365,6 @@ export class FetchRequestAdapter implements RequestAdapter {
 					additionalContext["claims"] = claims;
 				}
 				await this.authenticationProvider.authenticateRequest(requestInfo, additionalContext);
-
 				const request = await this.getRequestFromRequestInformation(requestInfo, spanForAttributes);
 				if (this.observabilityOptions) {
 					requestInfo.addRequestOptions([this.observabilityOptions]);
@@ -444,15 +443,15 @@ export class FetchRequestAdapter implements RequestAdapter {
 				if (this.observabilityOptions.includeEUIIAttributes) {
 					spanForAttributes.setAttribute("http.uri", decodeURIComponent(uri));
 				}
-				const requestContentLength = requestInfo.headers["Content-Length"];
+				const requestContentLength = requestInfo.headers.tryGetValue("Content-Length");
 				if (requestContentLength) {
 					spanForAttributes.setAttribute("http.request_content_length", parseInt(requestContentLength[0]));
 				}
-				const requestContentType = requestInfo.headers["Content-Type"];
+				const requestContentType = requestInfo.headers.tryGetValue("Content-Type");
 				if (requestContentType) {
 					spanForAttributes.setAttribute("http.request_content_type", requestContentType);
 				}
-				const headers: [string, string][] | undefined = requestInfo.headers ? Object.entries(requestInfo.headers).map(([key, value]) => [key.toLocaleLowerCase(), this.foldHeaderValue(value)]) : undefined;
+				const headers: [string, string][] | undefined = requestInfo.headers ? Array.from(requestInfo.headers.keys()).map((key) => [key.toString().toLocaleLowerCase(), this.foldHeaderValue(requestInfo.headers.tryGetValue(key))]) : undefined;
 				const request = {
 					method,
 					headers,
@@ -464,8 +463,8 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		});
 	};
-	private foldHeaderValue = (value: string[]): string => {
-		if (value.length < 1) {
+	private foldHeaderValue = (value: string[] | null): string => {
+		if (!value || value.length < 1) {
 			return "";
 		} else if (value.length === 1) {
 			return value[0];

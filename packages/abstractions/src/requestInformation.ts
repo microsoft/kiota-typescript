@@ -3,6 +3,7 @@ import { StdUriTemplate } from "@std-uritemplate/std-uritemplate";
 
 import { DateOnly } from "./dateOnly";
 import { Duration } from "./duration";
+import { Headers } from "./headers";
 import { type HttpMethod } from "./httpMethod";
 import { MultipartBody } from "./multipartBody";
 import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitiveKeys";
@@ -98,8 +99,7 @@ export class RequestInformation {
     string | number | boolean | undefined
   >();
   /** The Request Headers. */
-  public headers: Record<string, string[]> =
-    createRecordWithCaseInsensitiveKeys<string[]>();
+  public headers: Headers = new Headers();
   private _requestOptions: Record<string, RequestOption> =
     createRecordWithCaseInsensitiveKeys<RequestOption>();
   /** Gets the request options for the request. */
@@ -107,20 +107,9 @@ export class RequestInformation {
     return this._requestOptions;
   }
   /** Adds the headers for the request. */
-  public addRequestHeaders(source: Record<string, string[]> | undefined) {
-    if (!source) return;
-    for (const key in source) {
-      this.headers[key] = source[key];
-    }
-  }
-  /** Try to add the header for the request if it's not already present. */
-  public tryAddRequestHeaders(key: string, value: string): boolean {
-    if (!key || !value) return false;
-    if (Object.keys(this.headers).find((k) => k === key) !== undefined) {
-      return false;
-    } else {
-      this.headers[key] = [value];
-      return true;
+  public addRequestHeaders(source: Headers | undefined) {
+    if (source) {
+      this.headers.addAll(source);
     }
   }
   /** Adds the request options for the request. */
@@ -167,7 +156,7 @@ export class RequestInformation {
             contentType += "; boundary=" + value.getBoundary();
           }
           if (!this.headers) {
-            this.headers = {};
+            this.headers = new Headers();
           }
 
           if (Array.isArray(value)) {
@@ -193,10 +182,7 @@ export class RequestInformation {
     contentType?: string | undefined,
   ) => {
     if (contentType) {
-      this.tryAddRequestHeaders(
-        RequestInformation.contentTypeHeader,
-        contentType,
-      );
+      this.headers.tryAdd(RequestInformation.contentTypeHeader, contentType);
     }
     this.content = writer.getSerializedContent();
   };
@@ -236,7 +222,7 @@ export class RequestInformation {
             value,
           );
           if (!this.headers) {
-            this.headers = {};
+            this.headers = new Headers();
           }
 
           if (Array.isArray(value)) {
@@ -287,10 +273,7 @@ export class RequestInformation {
     if (!contentType) {
       contentType = RequestInformation.binaryContentType;
     }
-    this.tryAddRequestHeaders(
-      RequestInformation.contentTypeHeader,
-      contentType,
-    );
+    this.headers.tryAdd(RequestInformation.contentTypeHeader, contentType);
     this.content = value;
   };
   /**
@@ -313,7 +296,7 @@ export class RequestInformation {
       }
       this.queryParameters[key] = v;
     });
-  };
+  }
   /**
    * Configure the current request with headers, query parameters and options.
    * @param config the configuration object to use.
