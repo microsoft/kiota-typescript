@@ -3,6 +3,7 @@ import { StdUriTemplate } from "@std-uritemplate/std-uritemplate";
 
 import { DateOnly } from "./dateOnly";
 import { Duration } from "./duration";
+import { Headers } from "./headers";
 import { type HttpMethod } from "./httpMethod";
 import { MultipartBody } from "./multipartBody";
 import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitiveKeys";
@@ -15,7 +16,6 @@ import type {
   SerializationWriter,
 } from "./serialization";
 import { TimeOnly } from "./timeOnly";
-import { Headers } from "./headers";
 
 /** This class represents an abstract HTTP request. */
 export class RequestInformation {
@@ -112,10 +112,6 @@ export class RequestInformation {
       this.headers.addAll(source);
     }
   }
-  /** Try to add the header for the request if it's not already present. */
-  public tryAddRequestHeaders(key: string, value: string): boolean {
-    return this.headers.add(key, value);
-  }
   /** Adds the request options for the request. */
   public addRequestOptions(options: RequestOption[] | undefined) {
     if (!options || options.length === 0) return;
@@ -186,10 +182,7 @@ export class RequestInformation {
     contentType?: string | undefined,
   ) => {
     if (contentType) {
-      this.tryAddRequestHeaders(
-        RequestInformation.contentTypeHeader,
-        contentType,
-      );
+      this.headers.tryAdd(RequestInformation.contentTypeHeader, contentType);
     }
     this.content = writer.getSerializedContent();
   };
@@ -280,10 +273,7 @@ export class RequestInformation {
     if (!contentType) {
       contentType = RequestInformation.binaryContentType;
     }
-    this.tryAddRequestHeaders(
-      RequestInformation.contentTypeHeader,
-      contentType,
-    );
+    this.headers.tryAdd(RequestInformation.contentTypeHeader, contentType);
     this.content = value;
   };
   /**
@@ -306,7 +296,7 @@ export class RequestInformation {
       }
       this.queryParameters[key] = v;
     });
-  };
+  }
   /**
    * Configure the current request with headers, query parameters and options.
    * @param config the configuration object to use.

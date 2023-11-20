@@ -102,7 +102,7 @@ describe("RequestInformation", () => {
     requestInformation.pathParameters["baseurl"] = baseUrl;
     requestInformation.urlTemplate = "http://localhost/me{?%24select}";
     const headers = new Headers();
-    headers.add("ConsistencyLevel", "eventual"); 
+    headers.add("ConsistencyLevel", "eventual");
     requestInformation.addRequestHeaders(headers);
     assert.isTrue(requestInformation.headers.has("ConsistencyLevel"));
     assert.equal(requestInformation.headers.tryGetValue("ConsistencyLevel")![0], "eventual");
@@ -112,11 +112,11 @@ describe("RequestInformation", () => {
     const requestInformation = new RequestInformation();
     requestInformation.pathParameters["baseurl"] = baseUrl;
     requestInformation.urlTemplate = "http://localhost/me{?%24select}";
-    assert.isTrue(requestInformation.tryAddRequestHeaders("key", "value1"));
+    assert.isTrue(requestInformation.headers.tryAdd("key", "value1"));
     assert.equal(Array.from(requestInformation.headers.keys()).length, 1);
     assert.equal(requestInformation.headers.tryGetValue("key")!.length, 1);
     assert.equal(requestInformation.headers.tryGetValue("key")![0], "value1");
-    assert.isTrue(requestInformation.tryAddRequestHeaders("key", "value2"));
+    assert.isTrue(requestInformation.headers.add("key", "value2"));
     assert.equal(Array.from(requestInformation.headers.keys()).length, 1);
     assert.equal(requestInformation.headers.tryGetValue("key")!.length, 2);
     assert.equal(requestInformation.headers.tryGetValue("key")![0], "value1");
