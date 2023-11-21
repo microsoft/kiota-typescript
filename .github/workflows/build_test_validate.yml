@@ -15,7 +15,7 @@ jobs:
           TENANT_ID: ${{ secrets.TENANT_ID }}
         strategy:
           matrix:
-            node-version: [16.x, 18.x]
+            node-version: [18.x, 20.x]
         steps:
         - uses: actions/checkout@v4
         - name: Use Node.js ${{ matrix.node-version }}
@@ -58,7 +58,7 @@ jobs:
           - uses: actions/checkout@v4
           - uses: actions/setup-node@v4
             with:
-              node-version: 18
+              node-version: 20
               registry-url: https://registry.npmjs.org/
           - run: |
               git config --global user.name '${GITHUB_ACTOR}'
