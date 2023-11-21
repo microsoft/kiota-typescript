@@ -8,6 +8,11 @@ updates:
   commit-message:
       # Prefix all commit messages with "npm"
       prefix: "auto dependabot"
+  groups:
+    eslint:
+      patterns:
+        - "*eslint*"
+
 - package-ecosystem: npm
   directory: "/"
   schedule:
