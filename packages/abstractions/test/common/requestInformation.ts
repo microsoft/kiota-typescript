@@ -11,15 +11,16 @@ import { URL } from "url";
 const assert = chai.assert;
 
 import {
+  Headers,
   HttpMethod,
   type Parsable,
   type RequestAdapter,
   RequestInformation,
   type SerializationWriter,
   type SerializationWriterFactory,
-  Headers,
 } from "../../src";
 import { MultipartBody } from "../../src/multipartBody";
+import { TestEnum } from "./store/testEnum";
 
 interface GetQueryParameters {
   select?: string[];
@@ -27,6 +28,8 @@ interface GetQueryParameters {
   filter?: string;
   orderby?: string[];
   search?: string;
+  dataset?: TestEnum;
+  datasets?: TestEnum[];
 }
 
 const getQueryParameterMapper: Record<string, string> = {
@@ -95,6 +98,45 @@ describe("RequestInformation", () => {
       getQueryParameterMapper,
     );
     assert.equal(requestInformation.URL, "http://localhost/me");
+  });
+
+  it("Sets enum value in query parameters", () => {
+    const requestInformation = new RequestInformation();
+    requestInformation.pathParameters["baseurl"] = baseUrl;
+    requestInformation.urlTemplate = "http://localhost/me{?dataset}";
+    requestInformation.setQueryStringParametersFromRawObject<GetQueryParameters>(
+      { dataset: TestEnum.first },
+    );
+    assert.equal(requestInformation.URL, "http://localhost/me?dataset=1");
+  });
+
+  it("Sets enum values in query parameters", () => {
+    const requestInformation = new RequestInformation();
+    requestInformation.pathParameters["baseurl"] = baseUrl;
+    requestInformation.urlTemplate = "http://localhost/me{?datasets}";
+    requestInformation.setQueryStringParametersFromRawObject<GetQueryParameters>(
+      { datasets: [TestEnum.first, TestEnum.second] },
+    );
+    assert.equal(requestInformation.URL, "http://localhost/me?datasets=1,2");
+  });
+
+  it("Sets enum value in path parameters", () => {
+    const requestInformation = new RequestInformation();
+    requestInformation.pathParameters["baseurl"] = baseUrl;
+    requestInformation.pathParameters["dataset"] = TestEnum.first;
+    requestInformation.urlTemplate = "http://localhost/{dataset}";
+    assert.equal(requestInformation.URL, "http://localhost/1");
+  });
+
+  it("Sets enum values in path parameters", () => {
+    const requestInformation = new RequestInformation();
+    requestInformation.pathParameters["baseurl"] = baseUrl;
+    requestInformation.pathParameters["dataset"] = [
+      TestEnum.first,
+      TestEnum.second,
+    ];
+    requestInformation.urlTemplate = "http://localhost/{dataset}";
+    assert.equal(requestInformation.URL, "http://localhost/1,2");
   });
 
   it("Adds headers to requestInformation", () => {
