@@ -6,12 +6,8 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-      # Prefix all commit messages with "npm"
-      prefix: "auto dependabot"
-  groups:
-    eslint:
-      patterns:
-        - "*eslint*"
+    # Prefix all commit messages with "npm"
+    prefix: "auto dependabot"
 
 - package-ecosystem: npm
   directory: "/"
@@ -19,8 +15,12 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-      # Prefix all commit messages with "npm"
-      prefix: "auto dependabot"
+    # Prefix all commit messages with "npm"
+    prefix: "auto dependabot"
+  groups:
+    eslint:
+      patterns:
+        - "*eslint*"
 
 - package-ecosystem: npm
   directory: "/packages/abstractions"
@@ -28,8 +28,12 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-      # Prefix all commit messages with "npm"
-      prefix: "auto dependabot"
+    # Prefix all commit messages with "npm"
+    prefix: "auto dependabot"
+  groups:
+    eslint:
+      patterns:
+        - "*eslint*"
 
 - package-ecosystem: npm
   directory: "/packages/authentication/azure"
@@ -37,8 +41,12 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-      # Prefix all commit messages with "npm"
-      prefix: "auto dependabot"
+    # Prefix all commit messages with "npm"
+    prefix: "auto dependabot"
+  groups:
+    eslint:
+      patterns:
+        - "*eslint*"
 
 - package-ecosystem: npm
   directory: "/packages/serialization/form"
@@ -46,8 +54,12 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-      # Prefix all commit messages with "npm"
-      prefix: "auto dependabot"
+    # Prefix all commit messages with "npm"
+    prefix: "auto dependabot"
+  groups:
+    eslint:
+      patterns:
+        - "*eslint*"
 
 - package-ecosystem: npm
   directory: "/packages/serialization/multipart"
@@ -55,8 +67,12 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-      # Prefix all commit messages with "npm"
-      prefix: "auto dependabot"
+    # Prefix all commit messages with "npm"
+    prefix: "auto dependabot"
+  groups:
+    eslint:
+      patterns:
+        - "*eslint*"
 
 - package-ecosystem: npm
   directory: "/packages/serialization/json"
@@ -64,8 +80,12 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-      # Prefix all commit messages with "npm"
-      prefix: "auto dependabot"
+    # Prefix all commit messages with "npm"
+    prefix: "auto dependabot"
+  groups:
+    eslint:
+      patterns:
+        - "*eslint*"
 
 - package-ecosystem: npm
   directory: "/packages/serialization/text"
@@ -73,8 +93,12 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-      # Prefix all commit messages with "npm"
-      prefix: "auto dependabot"
+    # Prefix all commit messages with "npm"
+    prefix: "auto dependabot"
+  groups:
+    eslint:
+      patterns:
+        - "*eslint*"
 
 - package-ecosystem: npm
   directory: "/packages/http/fetch"
@@ -82,8 +106,12 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-      # Prefix all commit messages with "npm"
-      prefix: "auto dependabot"
+    # Prefix all commit messages with "npm"
+    prefix: "auto dependabot"
+  groups:
+    eslint:
+      patterns:
+        - "*eslint*"
 
 - package-ecosystem: npm
   directory: "/packages/test"
@@ -91,5 +119,9 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-      # Prefix all commit messages with "npm"
-      prefix: "auto dependabot"
+    # Prefix all commit messages with "npm"
+    prefix: "auto dependabot"
+  groups:
+    eslint:
+      patterns:
+        - "*eslint*"
