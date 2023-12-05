@@ -51,7 +51,7 @@ jobs:
 
         # build kiota
         - name: Setup .NET
-          uses: actions/setup-dotnet@v3
+          uses: actions/setup-dotnet@v4
           with:
             dotnet-version: 8.x
         - name: Build Kiota tool for linux-x64
