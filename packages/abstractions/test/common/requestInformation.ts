@@ -143,9 +143,7 @@ describe("RequestInformation", () => {
     const requestInformation = new RequestInformation();
     requestInformation.pathParameters["baseurl"] = baseUrl;
     requestInformation.urlTemplate = "http://localhost/me{?%24select}";
-    const headers = new Headers();
-    headers.add("ConsistencyLevel", "eventual");
-    requestInformation.addRequestHeaders(headers);
+    requestInformation.addRequestHeaders({ ConsistencyLevel: "eventual" });
     assert.isTrue(requestInformation.headers.has("ConsistencyLevel"));
     assert.equal(requestInformation.headers.tryGetValue("ConsistencyLevel")![0], "eventual");
   });
@@ -195,9 +193,7 @@ describe("RequestInformation", () => {
       "application/json",
       {} as unknown as Parsable,
     );
-    const headers = new Headers();
-    headers.add("ConsistencyLevel", "eventual"); 
-    requestInformation.addRequestHeaders(headers);
+    requestInformation.addRequestHeaders({ ConsistencyLevel: "eventual" });
     //assert.isNotEmpty(requestInformation.headers.entries());
     assert.equal(methodCalledCount, 1);
   });
@@ -232,9 +228,7 @@ describe("RequestInformation", () => {
       "application/json",
       [{} as unknown as Parsable],
     );
-    const headers = new Headers();
-    headers.add("ConsistencyLevel", "eventual"); 
-    requestInformation.addRequestHeaders(headers);
+    requestInformation.addRequestHeaders({ ConsistencyLevel: "eventual" });
     assert.equal(methodCalledCount, 1);
   });
 
@@ -266,9 +260,7 @@ describe("RequestInformation", () => {
       "application/json",
       "some content",
     );
-    const headers = new Headers();
-    headers.add("ConsistencyLevel", "eventual"); 
-    requestInformation.addRequestHeaders(headers);
+    requestInformation.addRequestHeaders({ ConsistencyLevel: "eventual" });
     assert.equal(writtenValue, "some content");
   });
 
@@ -300,9 +292,7 @@ describe("RequestInformation", () => {
       "application/json",
       ["some content"],
     );
-    const headers = new Headers();
-    headers.add("ConsistencyLevel", "eventual"); 
-    requestInformation.addRequestHeaders(headers);
+    requestInformation.addRequestHeaders({ ConsistencyLevel: "eventual" });
     assert.equal(writtenValue, '["some content"]');
   });
 
