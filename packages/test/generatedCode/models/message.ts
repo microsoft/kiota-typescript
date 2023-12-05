@@ -4,8 +4,8 @@
 import { createAttachmentFromDiscriminatorValue, serializeAttachment, type Attachment } from './attachment';
 import { createExtensionFromDiscriminatorValue, serializeExtension, type Extension } from './extension';
 import { createFollowupFlagFromDiscriminatorValue, serializeFollowupFlag, type FollowupFlag } from './followupFlag';
-import { Importance } from './importance';
-import { InferenceClassificationType } from './inferenceClassificationType';
+import { Importance, ImportanceObject } from './importance';
+import { InferenceClassificationType, InferenceClassificationTypeObject } from './inferenceClassificationType';
 import { createInternetMessageHeaderFromDiscriminatorValue, serializeInternetMessageHeader, type InternetMessageHeader } from './internetMessageHeader';
 import { createItemBodyFromDiscriminatorValue, serializeItemBody, type ItemBody } from './itemBody';
 import { createMultiValueLegacyExtendedPropertyFromDiscriminatorValue, serializeMultiValueLegacyExtendedProperty, type MultiValueLegacyExtendedProperty } from './multiValueLegacyExtendedProperty';
@@ -32,8 +32,8 @@ export function deserializeIntoMessage(message: Message | undefined = {} as Mess
         "flag": n => { message.flag = n.getObjectValue<FollowupFlag>(createFollowupFlagFromDiscriminatorValue); },
         "from": n => { message.from = n.getObjectValue<Recipient>(createRecipientFromDiscriminatorValue); },
         "hasAttachments": n => { message.hasAttachments = n.getBooleanValue(); },
-        "importance": n => { message.importance = n.getEnumValue<Importance>(Importance); },
-        "inferenceClassification": n => { message.inferenceClassification = n.getEnumValue<InferenceClassificationType>(InferenceClassificationType); },
+        "importance": n => { message.importance = n.getEnumValue<Importance>(ImportanceObject); },
+        "inferenceClassification": n => { message.inferenceClassification = n.getEnumValue<InferenceClassificationType>(InferenceClassificationTypeObject); },
         "internetMessageHeaders": n => { message.internetMessageHeaders = n.getCollectionOfObjectValues<InternetMessageHeader>(createInternetMessageHeaderFromDiscriminatorValue); },
         "internetMessageId": n => { message.internetMessageId = n.getStringValue(); },
         "isDeliveryReceiptRequested": n => { message.isDeliveryReceiptRequested = n.getBooleanValue(); },
