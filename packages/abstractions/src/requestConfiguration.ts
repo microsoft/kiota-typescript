@@ -1,4 +1,3 @@
-import { Headers } from "./headers";
 import type { RequestOption } from "./requestOption";
 
 /**
@@ -9,7 +8,7 @@ export interface RequestConfiguration<T extends object> {
   /**
    * Request headers
    */
-  headers?: Headers;
+  headers?: Record<string, string | string[]>;
   /**
    * Request options
    */

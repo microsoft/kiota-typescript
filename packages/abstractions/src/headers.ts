@@ -207,6 +207,26 @@ export class Headers extends Map<string, Set<string>> {
   }
 
   /**
+   * Adds all headers from the request configuration value to the current headers collection.
+   * Replaces any existing headers with the same key.
+   * @param headers The headers to update the current headers with.
+   * @throws Error if headers is null
+   */
+  public addAllRaw(headers: Record<string, string | string[]>): void {
+    if (!headers) {
+      throw new Error("headers cannot be null");
+    }
+    for (const header in headers) {
+      const headerValues = headers[header];
+      if (Array.isArray(headerValues)) {
+        this.add(header, ...headerValues);
+      } else {
+        this.add(header, headerValues);
+      }
+    }
+  }
+
+  /**
    * Gets the values for the header with the specified name.
    * @param key The name of the header to get the values for.
    * @returns The values for the header with the specified name.
