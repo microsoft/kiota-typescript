@@ -14,22 +14,8 @@ function getRequestMetadata(
   metadata: Record<string, RequestMetadata>,
 ): RequestMetadata {
   if (!metadata) throw new Error("couldn't find request metadata");
-  switch (key) {
-    case "toGetRequestInformation":
-      key = "get";
-      break;
-    case "toPostRequestInformation":
-      key = "post";
-      break;
-    case "toPatchRequestInformation":
-      key = "patch";
-      break;
-    case "toDeleteRequestInformation":
-      key = "delete";
-      break;
-    case "toPutRequestInformation":
-      key = "put";
-      break;
+  if (key.startsWith("to")) {
+    key = key.substring(2).replace("RequestInformation", "").toLowerCase();
   }
   const value = metadata[key];
   if (!value) throw new Error("couldn't find request metadata");
