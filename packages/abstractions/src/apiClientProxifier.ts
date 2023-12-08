@@ -71,17 +71,17 @@ export function apiClientProxifier<T extends object>(
 
       switch (name) {
         case "withUrl":
-          return (rawUrl: string) => {
-            if (!rawUrl) throw new Error("rawUrl cannot be undefined");
-            return apiClientProxifier(
-              {} as T,
-              requestAdapter,
-              getPathParameters(rawUrl),
-              rawUrl,
-              navigationMetadata,
-              requestsMetadata,
-            );
-          };
+          // eslint-disable-next-line no-case-declarations
+          const rawUrl = argArray.length > 0 && argArray[0] ? argArray[0] : "";
+          if (!rawUrl) throw new Error("rawUrl cannot be undefined");
+          return apiClientProxifier(
+            {} as T,
+            requestAdapter,
+            getPathParameters(rawUrl),
+            urlTemplate,
+            navigationMetadata,
+            requestsMetadata,
+          );
       }
 
       if (requestsMetadata) {
@@ -159,8 +159,8 @@ export function apiClientProxifier<T extends object>(
       }
     },
     get(target, property, receiver) {
-      const name = String(property);
       if (navigationMetadata) {
+        const name = String(property);
         const navigationCandidate = navigationMetadata[name];
         if (
           navigationCandidate &&
