@@ -133,7 +133,7 @@ export class MessagesRequestBuilder extends BaseRequestBuilder<MessagesRequestBu
         return requestInfo;
     }
 }
-const messagesRequestBuilderGetQueryParametersMapper: Record<string, string> = {
+export const messagesRequestBuilderGetQueryParametersMapper: Record<string, string> = {
     "count": "%24count",
     "expand": "%24expand",
     "filter": "%24filter",

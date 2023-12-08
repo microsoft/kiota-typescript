@@ -1,6 +1,7 @@
 import { getPathParameters } from "./getPathParameters";
 import type { RequestAdapter } from "./requestAdapter";
 
+//TODO remove once the proxy is fully implemented
 export abstract class BaseRequestBuilder<T> {
   /** Path parameters for the request */
   protected pathParameters: Record<string, unknown>;
@@ -35,6 +36,10 @@ export abstract class BaseRequestBuilder<T> {
     if (!rawUrl) throw new Error("rawUrl cannot be undefined");
     return this.withUrlFactory(rawUrl, this.requestAdapter);
   }
+}
+//TODO rename once the other one has been removed
+export interface NextGenBaseRequestBuilder<T> {
+  withUrl(rawUrl: string): T;
 }
 
 type WithUrlFactory<T> = (

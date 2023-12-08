@@ -1,4 +1,4 @@
-import { apiClient } from "./testClient";
+import { apiClient, proxyClient } from "./testClient";
 
 import { assert } from "chai";
 import { type MessagesRequestBuilderGetQueryParameters } from "../generatedCode/users/item/messages";
@@ -15,6 +15,7 @@ describe("TestGet", () => {
         qs.search = "test";
         qs.count = true;
         const messages = await apiClient.users.byUserId("813956a3-4a30-4596-914f-bfd86a657a09").messages.get();
+        const messages2 = await proxyClient.users.byUserId("").messages.get();
         assert.isDefined(messages?.value);
     });
 });
