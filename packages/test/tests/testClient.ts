@@ -10,4 +10,5 @@ const authProvider = new AzureIdentityAuthenticationProvider(tokenCredential, ["
 const fetchRequestAdapter = new FetchRequestAdapter(authProvider)
 export const apiClient = new ApiClient(fetchRequestAdapter);
 export const proxyClient = getNewApiClient(fetchRequestAdapter);
+export const userId = process.env.USER_ID!;
 
