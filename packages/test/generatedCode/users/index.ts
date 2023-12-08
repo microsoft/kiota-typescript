@@ -10,7 +10,7 @@ import { BaseRequestBuilder, getPathParameters, type RequestAdapter } from '@mic
 export class UsersRequestBuilder extends BaseRequestBuilder<UsersRequestBuilder> {
     /**
      * Gets an item from the ApiSdk.users.item collection
-     * @param userId Unique identifier of the item
+     * @param userId The unique identifier of user
      * @returns a UserItemRequestBuilder
      */
     public byUserId(userId: string) : UserItemRequestBuilder {

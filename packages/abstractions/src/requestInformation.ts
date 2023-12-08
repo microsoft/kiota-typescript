@@ -107,9 +107,11 @@ export class RequestInformation {
     return this._requestOptions;
   }
   /** Adds the headers for the request. */
-  public addRequestHeaders(source: Headers | undefined) {
+  public addRequestHeaders(
+    source: Record<string, string | string[]> | undefined,
+  ) {
     if (source) {
-      this.headers.addAll(source);
+      this.headers.addAllRaw(source);
     }
   }
   /** Adds the request options for the request. */
