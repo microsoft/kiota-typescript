@@ -18,18 +18,6 @@ export function apiClientProxifier<T extends object>(
   if (!requestAdapter) throw new Error("requestAdapter cannot be undefined");
   if (!pathParameters) throw new Error("pathParameters cannot be undefined");
   if (!urlTemplate) throw new Error("urlTemplate cannot be undefined");
-  (apiClient as NextGenBaseRequestBuilder<T>).withUrl = (rawUrl: string) => {
-    //TODO maybe move to the switch case?
-    if (!rawUrl) throw new Error("rawUrl cannot be undefined");
-    return apiClientProxifier(
-      {} as T,
-      requestAdapter,
-      getPathParameters(rawUrl),
-      rawUrl,
-      navigationMetadata,
-      requestMetadata,
-    );
-  };
   return new Proxy(apiClient, {
     get(target, property, receiver) {
       const name = String(property);
@@ -37,6 +25,20 @@ export function apiClientProxifier<T extends object>(
       // allow internal property access
       if (Reflect.has(target, name)) {
         return Reflect.get(target, name);
+      }
+      switch (name) {
+        case "withUrl":
+          return (rawUrl: string) => {
+            if (!rawUrl) throw new Error("rawUrl cannot be undefined");
+            return apiClientProxifier(
+              {} as T,
+              requestAdapter,
+              getPathParameters(rawUrl),
+              rawUrl,
+              navigationMetadata,
+              requestMetadata,
+            );
+          };
       }
 
       if (requestMetadata) {
