@@ -9,13 +9,58 @@ import type {
   ParsableFactory,
 } from "./serialization";
 
+function getRequestMetadata(
+  key: string,
+  metadata: Record<string, RequestMetadata>,
+): RequestMetadata {
+  if (!metadata) throw new Error("couldn't find request metadata");
+  switch (key) {
+    case "toGetRequestInformation":
+      key = "get";
+      break;
+    case "toPostRequestInformation":
+      key = "post";
+      break;
+    case "toPatchRequestInformation":
+      key = "patch";
+      break;
+    case "toDeleteRequestInformation":
+      key = "delete";
+      break;
+    case "toPutRequestInformation":
+      key = "put";
+      break;
+  }
+  const value = metadata[key];
+  if (!value) throw new Error("couldn't find request metadata");
+  return value;
+}
+
+function toGetRequestInformation<T extends object>(
+  urlTemplate: string,
+  pathParameters: Record<string, unknown>,
+  metadata: RequestMetadata,
+  requestConfiguration?: RequestConfiguration<T> | undefined,
+): RequestInformation {
+  const requestInfo = new RequestInformation(
+    HttpMethod.GET,
+    urlTemplate,
+    pathParameters,
+  );
+  requestInfo.configure(requestConfiguration, metadata.queryParametersMapper);
+  if (metadata.responseBodyContentType) {
+    requestInfo.headers.tryAdd("Accept", metadata.responseBodyContentType);
+  }
+  return requestInfo;
+}
+
 export function apiClientProxifier<T extends object>(
   apiClient: T,
   requestAdapter: RequestAdapter,
   pathParameters: Record<string, unknown>,
   urlTemplate: string,
   navigationMetadata?: Record<string, NavigationMetadata>,
-  requestMetadata?: Record<string, RequestMetadata>,
+  requestsMetadata?: Record<string, RequestMetadata>,
 ): T {
   if (!requestAdapter) throw new Error("requestAdapter cannot be undefined");
   if (!pathParameters) throw new Error("pathParameters cannot be undefined");
@@ -38,47 +83,47 @@ export function apiClientProxifier<T extends object>(
               getPathParameters(rawUrl),
               rawUrl,
               navigationMetadata,
-              requestMetadata,
+              requestsMetadata,
             );
           };
       }
 
-      if (requestMetadata) {
+      if (requestsMetadata) {
+        const metadata = getRequestMetadata(name, requestsMetadata);
         switch (name) {
           case "get":
-          case "update":
-          case "patch":
-          case "post":
-          case "delete":
-            //TODO get the entry from the map and return it
-            break;
-          case "toGetRequestInformation":
-            return (
+            return <T extends Parsable>(
               requestConfiguration?: RequestConfiguration<object> | undefined,
-            ): RequestInformation => {
-              const requestInfo = new RequestInformation(
-                HttpMethod.GET,
+            ): Promise<T | undefined> => {
+              const requestInfo = toGetRequestInformation(
                 urlTemplate,
                 pathParameters,
-              );
-              const metadata = requestMetadata["get"];
-              requestInfo.configure(
+                metadata,
                 requestConfiguration,
-                metadata.queryParametersMapper,
               );
-              if (metadata.responseBodyContentType) {
-                requestInfo.headers.tryAdd(
-                  "Accept",
-                  metadata.responseBodyContentType,
-                );
+              if (!metadata.responseBodyFactory) {
+                throw new Error("couldn't find response body factory");
               }
-              return requestInfo;
+              return requestAdapter.sendAsync<T>( //TODO switch the request adapter method based on the metadata
+                requestInfo,
+                metadata.responseBodyFactory,
+                metadata.errorMappings,
+              );
             };
+          case "update":
+          case "patch":
+          case "put":
+          case "post":
+          case "delete":
+            break;
+          case "toGetRequestInformation":
+            return (x?: RequestConfiguration<object> | undefined) =>
+              toGetRequestInformation(urlTemplate, pathParameters, metadata, x);
           case "toUpdateRequestInformation":
           case "toPatchRequestInformation":
+          case "toPutRequestInformation":
           case "toPostRequestInformation":
           case "toDeleteRequestInformation":
-            //TODO get the entry from the map and return it
             break;
           default:
             break;
