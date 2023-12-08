@@ -66,13 +66,9 @@ export function apiClientProxifier<T extends object>(
   if (!pathParameters) throw new Error("pathParameters cannot be undefined");
   if (!urlTemplate) throw new Error("urlTemplate cannot be undefined");
   return new Proxy(apiClient, {
-    get(target, property, receiver) {
-      const name = String(property);
+    apply(target: any, thisArg: any, argArray: any[]) {
+      const name = target.name;
 
-      // allow internal property access
-      if (Reflect.has(target, name)) {
-        return Reflect.get(target, name);
-      }
       switch (name) {
         case "withUrl":
           return (rawUrl: string) => {
@@ -92,6 +88,7 @@ export function apiClientProxifier<T extends object>(
         const metadata = getRequestMetadata(name, requestsMetadata);
         switch (name) {
           case "get":
+            //TODO return the result and not the function
             return <T extends Parsable>(
               requestConfiguration?: RequestConfiguration<object> | undefined,
             ): Promise<T | undefined> => {
@@ -117,8 +114,12 @@ export function apiClientProxifier<T extends object>(
           case "delete":
             break;
           case "toGetRequestInformation":
-            return (x?: RequestConfiguration<object> | undefined) =>
-              toGetRequestInformation(urlTemplate, pathParameters, metadata, x);
+            return toGetRequestInformation(
+              urlTemplate,
+              pathParameters,
+              metadata,
+              argArray.length > 0 ? argArray[0] : undefined,
+            );
           case "toUpdateRequestInformation":
           case "toPatchRequestInformation":
           case "toPutRequestInformation":
@@ -130,10 +131,42 @@ export function apiClientProxifier<T extends object>(
         }
       }
 
-      //TODO missing the bySomething method parameters
       if (navigationMetadata) {
         const navigationCandidate = navigationMetadata[name];
         if (navigationCandidate) {
+          const downWardPathParameters = getPathParameters(pathParameters);
+          if (
+            argArray.length > 0 &&
+            navigationCandidate.pathParametersMappings &&
+            navigationCandidate.pathParametersMappings.length > 0
+          ) {
+            for (let i = 0; i < argArray.length; i++) {
+              const element = argArray[i];
+              downWardPathParameters[
+                navigationCandidate.pathParametersMappings[i]
+              ] = element;
+            }
+          }
+          return apiClientProxifier(
+            {},
+            requestAdapter,
+            downWardPathParameters,
+            navigationCandidate.uriTemplate,
+            navigationCandidate.navigationMetadata,
+            navigationCandidate.requestsMetadata,
+          );
+        }
+      }
+    },
+    get(target, property, receiver) {
+      const name = String(property);
+      if (navigationMetadata) {
+        const navigationCandidate = navigationMetadata[name];
+        if (
+          navigationCandidate &&
+          (!navigationCandidate.pathParametersMappings ||
+            navigationCandidate.pathParametersMappings.length === 0)
+        ) {
           return apiClientProxifier(
             {},
             requestAdapter,

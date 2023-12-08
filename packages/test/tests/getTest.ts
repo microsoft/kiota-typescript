@@ -16,6 +16,8 @@ describe("TestGet", () => {
                 count: true,
             }
         });
+        const messagesRaw = proxyClient.users.withUrl("foo");
+        assert.isDefined(messagesRaw);
         const messagesRI = proxyClient.users.byUserId(userId).messages.toGetRequestInformation({
             queryParameters: {
                 count: true,
