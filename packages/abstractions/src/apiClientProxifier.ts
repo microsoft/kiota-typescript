@@ -1,6 +1,8 @@
-import type { NextGenBaseRequestBuilder } from "./baseRequestBuilder";
 import { getPathParameters } from "./getPathParameters";
+import { HttpMethod } from "./httpMethod";
 import type { RequestAdapter } from "./requestAdapter";
+import type { RequestConfiguration } from "./requestConfiguration";
+import { RequestInformation } from "./requestInformation";
 import type {
   ModelSerializerFunction,
   Parsable,
@@ -51,6 +53,27 @@ export function apiClientProxifier<T extends object>(
             //TODO get the entry from the map and return it
             break;
           case "toGetRequestInformation":
+            return (
+              requestConfiguration?: RequestConfiguration<object> | undefined,
+            ): RequestInformation => {
+              const requestInfo = new RequestInformation(
+                HttpMethod.GET,
+                urlTemplate,
+                pathParameters,
+              );
+              const metadata = requestMetadata["get"];
+              requestInfo.configure(
+                requestConfiguration,
+                metadata.queryParametersMapper,
+              );
+              if (metadata.responseBodyContentType) {
+                requestInfo.headers.tryAdd(
+                  "Accept",
+                  metadata.responseBodyContentType,
+                );
+              }
+              return requestInfo;
+            };
           case "toUpdateRequestInformation":
           case "toPatchRequestInformation":
           case "toPostRequestInformation":
