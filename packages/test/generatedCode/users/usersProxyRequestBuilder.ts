@@ -7,7 +7,7 @@ export interface UsersProxyRequestBuilder {
      * @param userId Unique identifier of the item
      * @returns a UserItemRequestBuilder
      */
-    byUserId(userId: string) : UserItemProxyRequestBuilder & NextGenBaseRequestBuilder<UserItemProxyRequestBuilder>;
+    byUserId(userId: string): UserItemProxyRequestBuilder & NextGenBaseRequestBuilder<UserItemProxyRequestBuilder>;
 }
 
 export const UsersProxyRequestBuilderUriTemplate = "{+baseurl}/users";
