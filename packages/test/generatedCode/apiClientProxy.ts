@@ -36,5 +36,5 @@ export function getNewApiClient(requestAdapter: RequestAdapter) {
 	const pathParameters: Record<string, unknown> = {
 		"baseurl": requestAdapter.baseUrl,
 	};
-	return apiClientProxifier<ApiClientProxy>({} as ApiClientProxy, requestAdapter, pathParameters, ApiClientProxyUriTemplate, ApiClientProxyNavigationMetadata) as ApiClientProxy & NextGenBaseRequestBuilder<ApiClientProxy>;
+	return apiClientProxifier<ApiClientProxy>(requestAdapter, pathParameters, ApiClientProxyUriTemplate, ApiClientProxyNavigationMetadata) as ApiClientProxy & NextGenBaseRequestBuilder<ApiClientProxy>;
 }
