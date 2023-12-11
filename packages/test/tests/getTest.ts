@@ -25,5 +25,12 @@ describe("TestGet", () => {
         });
         assert.equal(`https://graph.microsoft.com/v1.0/users/${userId}/messages?%24count=true`, messagesRI.URL);
         assert.isDefined(messages?.value);
+
+        const messages2 = await proxyClient.users.byUserId(userId).messages.get({
+            queryParameters: {
+                count: true,
+            }
+        });
+        assert.isDefined(messages2?.value);
     });
 });

@@ -73,7 +73,6 @@ export function apiClientProxifier<T extends object>(
         const metadata = getRequestMetadata(name, requestsMetadata);
         switch (name) {
           case "get":
-            //TODO return the result and not the function
             return <T extends Parsable>(
               requestConfiguration?: RequestConfiguration<object> | undefined,
             ): Promise<T | undefined> => {
