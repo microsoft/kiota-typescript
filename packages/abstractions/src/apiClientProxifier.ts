@@ -2,6 +2,7 @@ import { getPathParameters } from "./getPathParameters";
 import { HttpMethod } from "./httpMethod";
 import type {
   PrimitiveTypesForDeserialization,
+  PrimitiveTypesForDeserializationType,
   RequestAdapter,
 } from "./requestAdapter";
 import type { RequestConfiguration } from "./requestConfiguration";
@@ -44,7 +45,13 @@ function toRequestInformation<QueryParametersType extends object>(
         body,
         metadata.requestBodySerializer,
       );
-    } //TODO handle primitive types
+    } else {
+      requestInfo.setContentFromScalar(
+        requestAdapter,
+        metadata.requestBodyContentType,
+        body as PrimitiveTypesForDeserializationType,
+      );
+    }
   }
   return requestInfo;
 }
