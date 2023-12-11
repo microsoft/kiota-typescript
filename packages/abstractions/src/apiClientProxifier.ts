@@ -22,11 +22,11 @@ function getRequestMetadata(
   return value;
 }
 
-function toGetRequestInformation<T extends object>(
+function toGetRequestInformation<QueryParametersType extends object>(
   urlTemplate: string,
   pathParameters: Record<string, unknown>,
   metadata: RequestMetadata,
-  requestConfiguration?: RequestConfiguration<T> | undefined,
+  requestConfiguration?: RequestConfiguration<QueryParametersType> | undefined,
 ): RequestInformation {
   const requestInfo = new RequestInformation(
     HttpMethod.GET,
@@ -34,12 +34,54 @@ function toGetRequestInformation<T extends object>(
     pathParameters,
   );
   requestInfo.configure(requestConfiguration, metadata.queryParametersMapper);
-  if (metadata.responseBodyContentType) {
-    requestInfo.headers.tryAdd("Accept", metadata.responseBodyContentType);
-  }
+  addAcceptHeaderIfPresent(metadata, requestInfo);
   return requestInfo;
 }
 
+// public post(body: Message, requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<Message | undefined> {
+//   const requestInfo = this.toPostRequestInformation(
+//       body, requestConfiguration
+//   );
+//   const errorMapping = {
+//       "4XX": createODataErrorFromDiscriminatorValue,
+//       "5XX": createODataErrorFromDiscriminatorValue,
+//   } as Record<string, ParsableFactory<Parsable>>;
+//   return this.requestAdapter.sendAsync<Message>(requestInfo, createMessageFromDiscriminatorValue, errorMapping);
+// }
+function toPostRequestInformation<QueryParametersType extends object>(
+  urlTemplate: string,
+  pathParameters: Record<string, unknown>,
+  metadata: RequestMetadata,
+  requestAdapter: RequestAdapter,
+  body: unknown,
+  requestConfiguration?: RequestConfiguration<QueryParametersType> | undefined,
+): RequestInformation {
+  if (!body) throw new Error("body cannot be undefined");
+  const requestInfo = new RequestInformation(
+    HttpMethod.POST,
+    urlTemplate,
+    pathParameters,
+  );
+  requestInfo.configure(requestConfiguration);
+  addAcceptHeaderIfPresent(metadata, requestInfo);
+  if (metadata.requestBodyContentType && metadata.requestBodySerializer) {
+    requestInfo.setContentFromParsable(
+      requestAdapter,
+      metadata.requestBodyContentType,
+      body,
+      metadata.requestBodySerializer,
+    );
+  }
+  return requestInfo;
+}
+function addAcceptHeaderIfPresent(
+  metadata: RequestMetadata,
+  requestInfo: RequestInformation,
+): void {
+  if (metadata.responseBodyContentType) {
+    requestInfo.headers.tryAdd("Accept", metadata.responseBodyContentType);
+  }
+}
 export function apiClientProxifier<T extends object>(
   requestAdapter: RequestAdapter,
   pathParameters: Record<string, unknown>,
@@ -73,9 +115,9 @@ export function apiClientProxifier<T extends object>(
         const metadata = getRequestMetadata(name, requestsMetadata);
         switch (name) {
           case "get":
-            return <T extends Parsable>(
+            return <ReturnType extends Parsable>(
               requestConfiguration?: RequestConfiguration<object> | undefined,
-            ): Promise<T | undefined> => {
+            ): Promise<ReturnType | undefined> => {
               const requestInfo = toGetRequestInformation(
                 urlTemplate,
                 pathParameters,
@@ -85,7 +127,7 @@ export function apiClientProxifier<T extends object>(
               if (!metadata.responseBodyFactory) {
                 throw new Error("couldn't find response body factory");
               }
-              return requestAdapter.sendAsync<T>( //TODO switch the request adapter method based on the metadata
+              return requestAdapter.sendAsync<ReturnType>( //TODO switch the request adapter method based on the metadata
                 requestInfo,
                 metadata.responseBodyFactory,
                 metadata.errorMappings,
@@ -94,9 +136,30 @@ export function apiClientProxifier<T extends object>(
           case "update":
           case "patch":
           case "put":
-          case "post":
           case "delete":
             break;
+          case "post":
+            return <ReturnType extends Parsable>(
+              body: unknown,
+              requestConfiguration?: RequestConfiguration<object> | undefined,
+            ): Promise<ReturnType | undefined> => {
+              const requestInfo = toPostRequestInformation(
+                urlTemplate,
+                pathParameters,
+                metadata,
+                requestAdapter,
+                body,
+                requestConfiguration,
+              );
+              if (!metadata.responseBodyFactory) {
+                throw new Error("couldn't find response body factory");
+              }
+              return requestAdapter.sendAsync<ReturnType>( //TODO switch the request adapter method based on the metadata
+                requestInfo,
+                metadata.responseBodyFactory,
+                metadata.errorMappings,
+              );
+            };
           case "toGetRequestInformation":
             return (...argArray: any[]) => {
               return toGetRequestInformation(
@@ -109,9 +172,19 @@ export function apiClientProxifier<T extends object>(
           case "toUpdateRequestInformation":
           case "toPatchRequestInformation":
           case "toPutRequestInformation":
-          case "toPostRequestInformation":
           case "toDeleteRequestInformation":
             break;
+          case "toPostRequestInformation":
+            return (...argArray: any[]) => {
+              return toPostRequestInformation(
+                urlTemplate,
+                pathParameters,
+                metadata,
+                requestAdapter,
+                argArray.length > 0 ? argArray[0] : undefined,
+                argArray.length > 1 ? argArray[1] : undefined,
+              );
+            };
           default:
             break;
         }
