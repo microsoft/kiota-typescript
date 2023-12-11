@@ -369,4 +369,5 @@ export type KeysToExcludeForNavigationMetadata =
   | "toPostRequestInformation"
   | "toPatchRequestInformation"
   | "toPutRequestInformation"
-  | "toDeleteRequestInformation";
+  | "toDeleteRequestInformation"
+  | "withUrl";
