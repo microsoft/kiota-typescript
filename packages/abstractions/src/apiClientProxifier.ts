@@ -102,32 +102,6 @@ export function apiClientProxifier<T extends object>(
               break;
           }
         }
-
-        if (navigationMetadata) {
-          const navigationCandidate = navigationMetadata[name];
-          if (navigationCandidate) {
-            const downWardPathParameters = getPathParameters(pathParameters);
-            if (
-              argArray.length > 0 &&
-              navigationCandidate.pathParametersMappings &&
-              navigationCandidate.pathParametersMappings.length > 0
-            ) {
-              for (let i = 0; i < argArray.length; i++) {
-                const element = argArray[i];
-                downWardPathParameters[
-                  navigationCandidate.pathParametersMappings[i]
-                ] = element;
-              }
-            }
-            return apiClientProxifier(
-              requestAdapter,
-              downWardPathParameters,
-              navigationCandidate.uriTemplate,
-              navigationCandidate.navigationMetadata,
-              navigationCandidate.requestsMetadata,
-            );
-          }
-        }
       },
       get(target, property) {
         const name = String(property);
@@ -149,18 +123,42 @@ export function apiClientProxifier<T extends object>(
         }
         if (navigationMetadata) {
           const navigationCandidate = navigationMetadata[name];
-          if (
-            navigationCandidate &&
-            (!navigationCandidate.pathParametersMappings ||
-              navigationCandidate.pathParametersMappings.length === 0)
-          ) {
-            return apiClientProxifier(
-              requestAdapter,
-              getPathParameters(pathParameters),
-              navigationCandidate.uriTemplate,
-              navigationCandidate.navigationMetadata,
-              navigationCandidate.requestsMetadata,
-            );
+          if (navigationCandidate) {
+            if (
+              !navigationCandidate.pathParametersMappings ||
+              navigationCandidate.pathParametersMappings.length === 0
+            ) {
+              // navigation property
+              return apiClientProxifier(
+                requestAdapter,
+                getPathParameters(pathParameters),
+                navigationCandidate.uriTemplate,
+                navigationCandidate.navigationMetadata,
+                navigationCandidate.requestsMetadata,
+              );
+            }
+            return (...argArray: any[]) => {
+              // navigation method like indexers or multiple path parameters
+              const downWardPathParameters = getPathParameters(pathParameters);
+              if (
+                navigationCandidate.pathParametersMappings &&
+                navigationCandidate.pathParametersMappings.length > 0
+              ) {
+                for (let i = 0; i < argArray.length; i++) {
+                  const element = argArray[i];
+                  downWardPathParameters[
+                    navigationCandidate.pathParametersMappings[i]
+                  ] = element;
+                }
+              }
+              return apiClientProxifier(
+                requestAdapter,
+                downWardPathParameters,
+                navigationCandidate.uriTemplate,
+                navigationCandidate.navigationMetadata,
+                navigationCandidate.requestsMetadata,
+              );
+            };
           }
         }
       },
