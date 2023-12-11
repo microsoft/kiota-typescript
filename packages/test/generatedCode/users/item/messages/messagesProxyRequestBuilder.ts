@@ -1,4 +1,4 @@
-import type { RequestConfiguration, RequestMetadata, RequestInformation, ParsableFactory, Parsable, NavigationMetadata } from "@microsoft/kiota-abstractions";
+import type { RequestConfiguration, RequestMetadata, RequestInformation, ParsableFactory, Parsable, NavigationMetadata, KeysToExcludeForNavigationMetadata } from "@microsoft/kiota-abstractions";
 import { messagesRequestBuilderGetQueryParametersMapper } from ".";
 import type { MessagesRequestBuilderGetQueryParameters } from ".";
 import { createMessageCollectionResponseFromDiscriminatorValue, createMessageFromDiscriminatorValue, serializeMessage, type Message, type MessageCollectionResponse } from "../../../models";
@@ -44,7 +44,6 @@ export interface MessagesProxyRequestBuilder {
     byMessageId(messageId: string) : MessageItemProxyRequestBuilder;
 
 	//TODO navigation properties (count)
-	//TODO indexer methods
 	//TODO navigation methods
 }
 export const MessagesProxyRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/messages{?includeHiddenMessages,%24top,%24skip,%24search,%24filter,%24count,%24orderby,%24select,%24expand}";
@@ -72,9 +71,10 @@ export const MessagesProxyRequestBuilderRequestsMetadata: Record<string, Request
 	},
 };
 
-export const MessagesProxyRequestBuilderNavigationMetadata: Record<string, NavigationMetadata> = {
+export const MessagesProxyRequestBuilderNavigationMetadata: Record<Exclude<keyof MessageItemProxyRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     "byMessageId": {
         uriTemplate: MessageItemProxyRequestBuilderUriTemplate,
         requestsMetadata: MessageItemProxyRequestBuilderRequestsMetadata,
+        pathParametersMappings: ["message%2Did"],
     },
 };

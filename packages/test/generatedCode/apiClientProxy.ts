@@ -1,4 +1,4 @@
-import type { NextGenBaseRequestBuilder, RequestAdapter } from "@microsoft/kiota-abstractions";
+import type { KeysToExcludeForNavigationMetadata, NextGenBaseRequestBuilder, RequestAdapter } from "@microsoft/kiota-abstractions";
 import { registerDefaultSerializer, type NavigationMetadata, registerDefaultDeserializer } from "@microsoft/kiota-abstractions";
 import { UsersProxyRequestBuilderUriTemplate, type UsersProxyRequestBuilder, UsersProxyRequestBuilderNavigationMetadata } from "./users/usersProxyRequestBuilder";
 import { JsonParseNodeFactory, JsonSerializationWriterFactory } from "@microsoft/kiota-serialization-json";
@@ -14,7 +14,7 @@ export interface ApiClientProxy {
     get users(): UsersProxyRequestBuilder & NextGenBaseRequestBuilder<UsersProxyRequestBuilder>;
 }
 export const ApiClientProxyUriTemplate = "{+baseurl}";
-export const ApiClientProxyNavigationMetadata: Record<keyof ApiClientProxy, NavigationMetadata> = {
+export const ApiClientProxyNavigationMetadata: Record<Exclude<keyof ApiClientProxy, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
 	"users": {
 		uriTemplate: UsersProxyRequestBuilderUriTemplate,
 		navigationMetadata: UsersProxyRequestBuilderNavigationMetadata,

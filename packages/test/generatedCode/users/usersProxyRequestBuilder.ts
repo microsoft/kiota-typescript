@@ -1,4 +1,4 @@
-import type { NavigationMetadata, NextGenBaseRequestBuilder } from "@microsoft/kiota-abstractions";
+import type { NavigationMetadata, NextGenBaseRequestBuilder, KeysToExcludeForNavigationMetadata } from "@microsoft/kiota-abstractions";
 import { UserItemProxyRequestBuilderNavigationMetadata, type UserItemProxyRequestBuilder } from "./item/userItemProxyRequestBuilder";
 
 export interface UsersProxyRequestBuilder {
@@ -11,7 +11,7 @@ export interface UsersProxyRequestBuilder {
 }
 
 export const UsersProxyRequestBuilderUriTemplate = "{+baseurl}/users";
-export const UsersProxyRequestBuilderNavigationMetadata: Record<keyof UsersProxyRequestBuilder, NavigationMetadata> = {
+export const UsersProxyRequestBuilderNavigationMetadata: Record<Exclude<keyof UsersProxyRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
 	"byUserId": {
 		uriTemplate: UsersProxyRequestBuilderUriTemplate,
 		navigationMetadata: UserItemProxyRequestBuilderNavigationMetadata,
