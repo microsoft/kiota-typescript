@@ -1,8 +1,10 @@
-import type { RequestConfiguration, RequestMetadata, RequestInformation, ParsableFactory, Parsable } from "@microsoft/kiota-abstractions";
+import type { RequestConfiguration, RequestMetadata, RequestInformation, ParsableFactory, Parsable, NavigationMetadata } from "@microsoft/kiota-abstractions";
 import { messagesRequestBuilderGetQueryParametersMapper } from ".";
 import type { MessagesRequestBuilderGetQueryParameters } from ".";
 import { createMessageCollectionResponseFromDiscriminatorValue, createMessageFromDiscriminatorValue, serializeMessage, type Message, type MessageCollectionResponse } from "../../../models";
 import { createODataErrorFromDiscriminatorValue } from "../../../models/oDataErrors";
+import type { MessageItemProxyRequestBuilder} from "./item/messageItemProxyRequestBuilder";
+import { MessageItemProxyRequestBuilderRequestsMetadata, MessageItemProxyRequestBuilderUriTemplate } from "./item/messageItemProxyRequestBuilder";
 
 export interface MessagesProxyRequestBuilder {
 	/**
@@ -34,6 +36,13 @@ export interface MessagesProxyRequestBuilder {
      */
     toPostRequestInformation(body: Message, requestConfiguration?: RequestConfiguration<object> | undefined) : RequestInformation;
 
+    /**
+     * Gets an item from the ApiSdk.users.item.messages.item collection
+     * @param messageId The unique identifier of message
+     * @returns a MessageItemRequestBuilder
+     */
+    byMessageId(messageId: string) : MessageItemProxyRequestBuilder;
+
 	//TODO navigation properties (count)
 	//TODO indexer methods
 	//TODO navigation methods
@@ -61,4 +70,11 @@ export const MessagesProxyRequestBuilderRequestsMetadata: Record<string, Request
 		requestBodySerializer: serializeMessage,
 		requestBodyContentType: "application/json",
 	},
-}
+};
+
+export const MessagesProxyRequestBuilderNavigationMetadata: Record<string, NavigationMetadata> = {
+    "byMessageId": {
+        uriTemplate: MessageItemProxyRequestBuilderUriTemplate,
+        requestsMetadata: MessageItemProxyRequestBuilderRequestsMetadata,
+    },
+};
