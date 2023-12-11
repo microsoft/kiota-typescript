@@ -1,4 +1,5 @@
-import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, BackingStoreFactorySingleton, type DateOnly, DefaultApiError, type Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory,type Parsable, type ParsableFactory,type ParseNode, type ParseNodeFactory,ParseNodeFactoryRegistry, type RequestAdapter,type RequestInformation,type ResponseHandler,type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
+import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, BackingStoreFactorySingleton, type DateOnly, DefaultApiError, type Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type RequestAdapter, type RequestInformation, type ResponseHandler, type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
+import type { PrimitiveTypesForDeserialization, PrimitiveTypesForDeserializationType } from "@microsoft/kiota-abstractions/src/requestAdapter";
 import { type Span, SpanStatusCode, trace } from "@opentelemetry/api";
 
 import { HttpClient } from "./httpClient";
@@ -19,7 +20,13 @@ export class FetchRequestAdapter implements RequestAdapter {
 	 * @param httpClient the http client to use to execute requests.
 	 * @param observabilityOptions the observability options to use.
 	 */
-	public constructor(public readonly authenticationProvider: AuthenticationProvider, private parseNodeFactory: ParseNodeFactory = ParseNodeFactoryRegistry.defaultInstance, private serializationWriterFactory: SerializationWriterFactory = SerializationWriterFactoryRegistry.defaultInstance, private readonly httpClient: HttpClient = new HttpClient(), observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()) {
+	public constructor(
+		public readonly authenticationProvider: AuthenticationProvider,
+		private parseNodeFactory: ParseNodeFactory = ParseNodeFactoryRegistry.defaultInstance,
+		private serializationWriterFactory: SerializationWriterFactory = SerializationWriterFactoryRegistry.defaultInstance,
+		private readonly httpClient: HttpClient = new HttpClient(),
+		observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl(),
+	) {
 		if (!authenticationProvider) {
 			throw new Error("authentication provider cannot be null");
 		}
@@ -51,7 +58,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		return responseHandlerOption?.responseHandler;
 	};
 	private static readonly responseTypeAttributeKey = "com.microsoft.kiota.response.type";
-	public sendCollectionOfPrimitiveAsync = <ResponseType>(requestInfo: RequestInformation, responseType: "string" | "number" | "boolean" | "Date", errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType[] | undefined> => {
+	public sendCollectionOfPrimitiveAsync = <ResponseType extends Exclude<PrimitiveTypesForDeserializationType, ArrayBuffer>>(requestInfo: RequestInformation, responseType: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType[] | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
@@ -188,7 +195,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		}) as Promise<ModelType>;
 	};
-	public sendPrimitiveAsync = <ResponseType>(requestInfo: RequestInformation, responseType: "string" | "number" | "boolean" | "Date" | "ArrayBuffer", errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType | undefined> => {
+	public sendPrimitiveAsync = <ResponseType extends PrimitiveTypesForDeserializationType>(requestInfo: RequestInformation, responseType: PrimitiveTypesForDeserialization, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
@@ -248,7 +255,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 			} finally {
 				span.end();
 			}
-		}) as Promise<ResponseType>;
+		}) as Promise<ResponseType | undefined>;
 	};
 	public sendNoResponseContentAsync = (requestInfo: RequestInformation, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<void> => {
 		if (!requestInfo) {

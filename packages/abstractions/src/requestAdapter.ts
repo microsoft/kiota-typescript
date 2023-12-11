@@ -1,6 +1,13 @@
+import type { DateOnly } from "./dateOnly";
+import type { Duration } from "./duration";
 import { type RequestInformation } from "./requestInformation";
-import type { Parsable, ParsableFactory, SerializationWriterFactory } from "./serialization";
+import type {
+  Parsable,
+  ParsableFactory,
+  SerializationWriterFactory,
+} from "./serialization";
 import { type BackingStoreFactory } from "./store";
+import type { TimeOnly } from "./timeOnly";
 
 /** Service responsible for translating abstract Request Info into concrete native HTTP requests. */
 export interface RequestAdapter {
@@ -20,7 +27,7 @@ export interface RequestAdapter {
   sendAsync<ModelType extends Parsable>(
     requestInfo: RequestInformation,
     type: ParsableFactory<ModelType>,
-    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
+    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined,
   ): Promise<ModelType | undefined>;
   /**
    * Executes the HTTP request specified by the given RequestInformation and returns the deserialized response model collection.
@@ -33,7 +40,7 @@ export interface RequestAdapter {
   sendCollectionAsync<ModelType extends Parsable>(
     requestInfo: RequestInformation,
     type: ParsableFactory<ModelType>,
-    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
+    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined,
   ): Promise<ModelType[] | undefined>;
   /**
    * Executes the HTTP request specified by the given RequestInformation and returns the deserialized response model collection.
@@ -44,10 +51,15 @@ export interface RequestAdapter {
    * @typeParam ResponseType the type of the response model to deserialize the response into.
    * @return a {@link Promise} with the deserialized response model collection.
    */
-  sendCollectionOfPrimitiveAsync<ResponseType>(
+  sendCollectionOfPrimitiveAsync<
+    ResponseType extends Exclude<
+      PrimitiveTypesForDeserializationType,
+      ArrayBuffer
+    >,
+  >(
     requestInfo: RequestInformation,
-    responseType: "string" | "number" | "boolean" | "Date",
-    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
+    responseType: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">,
+    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined,
   ): Promise<ResponseType[] | undefined>;
   /**
    * Executes the HTTP request specified by the given RequestInformation and returns the deserialized primitive response model.
@@ -57,10 +69,10 @@ export interface RequestAdapter {
    * @typeParam ResponseType the type of the response model to deserialize the response into.
    * @return a {@link Promise} with the deserialized primitive response model.
    */
-  sendPrimitiveAsync<ResponseType>(
+  sendPrimitiveAsync<ResponseType extends PrimitiveTypesForDeserializationType>(
     requestInfo: RequestInformation,
-    responseType: "string" | "number" | "boolean" | "Date" | "ArrayBuffer",
-    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
+    responseType: PrimitiveTypesForDeserialization,
+    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined,
   ): Promise<ResponseType | undefined>;
   /**
    * Executes the HTTP request specified by the given RequestInformation and returns the deserialized primitive response model.
@@ -70,14 +82,14 @@ export interface RequestAdapter {
    */
   sendNoResponseContentAsync(
     requestInfo: RequestInformation,
-    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined
+    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined,
   ): Promise<void>;
   /**
    * Enables the backing store proxies for the SerializationWriters and ParseNodes in use.
    * @param backingStoreFactory the backing store factory to use.
    */
   enableBackingStore(
-    backingStoreFactory?: BackingStoreFactory | undefined
+    backingStoreFactory?: BackingStoreFactory | undefined,
   ): void;
   /** The base url for every request. */
   baseUrl: string;
@@ -89,3 +101,23 @@ export interface RequestAdapter {
    */
   convertToNativeRequestAsync<T>(requestInfo: RequestInformation): Promise<T>;
 }
+
+export type PrimitiveTypesForDeserializationType =
+  | string
+  | number
+  | boolean
+  | Date
+  | DateOnly
+  | TimeOnly
+  | Duration
+  | ArrayBuffer;
+
+export type PrimitiveTypesForDeserialization =
+  | "string"
+  | "number"
+  | "boolean"
+  | "Date"
+  | "DateOnly"
+  | "TimeOnly"
+  | "Duration"
+  | "ArrayBuffer";

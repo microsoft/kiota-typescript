@@ -7,7 +7,10 @@ import { Headers } from "./headers";
 import { type HttpMethod } from "./httpMethod";
 import { MultipartBody } from "./multipartBody";
 import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitiveKeys";
-import type { RequestAdapter } from "./requestAdapter";
+import type {
+  PrimitiveTypesForDeserializationType,
+  RequestAdapter,
+} from "./requestAdapter";
 import type { RequestConfiguration } from "./requestConfiguration";
 import type { RequestOption } from "./requestOption";
 import type {
@@ -209,10 +212,12 @@ export class RequestInformation {
    * @param requestAdapter The adapter service to get the serialization writer from.
    * @typeParam T the model type.
    */
-  public setContentFromScalar = <T>(
-    requestAdapter?: RequestAdapter | undefined,
-    contentType?: string | undefined,
-    value?: T[] | T,
+  public setContentFromScalar = <
+    T extends PrimitiveTypesForDeserializationType,
+  >(
+    requestAdapter: RequestAdapter | undefined,
+    contentType: string | undefined,
+    value: T[] | T,
   ): void => {
     trace
       .getTracer(RequestInformation.tracerKey)
