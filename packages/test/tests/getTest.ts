@@ -23,7 +23,7 @@ describe("TestGet", () => {
                 count: true,
             }
         });
-        assert.equal("foo", messagesRI.URL);
+        assert.equal(`https://graph.microsoft.com/v1.0/users/${userId}/messages?%24count=true`, messagesRI.URL);
         assert.isDefined(messages?.value);
     });
 });

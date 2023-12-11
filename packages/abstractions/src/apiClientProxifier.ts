@@ -50,120 +50,115 @@ export function apiClientProxifier<T extends object>(
   if (!requestAdapter) throw new Error("requestAdapter cannot be undefined");
   if (!pathParameters) throw new Error("pathParameters cannot be undefined");
   if (!urlTemplate) throw new Error("urlTemplate cannot be undefined");
-  return new Proxy(
-    {},
-    {
-      apply(target: any, thisArg: any, argArray: any[]) {
-        const name = target.name;
-
-        if (requestsMetadata) {
-          const metadata = getRequestMetadata(name, requestsMetadata);
-          switch (name) {
-            case "get":
-              //TODO return the result and not the function
-              return <T extends Parsable>(
-                requestConfiguration?: RequestConfiguration<object> | undefined,
-              ): Promise<T | undefined> => {
-                const requestInfo = toGetRequestInformation(
-                  urlTemplate,
-                  pathParameters,
-                  metadata,
-                  requestConfiguration,
-                );
-                if (!metadata.responseBodyFactory) {
-                  throw new Error("couldn't find response body factory");
-                }
-                return requestAdapter.sendAsync<T>( //TODO switch the request adapter method based on the metadata
-                  requestInfo,
-                  metadata.responseBodyFactory,
-                  metadata.errorMappings,
-                );
-              };
-            case "update":
-            case "patch":
-            case "put":
-            case "post":
-            case "delete":
-              break;
-            case "toGetRequestInformation":
+  return new Proxy({} as T, {
+    get(target, property) {
+      const name = String(property);
+      switch (name) {
+        case "withUrl":
+          return (...argArray: any[]) => {
+            // eslint-disable-next-line no-case-declarations
+            const rawUrl =
+              argArray.length > 0 && argArray[0] ? argArray[0] : "";
+            if (!rawUrl) throw new Error("rawUrl cannot be undefined");
+            return apiClientProxifier(
+              requestAdapter,
+              getPathParameters(rawUrl),
+              urlTemplate,
+              navigationMetadata,
+              requestsMetadata,
+            );
+          };
+      }
+      if (requestsMetadata) {
+        const metadata = getRequestMetadata(name, requestsMetadata);
+        switch (name) {
+          case "get":
+            //TODO return the result and not the function
+            return <T extends Parsable>(
+              requestConfiguration?: RequestConfiguration<object> | undefined,
+            ): Promise<T | undefined> => {
+              const requestInfo = toGetRequestInformation(
+                urlTemplate,
+                pathParameters,
+                metadata,
+                requestConfiguration,
+              );
+              if (!metadata.responseBodyFactory) {
+                throw new Error("couldn't find response body factory");
+              }
+              return requestAdapter.sendAsync<T>( //TODO switch the request adapter method based on the metadata
+                requestInfo,
+                metadata.responseBodyFactory,
+                metadata.errorMappings,
+              );
+            };
+          case "update":
+          case "patch":
+          case "put":
+          case "post":
+          case "delete":
+            break;
+          case "toGetRequestInformation":
+            return (...argArray: any[]) => {
               return toGetRequestInformation(
                 urlTemplate,
                 pathParameters,
                 metadata,
                 argArray.length > 0 ? argArray[0] : undefined,
               );
-            case "toUpdateRequestInformation":
-            case "toPatchRequestInformation":
-            case "toPutRequestInformation":
-            case "toPostRequestInformation":
-            case "toDeleteRequestInformation":
-              break;
-            default:
-              break;
-          }
-        }
-      },
-      get(target, property) {
-        const name = String(property);
-        switch (name) {
-          case "withUrl":
-            return (...argArray: any[]) => {
-              // eslint-disable-next-line no-case-declarations
-              const rawUrl =
-                argArray.length > 0 && argArray[0] ? argArray[0] : "";
-              if (!rawUrl) throw new Error("rawUrl cannot be undefined");
-              return apiClientProxifier(
-                requestAdapter,
-                getPathParameters(rawUrl),
-                urlTemplate,
-                navigationMetadata,
-                requestsMetadata,
-              );
             };
+          case "toUpdateRequestInformation":
+          case "toPatchRequestInformation":
+          case "toPutRequestInformation":
+          case "toPostRequestInformation":
+          case "toDeleteRequestInformation":
+            break;
+          default:
+            break;
         }
-        if (navigationMetadata) {
-          const navigationCandidate = navigationMetadata[name];
-          if (navigationCandidate) {
+      }
+      if (navigationMetadata) {
+        const navigationCandidate = navigationMetadata[name];
+        if (navigationCandidate) {
+          if (
+            !navigationCandidate.pathParametersMappings ||
+            navigationCandidate.pathParametersMappings.length === 0
+          ) {
+            // navigation property
+            return apiClientProxifier(
+              requestAdapter,
+              getPathParameters(pathParameters),
+              navigationCandidate.uriTemplate,
+              navigationCandidate.navigationMetadata,
+              navigationCandidate.requestsMetadata,
+            );
+          }
+          return (...argArray: any[]) => {
+            // navigation method like indexers or multiple path parameters
+            const downWardPathParameters = getPathParameters(pathParameters);
             if (
-              !navigationCandidate.pathParametersMappings ||
-              navigationCandidate.pathParametersMappings.length === 0
+              navigationCandidate.pathParametersMappings &&
+              navigationCandidate.pathParametersMappings.length > 0
             ) {
-              // navigation property
-              return apiClientProxifier(
-                requestAdapter,
-                getPathParameters(pathParameters),
-                navigationCandidate.uriTemplate,
-                navigationCandidate.navigationMetadata,
-                navigationCandidate.requestsMetadata,
-              );
-            }
-            return (...argArray: any[]) => {
-              // navigation method like indexers or multiple path parameters
-              const downWardPathParameters = getPathParameters(pathParameters);
-              if (
-                navigationCandidate.pathParametersMappings &&
-                navigationCandidate.pathParametersMappings.length > 0
-              ) {
-                for (let i = 0; i < argArray.length; i++) {
-                  const element = argArray[i];
-                  downWardPathParameters[
-                    navigationCandidate.pathParametersMappings[i]
-                  ] = element;
-                }
+              for (let i = 0; i < argArray.length; i++) {
+                const element = argArray[i];
+                downWardPathParameters[
+                  navigationCandidate.pathParametersMappings[i]
+                ] = element;
               }
-              return apiClientProxifier(
-                requestAdapter,
-                downWardPathParameters,
-                navigationCandidate.uriTemplate,
-                navigationCandidate.navigationMetadata,
-                navigationCandidate.requestsMetadata,
-              );
-            };
-          }
+            }
+            return apiClientProxifier(
+              requestAdapter,
+              downWardPathParameters,
+              navigationCandidate.uriTemplate,
+              navigationCandidate.navigationMetadata,
+              navigationCandidate.requestsMetadata,
+            );
+          };
         }
-      },
+      }
     },
-  );
+  });
 }
 
 export interface RequestMetadata {
