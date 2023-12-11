@@ -38,16 +38,6 @@ function toGetRequestInformation<QueryParametersType extends object>(
   return requestInfo;
 }
 
-// public post(body: Message, requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<Message | undefined> {
-//   const requestInfo = this.toPostRequestInformation(
-//       body, requestConfiguration
-//   );
-//   const errorMapping = {
-//       "4XX": createODataErrorFromDiscriminatorValue,
-//       "5XX": createODataErrorFromDiscriminatorValue,
-//   } as Record<string, ParsableFactory<Parsable>>;
-//   return this.requestAdapter.sendAsync<Message>(requestInfo, createMessageFromDiscriminatorValue, errorMapping);
-// }
 function toPostRequestInformation<QueryParametersType extends object>(
   urlTemplate: string,
   pathParameters: Record<string, unknown>,
@@ -95,21 +85,17 @@ export function apiClientProxifier<T extends object>(
   return new Proxy({} as T, {
     get(target, property) {
       const name = String(property);
-      switch (name) {
-        case "withUrl":
-          return (...argArray: any[]) => {
-            // eslint-disable-next-line no-case-declarations
-            const rawUrl =
-              argArray.length > 0 && argArray[0] ? argArray[0] : "";
-            if (!rawUrl) throw new Error("rawUrl cannot be undefined");
-            return apiClientProxifier(
-              requestAdapter,
-              getPathParameters(rawUrl),
-              urlTemplate,
-              navigationMetadata,
-              requestsMetadata,
-            );
-          };
+      if (name === "withUrl") {
+        return (rawUrl: string) => {
+          if (!rawUrl) throw new Error("rawUrl cannot be undefined");
+          return apiClientProxifier(
+            requestAdapter,
+            getPathParameters(rawUrl),
+            urlTemplate,
+            navigationMetadata,
+            requestsMetadata,
+          );
+        };
       }
       if (requestsMetadata) {
         const metadata = getRequestMetadata(name, requestsMetadata);
