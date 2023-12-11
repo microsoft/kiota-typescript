@@ -72,6 +72,17 @@ function addAcceptHeaderIfPresent(
     requestInfo.headers.tryAdd("Accept", metadata.responseBodyContentType);
   }
 }
+function getRequestConfigurationValue(
+  requestMetadata: RequestMetadata,
+  args: any[],
+) {
+  if (args.length > 1 && requestMetadata.requestBodySerializer) {
+    return args[1];
+  } else if (args.length > 0 && !requestMetadata.requestBodySerializer) {
+    return args[0];
+  }
+  return undefined;
+}
 export function apiClientProxifier<T extends object>(
   requestAdapter: RequestAdapter,
   pathParameters: Record<string, unknown>,
@@ -119,7 +130,6 @@ export function apiClientProxifier<T extends object>(
                 metadata.errorMappings,
               );
             };
-          case "update":
           case "patch":
           case "put":
           case "delete":
@@ -147,28 +157,27 @@ export function apiClientProxifier<T extends object>(
               );
             };
           case "toGetRequestInformation":
-            return (...argArray: any[]) => {
+            return (requestConfiguration?: RequestConfiguration<object>) => {
               return toGetRequestInformation(
                 urlTemplate,
                 pathParameters,
                 metadata,
-                argArray.length > 0 ? argArray[0] : undefined,
+                requestConfiguration,
               );
             };
-          case "toUpdateRequestInformation":
           case "toPatchRequestInformation":
           case "toPutRequestInformation":
           case "toDeleteRequestInformation":
             break;
           case "toPostRequestInformation":
-            return (...argArray: any[]) => {
+            return (...args: any[]) => {
               return toPostRequestInformation(
                 urlTemplate,
                 pathParameters,
                 metadata,
                 requestAdapter,
-                argArray.length > 0 ? argArray[0] : undefined,
-                argArray.length > 1 ? argArray[1] : undefined,
+                args.length > 0 ? args[0] : undefined,
+                getRequestConfigurationValue(metadata, args),
               );
             };
           default:
