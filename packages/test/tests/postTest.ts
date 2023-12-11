@@ -14,5 +14,6 @@ describe("TestPost", () => {
         const postmessageResult = await proxyClient.users.byUserId(userId).messages.post(message);
         assert.isDefined(postmessageResult?.id);
         assert.equal(postmessageResult?.subject, message.subject);
+        await proxyClient.users.byUserId(userId).messages.byMessageId(postmessageResult!.id!).delete();
     }).timeout(10000);
 });

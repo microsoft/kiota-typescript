@@ -1,6 +1,9 @@
 import { getPathParameters } from "./getPathParameters";
 import { HttpMethod } from "./httpMethod";
-import type { RequestAdapter } from "./requestAdapter";
+import type {
+  PrimitiveTypesForDeserialization,
+  RequestAdapter,
+} from "./requestAdapter";
 import type { RequestConfiguration } from "./requestConfiguration";
 import { RequestInformation } from "./requestInformation";
 import type {
@@ -9,58 +12,39 @@ import type {
   ParsableFactory,
 } from "./serialization";
 
-function getRequestMetadata(
-  key: string,
-  metadata: Record<string, RequestMetadata>,
-): RequestMetadata {
-  if (!metadata) throw new Error("couldn't find request metadata");
+function getRequestMetadata(key: string): string {
   if (key.startsWith("to")) {
-    key = key.substring(2).replace("RequestInformation", "").toLowerCase();
+    return key.substring(2).replace("RequestInformation", "").toLowerCase();
   }
-  const value = metadata[key];
-  if (!value) throw new Error("couldn't find request metadata");
-  return value;
+  return key;
 }
 
-function toGetRequestInformation<QueryParametersType extends object>(
+function toRequestInformation<QueryParametersType extends object>(
   urlTemplate: string,
   pathParameters: Record<string, unknown>,
   metadata: RequestMetadata,
+  requestAdapter: RequestAdapter,
+  httpMethod: HttpMethod,
+  body?: unknown,
   requestConfiguration?: RequestConfiguration<QueryParametersType> | undefined,
 ): RequestInformation {
   const requestInfo = new RequestInformation(
-    HttpMethod.GET,
+    httpMethod,
     urlTemplate,
     pathParameters,
   );
   requestInfo.configure(requestConfiguration, metadata.queryParametersMapper);
   addAcceptHeaderIfPresent(metadata, requestInfo);
-  return requestInfo;
-}
-
-function toPostRequestInformation<QueryParametersType extends object>(
-  urlTemplate: string,
-  pathParameters: Record<string, unknown>,
-  metadata: RequestMetadata,
-  requestAdapter: RequestAdapter,
-  body: unknown,
-  requestConfiguration?: RequestConfiguration<QueryParametersType> | undefined,
-): RequestInformation {
-  if (!body) throw new Error("body cannot be undefined");
-  const requestInfo = new RequestInformation(
-    HttpMethod.POST,
-    urlTemplate,
-    pathParameters,
-  );
-  requestInfo.configure(requestConfiguration);
-  addAcceptHeaderIfPresent(metadata, requestInfo);
   if (metadata.requestBodyContentType && metadata.requestBodySerializer) {
-    requestInfo.setContentFromParsable(
-      requestAdapter,
-      metadata.requestBodyContentType,
-      body,
-      metadata.requestBodySerializer,
-    );
+    if (!body) throw new Error("body cannot be undefined");
+    if (typeof metadata.requestBodySerializer === "function") {
+      requestInfo.setContentFromParsable(
+        requestAdapter,
+        metadata.requestBodyContentType,
+        body,
+        metadata.requestBodySerializer,
+      );
+    } //TODO handle primitive types
   }
   return requestInfo;
 }
@@ -82,6 +66,60 @@ function getRequestConfigurationValue(
     return args[0];
   }
   return undefined;
+}
+function sendAsync(
+  requestAdapter: RequestAdapter,
+  requestInfo: RequestInformation,
+  metadata: RequestMetadata,
+) {
+  switch (metadata.adapterMethodName) {
+    case "sendAsync":
+      if (!metadata.responseBodyFactory) {
+        throw new Error("couldn't find response body factory");
+      }
+      return requestAdapter.sendAsync(
+        requestInfo,
+        metadata.responseBodyFactory as ParsableFactory<Parsable>,
+        metadata.errorMappings,
+      );
+    case "sendCollectionAsync":
+      if (!metadata.responseBodyFactory) {
+        throw new Error("couldn't find response body factory");
+      }
+      return requestAdapter.sendCollectionAsync(
+        requestInfo,
+        metadata.responseBodyFactory as ParsableFactory<Parsable>,
+        metadata.errorMappings,
+      );
+    case "sendCollectionOfPrimitiveAsync":
+      if (!metadata.responseBodyFactory) {
+        throw new Error("couldn't find response body factory");
+      }
+      return requestAdapter.sendCollectionOfPrimitiveAsync(
+        requestInfo,
+        metadata.responseBodyFactory as Exclude<
+          PrimitiveTypesForDeserialization,
+          "ArrayBuffer"
+        >,
+        metadata.errorMappings,
+      );
+    case "sendPrimitiveAsync":
+      if (!metadata.responseBodyFactory) {
+        throw new Error("couldn't find response body factory");
+      }
+      return requestAdapter.sendPrimitiveAsync(
+        requestInfo,
+        metadata.responseBodyFactory as PrimitiveTypesForDeserialization,
+        metadata.errorMappings,
+      );
+    case "sendNoResponseContentAsync":
+      return requestAdapter.sendNoResponseContentAsync(
+        requestInfo,
+        metadata.errorMappings,
+      );
+    default:
+      throw new Error("couldn't find adapter method");
+  }
 }
 export function apiClientProxifier<T extends object>(
   requestAdapter: RequestAdapter,
@@ -109,79 +147,139 @@ export function apiClientProxifier<T extends object>(
         };
       }
       if (requestsMetadata) {
-        const metadata = getRequestMetadata(name, requestsMetadata);
-        switch (name) {
-          case "get":
-            return <ReturnType extends Parsable>(
-              requestConfiguration?: RequestConfiguration<object> | undefined,
-            ): Promise<ReturnType | undefined> => {
-              const requestInfo = toGetRequestInformation(
-                urlTemplate,
-                pathParameters,
-                metadata,
-                requestConfiguration,
-              );
-              if (!metadata.responseBodyFactory) {
-                throw new Error("couldn't find response body factory");
-              }
-              return requestAdapter.sendAsync<ReturnType>( //TODO switch the request adapter method based on the metadata
-                requestInfo,
-                metadata.responseBodyFactory,
-                metadata.errorMappings,
-              );
-            };
-          case "patch":
-          case "put":
-          case "delete":
-            break;
-          case "post":
-            return <ReturnType extends Parsable>(
-              body: unknown,
-              requestConfiguration?: RequestConfiguration<object> | undefined,
-            ): Promise<ReturnType | undefined> => {
-              const requestInfo = toPostRequestInformation(
-                urlTemplate,
-                pathParameters,
-                metadata,
-                requestAdapter,
-                body,
-                requestConfiguration,
-              );
-              if (!metadata.responseBodyFactory) {
-                throw new Error("couldn't find response body factory");
-              }
-              return requestAdapter.sendAsync<ReturnType>( //TODO switch the request adapter method based on the metadata
-                requestInfo,
-                metadata.responseBodyFactory,
-                metadata.errorMappings,
-              );
-            };
-          case "toGetRequestInformation":
-            return (requestConfiguration?: RequestConfiguration<object>) => {
-              return toGetRequestInformation(
-                urlTemplate,
-                pathParameters,
-                metadata,
-                requestConfiguration,
-              );
-            };
-          case "toPatchRequestInformation":
-          case "toPutRequestInformation":
-          case "toDeleteRequestInformation":
-            break;
-          case "toPostRequestInformation":
-            return (...args: any[]) => {
-              return toPostRequestInformation(
-                urlTemplate,
-                pathParameters,
-                metadata,
-                requestAdapter,
-                args.length > 0 ? args[0] : undefined,
-                getRequestConfigurationValue(metadata, args),
-              );
-            };
-          default:
-            break;
+        const metadata = requestsMetadata[getRequestMetadata(name)];
+        if (metadata) {
+          switch (name) {
+            case "get":
+              return (
+                requestConfiguration?: RequestConfiguration<object> | undefined,
+              ) => {
+                const requestInfo = toRequestInformation(
+                  urlTemplate,
+                  pathParameters,
+                  metadata,
+                  requestAdapter,
+                  HttpMethod.GET,
+                  undefined,
+                  requestConfiguration,
+                );
+                return sendAsync(requestAdapter, requestInfo, metadata);
+              };
+            case "patch":
+              return (...args: any[]) => {
+                const requestInfo = toRequestInformation(
+                  urlTemplate,
+                  pathParameters,
+                  metadata,
+                  requestAdapter,
+                  HttpMethod.PATCH,
+                  args.length > 0 ? args[0] : undefined,
+                  getRequestConfigurationValue(metadata, args),
+                );
+                return sendAsync(requestAdapter, requestInfo, metadata);
+              };
+            case "put":
+              return (...args: any[]) => {
+                const requestInfo = toRequestInformation(
+                  urlTemplate,
+                  pathParameters,
+                  metadata,
+                  requestAdapter,
+                  HttpMethod.PUT,
+                  args.length > 0 ? args[0] : undefined,
+                  getRequestConfigurationValue(metadata, args),
+                );
+                return sendAsync(requestAdapter, requestInfo, metadata);
+              };
+            case "delete":
+              return (...args: any[]) => {
+                const requestInfo = toRequestInformation(
+                  urlTemplate,
+                  pathParameters,
+                  metadata,
+                  requestAdapter,
+                  HttpMethod.DELETE,
+                  args.length > 0 ? args[0] : undefined,
+                  getRequestConfigurationValue(metadata, args),
+                );
+                return sendAsync(requestAdapter, requestInfo, metadata);
+              };
+            case "post":
+              return (...args: any[]) => {
+                const requestInfo = toRequestInformation(
+                  urlTemplate,
+                  pathParameters,
+                  metadata,
+                  requestAdapter,
+                  HttpMethod.POST,
+                  args.length > 0 ? args[0] : undefined,
+                  getRequestConfigurationValue(metadata, args),
+                );
+                return sendAsync(requestAdapter, requestInfo, metadata);
+              };
+            case "toGetRequestInformation":
+              return (requestConfiguration?: RequestConfiguration<object>) => {
+                return toRequestInformation(
+                  urlTemplate,
+                  pathParameters,
+                  metadata,
+                  requestAdapter,
+                  HttpMethod.GET,
+                  undefined,
+                  requestConfiguration,
+                );
+              };
+            case "toPatchRequestInformation":
+              return (...args: any[]) => {
+                return toRequestInformation(
+                  urlTemplate,
+                  pathParameters,
+                  metadata,
+                  requestAdapter,
+                  HttpMethod.PATCH,
+                  args.length > 0 ? args[0] : undefined,
+                  getRequestConfigurationValue(metadata, args),
+                );
+              };
+            case "toPutRequestInformation":
+              return (...args: any[]) => {
+                return toRequestInformation(
+                  urlTemplate,
+                  pathParameters,
+                  metadata,
+                  requestAdapter,
+                  HttpMethod.PUT,
+                  args.length > 0 ? args[0] : undefined,
+                  getRequestConfigurationValue(metadata, args),
+                );
+              };
+            case "toDeleteRequestInformation":
+              return (...args: any[]) => {
+                return toRequestInformation(
+                  urlTemplate,
+                  pathParameters,
+                  metadata,
+                  requestAdapter,
+                  HttpMethod.DELETE,
+                  args.length > 0 ? args[0] : undefined,
+                  getRequestConfigurationValue(metadata, args),
+                );
+              };
+            case "toPostRequestInformation":
+              return (...args: any[]) => {
+                return toRequestInformation(
+                  urlTemplate,
+                  pathParameters,
+                  metadata,
+                  requestAdapter,
+                  HttpMethod.POST,
+                  args.length > 0 ? args[0] : undefined,
+                  getRequestConfigurationValue(metadata, args),
+                );
+              };
+            default:
+              break;
+          }
         }
       }
       if (navigationMetadata) {
@@ -223,6 +321,11 @@ export function apiClientProxifier<T extends object>(
             );
           };
         }
+        throw new Error(
+          `couldn't find navigation property ${name} data: ${JSON.stringify(
+            navigationMetadata,
+          )}`,
+        );
       }
     },
   });
@@ -233,8 +336,12 @@ export interface RequestMetadata {
   responseBodyContentType?: string;
   errorMappings?: Record<string, ParsableFactory<Parsable>>;
   adapterMethodName?: keyof RequestAdapter;
-  responseBodyFactory?: ParsableFactory<Parsable>; // TODO primitive types
-  requestBodySerializer?: ModelSerializerFunction<Parsable>;
+  responseBodyFactory?:
+    | ParsableFactory<Parsable>
+    | PrimitiveTypesForDeserialization;
+  requestBodySerializer?:
+    | ModelSerializerFunction<Parsable>
+    | PrimitiveTypesForDeserialization;
   queryParametersMapper?: Record<string, string>;
 }
 
@@ -244,3 +351,15 @@ export interface NavigationMetadata {
   navigationMetadata?: Record<string, NavigationMetadata>;
   pathParametersMappings?: string[];
 }
+
+export type KeysToExcludeForNavigationMetadata =
+  | "get"
+  | "post"
+  | "patch"
+  | "put"
+  | "delete"
+  | "toGetRequestInformation"
+  | "toPostRequestInformation"
+  | "toPatchRequestInformation"
+  | "toPutRequestInformation"
+  | "toDeleteRequestInformation";
