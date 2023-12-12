@@ -1,23 +1,23 @@
-import type { KeysToExcludeForNavigationMetadata, NextGenBaseRequestBuilder, RequestAdapter } from "@microsoft/kiota-abstractions";
+import type { KeysToExcludeForNavigationMetadata, BaseRequestBuilder, RequestAdapter } from "@microsoft/kiota-abstractions";
 import { registerDefaultSerializer, type NavigationMetadata, registerDefaultDeserializer } from "@microsoft/kiota-abstractions";
-import { UsersProxyRequestBuilderUriTemplate, type UsersProxyRequestBuilder, UsersProxyRequestBuilderNavigationMetadata } from "./users/usersProxyRequestBuilder";
+import { UsersRequestBuilderUriTemplate, type UsersRequestBuilder, UsersRequestBuilderNavigationMetadata } from "./users";
 import { JsonParseNodeFactory, JsonSerializationWriterFactory } from "@microsoft/kiota-serialization-json";
 import { TextParseNodeFactory, TextSerializationWriterFactory } from "@microsoft/kiota-serialization-text";
 import { FormParseNodeFactory, FormSerializationWriterFactory } from "@microsoft/kiota-serialization-form";
 import { MultipartSerializationWriterFactory } from "@microsoft/kiota-serialization-multipart";
 import { apiClientProxifier } from "@microsoft/kiota-abstractions";
 
-export interface ApiClientProxy {
+export interface ApiClientProxy extends BaseRequestBuilder<ApiClientProxy> {
 	/**
      * The users property
      */
-    get users(): UsersProxyRequestBuilder & NextGenBaseRequestBuilder<UsersProxyRequestBuilder>;
+    get users(): UsersRequestBuilder;
 }
 export const ApiClientProxyUriTemplate = "{+baseurl}";
 export const ApiClientProxyNavigationMetadata: Record<Exclude<keyof ApiClientProxy, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
 	"users": {
-		uriTemplate: UsersProxyRequestBuilderUriTemplate,
-		navigationMetadata: UsersProxyRequestBuilderNavigationMetadata,
+		uriTemplate: UsersRequestBuilderUriTemplate,
+		navigationMetadata: UsersRequestBuilderNavigationMetadata,
 	}
 }
 
@@ -36,5 +36,5 @@ export function getNewApiClient(requestAdapter: RequestAdapter) {
 	const pathParameters: Record<string, unknown> = {
 		"baseurl": requestAdapter.baseUrl,
 	};
-	return apiClientProxifier<ApiClientProxy>(requestAdapter, pathParameters, ApiClientProxyUriTemplate, ApiClientProxyNavigationMetadata) as ApiClientProxy & NextGenBaseRequestBuilder<ApiClientProxy>;
+	return apiClientProxifier<ApiClientProxy>(requestAdapter, pathParameters, ApiClientProxyUriTemplate, ApiClientProxyNavigationMetadata) as ApiClientProxy;
 }

@@ -1,4 +1,3 @@
-import {ApiClient} from "../generatedCode/apiClient";
 import {FetchRequestAdapter} from "@microsoft/kiota-http-fetchlibrary";
 import {AzureIdentityAuthenticationProvider} from "@microsoft/kiota-authentication-azure";
 import {ClientSecretCredential} from "@azure/identity";
@@ -8,7 +7,6 @@ const tokenCredential = new ClientSecretCredential(process.env.TENANT_ID!, proce
 
 const authProvider = new AzureIdentityAuthenticationProvider(tokenCredential, ["https://graph.microsoft.com/.default"]);
 const fetchRequestAdapter = new FetchRequestAdapter(authProvider)
-export const apiClient = new ApiClient(fetchRequestAdapter);
 export const proxyClient = getNewApiClient(fetchRequestAdapter);
 export const userId = process.env.USER_ID!;
 
