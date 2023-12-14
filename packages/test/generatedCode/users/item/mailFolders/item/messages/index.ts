@@ -71,7 +71,7 @@ export class MessagesRequestBuilder extends BaseRequestBuilder<MessagesRequestBu
         super(pathParameters, requestAdapter, "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/messages{?%24top,%24skip,%24search,%24filter,%24count,%24orderby,%24select,%24expand}", (x, y) => new MessagesRequestBuilder(x, y));
     }
     /**
-     * Get all the messages in the specified user's mailbox, or those messages in a specified folder in the mailbox. This API is available in the following national cloud deployments.
+     * Get all the messages in the specified user's mailbox, or those messages in a specified folder in the mailbox.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of MessageCollectionResponse
      * @see {@link https://learn.microsoft.com/graph/api/mailfolder-list-messages?view=graph-rest-1.0|Find more info here}
@@ -87,7 +87,7 @@ export class MessagesRequestBuilder extends BaseRequestBuilder<MessagesRequestBu
         return this.requestAdapter.sendAsync<MessageCollectionResponse>(requestInfo, createMessageCollectionResponseFromDiscriminatorValue, errorMapping);
     }
     /**
-     * Use this API to create a new Message in a mailfolder. This API is available in the following national cloud deployments.
+     * Use this API to create a new Message in a mailfolder.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of Message
@@ -104,7 +104,7 @@ export class MessagesRequestBuilder extends BaseRequestBuilder<MessagesRequestBu
         return this.requestAdapter.sendAsync<Message>(requestInfo, createMessageFromDiscriminatorValue, errorMapping);
     }
     /**
-     * Get all the messages in the specified user's mailbox, or those messages in a specified folder in the mailbox. This API is available in the following national cloud deployments.
+     * Get all the messages in the specified user's mailbox, or those messages in a specified folder in the mailbox.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
      */
@@ -115,7 +115,7 @@ export class MessagesRequestBuilder extends BaseRequestBuilder<MessagesRequestBu
         return requestInfo;
     }
     /**
-     * Use this API to create a new Message in a mailfolder. This API is available in the following national cloud deployments.
+     * Use this API to create a new Message in a mailfolder.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation

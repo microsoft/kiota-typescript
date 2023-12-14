@@ -24,7 +24,7 @@ export class InferenceClassificationOverrideItemRequestBuilder extends BaseReque
         super(pathParameters, requestAdapter, "{+baseurl}/users/{user%2Did}/inferenceClassification/overrides/{inferenceClassificationOverride%2Did}{?%24select}", (x, y) => new InferenceClassificationOverrideItemRequestBuilder(x, y));
     }
     /**
-     * Delete an override specified by its ID. This API is available in the following national cloud deployments.
+     * Delete an override specified by its ID.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of ArrayBuffer
      * @see {@link https://learn.microsoft.com/graph/api/inferenceclassificationoverride-delete?view=graph-rest-1.0|Find more info here}
@@ -55,7 +55,7 @@ export class InferenceClassificationOverrideItemRequestBuilder extends BaseReque
         return this.requestAdapter.sendAsync<InferenceClassificationOverride>(requestInfo, createInferenceClassificationOverrideFromDiscriminatorValue, errorMapping);
     }
     /**
-     * Change the classifyAs field of an override as specified. You cannot use PATCH to change any other fields in an inferenceClassificationOverride instance. If an override exists for a sender and the sender changes his/her display name, you can use POST to force an update to the name field in the existing override. If an override exists for a sender and the sender changes his/her SMTP address, deleting the existing override and creating a new one withthe new SMTP address is the only way to 'update' the override for this sender. This API is available in the following national cloud deployments.
+     * Change the classifyAs field of an override as specified. You cannot use PATCH to change any other fields in an inferenceClassificationOverride instance. If an override exists for a sender and the sender changes his/her display name, you can use POST to force an update to the name field in the existing override. If an override exists for a sender and the sender changes his/her SMTP address, deleting the existing override and creating a new one withthe new SMTP address is the only way to 'update' the override for this sender.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of InferenceClassificationOverride
@@ -72,7 +72,7 @@ export class InferenceClassificationOverrideItemRequestBuilder extends BaseReque
         return this.requestAdapter.sendAsync<InferenceClassificationOverride>(requestInfo, createInferenceClassificationOverrideFromDiscriminatorValue, errorMapping);
     }
     /**
-     * Delete an override specified by its ID. This API is available in the following national cloud deployments.
+     * Delete an override specified by its ID.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
      */
@@ -94,7 +94,7 @@ export class InferenceClassificationOverrideItemRequestBuilder extends BaseReque
         return requestInfo;
     }
     /**
-     * Change the classifyAs field of an override as specified. You cannot use PATCH to change any other fields in an inferenceClassificationOverride instance. If an override exists for a sender and the sender changes his/her display name, you can use POST to force an update to the name field in the existing override. If an override exists for a sender and the sender changes his/her SMTP address, deleting the existing override and creating a new one withthe new SMTP address is the only way to 'update' the override for this sender. This API is available in the following national cloud deployments.
+     * Change the classifyAs field of an override as specified. You cannot use PATCH to change any other fields in an inferenceClassificationOverride instance. If an override exists for a sender and the sender changes his/her display name, you can use POST to force an update to the name field in the existing override. If an override exists for a sender and the sender changes his/her SMTP address, deleting the existing override and creating a new one withthe new SMTP address is the only way to 'update' the override for this sender.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation

@@ -59,10 +59,10 @@ export class AttachmentsRequestBuilder extends BaseRequestBuilder<AttachmentsReq
         super(pathParameters, requestAdapter, "{+baseurl}/users/{user%2Did}/messages/{message%2Did}/attachments{?%24filter,%24count,%24orderby,%24select,%24expand}", (x, y) => new AttachmentsRequestBuilder(x, y));
     }
     /**
-     * Retrieve a list of attachment objects attached to a message. This API is available in the following national cloud deployments.
+     * Retrieve a list of attachment objects.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of AttachmentCollectionResponse
-     * @see {@link https://learn.microsoft.com/graph/api/message-list-attachments?view=graph-rest-1.0|Find more info here}
+     * @see {@link https://learn.microsoft.com/graph/api/eventmessage-list-attachments?view=graph-rest-1.0|Find more info here}
      */
     public get(requestConfiguration?: RequestConfiguration<AttachmentsRequestBuilderGetQueryParameters> | undefined) : Promise<AttachmentCollectionResponse | undefined> {
         const requestInfo = this.toGetRequestInformation(
@@ -75,7 +75,7 @@ export class AttachmentsRequestBuilder extends BaseRequestBuilder<AttachmentsReq
         return this.requestAdapter.sendAsync<AttachmentCollectionResponse>(requestInfo, createAttachmentCollectionResponseFromDiscriminatorValue, errorMapping);
     }
     /**
-     * Use this API to create a new Attachment. An attachment can be one of the following types: All these types of attachment resources are derived from the attachmentresource. This API is available in the following national cloud deployments.
+     * Use this API to create a new Attachment. An attachment can be one of the following types: All these types of attachment resources are derived from the attachmentresource.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of Attachment
@@ -92,7 +92,7 @@ export class AttachmentsRequestBuilder extends BaseRequestBuilder<AttachmentsReq
         return this.requestAdapter.sendAsync<Attachment>(requestInfo, createAttachmentFromDiscriminatorValue, errorMapping);
     }
     /**
-     * Retrieve a list of attachment objects attached to a message. This API is available in the following national cloud deployments.
+     * Retrieve a list of attachment objects.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
      */
@@ -103,7 +103,7 @@ export class AttachmentsRequestBuilder extends BaseRequestBuilder<AttachmentsReq
         return requestInfo;
     }
     /**
-     * Use this API to create a new Attachment. An attachment can be one of the following types: All these types of attachment resources are derived from the attachmentresource. This API is available in the following national cloud deployments.
+     * Use this API to create a new Attachment. An attachment can be one of the following types: All these types of attachment resources are derived from the attachmentresource.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation

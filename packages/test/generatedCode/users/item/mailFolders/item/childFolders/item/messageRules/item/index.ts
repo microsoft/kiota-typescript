@@ -24,7 +24,7 @@ export class MessageRuleItemRequestBuilder extends BaseRequestBuilder<MessageRul
         super(pathParameters, requestAdapter, "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/childFolders/{mailFolder%2Did1}/messageRules/{messageRule%2Did}{?%24select}", (x, y) => new MessageRuleItemRequestBuilder(x, y));
     }
     /**
-     * Delete the specified messageRule object. This API is available in the following national cloud deployments.
+     * Delete the specified messageRule object.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of ArrayBuffer
      * @see {@link https://learn.microsoft.com/graph/api/messagerule-delete?view=graph-rest-1.0|Find more info here}
@@ -40,7 +40,7 @@ export class MessageRuleItemRequestBuilder extends BaseRequestBuilder<MessageRul
         return this.requestAdapter.sendPrimitiveAsync<ArrayBuffer>(requestInfo, "ArrayBuffer", errorMapping);
     }
     /**
-     * Get the properties and relationships of a messageRule object. This API is available in the following national cloud deployments.
+     * Get the properties and relationships of a messageRule object.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of MessageRule
      * @see {@link https://learn.microsoft.com/graph/api/messagerule-get?view=graph-rest-1.0|Find more info here}
@@ -56,7 +56,7 @@ export class MessageRuleItemRequestBuilder extends BaseRequestBuilder<MessageRul
         return this.requestAdapter.sendAsync<MessageRule>(requestInfo, createMessageRuleFromDiscriminatorValue, errorMapping);
     }
     /**
-     * Change writable properties on a messageRule object and save the changes. This API is available in the following national cloud deployments.
+     * Change writable properties on a messageRule object and save the changes.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of MessageRule
@@ -73,7 +73,7 @@ export class MessageRuleItemRequestBuilder extends BaseRequestBuilder<MessageRul
         return this.requestAdapter.sendAsync<MessageRule>(requestInfo, createMessageRuleFromDiscriminatorValue, errorMapping);
     }
     /**
-     * Delete the specified messageRule object. This API is available in the following national cloud deployments.
+     * Delete the specified messageRule object.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
      */
@@ -84,7 +84,7 @@ export class MessageRuleItemRequestBuilder extends BaseRequestBuilder<MessageRul
         return requestInfo;
     }
     /**
-     * Get the properties and relationships of a messageRule object. This API is available in the following national cloud deployments.
+     * Get the properties and relationships of a messageRule object.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
      */
@@ -95,7 +95,7 @@ export class MessageRuleItemRequestBuilder extends BaseRequestBuilder<MessageRul
         return requestInfo;
     }
     /**
-     * Change writable properties on a messageRule object and save the changes. This API is available in the following national cloud deployments.
+     * Change writable properties on a messageRule object and save the changes.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation

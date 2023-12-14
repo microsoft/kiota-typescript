@@ -50,17 +50,19 @@ describe("JsonParseNode", () => {
   });
 
   it("Test enum values", async () => {
-    enum TestEnum {
-      A = "a",
-      B = "b",
-      C = "c"
-    }
+    const TestEnumObject = {
+      A: "a",
+      B: "b",
+      C: "c"
+    } as const;
+
+    type TestEnum = (typeof TestEnumObject)[keyof typeof TestEnumObject];
 
     const result = new JsonParseNode([
       "a",
       "b",
       "c"
-    ]).getCollectionOfEnumValues(TestEnum) as TestEnum[];
+    ]).getCollectionOfEnumValues(TestEnumObject) as TestEnum[];
     assert.equal(result.length, 3);
     assert.equal(result.shift(), "a");
 
@@ -68,9 +70,14 @@ describe("JsonParseNode", () => {
       "d",
       "b",
       "c"
-    ]).getCollectionOfEnumValues(TestEnum) as TestEnum[];
+    ]).getCollectionOfEnumValues(TestEnumObject) as TestEnum[];
     assert.equal(enumValuesResult.length, 2);
-    assert.equal(enumValuesResult.shift(), "b");
+    assert.equal(enumValuesResult.shift(), "b")
+
+    const enumValueResult = new JsonParseNode(
+      "a"
+    ).getEnumValue(TestEnumObject) as TestEnum;
+    assert.equal(enumValueResult, TestEnumObject.A);
   });
 
   it("Test a null collection of object values", async () => {

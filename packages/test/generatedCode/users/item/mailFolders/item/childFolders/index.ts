@@ -87,7 +87,7 @@ export class ChildFoldersRequestBuilder extends BaseRequestBuilder<ChildFoldersR
         return this.requestAdapter.sendAsync<MailFolderCollectionResponse>(requestInfo, createMailFolderCollectionResponseFromDiscriminatorValue, errorMapping);
     }
     /**
-     * Create a new mailSearchFolder in the specified user's mailbox. This API is available in the following national cloud deployments.
+     * Create a new mailSearchFolder in the specified user's mailbox.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of MailFolder
@@ -115,7 +115,7 @@ export class ChildFoldersRequestBuilder extends BaseRequestBuilder<ChildFoldersR
         return requestInfo;
     }
     /**
-     * Create a new mailSearchFolder in the specified user's mailbox. This API is available in the following national cloud deployments.
+     * Create a new mailSearchFolder in the specified user's mailbox.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation

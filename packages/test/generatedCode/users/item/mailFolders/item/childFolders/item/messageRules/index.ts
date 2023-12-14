@@ -63,7 +63,7 @@ export class MessageRulesRequestBuilder extends BaseRequestBuilder<MessageRulesR
         super(pathParameters, requestAdapter, "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/childFolders/{mailFolder%2Did1}/messageRules{?%24top,%24skip,%24filter,%24count,%24orderby,%24select}", (x, y) => new MessageRulesRequestBuilder(x, y));
     }
     /**
-     * Get all the messageRule objects defined for the user's inbox. This API is available in the following national cloud deployments.
+     * Get all the messageRule objects defined for the user's inbox.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of MessageRuleCollectionResponse
      * @see {@link https://learn.microsoft.com/graph/api/mailfolder-list-messagerules?view=graph-rest-1.0|Find more info here}
@@ -79,7 +79,7 @@ export class MessageRulesRequestBuilder extends BaseRequestBuilder<MessageRulesR
         return this.requestAdapter.sendAsync<MessageRuleCollectionResponse>(requestInfo, createMessageRuleCollectionResponseFromDiscriminatorValue, errorMapping);
     }
     /**
-     * Create a messageRule object by specifying a set of conditions and actions. Outlook carries out those actions if an incoming message in the user's Inbox meets the specified conditions. This API is available in the following national cloud deployments.
+     * Create a messageRule object by specifying a set of conditions and actions. Outlook carries out those actions if an incoming message in the user's Inbox meets the specified conditions.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of MessageRule
@@ -96,7 +96,7 @@ export class MessageRulesRequestBuilder extends BaseRequestBuilder<MessageRulesR
         return this.requestAdapter.sendAsync<MessageRule>(requestInfo, createMessageRuleFromDiscriminatorValue, errorMapping);
     }
     /**
-     * Get all the messageRule objects defined for the user's inbox. This API is available in the following national cloud deployments.
+     * Get all the messageRule objects defined for the user's inbox.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
      */
@@ -107,7 +107,7 @@ export class MessageRulesRequestBuilder extends BaseRequestBuilder<MessageRulesR
         return requestInfo;
     }
     /**
-     * Create a messageRule object by specifying a set of conditions and actions. Outlook carries out those actions if an incoming message in the user's Inbox meets the specified conditions. This API is available in the following national cloud deployments.
+     * Create a messageRule object by specifying a set of conditions and actions. Outlook carries out those actions if an incoming message in the user's Inbox meets the specified conditions.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation

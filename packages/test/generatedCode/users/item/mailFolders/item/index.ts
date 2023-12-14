@@ -53,7 +53,7 @@ export class MailFolderItemRequestBuilder extends BaseRequestBuilder<MailFolderI
         super(pathParameters, requestAdapter, "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}{?includeHiddenFolders,%24select,%24expand}", (x, y) => new MailFolderItemRequestBuilder(x, y));
     }
     /**
-     * Delete the specified mailFolder. The folder can be a mailSearchFolder. You can specify a mail folder by its folder ID, or by its well-known folder name, if one exists. This API is available in the following national cloud deployments.
+     * Delete the specified mailFolder. The folder can be a mailSearchFolder. You can specify a mail folder by its folder ID, or by its well-known folder name, if one exists.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of ArrayBuffer
      * @see {@link https://learn.microsoft.com/graph/api/mailfolder-delete?view=graph-rest-1.0|Find more info here}
@@ -85,11 +85,11 @@ export class MailFolderItemRequestBuilder extends BaseRequestBuilder<MailFolderI
         return this.requestAdapter.sendAsync<MailFolder>(requestInfo, createMailFolderFromDiscriminatorValue, errorMapping);
     }
     /**
-     * Update the writable properties of a mailSearchFolder object. This API is available in the following national cloud deployments.
+     * Update the properties of mailfolder object.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of MailFolder
-     * @see {@link https://learn.microsoft.com/graph/api/mailsearchfolder-update?view=graph-rest-1.0|Find more info here}
+     * @see {@link https://learn.microsoft.com/graph/api/mailfolder-update?view=graph-rest-1.0|Find more info here}
      */
     public patch(body: MailFolder, requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<MailFolder | undefined> {
         const requestInfo = this.toPatchRequestInformation(
@@ -102,7 +102,7 @@ export class MailFolderItemRequestBuilder extends BaseRequestBuilder<MailFolderI
         return this.requestAdapter.sendAsync<MailFolder>(requestInfo, createMailFolderFromDiscriminatorValue, errorMapping);
     }
     /**
-     * Delete the specified mailFolder. The folder can be a mailSearchFolder. You can specify a mail folder by its folder ID, or by its well-known folder name, if one exists. This API is available in the following national cloud deployments.
+     * Delete the specified mailFolder. The folder can be a mailSearchFolder. You can specify a mail folder by its folder ID, or by its well-known folder name, if one exists.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
      */
@@ -124,7 +124,7 @@ export class MailFolderItemRequestBuilder extends BaseRequestBuilder<MailFolderI
         return requestInfo;
     }
     /**
-     * Update the writable properties of a mailSearchFolder object. This API is available in the following national cloud deployments.
+     * Update the properties of mailfolder object.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
