@@ -124,7 +124,7 @@ jobs:
             comment_tag: sample-app-stats
             mode: recreate
         - name: Archive webpack stats
-          uses: actions/upload-artifact@v3
+          uses: actions/upload-artifact@v4
           with:
             name: webpack-stats
             path: packages/sample-app/dist/stats.json
