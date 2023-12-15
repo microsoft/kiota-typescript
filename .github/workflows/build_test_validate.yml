@@ -31,7 +31,7 @@ jobs:
         - name: Archive dist folders # archive dist folders to verify if they are transpiled correctly and available for publishing
           uses: actions/upload-artifact@v4
           with:
-            name: dist folders
+            name: dist folders ${{ matrix.node-version }}
             path: |
               packages/abstractions/dist
               packages/serialization/form/dist
