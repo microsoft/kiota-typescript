@@ -130,6 +130,7 @@ export const MessagesRequestBuilderRequestsMetadata: Record<string, RequestMetad
         responseBodyFactory:  createMessageFromDiscriminatorValue,
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeMessage,
+        requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
 export const MessagesRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/childFolders/{mailFolder%2Did1}/messages{?%24top,%24skip,%24search,%24filter,%24count,%24orderby,%24select,%24expand}";

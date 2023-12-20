@@ -133,6 +133,7 @@ export const MessageItemRequestBuilderRequestsMetadata: Record<string, RequestMe
         responseBodyFactory:  createMessageFromDiscriminatorValue,
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeMessage,
+        requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
 export const MessageItemRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/messages/{message%2Did}{?includeHiddenMessages,%24select,%24expand}";

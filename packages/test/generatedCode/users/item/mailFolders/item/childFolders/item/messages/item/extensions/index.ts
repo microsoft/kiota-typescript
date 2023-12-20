@@ -123,6 +123,7 @@ export const ExtensionsRequestBuilderRequestsMetadata: Record<string, RequestMet
         responseBodyFactory:  createExtensionFromDiscriminatorValue,
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeExtension,
+        requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
 export const ExtensionsRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/childFolders/{mailFolder%2Did1}/messages/{message%2Did}/extensions{?%24top,%24skip,%24filter,%24count,%24orderby,%24select,%24expand}";

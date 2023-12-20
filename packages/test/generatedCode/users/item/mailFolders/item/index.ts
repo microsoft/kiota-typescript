@@ -134,6 +134,7 @@ export const MailFolderItemRequestBuilderRequestsMetadata: Record<string, Reques
         responseBodyFactory:  createMailFolderFromDiscriminatorValue,
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeMailFolder,
+        requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
 export const MailFolderItemRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}{?includeHiddenFolders,%24select,%24expand}";

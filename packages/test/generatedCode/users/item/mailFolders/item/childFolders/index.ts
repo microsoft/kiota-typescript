@@ -129,6 +129,7 @@ export const ChildFoldersRequestBuilderRequestsMetadata: Record<string, RequestM
         responseBodyFactory:  createMailFolderFromDiscriminatorValue,
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeMailFolder,
+        requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
 export const ChildFoldersRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/childFolders{?includeHiddenFolders,%24top,%24skip,%24filter,%24count,%24orderby,%24select,%24expand}";

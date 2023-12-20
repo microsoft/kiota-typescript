@@ -119,6 +119,7 @@ export const MessageRulesRequestBuilderRequestsMetadata: Record<string, RequestM
         responseBodyFactory:  createMessageRuleFromDiscriminatorValue,
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeMessageRule,
+        requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
 export const MessageRulesRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/messageRules{?%24top,%24skip,%24filter,%24count,%24orderby,%24select}";

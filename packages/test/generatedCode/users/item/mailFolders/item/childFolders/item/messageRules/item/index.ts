@@ -93,6 +93,7 @@ export const MessageRuleItemRequestBuilderRequestsMetadata: Record<string, Reque
         responseBodyFactory:  createMessageRuleFromDiscriminatorValue,
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeMessageRule,
+        requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
 export const MessageRuleItemRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/childFolders/{mailFolder%2Did1}/messageRules/{messageRule%2Did}{?%24select}";

@@ -134,6 +134,7 @@ export const MessagesRequestBuilderRequestsMetadata: Record<string, RequestMetad
         responseBodyFactory:  createMessageFromDiscriminatorValue,
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeMessage,
+        requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
 export const MessagesRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/messages{?includeHiddenMessages,%24top,%24skip,%24search,%24filter,%24count,%24orderby,%24select,%24expand}";

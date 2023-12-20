@@ -119,6 +119,7 @@ export const OverridesRequestBuilderRequestsMetadata: Record<string, RequestMeta
         responseBodyFactory:  createInferenceClassificationOverrideFromDiscriminatorValue,
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeInferenceClassificationOverride,
+        requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
 export const OverridesRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/inferenceClassification/overrides{?%24top,%24skip,%24filter,%24count,%24orderby,%24select}";

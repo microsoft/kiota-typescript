@@ -92,6 +92,7 @@ export const InferenceClassificationOverrideItemRequestBuilderRequestsMetadata: 
         responseBodyFactory:  createInferenceClassificationOverrideFromDiscriminatorValue,
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeInferenceClassificationOverride,
+        requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
 export const InferenceClassificationOverrideItemRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/inferenceClassification/overrides/{inferenceClassificationOverride%2Did}{?%24select}";

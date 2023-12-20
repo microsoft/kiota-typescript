@@ -126,6 +126,7 @@ export const MessageItemRequestBuilderRequestsMetadata: Record<string, RequestMe
         responseBodyFactory:  createMessageFromDiscriminatorValue,
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeMessage,
+        requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
 export const MessageItemRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/childFolders/{mailFolder%2Did1}/messages/{message%2Did}{?%24select,%24expand}";

@@ -81,6 +81,7 @@ export const InferenceClassificationRequestBuilderRequestsMetadata: Record<strin
         responseBodyFactory:  createInferenceClassificationFromDiscriminatorValue,
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeInferenceClassification,
+        requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
 export const InferenceClassificationRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/inferenceClassification{?%24select}";

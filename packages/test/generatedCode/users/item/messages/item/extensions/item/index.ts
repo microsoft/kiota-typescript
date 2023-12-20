@@ -97,6 +97,7 @@ export const ExtensionItemRequestBuilderRequestsMetadata: Record<string, Request
         responseBodyFactory:  createExtensionFromDiscriminatorValue,
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeExtension,
+        requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
 export const ExtensionItemRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/messages/{message%2Did}/extensions/{extension%2Did}{?%24select,%24expand}";

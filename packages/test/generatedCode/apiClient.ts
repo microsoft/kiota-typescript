@@ -17,6 +17,10 @@ export interface ApiClient extends BaseRequestBuilder<ApiClient> {
      */
     get users(): UsersRequestBuilder;
 }
+/**
+ * Instantiates a new ApiClient and sets the default values.
+ * @param requestAdapter The request adapter to use to execute the requests.
+ */
 export function newApiClient(requestAdapter: RequestAdapter) {
     registerDefaultSerializer(JsonSerializationWriterFactory);
     registerDefaultSerializer(TextSerializationWriterFactory);

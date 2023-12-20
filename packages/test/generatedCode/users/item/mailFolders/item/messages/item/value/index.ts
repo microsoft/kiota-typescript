@@ -55,6 +55,7 @@ export const ContentRequestBuilderRequestsMetadata: Record<string, RequestMetada
         adapterMethodName: "sendPrimitiveAsync",
         responseBodyFactory:  "ArrayBuffer",
         requestBodyContentType: "application/octet-stream",
+        requestInformationContentSetMethod: "setStreamContent",
     },
 };
 export const ContentRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/messages/{message%2Did}/$value";
