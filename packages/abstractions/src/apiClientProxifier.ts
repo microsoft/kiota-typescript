@@ -6,7 +6,10 @@ import type {
   RequestAdapter,
 } from "./requestAdapter";
 import type { RequestConfiguration } from "./requestConfiguration";
-import { RequestInformation } from "./requestInformation";
+import {
+  RequestInformation,
+  type RequestInformationSetContent,
+} from "./requestInformation";
 import type {
   ModelSerializerFunction,
   Parsable,
@@ -26,8 +29,9 @@ function toRequestInformation<QueryParametersType extends object>(
   metadata: RequestMetadata,
   requestAdapter: RequestAdapter,
   httpMethod: HttpMethod,
-  body?: unknown,
-  requestConfiguration?: RequestConfiguration<QueryParametersType> | undefined,
+  body: unknown | ArrayBuffer | undefined,
+  bodyMediaType: string | undefined,
+  requestConfiguration: RequestConfiguration<QueryParametersType> | undefined,
 ): RequestInformation {
   const requestInfo = new RequestInformation(
     httpMethod,
@@ -36,22 +40,36 @@ function toRequestInformation<QueryParametersType extends object>(
   );
   requestInfo.configure(requestConfiguration, metadata.queryParametersMapper);
   addAcceptHeaderIfPresent(metadata, requestInfo);
-  if (metadata.requestBodyContentType && metadata.requestBodySerializer) {
+  if (metadata.requestBodySerializer) {
     if (!body) throw new Error("body cannot be undefined");
     if (typeof metadata.requestBodySerializer === "function") {
       requestInfo.setContentFromParsable(
         requestAdapter,
-        metadata.requestBodyContentType,
+        metadata.requestBodyContentType
+          ? metadata.requestBodyContentType
+          : bodyMediaType,
         body,
         metadata.requestBodySerializer,
       );
     } else {
       requestInfo.setContentFromScalar(
         requestAdapter,
-        metadata.requestBodyContentType,
+        metadata.requestBodyContentType
+          ? metadata.requestBodyContentType
+          : bodyMediaType,
         body as PrimitiveTypesForDeserializationType,
       );
     }
+  } else if (
+    metadata.requestInformationContentSetMethod === "setStreamContent"
+  ) {
+    if (!body) throw new Error("body cannot be undefined");
+    requestInfo.setStreamContent(
+      body as ArrayBuffer,
+      metadata.requestBodyContentType
+        ? metadata.requestBodyContentType
+        : bodyMediaType,
+    );
   }
   return requestInfo;
 }
@@ -63,14 +81,24 @@ function addAcceptHeaderIfPresent(
     requestInfo.headers.tryAdd("Accept", metadata.responseBodyContentType);
   }
 }
-function getRequestConfigurationValue(
+function getRequestMediaTypeUserDefinedValue(
   requestMetadata: RequestMetadata,
   args: any[],
 ) {
-  if (args.length > 1 && requestMetadata.requestBodySerializer) {
+  if (
+    args.length > 2 &&
+    !requestMetadata.requestBodySerializer &&
+    requestMetadata.requestInformationContentSetMethod === "setStreamContent"
+  ) {
+    // request body with unknown media type so we have an argument for it.
     return args[1];
-  } else if (args.length > 0 && !requestMetadata.requestBodySerializer) {
-    return args[0];
+  }
+  return undefined;
+}
+function getRequestConfigurationValue(args: any[]) {
+  if (args.length > 0) {
+    // request configuration is always the last argument
+    return args[args.length - 1];
   }
   return undefined;
 }
@@ -168,6 +196,7 @@ export function apiClientProxifier<T extends object>(
                   requestAdapter,
                   HttpMethod.GET,
                   undefined,
+                  undefined,
                   requestConfiguration,
                 );
                 return sendAsync(requestAdapter, requestInfo, metadata);
@@ -181,7 +210,8 @@ export function apiClientProxifier<T extends object>(
                   requestAdapter,
                   HttpMethod.PATCH,
                   args.length > 0 ? args[0] : undefined,
-                  getRequestConfigurationValue(metadata, args),
+                  getRequestMediaTypeUserDefinedValue(metadata, args),
+                  getRequestConfigurationValue(args),
                 );
                 return sendAsync(requestAdapter, requestInfo, metadata);
               };
@@ -194,7 +224,8 @@ export function apiClientProxifier<T extends object>(
                   requestAdapter,
                   HttpMethod.PUT,
                   args.length > 0 ? args[0] : undefined,
-                  getRequestConfigurationValue(metadata, args),
+                  getRequestMediaTypeUserDefinedValue(metadata, args),
+                  getRequestConfigurationValue(args),
                 );
                 return sendAsync(requestAdapter, requestInfo, metadata);
               };
@@ -207,7 +238,8 @@ export function apiClientProxifier<T extends object>(
                   requestAdapter,
                   HttpMethod.DELETE,
                   args.length > 0 ? args[0] : undefined,
-                  getRequestConfigurationValue(metadata, args),
+                  getRequestMediaTypeUserDefinedValue(metadata, args),
+                  getRequestConfigurationValue(args),
                 );
                 return sendAsync(requestAdapter, requestInfo, metadata);
               };
@@ -220,7 +252,8 @@ export function apiClientProxifier<T extends object>(
                   requestAdapter,
                   HttpMethod.POST,
                   args.length > 0 ? args[0] : undefined,
-                  getRequestConfigurationValue(metadata, args),
+                  getRequestMediaTypeUserDefinedValue(metadata, args),
+                  getRequestConfigurationValue(args),
                 );
                 return sendAsync(requestAdapter, requestInfo, metadata);
               };
@@ -232,6 +265,7 @@ export function apiClientProxifier<T extends object>(
                   metadata,
                   requestAdapter,
                   HttpMethod.GET,
+                  undefined,
                   undefined,
                   requestConfiguration,
                 );
@@ -245,7 +279,8 @@ export function apiClientProxifier<T extends object>(
                   requestAdapter,
                   HttpMethod.PATCH,
                   args.length > 0 ? args[0] : undefined,
-                  getRequestConfigurationValue(metadata, args),
+                  getRequestMediaTypeUserDefinedValue(metadata, args),
+                  getRequestConfigurationValue(args),
                 );
               };
             case "toPutRequestInformation":
@@ -257,7 +292,8 @@ export function apiClientProxifier<T extends object>(
                   requestAdapter,
                   HttpMethod.PUT,
                   args.length > 0 ? args[0] : undefined,
-                  getRequestConfigurationValue(metadata, args),
+                  getRequestMediaTypeUserDefinedValue(metadata, args),
+                  getRequestConfigurationValue(args),
                 );
               };
             case "toDeleteRequestInformation":
@@ -269,7 +305,8 @@ export function apiClientProxifier<T extends object>(
                   requestAdapter,
                   HttpMethod.DELETE,
                   args.length > 0 ? args[0] : undefined,
-                  getRequestConfigurationValue(metadata, args),
+                  getRequestMediaTypeUserDefinedValue(metadata, args),
+                  getRequestConfigurationValue(args),
                 );
               };
             case "toPostRequestInformation":
@@ -281,7 +318,8 @@ export function apiClientProxifier<T extends object>(
                   requestAdapter,
                   HttpMethod.POST,
                   args.length > 0 ? args[0] : undefined,
-                  getRequestConfigurationValue(metadata, args),
+                  getRequestMediaTypeUserDefinedValue(metadata, args),
+                  getRequestConfigurationValue(args),
                 );
               };
             default:
@@ -349,6 +387,7 @@ export interface RequestMetadata {
   requestBodySerializer?:
     | ModelSerializerFunction<Parsable>
     | PrimitiveTypesForDeserialization;
+  requestInformationContentSetMethod?: keyof RequestInformationSetContent;
   queryParametersMapper?: Record<string, string>;
 }
 
