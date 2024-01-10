@@ -15,7 +15,6 @@ export function isLocalhostUrl(urlString: string) {
         const url = new URL(urlString);
         return localhostStrings.has(url.hostname);
     } catch (e) {
-        console.error(e);
         return false;
     }
 }

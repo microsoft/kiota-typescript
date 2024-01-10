@@ -1,5 +1,4 @@
-import { validateProtocol, isLocalhostUrl } from '../../../src/authentication'; // replace with your actual module
-
+import { validateProtocol, isLocalhostUrl } from '../../../src/authentication';
 import { expect } from "chai";
 
 describe('validateProtocol', () => {
@@ -13,6 +12,7 @@ describe('validateProtocol', () => {
 
     it('should not throw an error for localhost URLs', () => {
         expect(() => validateProtocol('http://localhost')).to.not.throw();
+        expect(() => validateProtocol('HTTP://LOCALHOST')).to.not.throw();
         expect(() => validateProtocol('http://127.0.0.1')).to.not.throw();
         expect(() => validateProtocol('http://[::1]')).to.not.throw();
     });
