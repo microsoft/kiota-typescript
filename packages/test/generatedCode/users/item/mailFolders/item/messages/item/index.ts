@@ -76,10 +76,16 @@ export interface MessageItemRequestBuilderGetQueryParameters {
      */
     select?: string[];
 }
+/**
+ * Mapper for query parameters from symbol name to serialization name represented as a constant.
+ */
 const MessageItemRequestBuilderGetQueryParametersMapper: Record<string, string> = {
     "expand": "%24expand",
     "select": "%24select",
 };
+/**
+ * Metadata for all the navigation properties in the request builder.
+ */
 export const MessageItemRequestBuilderNavigationMetadata: Record<Exclude<keyof MessageItemRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     "attachments": {
         uriTemplate: AttachmentsRequestBuilderUriTemplate,
@@ -96,6 +102,9 @@ export const MessageItemRequestBuilderNavigationMetadata: Record<Exclude<keyof M
         navigationMetadata: ExtensionsRequestBuilderNavigationMetadata,
     },
 };
+/**
+ * Metadata for all the requests in the request builder.
+ */
 export const MessageItemRequestBuilderRequestsMetadata: Record<string, RequestMetadata> = {
     "delete": {
         responseBodyContentType: "application/json",
@@ -129,6 +138,9 @@ export const MessageItemRequestBuilderRequestsMetadata: Record<string, RequestMe
         requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
+/**
+ * Uri template for the request builder.
+ */
 export const MessageItemRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/messages/{message%2Did}{?%24select,%24expand}";
 /* tslint:enable */
 /* eslint-enable */

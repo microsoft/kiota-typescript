@@ -82,6 +82,9 @@ export interface ExtensionsRequestBuilderGetQueryParameters {
      */
     top?: number;
 }
+/**
+ * Mapper for query parameters from symbol name to serialization name represented as a constant.
+ */
 const ExtensionsRequestBuilderGetQueryParametersMapper: Record<string, string> = {
     "count": "%24count",
     "expand": "%24expand",
@@ -91,6 +94,9 @@ const ExtensionsRequestBuilderGetQueryParametersMapper: Record<string, string> =
     "skip": "%24skip",
     "top": "%24top",
 };
+/**
+ * Metadata for all the navigation properties in the request builder.
+ */
 export const ExtensionsRequestBuilderNavigationMetadata: Record<Exclude<keyof ExtensionsRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     "byExtensionId": {
         uriTemplate: ExtensionItemRequestBuilderUriTemplate,
@@ -102,6 +108,9 @@ export const ExtensionsRequestBuilderNavigationMetadata: Record<Exclude<keyof Ex
         requestsMetadata: CountRequestBuilderRequestsMetadata,
     },
 };
+/**
+ * Metadata for all the requests in the request builder.
+ */
 export const ExtensionsRequestBuilderRequestsMetadata: Record<string, RequestMetadata> = {
     "get": {
         responseBodyContentType: "application/json",
@@ -126,6 +135,9 @@ export const ExtensionsRequestBuilderRequestsMetadata: Record<string, RequestMet
         requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
+/**
+ * Uri template for the request builder.
+ */
 export const ExtensionsRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/childFolders/{mailFolder%2Did1}/messages/{message%2Did}/extensions{?%24top,%24skip,%24filter,%24count,%24orderby,%24select,%24expand}";
 /* tslint:enable */
 /* eslint-enable */

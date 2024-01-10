@@ -87,6 +87,9 @@ export interface ChildFoldersRequestBuilderGetQueryParameters {
      */
     top?: number;
 }
+/**
+ * Mapper for query parameters from symbol name to serialization name represented as a constant.
+ */
 const ChildFoldersRequestBuilderGetQueryParametersMapper: Record<string, string> = {
     "count": "%24count",
     "expand": "%24expand",
@@ -96,6 +99,9 @@ const ChildFoldersRequestBuilderGetQueryParametersMapper: Record<string, string>
     "skip": "%24skip",
     "top": "%24top",
 };
+/**
+ * Metadata for all the navigation properties in the request builder.
+ */
 export const ChildFoldersRequestBuilderNavigationMetadata: Record<Exclude<keyof ChildFoldersRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     "byMailFolderId1": {
         uriTemplate: MailFolderItemRequestBuilderUriTemplate,
@@ -108,6 +114,9 @@ export const ChildFoldersRequestBuilderNavigationMetadata: Record<Exclude<keyof 
         requestsMetadata: CountRequestBuilderRequestsMetadata,
     },
 };
+/**
+ * Metadata for all the requests in the request builder.
+ */
 export const ChildFoldersRequestBuilderRequestsMetadata: Record<string, RequestMetadata> = {
     "get": {
         responseBodyContentType: "application/json",
@@ -132,6 +141,9 @@ export const ChildFoldersRequestBuilderRequestsMetadata: Record<string, RequestM
         requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
+/**
+ * Uri template for the request builder.
+ */
 export const ChildFoldersRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/childFolders{?includeHiddenFolders,%24top,%24skip,%24filter,%24count,%24orderby,%24select,%24expand}";
 /* tslint:enable */
 /* eslint-enable */

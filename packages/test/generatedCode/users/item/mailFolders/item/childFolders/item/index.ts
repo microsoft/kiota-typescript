@@ -75,10 +75,16 @@ export interface MailFolderItemRequestBuilderGetQueryParameters {
      */
     select?: string[];
 }
+/**
+ * Mapper for query parameters from symbol name to serialization name represented as a constant.
+ */
 const MailFolderItemRequestBuilderGetQueryParametersMapper: Record<string, string> = {
     "expand": "%24expand",
     "select": "%24select",
 };
+/**
+ * Metadata for all the navigation properties in the request builder.
+ */
 export const MailFolderItemRequestBuilderNavigationMetadata: Record<Exclude<keyof MailFolderItemRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     "messageRules": {
         uriTemplate: MessageRulesRequestBuilderUriTemplate,
@@ -91,6 +97,9 @@ export const MailFolderItemRequestBuilderNavigationMetadata: Record<Exclude<keyo
         navigationMetadata: MessagesRequestBuilderNavigationMetadata,
     },
 };
+/**
+ * Metadata for all the requests in the request builder.
+ */
 export const MailFolderItemRequestBuilderRequestsMetadata: Record<string, RequestMetadata> = {
     "delete": {
         responseBodyContentType: "application/json",
@@ -124,6 +133,9 @@ export const MailFolderItemRequestBuilderRequestsMetadata: Record<string, Reques
         requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
+/**
+ * Uri template for the request builder.
+ */
 export const MailFolderItemRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/childFolders/{mailFolder%2Did1}{?includeHiddenFolders,%24select,%24expand}";
 /* tslint:enable */
 /* eslint-enable */

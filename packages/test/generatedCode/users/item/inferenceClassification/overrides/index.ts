@@ -79,6 +79,9 @@ export interface OverridesRequestBuilderGetQueryParameters {
      */
     top?: number;
 }
+/**
+ * Mapper for query parameters from symbol name to serialization name represented as a constant.
+ */
 const OverridesRequestBuilderGetQueryParametersMapper: Record<string, string> = {
     "count": "%24count",
     "filter": "%24filter",
@@ -87,6 +90,9 @@ const OverridesRequestBuilderGetQueryParametersMapper: Record<string, string> = 
     "skip": "%24skip",
     "top": "%24top",
 };
+/**
+ * Metadata for all the navigation properties in the request builder.
+ */
 export const OverridesRequestBuilderNavigationMetadata: Record<Exclude<keyof OverridesRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     "byInferenceClassificationOverrideId": {
         uriTemplate: InferenceClassificationOverrideItemRequestBuilderUriTemplate,
@@ -98,6 +104,9 @@ export const OverridesRequestBuilderNavigationMetadata: Record<Exclude<keyof Ove
         requestsMetadata: CountRequestBuilderRequestsMetadata,
     },
 };
+/**
+ * Metadata for all the requests in the request builder.
+ */
 export const OverridesRequestBuilderRequestsMetadata: Record<string, RequestMetadata> = {
     "get": {
         responseBodyContentType: "application/json",
@@ -122,6 +131,9 @@ export const OverridesRequestBuilderRequestsMetadata: Record<string, RequestMeta
         requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
+/**
+ * Uri template for the request builder.
+ */
 export const OverridesRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/inferenceClassification/overrides{?%24top,%24skip,%24filter,%24count,%24orderby,%24select}";
 /* tslint:enable */
 /* eslint-enable */

@@ -50,9 +50,15 @@ export interface InferenceClassificationRequestBuilderGetQueryParameters {
      */
     select?: string[];
 }
+/**
+ * Mapper for query parameters from symbol name to serialization name represented as a constant.
+ */
 const InferenceClassificationRequestBuilderGetQueryParametersMapper: Record<string, string> = {
     "select": "%24select",
 };
+/**
+ * Metadata for all the navigation properties in the request builder.
+ */
 export const InferenceClassificationRequestBuilderNavigationMetadata: Record<Exclude<keyof InferenceClassificationRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     "overrides": {
         uriTemplate: OverridesRequestBuilderUriTemplate,
@@ -60,6 +66,9 @@ export const InferenceClassificationRequestBuilderNavigationMetadata: Record<Exc
         navigationMetadata: OverridesRequestBuilderNavigationMetadata,
     },
 };
+/**
+ * Metadata for all the requests in the request builder.
+ */
 export const InferenceClassificationRequestBuilderRequestsMetadata: Record<string, RequestMetadata> = {
     "get": {
         responseBodyContentType: "application/json",
@@ -84,6 +93,9 @@ export const InferenceClassificationRequestBuilderRequestsMetadata: Record<strin
         requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
+/**
+ * Uri template for the request builder.
+ */
 export const InferenceClassificationRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/inferenceClassification{?%24select}";
 /* tslint:enable */
 /* eslint-enable */

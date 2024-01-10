@@ -75,6 +75,9 @@ export interface AttachmentsRequestBuilderGetQueryParameters {
      */
     select?: string[];
 }
+/**
+ * Mapper for query parameters from symbol name to serialization name represented as a constant.
+ */
 const AttachmentsRequestBuilderGetQueryParametersMapper: Record<string, string> = {
     "count": "%24count",
     "expand": "%24expand",
@@ -82,6 +85,9 @@ const AttachmentsRequestBuilderGetQueryParametersMapper: Record<string, string> 
     "orderby": "%24orderby",
     "select": "%24select",
 };
+/**
+ * Metadata for all the navigation properties in the request builder.
+ */
 export const AttachmentsRequestBuilderNavigationMetadata: Record<Exclude<keyof AttachmentsRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     "byAttachmentId": {
         uriTemplate: AttachmentItemRequestBuilderUriTemplate,
@@ -93,6 +99,9 @@ export const AttachmentsRequestBuilderNavigationMetadata: Record<Exclude<keyof A
         requestsMetadata: CountRequestBuilderRequestsMetadata,
     },
 };
+/**
+ * Metadata for all the requests in the request builder.
+ */
 export const AttachmentsRequestBuilderRequestsMetadata: Record<string, RequestMetadata> = {
     "get": {
         responseBodyContentType: "application/json",
@@ -117,6 +126,9 @@ export const AttachmentsRequestBuilderRequestsMetadata: Record<string, RequestMe
         requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
+/**
+ * Uri template for the request builder.
+ */
 export const AttachmentsRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/childFolders/{mailFolder%2Did1}/messages/{message%2Did}/attachments{?%24filter,%24count,%24orderby,%24select,%24expand}";
 /* tslint:enable */
 /* eslint-enable */

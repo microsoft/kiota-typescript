@@ -87,6 +87,9 @@ export interface MessagesRequestBuilderGetQueryParameters {
      */
     top?: number;
 }
+/**
+ * Mapper for query parameters from symbol name to serialization name represented as a constant.
+ */
 const MessagesRequestBuilderGetQueryParametersMapper: Record<string, string> = {
     "count": "%24count",
     "expand": "%24expand",
@@ -97,6 +100,9 @@ const MessagesRequestBuilderGetQueryParametersMapper: Record<string, string> = {
     "skip": "%24skip",
     "top": "%24top",
 };
+/**
+ * Metadata for all the navigation properties in the request builder.
+ */
 export const MessagesRequestBuilderNavigationMetadata: Record<Exclude<keyof MessagesRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
     "byMessageId": {
         uriTemplate: MessageItemRequestBuilderUriTemplate,
@@ -109,6 +115,9 @@ export const MessagesRequestBuilderNavigationMetadata: Record<Exclude<keyof Mess
         requestsMetadata: CountRequestBuilderRequestsMetadata,
     },
 };
+/**
+ * Metadata for all the requests in the request builder.
+ */
 export const MessagesRequestBuilderRequestsMetadata: Record<string, RequestMetadata> = {
     "get": {
         responseBodyContentType: "application/json",
@@ -133,6 +142,9 @@ export const MessagesRequestBuilderRequestsMetadata: Record<string, RequestMetad
         requestInformationContentSetMethod: "setContentFromParsable",
     },
 };
+/**
+ * Uri template for the request builder.
+ */
 export const MessagesRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/messages{?%24top,%24skip,%24search,%24filter,%24count,%24orderby,%24select,%24expand}";
 /* tslint:enable */
 /* eslint-enable */
