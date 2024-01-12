@@ -6,7 +6,7 @@ import { createODataErrorFromDiscriminatorValue, type ODataError } from '../../.
 import { AttachmentsRequestBuilderNavigationMetadata, AttachmentsRequestBuilderRequestsMetadata, AttachmentsRequestBuilderUriTemplate, type AttachmentsRequestBuilder } from './attachments/';
 import { ExtensionsRequestBuilderNavigationMetadata, ExtensionsRequestBuilderRequestsMetadata, ExtensionsRequestBuilderUriTemplate, type ExtensionsRequestBuilder } from './extensions/';
 import { ContentRequestBuilderRequestsMetadata, ContentRequestBuilderUriTemplate, type ContentRequestBuilder } from './value/';
-import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestMetadata } from '@microsoft/kiota-abstractions';
+import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/messages/{message-id}
@@ -112,8 +112,8 @@ export const MessageItemRequestBuilderNavigationMetadata: Record<Exclude<keyof M
 /**
  * Metadata for all the requests in the request builder.
  */
-export const MessageItemRequestBuilderRequestsMetadata: Record<string, RequestMetadata> = {
-    "delete": {
+export const MessageItemRequestBuilderRequestsMetadata: RequestsMetadata = {
+    delete: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,
@@ -122,7 +122,7 @@ export const MessageItemRequestBuilderRequestsMetadata: Record<string, RequestMe
         adapterMethodName: "sendPrimitiveAsync",
         responseBodyFactory:  "ArrayBuffer",
     },
-    "get": {
+    get: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,
@@ -132,7 +132,7 @@ export const MessageItemRequestBuilderRequestsMetadata: Record<string, RequestMe
         responseBodyFactory:  createMessageFromDiscriminatorValue,
         queryParametersMapper: MessageItemRequestBuilderGetQueryParametersMapper,
     },
-    "patch": {
+    patch: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,

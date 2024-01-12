@@ -5,7 +5,7 @@ import { createExtensionCollectionResponseFromDiscriminatorValue, createExtensio
 import { createODataErrorFromDiscriminatorValue, type ODataError } from '../../../../../models/oDataErrors/';
 import { CountRequestBuilderRequestsMetadata, CountRequestBuilderUriTemplate, type CountRequestBuilder } from './count/';
 import { ExtensionItemRequestBuilderRequestsMetadata, ExtensionItemRequestBuilderUriTemplate, type ExtensionItemRequestBuilder } from './item/';
-import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestMetadata } from '@microsoft/kiota-abstractions';
+import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/messages/{message-id}/extensions
@@ -111,8 +111,8 @@ export const ExtensionsRequestBuilderNavigationMetadata: Record<Exclude<keyof Ex
 /**
  * Metadata for all the requests in the request builder.
  */
-export const ExtensionsRequestBuilderRequestsMetadata: Record<string, RequestMetadata> = {
-    "get": {
+export const ExtensionsRequestBuilderRequestsMetadata: RequestsMetadata = {
+    get: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,
@@ -122,7 +122,7 @@ export const ExtensionsRequestBuilderRequestsMetadata: Record<string, RequestMet
         responseBodyFactory:  createExtensionCollectionResponseFromDiscriminatorValue,
         queryParametersMapper: ExtensionsRequestBuilderGetQueryParametersMapper,
     },
-    "post": {
+    post: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,

@@ -5,7 +5,7 @@ import { createMessageRuleCollectionResponseFromDiscriminatorValue, createMessag
 import { createODataErrorFromDiscriminatorValue, type ODataError } from '../../../../../models/oDataErrors/';
 import { CountRequestBuilderRequestsMetadata, CountRequestBuilderUriTemplate, type CountRequestBuilder } from './count/';
 import { MessageRuleItemRequestBuilderRequestsMetadata, MessageRuleItemRequestBuilderUriTemplate, type MessageRuleItemRequestBuilder } from './item/';
-import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestMetadata } from '@microsoft/kiota-abstractions';
+import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/mailFolders/{mailFolder-id}/messageRules
@@ -107,8 +107,8 @@ export const MessageRulesRequestBuilderNavigationMetadata: Record<Exclude<keyof 
 /**
  * Metadata for all the requests in the request builder.
  */
-export const MessageRulesRequestBuilderRequestsMetadata: Record<string, RequestMetadata> = {
-    "get": {
+export const MessageRulesRequestBuilderRequestsMetadata: RequestsMetadata = {
+    get: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,
@@ -118,7 +118,7 @@ export const MessageRulesRequestBuilderRequestsMetadata: Record<string, RequestM
         responseBodyFactory:  createMessageRuleCollectionResponseFromDiscriminatorValue,
         queryParametersMapper: MessageRulesRequestBuilderGetQueryParametersMapper,
     },
-    "post": {
+    post: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,

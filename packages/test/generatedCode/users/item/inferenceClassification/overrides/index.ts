@@ -5,7 +5,7 @@ import { createInferenceClassificationOverrideCollectionResponseFromDiscriminato
 import { createODataErrorFromDiscriminatorValue, type ODataError } from '../../../../models/oDataErrors/';
 import { CountRequestBuilderRequestsMetadata, CountRequestBuilderUriTemplate, type CountRequestBuilder } from './count/';
 import { InferenceClassificationOverrideItemRequestBuilderRequestsMetadata, InferenceClassificationOverrideItemRequestBuilderUriTemplate, type InferenceClassificationOverrideItemRequestBuilder } from './item/';
-import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestMetadata } from '@microsoft/kiota-abstractions';
+import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/inferenceClassification/overrides
@@ -107,8 +107,8 @@ export const OverridesRequestBuilderNavigationMetadata: Record<Exclude<keyof Ove
 /**
  * Metadata for all the requests in the request builder.
  */
-export const OverridesRequestBuilderRequestsMetadata: Record<string, RequestMetadata> = {
-    "get": {
+export const OverridesRequestBuilderRequestsMetadata: RequestsMetadata = {
+    get: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,
@@ -118,7 +118,7 @@ export const OverridesRequestBuilderRequestsMetadata: Record<string, RequestMeta
         responseBodyFactory:  createInferenceClassificationOverrideCollectionResponseFromDiscriminatorValue,
         queryParametersMapper: OverridesRequestBuilderGetQueryParametersMapper,
     },
-    "post": {
+    post: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,

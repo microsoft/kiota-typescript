@@ -15,12 +15,34 @@ import type {
   Parsable,
   ParsableFactory,
 } from "./serialization";
-
-function getRequestMetadata(key: string): string {
-  if (key.startsWith("to")) {
-    return key.substring(2).replace("RequestInformation", "").toLowerCase();
+function sanitizeMethodName(methodName: string): string {
+  if (methodName.startsWith("to")) {
+    return methodName
+      .substring(2)
+      .replace("RequestInformation", "")
+      .toLowerCase();
   }
-  return key;
+  return methodName;
+}
+function getRequestMethod(key: string): keyof RequestsMetadata {
+  switch (sanitizeMethodName(key)) {
+    case "delete":
+      return "delete";
+    case "get":
+      return "get";
+    case "head":
+      return "head";
+    case "options":
+      return "options";
+    case "patch":
+      return "patch";
+    case "post":
+      return "post";
+    case "put":
+      return "put";
+    default:
+      throw new Error(`couldn't find request method for ${key}`);
+  }
 }
 
 function toRequestInformation<QueryParametersType extends object>(
@@ -161,7 +183,7 @@ export function apiClientProxifier<T extends object>(
   pathParameters: Record<string, unknown>,
   urlTemplate: string,
   navigationMetadata?: Record<string, NavigationMetadata>,
-  requestsMetadata?: Record<string, RequestMetadata>,
+  requestsMetadata?: RequestsMetadata,
 ): T {
   if (!requestAdapter) throw new Error("requestAdapter cannot be undefined");
   if (!pathParameters) throw new Error("pathParameters cannot be undefined");
@@ -182,7 +204,7 @@ export function apiClientProxifier<T extends object>(
         };
       }
       if (requestsMetadata) {
-        const metadata = requestsMetadata[getRequestMetadata(name)];
+        const metadata = requestsMetadata[getRequestMethod(name)];
         if (metadata) {
           switch (name) {
             case "get":
@@ -390,10 +412,19 @@ export interface RequestMetadata {
   requestInformationContentSetMethod?: keyof RequestInformationSetContent;
   queryParametersMapper?: Record<string, string>;
 }
+export interface RequestsMetadata {
+  delete?: RequestMetadata;
+  get?: RequestMetadata;
+  head?: RequestMetadata;
+  options?: RequestMetadata;
+  patch?: RequestMetadata;
+  post?: RequestMetadata;
+  put?: RequestMetadata;
+}
 
 export interface NavigationMetadata {
   uriTemplate: string;
-  requestsMetadata?: Record<string, RequestMetadata>;
+  requestsMetadata?: RequestsMetadata;
   navigationMetadata?: Record<string, NavigationMetadata>;
   pathParametersMappings?: string[];
 }

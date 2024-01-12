@@ -5,7 +5,7 @@ import { createMailFolderFromDiscriminatorValue, serializeMailFolder, type MailF
 import { createODataErrorFromDiscriminatorValue, type ODataError } from '../../../../../../models/oDataErrors/';
 import { MessageRulesRequestBuilderNavigationMetadata, MessageRulesRequestBuilderRequestsMetadata, MessageRulesRequestBuilderUriTemplate, type MessageRulesRequestBuilder } from './messageRules/';
 import { MessagesRequestBuilderNavigationMetadata, MessagesRequestBuilderRequestsMetadata, MessagesRequestBuilderUriTemplate, type MessagesRequestBuilder } from './messages/';
-import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestMetadata } from '@microsoft/kiota-abstractions';
+import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/mailFolders/{mailFolder-id}/childFolders/{mailFolder-id1}
@@ -100,8 +100,8 @@ export const MailFolderItemRequestBuilderNavigationMetadata: Record<Exclude<keyo
 /**
  * Metadata for all the requests in the request builder.
  */
-export const MailFolderItemRequestBuilderRequestsMetadata: Record<string, RequestMetadata> = {
-    "delete": {
+export const MailFolderItemRequestBuilderRequestsMetadata: RequestsMetadata = {
+    delete: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,
@@ -110,7 +110,7 @@ export const MailFolderItemRequestBuilderRequestsMetadata: Record<string, Reques
         adapterMethodName: "sendPrimitiveAsync",
         responseBodyFactory:  "ArrayBuffer",
     },
-    "get": {
+    get: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,
@@ -120,7 +120,7 @@ export const MailFolderItemRequestBuilderRequestsMetadata: Record<string, Reques
         responseBodyFactory:  createMailFolderFromDiscriminatorValue,
         queryParametersMapper: MailFolderItemRequestBuilderGetQueryParametersMapper,
     },
-    "patch": {
+    patch: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,

@@ -4,7 +4,7 @@
 import { createInferenceClassificationFromDiscriminatorValue, serializeInferenceClassification, type InferenceClassification } from '../../../models/';
 import { createODataErrorFromDiscriminatorValue, type ODataError } from '../../../models/oDataErrors/';
 import { OverridesRequestBuilderNavigationMetadata, OverridesRequestBuilderRequestsMetadata, OverridesRequestBuilderUriTemplate, type OverridesRequestBuilder } from './overrides/';
-import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestMetadata } from '@microsoft/kiota-abstractions';
+import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/inferenceClassification
@@ -69,8 +69,8 @@ export const InferenceClassificationRequestBuilderNavigationMetadata: Record<Exc
 /**
  * Metadata for all the requests in the request builder.
  */
-export const InferenceClassificationRequestBuilderRequestsMetadata: Record<string, RequestMetadata> = {
-    "get": {
+export const InferenceClassificationRequestBuilderRequestsMetadata: RequestsMetadata = {
+    get: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,
@@ -80,7 +80,7 @@ export const InferenceClassificationRequestBuilderRequestsMetadata: Record<strin
         responseBodyFactory:  createInferenceClassificationFromDiscriminatorValue,
         queryParametersMapper: InferenceClassificationRequestBuilderGetQueryParametersMapper,
     },
-    "patch": {
+    patch: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,

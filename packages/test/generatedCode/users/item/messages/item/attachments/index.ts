@@ -5,7 +5,7 @@ import { createAttachmentCollectionResponseFromDiscriminatorValue, createAttachm
 import { createODataErrorFromDiscriminatorValue, type ODataError } from '../../../../../models/oDataErrors/';
 import { CountRequestBuilderRequestsMetadata, CountRequestBuilderUriTemplate, type CountRequestBuilder } from './count/';
 import { AttachmentItemRequestBuilderRequestsMetadata, AttachmentItemRequestBuilderUriTemplate, type AttachmentItemRequestBuilder } from './item/';
-import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestMetadata } from '@microsoft/kiota-abstractions';
+import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/messages/{message-id}/attachments
@@ -102,8 +102,8 @@ export const AttachmentsRequestBuilderNavigationMetadata: Record<Exclude<keyof A
 /**
  * Metadata for all the requests in the request builder.
  */
-export const AttachmentsRequestBuilderRequestsMetadata: Record<string, RequestMetadata> = {
-    "get": {
+export const AttachmentsRequestBuilderRequestsMetadata: RequestsMetadata = {
+    get: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,
@@ -113,7 +113,7 @@ export const AttachmentsRequestBuilderRequestsMetadata: Record<string, RequestMe
         responseBodyFactory:  createAttachmentCollectionResponseFromDiscriminatorValue,
         queryParametersMapper: AttachmentsRequestBuilderGetQueryParametersMapper,
     },
-    "post": {
+    post: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,

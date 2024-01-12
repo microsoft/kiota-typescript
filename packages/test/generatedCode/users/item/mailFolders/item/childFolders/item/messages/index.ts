@@ -5,7 +5,7 @@ import { createMessageCollectionResponseFromDiscriminatorValue, createMessageFro
 import { createODataErrorFromDiscriminatorValue, type ODataError } from '../../../../../../../models/oDataErrors/';
 import { CountRequestBuilderRequestsMetadata, CountRequestBuilderUriTemplate, type CountRequestBuilder } from './count/';
 import { MessageItemRequestBuilderNavigationMetadata, MessageItemRequestBuilderRequestsMetadata, MessageItemRequestBuilderUriTemplate, type MessageItemRequestBuilder } from './item/';
-import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestMetadata } from '@microsoft/kiota-abstractions';
+import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/mailFolders/{mailFolder-id}/childFolders/{mailFolder-id1}/messages
@@ -118,8 +118,8 @@ export const MessagesRequestBuilderNavigationMetadata: Record<Exclude<keyof Mess
 /**
  * Metadata for all the requests in the request builder.
  */
-export const MessagesRequestBuilderRequestsMetadata: Record<string, RequestMetadata> = {
-    "get": {
+export const MessagesRequestBuilderRequestsMetadata: RequestsMetadata = {
+    get: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,
@@ -129,7 +129,7 @@ export const MessagesRequestBuilderRequestsMetadata: Record<string, RequestMetad
         responseBodyFactory:  createMessageCollectionResponseFromDiscriminatorValue,
         queryParametersMapper: MessagesRequestBuilderGetQueryParametersMapper,
     },
-    "post": {
+    post: {
         responseBodyContentType: "application/json",
         errorMappings: {
             "4XX": createODataErrorFromDiscriminatorValue,
