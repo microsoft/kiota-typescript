@@ -60,7 +60,7 @@ const InferenceClassificationRequestBuilderGetQueryParametersMapper: Record<stri
  * Metadata for all the navigation properties in the request builder.
  */
 export const InferenceClassificationRequestBuilderNavigationMetadata: Record<Exclude<keyof InferenceClassificationRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
-    "overrides": {
+    overrides: {
         uriTemplate: OverridesRequestBuilderUriTemplate,
         requestsMetadata: OverridesRequestBuilderRequestsMetadata,
         navigationMetadata: OverridesRequestBuilderNavigationMetadata,

@@ -89,12 +89,12 @@ const AttachmentsRequestBuilderGetQueryParametersMapper: Record<string, string> 
  * Metadata for all the navigation properties in the request builder.
  */
 export const AttachmentsRequestBuilderNavigationMetadata: Record<Exclude<keyof AttachmentsRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
-    "byAttachmentId": {
+    byAttachmentId: {
         uriTemplate: AttachmentItemRequestBuilderUriTemplate,
         requestsMetadata: AttachmentItemRequestBuilderRequestsMetadata,
         pathParametersMappings: ["attachment%2Did"],
     },
-    "count": {
+    count: {
         uriTemplate: CountRequestBuilderUriTemplate,
         requestsMetadata: CountRequestBuilderRequestsMetadata,
     },

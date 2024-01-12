@@ -104,13 +104,13 @@ const MessagesRequestBuilderGetQueryParametersMapper: Record<string, string> = {
  * Metadata for all the navigation properties in the request builder.
  */
 export const MessagesRequestBuilderNavigationMetadata: Record<Exclude<keyof MessagesRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
-    "byMessageId": {
+    byMessageId: {
         uriTemplate: MessageItemRequestBuilderUriTemplate,
         requestsMetadata: MessageItemRequestBuilderRequestsMetadata,
         navigationMetadata: MessageItemRequestBuilderNavigationMetadata,
         pathParametersMappings: ["message%2Did"],
     },
-    "count": {
+    count: {
         uriTemplate: CountRequestBuilderUriTemplate,
         requestsMetadata: CountRequestBuilderRequestsMetadata,
     },

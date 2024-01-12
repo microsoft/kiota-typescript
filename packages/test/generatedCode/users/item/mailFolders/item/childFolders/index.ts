@@ -103,13 +103,13 @@ const ChildFoldersRequestBuilderGetQueryParametersMapper: Record<string, string>
  * Metadata for all the navigation properties in the request builder.
  */
 export const ChildFoldersRequestBuilderNavigationMetadata: Record<Exclude<keyof ChildFoldersRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
-    "byMailFolderId1": {
+    byMailFolderId1: {
         uriTemplate: MailFolderItemRequestBuilderUriTemplate,
         requestsMetadata: MailFolderItemRequestBuilderRequestsMetadata,
         navigationMetadata: MailFolderItemRequestBuilderNavigationMetadata,
         pathParametersMappings: ["mailFolder%2Did1"],
     },
-    "count": {
+    count: {
         uriTemplate: CountRequestBuilderUriTemplate,
         requestsMetadata: CountRequestBuilderRequestsMetadata,
     },

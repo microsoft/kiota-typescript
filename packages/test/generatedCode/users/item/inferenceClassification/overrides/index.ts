@@ -94,12 +94,12 @@ const OverridesRequestBuilderGetQueryParametersMapper: Record<string, string> = 
  * Metadata for all the navigation properties in the request builder.
  */
 export const OverridesRequestBuilderNavigationMetadata: Record<Exclude<keyof OverridesRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
-    "byInferenceClassificationOverrideId": {
+    byInferenceClassificationOverrideId: {
         uriTemplate: InferenceClassificationOverrideItemRequestBuilderUriTemplate,
         requestsMetadata: InferenceClassificationOverrideItemRequestBuilderRequestsMetadata,
         pathParametersMappings: ["inferenceClassificationOverride%2Did"],
     },
-    "count": {
+    count: {
         uriTemplate: CountRequestBuilderUriTemplate,
         requestsMetadata: CountRequestBuilderRequestsMetadata,
     },

@@ -94,17 +94,17 @@ const MailFolderItemRequestBuilderGetQueryParametersMapper: Record<string, strin
  * Metadata for all the navigation properties in the request builder.
  */
 export const MailFolderItemRequestBuilderNavigationMetadata: Record<Exclude<keyof MailFolderItemRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
-    "childFolders": {
+    childFolders: {
         uriTemplate: ChildFoldersRequestBuilderUriTemplate,
         requestsMetadata: ChildFoldersRequestBuilderRequestsMetadata,
         navigationMetadata: ChildFoldersRequestBuilderNavigationMetadata,
     },
-    "messageRules": {
+    messageRules: {
         uriTemplate: MessageRulesRequestBuilderUriTemplate,
         requestsMetadata: MessageRulesRequestBuilderRequestsMetadata,
         navigationMetadata: MessageRulesRequestBuilderNavigationMetadata,
     },
-    "messages": {
+    messages: {
         uriTemplate: MessagesRequestBuilderUriTemplate,
         requestsMetadata: MessagesRequestBuilderRequestsMetadata,
         navigationMetadata: MessagesRequestBuilderNavigationMetadata,

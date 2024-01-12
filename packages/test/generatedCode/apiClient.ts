@@ -41,7 +41,7 @@ export function newApiClient(requestAdapter: RequestAdapter) {
  * Metadata for all the navigation properties in the request builder.
  */
 export const ApiClientNavigationMetadata: Record<Exclude<keyof ApiClient, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
-    "users": {
+    users: {
         uriTemplate: UsersRequestBuilderUriTemplate,
         navigationMetadata: UsersRequestBuilderNavigationMetadata,
     },

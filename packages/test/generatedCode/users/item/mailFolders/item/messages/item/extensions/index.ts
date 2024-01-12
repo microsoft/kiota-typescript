@@ -98,12 +98,12 @@ const ExtensionsRequestBuilderGetQueryParametersMapper: Record<string, string> =
  * Metadata for all the navigation properties in the request builder.
  */
 export const ExtensionsRequestBuilderNavigationMetadata: Record<Exclude<keyof ExtensionsRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
-    "byExtensionId": {
+    byExtensionId: {
         uriTemplate: ExtensionItemRequestBuilderUriTemplate,
         requestsMetadata: ExtensionItemRequestBuilderRequestsMetadata,
         pathParametersMappings: ["extension%2Did"],
     },
-    "count": {
+    count: {
         uriTemplate: CountRequestBuilderUriTemplate,
         requestsMetadata: CountRequestBuilderRequestsMetadata,
     },

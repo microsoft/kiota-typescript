@@ -94,16 +94,16 @@ const MessageItemRequestBuilderGetQueryParametersMapper: Record<string, string> 
  * Metadata for all the navigation properties in the request builder.
  */
 export const MessageItemRequestBuilderNavigationMetadata: Record<Exclude<keyof MessageItemRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
-    "attachments": {
+    attachments: {
         uriTemplate: AttachmentsRequestBuilderUriTemplate,
         requestsMetadata: AttachmentsRequestBuilderRequestsMetadata,
         navigationMetadata: AttachmentsRequestBuilderNavigationMetadata,
     },
-    "content": {
+    content: {
         uriTemplate: ContentRequestBuilderUriTemplate,
         requestsMetadata: ContentRequestBuilderRequestsMetadata,
     },
-    "extensions": {
+    extensions: {
         uriTemplate: ExtensionsRequestBuilderUriTemplate,
         requestsMetadata: ExtensionsRequestBuilderRequestsMetadata,
         navigationMetadata: ExtensionsRequestBuilderNavigationMetadata,
