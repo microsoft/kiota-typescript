@@ -43,18 +43,18 @@ export const ContentRequestBuilderRequestsMetadata: RequestsMetadata = {
     get: {
         responseBodyContentType: "application/octet-stream, application/json",
         errorMappings: {
-            "4XX": createODataErrorFromDiscriminatorValue,
-            "5XX": createODataErrorFromDiscriminatorValue,
-        } as Record<string, ParsableFactory<Parsable>>,
+            _4XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+            _5XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+        },
         adapterMethodName: "sendPrimitiveAsync",
         responseBodyFactory:  "ArrayBuffer",
     },
     put: {
         responseBodyContentType: "application/json",
         errorMappings: {
-            "4XX": createODataErrorFromDiscriminatorValue,
-            "5XX": createODataErrorFromDiscriminatorValue,
-        } as Record<string, ParsableFactory<Parsable>>,
+            _4XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+            _5XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+        },
         adapterMethodName: "sendPrimitiveAsync",
         responseBodyFactory:  "ArrayBuffer",
         requestBodyContentType: "application/octet-stream",

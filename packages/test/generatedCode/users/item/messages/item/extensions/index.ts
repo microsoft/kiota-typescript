@@ -115,9 +115,9 @@ export const ExtensionsRequestBuilderRequestsMetadata: RequestsMetadata = {
     get: {
         responseBodyContentType: "application/json",
         errorMappings: {
-            "4XX": createODataErrorFromDiscriminatorValue,
-            "5XX": createODataErrorFromDiscriminatorValue,
-        } as Record<string, ParsableFactory<Parsable>>,
+            _4XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+            _5XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+        },
         adapterMethodName: "sendAsync",
         responseBodyFactory:  createExtensionCollectionResponseFromDiscriminatorValue,
         queryParametersMapper: ExtensionsRequestBuilderGetQueryParametersMapper,
@@ -125,9 +125,9 @@ export const ExtensionsRequestBuilderRequestsMetadata: RequestsMetadata = {
     post: {
         responseBodyContentType: "application/json",
         errorMappings: {
-            "4XX": createODataErrorFromDiscriminatorValue,
-            "5XX": createODataErrorFromDiscriminatorValue,
-        } as Record<string, ParsableFactory<Parsable>>,
+            _4XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+            _5XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+        },
         adapterMethodName: "sendAsync",
         responseBodyFactory:  createExtensionFromDiscriminatorValue,
         requestBodyContentType: "application/json",

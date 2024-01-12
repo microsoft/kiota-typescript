@@ -1,5 +1,5 @@
 import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, BackingStoreFactorySingleton, type DateOnly, DefaultApiError, type Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type RequestAdapter, type RequestInformation, type ResponseHandler, type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
-import type { PrimitiveTypesForDeserialization, PrimitiveTypesForDeserializationType } from "@microsoft/kiota-abstractions/src/requestAdapter";
+import type { ErrorMappings, PrimitiveTypesForDeserialization, PrimitiveTypesForDeserializationType } from "@microsoft/kiota-abstractions/src/requestAdapter";
 import { type Span, SpanStatusCode, trace } from "@opentelemetry/api";
 
 import { HttpClient } from "./httpClient";
@@ -58,7 +58,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		return responseHandlerOption?.responseHandler;
 	};
 	private static readonly responseTypeAttributeKey = "com.microsoft.kiota.response.type";
-	public sendCollectionOfPrimitiveAsync = <ResponseType extends Exclude<PrimitiveTypesForDeserializationType, ArrayBuffer>>(requestInfo: RequestInformation, responseType: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType[] | undefined> => {
+	public sendCollectionOfPrimitiveAsync = <ResponseType extends Exclude<PrimitiveTypesForDeserializationType, ArrayBuffer>>(requestInfo: RequestInformation, responseType: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">, errorMappings: ErrorMappings | undefined): Promise<ResponseType[] | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
@@ -114,7 +114,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		});
 	};
-	public sendCollectionAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, deserialization: ParsableFactory<ModelType>, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType[] | undefined> => {
+	public sendCollectionAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, deserialization: ParsableFactory<ModelType>, errorMappings: ErrorMappings | undefined): Promise<ModelType[] | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
@@ -161,7 +161,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		});
 	};
 	public static readonly eventResponseHandlerInvokedKey = "com.microsoft.kiota.response_handler_invoked";
-	public sendAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, deserializer: ParsableFactory<ModelType>, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ModelType | undefined> => {
+	public sendAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, deserializer: ParsableFactory<ModelType>, errorMappings: ErrorMappings | undefined): Promise<ModelType | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
@@ -195,7 +195,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		}) as Promise<ModelType>;
 	};
-	public sendPrimitiveAsync = <ResponseType extends PrimitiveTypesForDeserializationType>(requestInfo: RequestInformation, responseType: PrimitiveTypesForDeserialization, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<ResponseType | undefined> => {
+	public sendPrimitiveAsync = <ResponseType extends PrimitiveTypesForDeserializationType>(requestInfo: RequestInformation, responseType: PrimitiveTypesForDeserialization, errorMappings: ErrorMappings | undefined): Promise<ResponseType | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
@@ -257,7 +257,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		}) as Promise<ResponseType | undefined>;
 	};
-	public sendNoResponseContentAsync = (requestInfo: RequestInformation, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined): Promise<void> => {
+	public sendNoResponseContentAsync = (requestInfo: RequestInformation, errorMappings: ErrorMappings | undefined): Promise<void> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
@@ -311,7 +311,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 	};
 	public static readonly errorMappingFoundAttributeName = "com.microsoft.kiota.error.mapping_found";
 	public static readonly errorBodyFoundAttributeName = "com.microsoft.kiota.error.body_found";
-	private throwIfFailedResponse = (response: Response, errorMappings: Record<string, ParsableFactory<Parsable>> | undefined, spanForAttributes: Span): Promise<void> => {
+	private throwIfFailedResponse = (response: Response, errorMappings: ErrorMappings | undefined, spanForAttributes: Span): Promise<void> => {
 		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("throwIfFailedResponse", async (span) => {
 			try {
 				if (response.ok) return;
@@ -326,8 +326,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				response.headers.forEach((value, key) => {
 					responseHeaders[key] = value.split(",");
 				});
-				const statusCodeAsString = statusCode.toString();
-				if (!errorMappings || (!errorMappings[statusCodeAsString] && !(statusCode >= 400 && statusCode < 500 && errorMappings["4XX"]) && !(statusCode >= 500 && statusCode < 600 && errorMappings["5XX"]))) {
+				if (!errorMappings || (!errorMappings[statusCode] && !(statusCode >= 400 && statusCode < 500 && errorMappings._4XX) && !(statusCode >= 500 && statusCode < 600 && errorMappings._5XX))) {
 					spanForAttributes.setAttribute(FetchRequestAdapter.errorMappingFoundAttributeName, false);
 					const error = new DefaultApiError("the server returned an unexpected status code and no error class is registered for this code " + statusCode);
 					error.responseStatusCode = statusCode;
@@ -337,7 +336,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				}
 				spanForAttributes.setAttribute(FetchRequestAdapter.errorMappingFoundAttributeName, true);
 
-				const factory = errorMappings[statusCodeAsString] ?? (statusCode >= 400 && statusCode < 500 ? errorMappings["4XX"] : undefined) ?? (statusCode >= 500 && statusCode < 600 ? errorMappings["5XX"] : undefined);
+				const factory = errorMappings[statusCode] ?? (statusCode >= 400 && statusCode < 500 ? errorMappings._4XX : undefined) ?? (statusCode >= 500 && statusCode < 600 ? errorMappings._5XX : undefined);
 
 				const rootNode = await this.getRootParseNode(response);
 				let error = trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getObjectValue", (deserializeSpan) => {

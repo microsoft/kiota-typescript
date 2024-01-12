@@ -111,9 +111,9 @@ export const MessageRulesRequestBuilderRequestsMetadata: RequestsMetadata = {
     get: {
         responseBodyContentType: "application/json",
         errorMappings: {
-            "4XX": createODataErrorFromDiscriminatorValue,
-            "5XX": createODataErrorFromDiscriminatorValue,
-        } as Record<string, ParsableFactory<Parsable>>,
+            _4XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+            _5XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+        },
         adapterMethodName: "sendAsync",
         responseBodyFactory:  createMessageRuleCollectionResponseFromDiscriminatorValue,
         queryParametersMapper: MessageRulesRequestBuilderGetQueryParametersMapper,
@@ -121,9 +121,9 @@ export const MessageRulesRequestBuilderRequestsMetadata: RequestsMetadata = {
     post: {
         responseBodyContentType: "application/json",
         errorMappings: {
-            "4XX": createODataErrorFromDiscriminatorValue,
-            "5XX": createODataErrorFromDiscriminatorValue,
-        } as Record<string, ParsableFactory<Parsable>>,
+            _4XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+            _5XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+        },
         adapterMethodName: "sendAsync",
         responseBodyFactory:  createMessageRuleFromDiscriminatorValue,
         requestBodyContentType: "application/json",

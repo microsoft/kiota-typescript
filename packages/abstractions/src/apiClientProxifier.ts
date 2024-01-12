@@ -1,6 +1,7 @@
 import { getPathParameters } from "./getPathParameters";
 import { HttpMethod } from "./httpMethod";
 import type {
+  ErrorMappings,
   PrimitiveTypesForDeserialization,
   PrimitiveTypesForDeserializationType,
   RequestAdapter,
@@ -401,7 +402,7 @@ export function apiClientProxifier<T extends object>(
 export interface RequestMetadata {
   requestBodyContentType?: string;
   responseBodyContentType?: string;
-  errorMappings?: Record<string, ParsableFactory<Parsable>>;
+  errorMappings?: ErrorMappings;
   adapterMethodName?: keyof RequestAdapter;
   responseBodyFactory?:
     | ParsableFactory<Parsable>

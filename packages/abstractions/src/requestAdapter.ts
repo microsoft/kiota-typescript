@@ -27,7 +27,7 @@ export interface RequestAdapter {
   sendAsync<ModelType extends Parsable>(
     requestInfo: RequestInformation,
     type: ParsableFactory<ModelType>,
-    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined,
+    errorMappings: ErrorMappings | undefined,
   ): Promise<ModelType | undefined>;
   /**
    * Executes the HTTP request specified by the given RequestInformation and returns the deserialized response model collection.
@@ -40,7 +40,7 @@ export interface RequestAdapter {
   sendCollectionAsync<ModelType extends Parsable>(
     requestInfo: RequestInformation,
     type: ParsableFactory<ModelType>,
-    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined,
+    errorMappings: ErrorMappings | undefined,
   ): Promise<ModelType[] | undefined>;
   /**
    * Executes the HTTP request specified by the given RequestInformation and returns the deserialized response model collection.
@@ -59,7 +59,7 @@ export interface RequestAdapter {
   >(
     requestInfo: RequestInformation,
     responseType: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">,
-    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined,
+    errorMappings: ErrorMappings | undefined,
   ): Promise<ResponseType[] | undefined>;
   /**
    * Executes the HTTP request specified by the given RequestInformation and returns the deserialized primitive response model.
@@ -72,7 +72,7 @@ export interface RequestAdapter {
   sendPrimitiveAsync<ResponseType extends PrimitiveTypesForDeserializationType>(
     requestInfo: RequestInformation,
     responseType: PrimitiveTypesForDeserialization,
-    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined,
+    errorMappings: ErrorMappings | undefined,
   ): Promise<ResponseType | undefined>;
   /**
    * Executes the HTTP request specified by the given RequestInformation and returns the deserialized primitive response model.
@@ -82,7 +82,7 @@ export interface RequestAdapter {
    */
   sendNoResponseContentAsync(
     requestInfo: RequestInformation,
-    errorMappings: Record<string, ParsableFactory<Parsable>> | undefined,
+    errorMappings: ErrorMappings | undefined,
   ): Promise<void>;
   /**
    * Enables the backing store proxies for the SerializationWriters and ParseNodes in use.
@@ -100,6 +100,11 @@ export interface RequestAdapter {
    * @return a {@link Promise} with the native request.
    */
   convertToNativeRequestAsync<T>(requestInfo: RequestInformation): Promise<T>;
+}
+export interface ErrorMappings {
+  _4XX?: ParsableFactory<Parsable>;
+  _5XX?: ParsableFactory<Parsable>;
+  [key: number]: ParsableFactory<Parsable>;
 }
 
 export type PrimitiveTypesForDeserializationType =

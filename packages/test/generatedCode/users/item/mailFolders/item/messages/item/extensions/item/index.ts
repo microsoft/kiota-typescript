@@ -77,18 +77,18 @@ export const ExtensionItemRequestBuilderRequestsMetadata: RequestsMetadata = {
     delete: {
         responseBodyContentType: "application/json",
         errorMappings: {
-            "4XX": createODataErrorFromDiscriminatorValue,
-            "5XX": createODataErrorFromDiscriminatorValue,
-        } as Record<string, ParsableFactory<Parsable>>,
+            _4XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+            _5XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+        },
         adapterMethodName: "sendPrimitiveAsync",
         responseBodyFactory:  "ArrayBuffer",
     },
     get: {
         responseBodyContentType: "application/json",
         errorMappings: {
-            "4XX": createODataErrorFromDiscriminatorValue,
-            "5XX": createODataErrorFromDiscriminatorValue,
-        } as Record<string, ParsableFactory<Parsable>>,
+            _4XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+            _5XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+        },
         adapterMethodName: "sendAsync",
         responseBodyFactory:  createExtensionFromDiscriminatorValue,
         queryParametersMapper: ExtensionItemRequestBuilderGetQueryParametersMapper,
@@ -96,9 +96,9 @@ export const ExtensionItemRequestBuilderRequestsMetadata: RequestsMetadata = {
     patch: {
         responseBodyContentType: "application/json",
         errorMappings: {
-            "4XX": createODataErrorFromDiscriminatorValue,
-            "5XX": createODataErrorFromDiscriminatorValue,
-        } as Record<string, ParsableFactory<Parsable>>,
+            _4XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+            _5XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+        },
         adapterMethodName: "sendAsync",
         responseBodyFactory:  createExtensionFromDiscriminatorValue,
         requestBodyContentType: "application/json",

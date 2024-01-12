@@ -43,9 +43,9 @@ export const CountRequestBuilderRequestsMetadata: RequestsMetadata = {
     get: {
         responseBodyContentType: "text/plain;q=0.9",
         errorMappings: {
-            "4XX": createODataErrorFromDiscriminatorValue,
-            "5XX": createODataErrorFromDiscriminatorValue,
-        } as Record<string, ParsableFactory<Parsable>>,
+            _4XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+            _5XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+        },
         adapterMethodName: "sendPrimitiveAsync",
         responseBodyFactory:  "number",
         queryParametersMapper: CountRequestBuilderGetQueryParametersMapper,

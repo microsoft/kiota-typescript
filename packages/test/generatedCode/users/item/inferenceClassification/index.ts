@@ -73,9 +73,9 @@ export const InferenceClassificationRequestBuilderRequestsMetadata: RequestsMeta
     get: {
         responseBodyContentType: "application/json",
         errorMappings: {
-            "4XX": createODataErrorFromDiscriminatorValue,
-            "5XX": createODataErrorFromDiscriminatorValue,
-        } as Record<string, ParsableFactory<Parsable>>,
+            _4XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+            _5XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+        },
         adapterMethodName: "sendAsync",
         responseBodyFactory:  createInferenceClassificationFromDiscriminatorValue,
         queryParametersMapper: InferenceClassificationRequestBuilderGetQueryParametersMapper,
@@ -83,9 +83,9 @@ export const InferenceClassificationRequestBuilderRequestsMetadata: RequestsMeta
     patch: {
         responseBodyContentType: "application/json",
         errorMappings: {
-            "4XX": createODataErrorFromDiscriminatorValue,
-            "5XX": createODataErrorFromDiscriminatorValue,
-        } as Record<string, ParsableFactory<Parsable>>,
+            _4XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+            _5XX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
+        },
         adapterMethodName: "sendAsync",
         responseBodyFactory:  createInferenceClassificationFromDiscriminatorValue,
         requestBodyContentType: "application/json",
