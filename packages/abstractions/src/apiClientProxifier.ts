@@ -24,7 +24,7 @@ function sanitizeMethodName(methodName: string): string {
   }
   return methodName;
 }
-function getRequestMethod(key: string): keyof RequestsMetadata {
+function getRequestMethod(key: string): KeysOfRequestsMetadata {
   switch (sanitizeMethodName(key)) {
     case "delete":
       return "delete";
@@ -422,6 +422,8 @@ export interface RequestsMetadata {
   put?: RequestMetadata;
 }
 
+type KeysOfRequestsMetadata = keyof RequestsMetadata;
+
 export interface NavigationMetadata {
   uriTemplate: string;
   requestsMetadata?: RequestsMetadata;
@@ -430,14 +432,12 @@ export interface NavigationMetadata {
 }
 
 export type KeysToExcludeForNavigationMetadata =
-  | "get"
-  | "post"
-  | "patch"
-  | "put"
-  | "delete"
-  | "toGetRequestInformation"
-  | "toPostRequestInformation"
-  | "toPatchRequestInformation"
-  | "toPutRequestInformation"
+  | KeysOfRequestsMetadata
   | "toDeleteRequestInformation"
+  | "toGetRequestInformation"
+  | "toHeadRequestInformation"
+  | "toOptionsRequestInformation"
+  | "toPatchRequestInformation"
+  | "toPostRequestInformation"
+  | "toPutRequestInformation"
   | "withUrl";
