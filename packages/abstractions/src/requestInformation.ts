@@ -67,7 +67,7 @@ export class RequestInformation {
     } else {
       const data = {} as { [key: string]: unknown };
       for (const key in this.queryParameters) {
-        if (this.queryParameters[key] != null && this.queryParameters[key] !== undefined) {
+        if (this.queryParameters[key] !== null && this.queryParameters[key] !== undefined) {
           data[key] = this.queryParameters[key];
         }
       }
