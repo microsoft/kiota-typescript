@@ -67,7 +67,7 @@ export class RequestInformation {
     } else {
       const data = {} as { [key: string]: unknown };
       for (const key in this.queryParameters) {
-        if (this.queryParameters[key]) {
+        if (this.queryParameters[key] != null && this.queryParameters[key] !== undefined) {
           data[key] = this.queryParameters[key];
         }
       }
@@ -287,7 +287,7 @@ export class RequestInformation {
     q?: T,
     p?: Record<string, string>,
   ): void {
-    if (!q) return;
+    if (q === null || q === undefined) return;
     Object.entries(q).forEach(([k, v]) => {
       let key = k;
       if (p) {

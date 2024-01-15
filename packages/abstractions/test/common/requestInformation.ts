@@ -89,15 +89,15 @@ describe("RequestInformation", () => {
     assert.equal(requestInformation.URL, "http://localhost/me");
   });
 
-  it("Does not set empty search query parameter", () => {
+  it("Allows empty search query parameter", () => {
     const requestInformation = new RequestInformation();
     requestInformation.pathParameters["baseurl"] = baseUrl;
-    requestInformation.urlTemplate = "http://localhost/me{?%24select}";
+    requestInformation.urlTemplate = "http://localhost/me{?%24search}";
     requestInformation.setQueryStringParametersFromRawObject<GetQueryParameters>(
-      { search: "" },
+      { search: ''},
       getQueryParameterMapper,
     );
-    assert.equal(requestInformation.URL, "http://localhost/me");
+    assert.equal(requestInformation.URL, "http://localhost/me?%24search=");
   });
 
   it("Sets enum value in query parameters", () => {
