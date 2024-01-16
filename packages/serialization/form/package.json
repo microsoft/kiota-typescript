@@ -10,9 +10,9 @@
   "module": "dist/es/src/index.js",
   "types": "dist/cjs/src/index.d.ts",
   "scripts": {
-    "build": "npm run build:cjs && npm run build:es",
+    "build": "npm run build:cjs && npm run build:esm",
     "build:cjs": "tsc -b tsconfig.cjs.json",
-    "build:es": "tsc -b tsconfig.es.json",
+    "build:esm": "tsc -b tsconfig.es.json",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "clean": "rm -r ./dist",
