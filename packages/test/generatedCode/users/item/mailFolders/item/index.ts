@@ -39,11 +39,11 @@ export interface MailFolderItemRequestBuilder extends BaseRequestBuilder<MailFol
      */
      get(requestConfiguration?: RequestConfiguration<MailFolderItemRequestBuilderGetQueryParameters> | undefined) : Promise<MailFolder | undefined>;
     /**
-     * Update the properties of mailfolder object.
+     * Update the writable properties of a mailSearchFolder object.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a Promise of MailFolder
-     * @see {@link https://learn.microsoft.com/graph/api/mailfolder-update?view=graph-rest-1.0|Find more info here}
+     * @see {@link https://learn.microsoft.com/graph/api/mailsearchfolder-update?view=graph-rest-1.0|Find more info here}
      */
      patch(body: MailFolder, requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<MailFolder | undefined>;
     /**
@@ -59,7 +59,7 @@ export interface MailFolderItemRequestBuilder extends BaseRequestBuilder<MailFol
      */
      toGetRequestInformation(requestConfiguration?: RequestConfiguration<MailFolderItemRequestBuilderGetQueryParameters> | undefined) : RequestInformation;
     /**
-     * Update the properties of mailfolder object.
+     * Update the writable properties of a mailSearchFolder object.
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns a RequestInformation
