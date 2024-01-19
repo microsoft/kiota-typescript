@@ -25,7 +25,7 @@ function sanitizeMethodName(methodName: string): string {
   }
   return methodName;
 }
-function getRequestMethod(key: string): KeysOfRequestsMetadata {
+function getRequestMethod(key: string): KeysOfRequestsMetadata | undefined {
   switch (sanitizeMethodName(key)) {
     case "delete":
       return "delete";
@@ -42,7 +42,7 @@ function getRequestMethod(key: string): KeysOfRequestsMetadata {
     case "put":
       return "put";
     default:
-      throw new Error(`couldn't find request method for ${key}`);
+      return undefined;
   }
 }
 
@@ -205,148 +205,151 @@ export function apiClientProxifier<T extends object>(
         };
       }
       if (requestsMetadata) {
-        const metadata = requestsMetadata[getRequestMethod(name)];
-        if (metadata) {
-          switch (name) {
-            case "get":
-              return (
-                requestConfiguration?: RequestConfiguration<object> | undefined,
-              ) => {
-                const requestInfo = toRequestInformation(
-                  urlTemplate,
-                  pathParameters,
-                  metadata,
-                  requestAdapter,
-                  HttpMethod.GET,
-                  undefined,
-                  undefined,
-                  requestConfiguration,
-                );
-                return sendAsync(requestAdapter, requestInfo, metadata);
-              };
-            case "patch":
-              return (...args: any[]) => {
-                const requestInfo = toRequestInformation(
-                  urlTemplate,
-                  pathParameters,
-                  metadata,
-                  requestAdapter,
-                  HttpMethod.PATCH,
-                  args.length > 0 ? args[0] : undefined,
-                  getRequestMediaTypeUserDefinedValue(metadata, args),
-                  getRequestConfigurationValue(args),
-                );
-                return sendAsync(requestAdapter, requestInfo, metadata);
-              };
-            case "put":
-              return (...args: any[]) => {
-                const requestInfo = toRequestInformation(
-                  urlTemplate,
-                  pathParameters,
-                  metadata,
-                  requestAdapter,
-                  HttpMethod.PUT,
-                  args.length > 0 ? args[0] : undefined,
-                  getRequestMediaTypeUserDefinedValue(metadata, args),
-                  getRequestConfigurationValue(args),
-                );
-                return sendAsync(requestAdapter, requestInfo, metadata);
-              };
-            case "delete":
-              return (...args: any[]) => {
-                const requestInfo = toRequestInformation(
-                  urlTemplate,
-                  pathParameters,
-                  metadata,
-                  requestAdapter,
-                  HttpMethod.DELETE,
-                  args.length > 0 ? args[0] : undefined,
-                  getRequestMediaTypeUserDefinedValue(metadata, args),
-                  getRequestConfigurationValue(args),
-                );
-                return sendAsync(requestAdapter, requestInfo, metadata);
-              };
-            case "post":
-              return (...args: any[]) => {
-                const requestInfo = toRequestInformation(
-                  urlTemplate,
-                  pathParameters,
-                  metadata,
-                  requestAdapter,
-                  HttpMethod.POST,
-                  args.length > 0 ? args[0] : undefined,
-                  getRequestMediaTypeUserDefinedValue(metadata, args),
-                  getRequestConfigurationValue(args),
-                );
-                return sendAsync(requestAdapter, requestInfo, metadata);
-              };
-            case "toGetRequestInformation":
-              return (requestConfiguration?: RequestConfiguration<object>) => {
-                return toRequestInformation(
-                  urlTemplate,
-                  pathParameters,
-                  metadata,
-                  requestAdapter,
-                  HttpMethod.GET,
-                  undefined,
-                  undefined,
-                  requestConfiguration,
-                );
-              };
-            case "toPatchRequestInformation":
-              return (...args: any[]) => {
-                return toRequestInformation(
-                  urlTemplate,
-                  pathParameters,
-                  metadata,
-                  requestAdapter,
-                  HttpMethod.PATCH,
-                  args.length > 0 ? args[0] : undefined,
-                  getRequestMediaTypeUserDefinedValue(metadata, args),
-                  getRequestConfigurationValue(args),
-                );
-              };
-            case "toPutRequestInformation":
-              return (...args: any[]) => {
-                return toRequestInformation(
-                  urlTemplate,
-                  pathParameters,
-                  metadata,
-                  requestAdapter,
-                  HttpMethod.PUT,
-                  args.length > 0 ? args[0] : undefined,
-                  getRequestMediaTypeUserDefinedValue(metadata, args),
-                  getRequestConfigurationValue(args),
-                );
-              };
-            case "toDeleteRequestInformation":
-              return (...args: any[]) => {
-                return toRequestInformation(
-                  urlTemplate,
-                  pathParameters,
-                  metadata,
-                  requestAdapter,
-                  HttpMethod.DELETE,
-                  args.length > 0 ? args[0] : undefined,
-                  getRequestMediaTypeUserDefinedValue(metadata, args),
-                  getRequestConfigurationValue(args),
-                );
-              };
-            case "toPostRequestInformation":
-              return (...args: any[]) => {
-                return toRequestInformation(
-                  urlTemplate,
-                  pathParameters,
-                  metadata,
-                  requestAdapter,
-                  HttpMethod.POST,
-                  args.length > 0 ? args[0] : undefined,
-                  getRequestMediaTypeUserDefinedValue(metadata, args),
-                  getRequestConfigurationValue(args),
-                );
-              };
-            default:
-              break;
+        const metadataKey = getRequestMethod(name);
+        if (metadataKey) {
+          const metadata = requestsMetadata[metadataKey];
+          if (metadata) {
+            switch (name) {
+              case "get":
+                return (
+                  requestConfiguration?: RequestConfiguration<object> | undefined,
+                ) => {
+                  const requestInfo = toRequestInformation(
+                    urlTemplate,
+                    pathParameters,
+                    metadata,
+                    requestAdapter,
+                    HttpMethod.GET,
+                    undefined,
+                    undefined,
+                    requestConfiguration,
+                  );
+                  return sendAsync(requestAdapter, requestInfo, metadata);
+                };
+              case "patch":
+                return (...args: any[]) => {
+                  const requestInfo = toRequestInformation(
+                    urlTemplate,
+                    pathParameters,
+                    metadata,
+                    requestAdapter,
+                    HttpMethod.PATCH,
+                    args.length > 0 ? args[0] : undefined,
+                    getRequestMediaTypeUserDefinedValue(metadata, args),
+                    getRequestConfigurationValue(args),
+                  );
+                  return sendAsync(requestAdapter, requestInfo, metadata);
+                };
+              case "put":
+                return (...args: any[]) => {
+                  const requestInfo = toRequestInformation(
+                    urlTemplate,
+                    pathParameters,
+                    metadata,
+                    requestAdapter,
+                    HttpMethod.PUT,
+                    args.length > 0 ? args[0] : undefined,
+                    getRequestMediaTypeUserDefinedValue(metadata, args),
+                    getRequestConfigurationValue(args),
+                  );
+                  return sendAsync(requestAdapter, requestInfo, metadata);
+                };
+              case "delete":
+                return (...args: any[]) => {
+                  const requestInfo = toRequestInformation(
+                    urlTemplate,
+                    pathParameters,
+                    metadata,
+                    requestAdapter,
+                    HttpMethod.DELETE,
+                    args.length > 0 ? args[0] : undefined,
+                    getRequestMediaTypeUserDefinedValue(metadata, args),
+                    getRequestConfigurationValue(args),
+                  );
+                  return sendAsync(requestAdapter, requestInfo, metadata);
+                };
+              case "post":
+                return (...args: any[]) => {
+                  const requestInfo = toRequestInformation(
+                    urlTemplate,
+                    pathParameters,
+                    metadata,
+                    requestAdapter,
+                    HttpMethod.POST,
+                    args.length > 0 ? args[0] : undefined,
+                    getRequestMediaTypeUserDefinedValue(metadata, args),
+                    getRequestConfigurationValue(args),
+                  );
+                  return sendAsync(requestAdapter, requestInfo, metadata);
+                };
+              case "toGetRequestInformation":
+                return (requestConfiguration?: RequestConfiguration<object>) => {
+                  return toRequestInformation(
+                    urlTemplate,
+                    pathParameters,
+                    metadata,
+                    requestAdapter,
+                    HttpMethod.GET,
+                    undefined,
+                    undefined,
+                    requestConfiguration,
+                  );
+                };
+              case "toPatchRequestInformation":
+                return (...args: any[]) => {
+                  return toRequestInformation(
+                    urlTemplate,
+                    pathParameters,
+                    metadata,
+                    requestAdapter,
+                    HttpMethod.PATCH,
+                    args.length > 0 ? args[0] : undefined,
+                    getRequestMediaTypeUserDefinedValue(metadata, args),
+                    getRequestConfigurationValue(args),
+                  );
+                };
+              case "toPutRequestInformation":
+                return (...args: any[]) => {
+                  return toRequestInformation(
+                    urlTemplate,
+                    pathParameters,
+                    metadata,
+                    requestAdapter,
+                    HttpMethod.PUT,
+                    args.length > 0 ? args[0] : undefined,
+                    getRequestMediaTypeUserDefinedValue(metadata, args),
+                    getRequestConfigurationValue(args),
+                  );
+                };
+              case "toDeleteRequestInformation":
+                return (...args: any[]) => {
+                  return toRequestInformation(
+                    urlTemplate,
+                    pathParameters,
+                    metadata,
+                    requestAdapter,
+                    HttpMethod.DELETE,
+                    args.length > 0 ? args[0] : undefined,
+                    getRequestMediaTypeUserDefinedValue(metadata, args),
+                    getRequestConfigurationValue(args),
+                  );
+                };
+              case "toPostRequestInformation":
+                return (...args: any[]) => {
+                  return toRequestInformation(
+                    urlTemplate,
+                    pathParameters,
+                    metadata,
+                    requestAdapter,
+                    HttpMethod.POST,
+                    args.length > 0 ? args[0] : undefined,
+                    getRequestMediaTypeUserDefinedValue(metadata, args),
+                    getRequestConfigurationValue(args),
+                  );
+                };
+              default:
+                break;
+            }
           }
         }
       }
