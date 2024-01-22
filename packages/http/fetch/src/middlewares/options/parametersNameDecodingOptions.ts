@@ -18,7 +18,17 @@ export const ParametersNameDecodingHandlerOptionsKey = "RetryHandlerOptionKey";
  * Signature to define the ParametersNameDecodingHandlerOptions constructor parameters
  */
 export interface ParametersNameDecodingHandlerOptionsParams {
+	/**
+	 * @member
+	 * Whether to decode the specified characters in the request query parameters names
+	 * * @default true
+	 */
 	enable?: boolean;
+	/**
+	 * @member
+	 * The characters to decode
+	 * @default [".", "-", "~", "$"]
+	 */
 	charactersToDecode?: string[];
 }
 
@@ -33,7 +43,7 @@ export class ParametersNameDecodingHandlerOptions implements RequestOption {
 	/**
 	 * @public
 	 * The characters to decode
-	 * @remarks	These characters are decoded by default: [".", "-", "~", "$"]
+	 * @default [".", "-", "~", "$"]
 	 */
 	public charactersToDecode: string[];
 

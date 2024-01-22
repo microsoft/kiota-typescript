@@ -18,6 +18,12 @@ import type { RequestOption } from "@microsoft/kiota-abstractions";
 export type ShouldRedirect = (response: Response) => boolean;
 
 export const RedirectHandlerOptionKey = "RedirectHandlerOption";
+
+export interface RedirectHandlerOptionsParams {
+	maxRedirects?: number;
+	shouldRedirect?: ShouldRedirect;
+}
+
 /**
  * @class
  * @implements MiddlewareOptions
@@ -43,6 +49,18 @@ export class RedirectHandlerOptions implements RequestOption {
 	 * A member holding default shouldRedirect callback
 	 */
 	private static defaultShouldRetry: ShouldRedirect = () => true;
+
+	/**
+	 * @public
+	 * A member holding the max redirects value
+	 */
+	public maxRedirects: number;
+    
+	/**
+	 * @public
+	 * A member holding the should redirect callback
+	 */
+  	public shouldRedirect: ShouldRedirect;
 
 	/**
 	 * @public

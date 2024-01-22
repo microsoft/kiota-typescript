@@ -8,7 +8,15 @@ export const HeadersInspectionOptionsKey = "HeadersInspectionOptionsKey";
  * @property {boolean} [inspectResponseHeaders = false] - Whether to inspect response headers
  */
 export interface HeadersInspectionOptionsParams {
+	/**
+	 * @member
+	 * whether to inspect request headers
+	 */
 	inspectRequestHeaders?: boolean;
+	/**
+	 * @member
+	 * whether to inspect response headers
+	 */
 	inspectResponseHeaders?: boolean;
 }
 
@@ -43,15 +51,17 @@ export class HeadersInspectionOptions implements RequestOption {
 
 	/**
 	 * @public
-	 * Gets whether to inspect request headers
-	 * @returns whether to inspect request headers
+	 * @member
+	 * @default false
+	 * whether to inspect request headers
 	 */
 	public inspectRequestHeaders: boolean;
 
 	/**
 	 * @public
-	 * Gets whether to inspect response headers
-	 * @returns whether to inspect response headers
+	 * @member
+	 * @default false
+	 * whether to inspect response headers
 	 */
 	public inspectResponseHeaders: boolean;
 
