@@ -66,24 +66,23 @@ export class RedirectHandlerOptions implements RequestOption {
 	 * @public
 	 * @constructor
 	 * To create an instance of RedirectHandlerOptions
-	 * @param {number} [maxRedirects = RedirectHandlerOptions.DEFAULT_MAX_REDIRECTS] - The max redirects value
-	 * @param {ShouldRedirect} [shouldRedirect = RedirectHandlerOptions.DEFAULT_SHOULD_RETRY] - The should redirect callback
+	 * @param {RedirectHandlerOptionsParams} [options = {}] - The redirect handler options instance
 	 * @returns An instance of RedirectHandlerOptions
 	 */
-	public constructor(public maxRedirects: number = RedirectHandlerOptions.DEFAULT_MAX_REDIRECTS, public shouldRedirect: ShouldRedirect = RedirectHandlerOptions.defaultShouldRetry) {
-		if (maxRedirects > RedirectHandlerOptions.MAX_MAX_REDIRECTS) {
-			const error = new Error(`MaxRedirects should not be more than ${RedirectHandlerOptions.MAX_MAX_REDIRECTS}`);
-			error.name = "MaxLimitExceeded";
-			throw error;
+	public constructor(options: RedirectHandlerOptionsParams = {} as RedirectHandlerOptionsParams) {
+		if (options.maxRedirects && options.maxRedirects > RedirectHandlerOptions.MAX_MAX_REDIRECTS) {
+		  const error = new Error(`MaxRedirects should not be more than ${RedirectHandlerOptions.MAX_MAX_REDIRECTS}`);
+		  error.name = "MaxLimitExceeded";
+		  throw error;
 		}
-		if (maxRedirects < 0) {
-			const error = new Error(`MaxRedirects should not be negative`);
-			error.name = "MinExpectationNotMet";
-			throw error;
+		if (options.maxRedirects && options.maxRedirects < 0) {
+		  const error = new Error(`MaxRedirects should not be negative`);
+		  error.name = "MinExpectationNotMet";
+		  throw error;
 		}
-		this.maxRedirects = maxRedirects;
-		this.shouldRedirect = shouldRedirect;
-	}
+		this.maxRedirects = options.maxRedirects || RedirectHandlerOptions.DEFAULT_MAX_REDIRECTS;
+		this.shouldRedirect = options.shouldRedirect || RedirectHandlerOptions.defaultShouldRetry;
+	  }
 
 	public getKey(): string {
 		return RedirectHandlerOptionKey;

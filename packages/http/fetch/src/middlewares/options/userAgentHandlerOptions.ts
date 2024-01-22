@@ -14,6 +14,7 @@ export class UserAgentHandlerOptions implements RequestOption {
 	getKey(): string {
 		return UserAgentHandlerOptionsKey;
 	}
+	
 	/**
 	 * @public
 	 * @constructor
