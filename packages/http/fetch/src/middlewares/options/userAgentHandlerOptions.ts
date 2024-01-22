@@ -76,7 +76,7 @@ export class UserAgentHandlerOptions implements RequestOption {
 	 */
 	public constructor(options: UserAgentHandlerOptionsParams = {} as UserAgentHandlerOptionsParams) {
 		this.enable = options.enable ?? true;
-		this.productName = options.productName || "kiota-typescript";
-		this.productVersion = options.productVersion || libraryVersion;
+		this.productName = options.productName ?? "kiota-typescript";
+		this.productVersion = options.productVersion ?? libraryVersion;
 	}
 }

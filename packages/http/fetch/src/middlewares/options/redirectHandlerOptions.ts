@@ -80,8 +80,8 @@ export class RedirectHandlerOptions implements RequestOption {
 		  error.name = "MinExpectationNotMet";
 		  throw error;
 		}
-		this.maxRedirects = options.maxRedirects || RedirectHandlerOptions.DEFAULT_MAX_REDIRECTS;
-		this.shouldRedirect = options.shouldRedirect || RedirectHandlerOptions.defaultShouldRetry;
+		this.maxRedirects = options.maxRedirects ?? RedirectHandlerOptions.DEFAULT_MAX_REDIRECTS;
+		this.shouldRedirect = options.shouldRedirect ?? RedirectHandlerOptions.defaultShouldRetry;
 	  }
 
 	public getKey(): string {

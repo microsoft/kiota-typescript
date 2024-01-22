@@ -122,9 +122,9 @@ export class RetryHandlerOptions implements RequestOption {
 		if (options.maxRetries && options.maxRetries < 0) {
 			throw this.createError(`MaxRetries should not be negative`, "MinExpectationNotMet");
 		}
-		this.delay = Math.min(options.delay || RetryHandlerOptions.DEFAULT_DELAY, RetryHandlerOptions.MAX_DELAY);
-		this.maxRetries = Math.min(options.maxRetries || RetryHandlerOptions.DEFAULT_MAX_RETRIES, RetryHandlerOptions.MAX_MAX_RETRIES);
-		this.shouldRetry = options.shouldRetry || RetryHandlerOptions.defaultShouldRetry;
+		this.delay = Math.min(options.delay ?? RetryHandlerOptions.DEFAULT_DELAY, RetryHandlerOptions.MAX_DELAY);
+		this.maxRetries = Math.min(options.maxRetries ?? RetryHandlerOptions.DEFAULT_MAX_RETRIES, RetryHandlerOptions.MAX_MAX_RETRIES);
+		this.shouldRetry = options.shouldRetry ?? RetryHandlerOptions.defaultShouldRetry;
 	}
 
 	/**
