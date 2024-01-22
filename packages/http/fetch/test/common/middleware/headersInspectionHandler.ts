@@ -25,7 +25,7 @@ describe("HeadersInspectionHandler.ts", () => {
 	});
 	describe("gets request headers", () => {
 		it("Should return request headers", async () => {
-			const options = new HeadersInspectionOptions(true);
+			const options = new HeadersInspectionOptions({inspectRequestHeaders: true});
 			const handler = new HeadersInspectionHandler(options);
 			const dummyFetchHandler = new DummyFetchHandler();
 			dummyFetchHandler.setResponses([
@@ -44,7 +44,7 @@ describe("HeadersInspectionHandler.ts", () => {
 			assert.equal(headers.tryGetValue("test")![0], "test");
 		});
 		it("Should return response headers", async () => {
-			const options = new HeadersInspectionOptions(false, true);
+			const options = new HeadersInspectionOptions({ inspectRequestHeaders: false, inspectResponseHeaders: true });
 			const handler = new HeadersInspectionHandler(options);
 			const dummyFetchHandler = new DummyFetchHandler();
 			dummyFetchHandler.setResponses([
