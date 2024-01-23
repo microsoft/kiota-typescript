@@ -73,7 +73,7 @@ export class HeadersInspectionOptions implements RequestOption {
 	 * @returns An instance of HeadersInspectionOptions
 	 * @example const options = new HeadersInspectionOptions({ inspectRequestHeaders: true, inspectResponseHeaders: true });
 	 */
-	public constructor(options: Partial<HeadersInspectionOptionsParams> = {} as HeadersInspectionOptionsParams) {
+	public constructor(options: Partial<HeadersInspectionOptionsParams> = {}) {
 		this.inspectRequestHeaders = options.inspectRequestHeaders ?? false;
 		this.inspectResponseHeaders = options.inspectResponseHeaders ?? false;
 	}

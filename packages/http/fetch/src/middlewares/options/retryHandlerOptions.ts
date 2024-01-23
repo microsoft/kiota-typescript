@@ -112,17 +112,17 @@ export class RetryHandlerOptions implements RequestOption {
 	 * @returns An instance of RetryHandlerOptions
 	 * @example	const options = new RetryHandlerOptions({ maxRetries: 4 });
 	 */
-	public constructor(options: Partial<RetryHandlerOptionsParams> = {} as RetryHandlerOptionsParams) {
-		if (options.delay && options.delay > RetryHandlerOptions.MAX_DELAY) {
+	public constructor(options: Partial<RetryHandlerOptionsParams> = {}) {
+		if (options.delay !== undefined && options.delay > RetryHandlerOptions.MAX_DELAY) {
 			throw this.createError(`Delay should not be more than ${RetryHandlerOptions.MAX_DELAY}`, "MaxLimitExceeded");
 		}
-		if (options.maxRetries && options.maxRetries > RetryHandlerOptions.MAX_MAX_RETRIES) {
+		if (options.maxRetries !== undefined && options.maxRetries > RetryHandlerOptions.MAX_MAX_RETRIES) {
 			throw this.createError(`MaxRetries should not be more than ${RetryHandlerOptions.MAX_MAX_RETRIES}`, "MaxLimitExceeded");
 		}
-		if (options.delay && options.delay < 0) {
+		if (options.delay !== undefined && options.delay < 0) {
 			throw this.createError(`Delay should not be negative`, "MinExpectationNotMet");
 		}
-		if (options.maxRetries && options.maxRetries < 0) {
+		if (options.maxRetries !== undefined && options.maxRetries < 0) {
 			throw this.createError(`MaxRetries should not be negative`, "MinExpectationNotMet");
 		}
 		this.delay = Math.min(options.delay ?? RetryHandlerOptions.DEFAULT_DELAY, RetryHandlerOptions.MAX_DELAY);
