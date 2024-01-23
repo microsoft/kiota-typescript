@@ -1,4 +1,4 @@
-import { apiClient } from "./testClient";
+import { proxyClient, userId } from "./testClient";
 
 import { assert } from "chai";
 import { type Message } from "../generatedCode/models";
@@ -11,8 +11,9 @@ describe("TestPost", () => {
         message.body = {
             content: "body content"
         }
-        const postmessageResult = await apiClient.users.byUserId("813956a3-4a30-4596-914f-bfd86a657a09").messages.post(message);
+        const postmessageResult = await proxyClient.users.byUserId(userId).messages.post(message);
         assert.isDefined(postmessageResult?.id);
         assert.equal(postmessageResult?.subject, message.subject);
+        await proxyClient.users.byUserId(userId).messages.byMessageId(postmessageResult!.id!).delete();
     }).timeout(10000);
 });

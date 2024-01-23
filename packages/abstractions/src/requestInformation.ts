@@ -7,7 +7,10 @@ import { Headers } from "./headers";
 import { type HttpMethod } from "./httpMethod";
 import { MultipartBody } from "./multipartBody";
 import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitiveKeys";
-import type { RequestAdapter } from "./requestAdapter";
+import type {
+  PrimitiveTypesForDeserializationType,
+  RequestAdapter,
+} from "./requestAdapter";
 import type { RequestConfiguration } from "./requestConfiguration";
 import type { RequestOption } from "./requestOption";
 import type {
@@ -18,7 +21,7 @@ import type {
 import { TimeOnly } from "./timeOnly";
 
 /** This class represents an abstract HTTP request. */
-export class RequestInformation {
+export class RequestInformation implements RequestInformationSetContent {
   /**
    * Initializes a request information instance with the provided values.
    * @param httpMethod The HTTP method for the request.
@@ -209,10 +212,12 @@ export class RequestInformation {
    * @param requestAdapter The adapter service to get the serialization writer from.
    * @typeParam T the model type.
    */
-  public setContentFromScalar = <T>(
-    requestAdapter?: RequestAdapter | undefined,
-    contentType?: string | undefined,
-    value?: T[] | T,
+  public setContentFromScalar = <
+    T extends PrimitiveTypesForDeserializationType,
+  >(
+    requestAdapter: RequestAdapter | undefined,
+    contentType: string | undefined,
+    value: T[] | T,
   ): void => {
     trace
       .getTracer(RequestInformation.tracerKey)
@@ -316,4 +321,21 @@ export class RequestInformation {
     );
     this.addRequestOptions(config.options);
   }
+}
+/**
+ * Describes the contract of request adapter set content methods so it can be used in request metadata.
+ */
+export interface RequestInformationSetContent {
+  setStreamContent(value: ArrayBuffer, contentType?: string): void;
+  setContentFromScalar<T extends PrimitiveTypesForDeserializationType>(
+    requestAdapter: RequestAdapter | undefined,
+    contentType: string | undefined,
+    value: T[] | T,
+  ): void;
+  setContentFromParsable<T extends Parsable>(
+    requestAdapter?: RequestAdapter | undefined,
+    contentType?: string | undefined,
+    value?: T[] | T,
+    modelSerializerFunction?: ModelSerializerFunction<T>,
+  ): void;
 }

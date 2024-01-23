@@ -1,4 +1,5 @@
 export * from "./apiClientBuilder";
+export * from "./apiClientProxifier";
 export * from "./apiError";
 export * from "./authentication";
 export * from "./baseRequestBuilder";

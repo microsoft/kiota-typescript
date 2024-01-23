@@ -1,20 +1,29 @@
-import { apiClient } from "./testClient";
+import { proxyClient, userId } from "./testClient";
 
 import { assert } from "chai";
-import { type MessagesRequestBuilderGetQueryParameters } from "../generatedCode/users/item/messages";
 
 describe("TestGet", () => {
 
     it("should return a test", async () => {
-        const messages = await apiClient.users.byUserId("813956a3-4a30-4596-914f-bfd86a657a09").messages.get();
+        const messages = await proxyClient.users.byUserId(userId).messages.get();
         assert.isDefined(messages?.value);
     });
     it("should decode query parameters", async () => {
-        const qs = {} as MessagesRequestBuilderGetQueryParameters;
-        qs.select = ["subject"];
-        qs.search = "test";
-        qs.count = true;
-        const messages = await apiClient.users.byUserId("813956a3-4a30-4596-914f-bfd86a657a09").messages.get();
+        const messages = await proxyClient.users.byUserId(userId).messages.get({
+            queryParameters: {
+                select: ["subject"],
+                search: "test",
+                count: true,
+            }
+        });
+        const messagesRaw = proxyClient.users.withUrl("foo");
+        assert.isDefined(messagesRaw);
+        const messagesRI = proxyClient.users.byUserId(userId).messages.toGetRequestInformation({
+            queryParameters: {
+                count: true,
+            }
+        });
+        assert.equal(`https://graph.microsoft.com/v1.0/users/${userId}/messages?%24count=true`, messagesRI.URL);
         assert.isDefined(messages?.value);
     });
 });
