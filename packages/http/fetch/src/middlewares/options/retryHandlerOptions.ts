@@ -28,11 +28,13 @@ export interface RetryHandlerOptionsParams {
 	/**
 	 * @member
 	 * The delay value in seconds
+	 * @default 3
 	 */
 	delay?: number;
 	/**
 	 * @member
 	 * The maxRetries value
+	 * @default 3
 	 */
 	maxRetries?: number;
 	/**
@@ -108,8 +110,9 @@ export class RetryHandlerOptions implements RequestOption {
 	 * To create an instance of RetryHandlerOptions
 	 * @param {RetryHandlerOptionsParams} options - The RetryHandlerOptionsParams object
 	 * @returns An instance of RetryHandlerOptions
+	 * @example	const options = new RetryHandlerOptions({ maxRetries: 4 });
 	 */
-	public constructor(options: RetryHandlerOptionsParams = {} as RetryHandlerOptionsParams) {
+	public constructor(options: Partial<RetryHandlerOptionsParams> = {} as RetryHandlerOptionsParams) {
 		if (options.delay && options.delay > RetryHandlerOptions.MAX_DELAY) {
 			throw this.createError(`Delay should not be more than ${RetryHandlerOptions.MAX_DELAY}`, "MaxLimitExceeded");
 		}

@@ -68,8 +68,10 @@ export class RedirectHandlerOptions implements RequestOption {
 	 * To create an instance of RedirectHandlerOptions
 	 * @param {RedirectHandlerOptionsParams} [options = {}] - The redirect handler options instance
 	 * @returns An instance of RedirectHandlerOptions
+	 * @throws Error if maxRedirects is more than 20 or less than 0
+	 * @example	const options = new RedirectHandlerOptions({ maxRedirects: 5 });
 	 */
-	public constructor(options: RedirectHandlerOptionsParams = {} as RedirectHandlerOptionsParams) {
+	public constructor(options: Partial<RedirectHandlerOptionsParams> = {} as RedirectHandlerOptionsParams) {
 		if (options.maxRedirects && options.maxRedirects > RedirectHandlerOptions.MAX_MAX_REDIRECTS) {
 		  const error = new Error(`MaxRedirects should not be more than ${RedirectHandlerOptions.MAX_MAX_REDIRECTS}`);
 		  error.name = "MaxLimitExceeded";

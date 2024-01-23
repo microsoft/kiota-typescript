@@ -56,9 +56,11 @@ export class ParametersNameDecodingHandlerOptions implements RequestOption {
 	 * @constructor
 	 * To create an instance of ParametersNameDecodingHandlerOptions
 	 * @param {ParametersNameDecodingHandlerOptionsParams} [options = {}] - The optional parameters
+	 * @returns An instance of ParametersNameDecodingHandlerOptions
+	 * @example ParametersNameDecodingHandlerOptions({ enable: true, charactersToDecode: [".", "-", "~", "$"] });
 	 */
 	public constructor(
-		options: ParametersNameDecodingHandlerOptionsParams = {} as ParametersNameDecodingHandlerOptionsParams,
+		options: Partial<ParametersNameDecodingHandlerOptionsParams> = {} as ParametersNameDecodingHandlerOptionsParams,
 	  ) {
 		this.enable = options.enable ?? true;
 		this.charactersToDecode = options.charactersToDecode ?? [".", "-", "~", "$"];
