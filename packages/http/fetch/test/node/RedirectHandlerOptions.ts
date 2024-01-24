@@ -19,7 +19,7 @@ describe("RedirectHandlerOptions.ts", () => {
 				return false;
 			};
 			const maxRedirects = 5;
-			const options = new RedirectHandlerOptions(maxRedirects, shouldRedirect);
+			const options = new RedirectHandlerOptions({ maxRedirects, shouldRedirect });
 			assert.equal(options.maxRedirects, maxRedirects);
 			assert.equal(options.shouldRedirect, shouldRedirect);
 		});
@@ -27,7 +27,7 @@ describe("RedirectHandlerOptions.ts", () => {
 		it("Should throw error for setting max redirects more than allowed", () => {
 			try {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				const options = new RedirectHandlerOptions(100);
+				const options = new RedirectHandlerOptions({ maxRedirects: 100 });
 				throw new Error("Test Failed - Something wrong with the max redirects value redirection");
 			} catch (error) {
 				assert.equal((error as Error).name, "MaxLimitExceeded");
@@ -36,7 +36,7 @@ describe("RedirectHandlerOptions.ts", () => {
 		it("Should throw error for setting max redirects to negative", () => {
 			try {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				const options = new RedirectHandlerOptions(-10);
+				const options = new RedirectHandlerOptions({ maxRedirects: -10 });
 				throw new Error(" Test Failed - Something wrong with the max redirects value redirection");
 			} catch (error) {
 				assert.equal((error as Error).name, "MinExpectationNotMet");

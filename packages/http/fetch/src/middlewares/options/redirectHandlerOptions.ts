@@ -18,6 +18,12 @@ import type { RequestOption } from "@microsoft/kiota-abstractions";
 export type ShouldRedirect = (response: Response) => boolean;
 
 export const RedirectHandlerOptionKey = "RedirectHandlerOption";
+
+export interface RedirectHandlerOptionsParams {
+	maxRedirects?: number;
+	shouldRedirect?: ShouldRedirect;
+}
+
 /**
  * @class
  * @implements MiddlewareOptions
@@ -46,26 +52,39 @@ export class RedirectHandlerOptions implements RequestOption {
 
 	/**
 	 * @public
+	 * A member holding the max redirects value
+	 */
+	public maxRedirects: number;
+    
+	/**
+	 * @public
+	 * A member holding the should redirect callback
+	 */
+  	public shouldRedirect: ShouldRedirect;
+
+	/**
+	 * @public
 	 * @constructor
 	 * To create an instance of RedirectHandlerOptions
-	 * @param {number} [maxRedirects = RedirectHandlerOptions.DEFAULT_MAX_REDIRECTS] - The max redirects value
-	 * @param {ShouldRedirect} [shouldRedirect = RedirectHandlerOptions.DEFAULT_SHOULD_RETRY] - The should redirect callback
+	 * @param {RedirectHandlerOptionsParams} [options = {}] - The redirect handler options instance
 	 * @returns An instance of RedirectHandlerOptions
+	 * @throws Error if maxRedirects is more than 20 or less than 0
+	 * @example	const options = new RedirectHandlerOptions({ maxRedirects: 5 });
 	 */
-	public constructor(public maxRedirects: number = RedirectHandlerOptions.DEFAULT_MAX_REDIRECTS, public shouldRedirect: ShouldRedirect = RedirectHandlerOptions.defaultShouldRetry) {
-		if (maxRedirects > RedirectHandlerOptions.MAX_MAX_REDIRECTS) {
-			const error = new Error(`MaxRedirects should not be more than ${RedirectHandlerOptions.MAX_MAX_REDIRECTS}`);
-			error.name = "MaxLimitExceeded";
-			throw error;
+	public constructor(options: Partial<RedirectHandlerOptionsParams> = {}) {
+		if (options.maxRedirects && options.maxRedirects > RedirectHandlerOptions.MAX_MAX_REDIRECTS) {
+		  const error = new Error(`MaxRedirects should not be more than ${RedirectHandlerOptions.MAX_MAX_REDIRECTS}`);
+		  error.name = "MaxLimitExceeded";
+		  throw error;
 		}
-		if (maxRedirects < 0) {
-			const error = new Error(`MaxRedirects should not be negative`);
-			error.name = "MinExpectationNotMet";
-			throw error;
+		if (options.maxRedirects !== undefined && options.maxRedirects < 0) {
+		  const error = new Error(`MaxRedirects should not be negative`);
+		  error.name = "MinExpectationNotMet";
+		  throw error;
 		}
-		this.maxRedirects = maxRedirects;
-		this.shouldRedirect = shouldRedirect;
-	}
+		this.maxRedirects = options.maxRedirects ?? RedirectHandlerOptions.DEFAULT_MAX_REDIRECTS;
+		this.shouldRedirect = options.shouldRedirect ?? RedirectHandlerOptions.defaultShouldRetry;
+	  }
 
 	public getKey(): string {
 		return RedirectHandlerOptionKey;

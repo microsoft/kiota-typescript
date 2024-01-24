@@ -162,7 +162,7 @@ describe("RetryHandler.ts", function () {
 			const delay = 1;
 			const maxRetries = 2;
 			const shouldRetry: ShouldRetry = () => false;
-			const options = new RetryHandlerOptions(delay, maxRetries, shouldRetry);
+			const options = new RetryHandlerOptions({delay, maxRetries, shouldRetry});
 
 			const requestUrl = "url";
 			const fetchRequestInit = {
@@ -230,7 +230,7 @@ describe("RetryHandler.ts", function () {
 		});
 
 		it("Should successfully retry and return ok response", async () => {
-			const opts = new RetryHandlerOptions(1);
+			const opts = new RetryHandlerOptions({delay: 1});
 			const handler = new RetryHandler(opts);
 			handler.next = dummyFetchHandler;
 			dummyFetchHandler.setResponses([new Response(null, { status: 429 }), new Response(null, { status: 429 }), new Response("ok", { status: 200 })]);
@@ -239,7 +239,7 @@ describe("RetryHandler.ts", function () {
 		});
 
 		it("Should fail by exceeding max retries", async () => {
-			const opts = new RetryHandlerOptions(1, 2);
+			const opts = new RetryHandlerOptions({delay: 1, maxRetries: 2});
 			const handler = new RetryHandler(opts);
 			handler.next = dummyFetchHandler;
 			dummyFetchHandler.setResponses([new Response(null, { status: 429 }), new Response(null, { status: 429 }), new Response(null, { status: 429 }), new Response("ok", { status: 200 })]);

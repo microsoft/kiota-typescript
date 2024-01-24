@@ -38,7 +38,7 @@ describe("userAgentHandler.ts", function () {
 			assert.equal(((fetchRequestInit as any).headers["User-Agent"] as string).split("kiota-typescript").length, 2);
 		});
 		it("Does not add the product when disabled", async () => {
-			const options = new UserAgentHandlerOptions(false);
+			const options = new UserAgentHandlerOptions({ enable: false });
 			const handler = new UserAgentHandler(options);
 			handler.next = dummyFetchHandler;
 			dummyFetchHandler.setResponses([new Response("ok", { status: 200 })]);

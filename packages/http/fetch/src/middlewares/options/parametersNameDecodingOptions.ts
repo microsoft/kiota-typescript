@@ -13,8 +13,40 @@ import type { RequestOption } from "@microsoft/kiota-abstractions";
 
 export const ParametersNameDecodingHandlerOptionsKey = "RetryHandlerOptionKey";
 
+/**
+ * @interface
+ * Signature to define the ParametersNameDecodingHandlerOptions constructor parameters
+ */
+export interface ParametersNameDecodingHandlerOptionsParams {
+	/**
+	 * @member
+	 * Whether to decode the specified characters in the request query parameters names
+	 * * @default true
+	 */
+	enable?: boolean;
+	/**
+	 * @member
+	 * The characters to decode
+	 * @default [".", "-", "~", "$"]
+	 */
+	charactersToDecode?: string[];
+}
+
 /** The ParametersNameDecodingOptions request class */
 export class ParametersNameDecodingHandlerOptions implements RequestOption {
+	/**
+	 * @public
+	 * Whether to decode the specified characters in the request query parameters names
+	 */
+	public enable: boolean;
+
+	/**
+	 * @public
+	 * The characters to decode
+	 * @default [".", "-", "~", "$"]
+	 */
+	public charactersToDecode: string[];
+
 	getKey(): string {
 		return ParametersNameDecodingHandlerOptionsKey;
 	}
@@ -23,8 +55,12 @@ export class ParametersNameDecodingHandlerOptions implements RequestOption {
 	 * @public
 	 * @constructor
 	 * To create an instance of ParametersNameDecodingHandlerOptions
-	 * @param {boolean} [enable = true] - Whether to decode the specified characters in the request query parameters names
-	 * @param {string[]} [charactersToDecode = [".", "-", "~", "$"]] - The characters to decode
+	 * @param {ParametersNameDecodingHandlerOptionsParams} [options = {}] - The optional parameters
+	 * @returns An instance of ParametersNameDecodingHandlerOptions
+	 * @example ParametersNameDecodingHandlerOptions({ enable: true, charactersToDecode: [".", "-", "~", "$"] });
 	 */
-	public constructor(public enable = true, public charactersToDecode: string[] = [".", "-", "~", "$"]) {}
+	public constructor(options: Partial<ParametersNameDecodingHandlerOptionsParams> = {}) {
+		this.enable = options.enable ?? true;
+		this.charactersToDecode = options.charactersToDecode ?? [".", "-", "~", "$"];
+	  }
 }
