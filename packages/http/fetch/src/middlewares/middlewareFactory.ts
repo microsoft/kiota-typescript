@@ -27,7 +27,6 @@ export class MiddlewareFactory {
 	 * @public
 	 * @static
 	 * Returns the default middleware chain an array with the  middleware handlers
-	 * @param {AuthenticationProvider} authProvider - The authentication provider instance
 	 * @returns an array of the middleware handlers of the default middleware chain
 	 */
 	public static getDefaultMiddlewareChain(customFetch: (request: string, init: RequestInit) => Promise<Response> = fetch as any): Middleware[] {
