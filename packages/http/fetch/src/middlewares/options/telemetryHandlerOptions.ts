@@ -7,6 +7,6 @@
 import type { RequestOption } from "@microsoft/kiota-abstractions";
 
 export interface TelemetryHandlerOptions extends RequestOption {
-	telemetryConfigurator: (url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>, telemetryInfomation?: unknown) => void;
-	telemetryInfomation: unknown;
+	telemetryConfigurator: (url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>, telemetryInformation?: unknown) => void;
+	telemetryInformation?: unknown;
 }
