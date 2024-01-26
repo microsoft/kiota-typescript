@@ -15,7 +15,7 @@ export class TelemetryHandler implements Middleware {
 	next: Middleware | undefined;
 	execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		if (this.telemetryHandlerOptions && this.telemetryHandlerOptions.telemetryConfigurator) {
-			this.telemetryHandlerOptions.telemetryConfigurator(url, requestInit, requestOptions, this.telemetryHandlerOptions.telemetryInfomation);
+			this.telemetryHandlerOptions.telemetryConfigurator(url, requestInit, requestOptions, this.telemetryHandlerOptions.telemetryInformation);
 		} else if (requestOptions && requestOptions[TelemetryHandlerOptionsKey]) {
 			(requestOptions[TelemetryHandlerOptionsKey] as TelemetryHandlerOptions).telemetryConfigurator(url, requestInit, requestOptions);
 		}

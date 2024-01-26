@@ -4,6 +4,9 @@ import { type Span, SpanStatusCode, trace } from "@opentelemetry/api";
 import { HttpClient } from "./httpClient";
 import { type ObservabilityOptions, ObservabilityOptionsImpl } from "./observabilityOptions";
 
+/**
+ * Request adapter implementation for the fetch API.
+ */
 export class FetchRequestAdapter implements RequestAdapter {
 	/** The base url for every request. */
 	public baseUrl = "";
@@ -12,7 +15,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 	}
 	private readonly observabilityOptions: ObservabilityOptionsImpl;
 	/**
-	 * Instantiates a new http core service
+	 * Instantiates a new request adapter.
 	 * @param authenticationProvider the authentication provider to use.
 	 * @param parseNodeFactory the parse node factory to deserialize responses.
 	 * @param serializationWriterFactory the serialization writer factory to use to serialize request bodies.

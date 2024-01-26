@@ -29,5 +29,6 @@ export * from "./middlewares/options/userAgentHandlerOptions";
 export * from "./middlewares/telemetryHandler";
 
 export * from "./middlewares/middlewareFactory";
+export * from "./observabilityOptions";
 export * from "./utils/headersUtil";
 export * from "./utils/fetchDefinitions";
