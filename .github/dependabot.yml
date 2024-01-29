@@ -125,17 +125,3 @@ updates:
     eslint:
       patterns:
         - "*eslint*"
-
-- package-ecosystem: npm
-  directory: "/packages/sample-app"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 10
-  commit-message:
-    # Prefix all commit messages with "npm"
-    prefix: "auto dependabot"
-  groups:
-    eslint:
-      patterns:
-        - "*eslint*"
-        - "*webpack*"

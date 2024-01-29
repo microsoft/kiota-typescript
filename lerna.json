@@ -1,7 +1,6 @@
 {
   "packages": [
     "packages/test",
-    "packages/sample-app",
     "packages/abstractions",
     "packages/http/*",
     "packages/serialization/*",
