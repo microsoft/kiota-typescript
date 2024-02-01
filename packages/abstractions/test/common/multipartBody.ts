@@ -43,7 +43,7 @@ describe("multipartBody", () => {
           undefined as any as MultipartBody,
         ),
       Error,
-      "multipartBody cannot be undefined",
+      "multipartBody cannot be empty",
     );
   });
   it("requires parts for serialization", () => {
