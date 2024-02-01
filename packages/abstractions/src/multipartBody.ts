@@ -1,7 +1,12 @@
 import { Guid } from "guid-typescript";
 
 import type { RequestAdapter } from "./requestAdapter";
-import type { ModelSerializerFunction, Parsable, ParseNode, SerializationWriter } from "./serialization";
+import type {
+  ModelSerializerFunction,
+  Parsable,
+  ParseNode,
+  SerializationWriter,
+} from "./serialization";
 /**
  * Defines an interface for a multipart body for request or response.
  */
@@ -94,12 +99,12 @@ interface MultipartEntry {
 
 export function serializeMultipartBody(
   writer: SerializationWriter,
-  multipartBody: MultipartBody | undefined,
+  multipartBody: Partial<MultipartBody> = new MultipartBody(),
 ): void {
   if (!writer) {
     throw new Error("writer cannot be undefined");
   }
-  if (!multipartBody) {
+  if (!multipartBody?.listParts || !multipartBody.getBoundary) {
     throw new Error("multipartBody cannot be undefined");
   }
   const parts = multipartBody.listParts();
@@ -164,7 +169,7 @@ export function serializeMultipartBody(
 
 export function deserializeIntoMultipartBody(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _: MultipartBody | undefined = new MultipartBody(),
+  _: Partial<MultipartBody> | undefined = new MultipartBody(),
 ): Record<string, (node: ParseNode) => void> {
   throw new Error("Not implemented");
 }
