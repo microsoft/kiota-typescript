@@ -104,8 +104,14 @@ export function serializeMultipartBody(
   if (!writer) {
     throw new Error("writer cannot be undefined");
   }
-  if (!multipartBody?.listParts || !multipartBody.getBoundary) {
+  if (!multipartBody) {
     throw new Error("multipartBody cannot be undefined");
+  }
+  if (!multipartBody.listParts) {
+    throw new Error("multipartBody.listParts cannot be undefined");
+  }
+  if (!multipartBody.getBoundary) {
+    throw new Error("multipartBody.getBoundary cannot be undefined");
   }
   const parts = multipartBody.listParts();
   if (Object.keys(parts).length === 0) {
