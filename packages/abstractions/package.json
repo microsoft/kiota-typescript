@@ -30,16 +30,16 @@
   },
   "homepage": "https://github.com/microsoft/kiota#readme",
   "devDependencies": {
-    "@types/node": "^20.1.1",
-    "@types/uuid": "^9.0.0"
+    "@types/node": "^20.11.15",
+    "@types/uuid": "^9.0.8"
   },
   "dependencies": {
-    "@opentelemetry/api": "^1.2.0",
+    "@opentelemetry/api": "^1.7.0",
     "@std-uritemplate/std-uritemplate": "^0.0.50",
     "guid-typescript": "^1.0.9",
-    "tinyduration": "^3.2.2",
-    "tslib": "^2.3.1",
-    "uuid": "^9.0.0"
+    "tinyduration": "^3.3.0",
+    "tslib": "^2.6.2",
+    "uuid": "^9.0.1"
   },
   "publishConfig": {
     "access": "public"
