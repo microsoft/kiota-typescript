@@ -29,10 +29,10 @@
   },
   "homepage": "https://github.com/microsoft/kiota-typescript#readme",
   "dependencies": {
-    "@azure/core-auth": "^1.3.2",
+    "@azure/core-auth": "^1.5.0",
     "@microsoft/kiota-abstractions": "^1.0.0-preview.39",
-    "@opentelemetry/api": "^1.2.0",
-    "tslib": "^2.3.1"
+    "@opentelemetry/api": "^1.7.0",
+    "tslib": "^2.6.2"
   },
   "publishConfig": {
     "access": "public"

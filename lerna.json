@@ -6,7 +6,7 @@
     "packages/serialization/*",
     "packages/authentication/*"
   ],
-  "npmClient": "yarn",
+  "npmClient": "npm",
   "version": "independent",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
