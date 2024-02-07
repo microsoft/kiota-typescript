@@ -104,6 +104,7 @@ export interface RequestAdapter {
 export interface ErrorMappings {
   _4XX?: ParsableFactory<Parsable>;
   _5XX?: ParsableFactory<Parsable>;
+  XXX?: ParsableFactory<Parsable>;
   [key: number]: ParsableFactory<Parsable>;
 }
 

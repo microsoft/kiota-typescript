@@ -328,7 +328,8 @@ export class FetchRequestAdapter implements RequestAdapter {
 				response.headers.forEach((value, key) => {
 					responseHeaders[key] = value.split(",");
 				});
-				if (!errorMappings || (!errorMappings[statusCode] && !(statusCode >= 400 && statusCode < 500 && errorMappings._4XX) && !(statusCode >= 500 && statusCode < 600 && errorMappings._5XX))) {
+				const factory = errorMappings ? errorMappings[statusCode] ?? (statusCode >= 400 && statusCode < 500 ? errorMappings._4XX : undefined) ?? (statusCode >= 500 && statusCode < 600 ? errorMappings._5XX : undefined) ?? errorMappings.XXX : undefined;
+				if (!factory) {
 					spanForAttributes.setAttribute(FetchRequestAdapter.errorMappingFoundAttributeName, false);
 					const error = new DefaultApiError("the server returned an unexpected status code and no error class is registered for this code " + statusCode);
 					error.responseStatusCode = statusCode;
@@ -337,8 +338,6 @@ export class FetchRequestAdapter implements RequestAdapter {
 					throw error;
 				}
 				spanForAttributes.setAttribute(FetchRequestAdapter.errorMappingFoundAttributeName, true);
-
-				const factory = errorMappings[statusCode] ?? (statusCode >= 400 && statusCode < 500 ? errorMappings._4XX : undefined) ?? (statusCode >= 500 && statusCode < 600 ? errorMappings._5XX : undefined);
 
 				const rootNode = await this.getRootParseNode(response);
 				let error = trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getObjectValue", (deserializeSpan) => {
@@ -351,7 +350,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				spanForAttributes.setAttribute(FetchRequestAdapter.errorBodyFoundAttributeName, !!error);
 
 				if (!error) error = new DefaultApiError("unexpected error type" + typeof error) as unknown as Parsable;
-				const errorObject = error as unknown as ApiError;
+				const errorObject = error as ApiError;
 				errorObject.responseStatusCode = statusCode;
 				errorObject.responseHeaders = responseHeaders;
 				spanForAttributes.recordException(errorObject);
