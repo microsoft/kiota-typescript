@@ -182,13 +182,11 @@ function sendAsync(
 export function apiClientProxifier<T extends object>(
   requestAdapter: RequestAdapter,
   pathParameters: Record<string, unknown>,
-  urlTemplate: string,
   navigationMetadata?: Record<string, NavigationMetadata>,
   requestsMetadata?: RequestsMetadata,
 ): T {
   if (!requestAdapter) throw new Error("requestAdapter cannot be undefined");
   if (!pathParameters) throw new Error("pathParameters cannot be undefined");
-  if (!urlTemplate) throw new Error("urlTemplate cannot be undefined");
   return new Proxy({} as T, {
     get(target, property) {
       const name = String(property);
@@ -198,7 +196,6 @@ export function apiClientProxifier<T extends object>(
           return apiClientProxifier(
             requestAdapter,
             getPathParameters(rawUrl),
-            urlTemplate,
             navigationMetadata,
             requestsMetadata,
           );
@@ -212,10 +209,12 @@ export function apiClientProxifier<T extends object>(
             switch (name) {
               case "get":
                 return (
-                  requestConfiguration?: RequestConfiguration<object> | undefined,
+                  requestConfiguration?:
+                    | RequestConfiguration<object>
+                    | undefined,
                 ) => {
                   const requestInfo = toRequestInformation(
-                    urlTemplate,
+                    metadata.uriTemplate,
                     pathParameters,
                     metadata,
                     requestAdapter,
@@ -229,7 +228,7 @@ export function apiClientProxifier<T extends object>(
               case "patch":
                 return (...args: any[]) => {
                   const requestInfo = toRequestInformation(
-                    urlTemplate,
+                    metadata.uriTemplate,
                     pathParameters,
                     metadata,
                     requestAdapter,
@@ -243,7 +242,7 @@ export function apiClientProxifier<T extends object>(
               case "put":
                 return (...args: any[]) => {
                   const requestInfo = toRequestInformation(
-                    urlTemplate,
+                    metadata.uriTemplate,
                     pathParameters,
                     metadata,
                     requestAdapter,
@@ -257,7 +256,7 @@ export function apiClientProxifier<T extends object>(
               case "delete":
                 return (...args: any[]) => {
                   const requestInfo = toRequestInformation(
-                    urlTemplate,
+                    metadata.uriTemplate,
                     pathParameters,
                     metadata,
                     requestAdapter,
@@ -271,7 +270,7 @@ export function apiClientProxifier<T extends object>(
               case "post":
                 return (...args: any[]) => {
                   const requestInfo = toRequestInformation(
-                    urlTemplate,
+                    metadata.uriTemplate,
                     pathParameters,
                     metadata,
                     requestAdapter,
@@ -283,9 +282,11 @@ export function apiClientProxifier<T extends object>(
                   return sendAsync(requestAdapter, requestInfo, metadata);
                 };
               case "toGetRequestInformation":
-                return (requestConfiguration?: RequestConfiguration<object>) => {
+                return (
+                  requestConfiguration?: RequestConfiguration<object>,
+                ) => {
                   return toRequestInformation(
-                    urlTemplate,
+                    metadata.uriTemplate,
                     pathParameters,
                     metadata,
                     requestAdapter,
@@ -298,7 +299,7 @@ export function apiClientProxifier<T extends object>(
               case "toPatchRequestInformation":
                 return (...args: any[]) => {
                   return toRequestInformation(
-                    urlTemplate,
+                    metadata.uriTemplate,
                     pathParameters,
                     metadata,
                     requestAdapter,
@@ -311,7 +312,7 @@ export function apiClientProxifier<T extends object>(
               case "toPutRequestInformation":
                 return (...args: any[]) => {
                   return toRequestInformation(
-                    urlTemplate,
+                    metadata.uriTemplate,
                     pathParameters,
                     metadata,
                     requestAdapter,
@@ -324,7 +325,7 @@ export function apiClientProxifier<T extends object>(
               case "toDeleteRequestInformation":
                 return (...args: any[]) => {
                   return toRequestInformation(
-                    urlTemplate,
+                    metadata.uriTemplate,
                     pathParameters,
                     metadata,
                     requestAdapter,
@@ -337,7 +338,7 @@ export function apiClientProxifier<T extends object>(
               case "toPostRequestInformation":
                 return (...args: any[]) => {
                   return toRequestInformation(
-                    urlTemplate,
+                    metadata.uriTemplate,
                     pathParameters,
                     metadata,
                     requestAdapter,
@@ -364,7 +365,6 @@ export function apiClientProxifier<T extends object>(
             return apiClientProxifier(
               requestAdapter,
               getPathParameters(pathParameters),
-              navigationCandidate.uriTemplate,
               navigationCandidate.navigationMetadata,
               navigationCandidate.requestsMetadata,
             );
@@ -386,7 +386,6 @@ export function apiClientProxifier<T extends object>(
             return apiClientProxifier(
               requestAdapter,
               downWardPathParameters,
-              navigationCandidate.uriTemplate,
               navigationCandidate.navigationMetadata,
               navigationCandidate.requestsMetadata,
             );
@@ -415,6 +414,7 @@ export interface RequestMetadata {
     | PrimitiveTypesForDeserialization;
   requestInformationContentSetMethod?: keyof RequestInformationSetContent;
   queryParametersMapper?: Record<string, string>;
+  uriTemplate: string;
 }
 export interface RequestsMetadata {
   delete?: RequestMetadata;
@@ -429,7 +429,6 @@ export interface RequestsMetadata {
 type KeysOfRequestsMetadata = keyof RequestsMetadata;
 
 export interface NavigationMetadata {
-  uriTemplate: string;
   requestsMetadata?: RequestsMetadata;
   navigationMetadata?: Record<string, NavigationMetadata>;
   pathParametersMappings?: string[];
