@@ -5,13 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import * as chai from "chai";
+import { assert } from "chai";
 import { URL } from "url";
 
-const assert = chai.assert;
-
 import {
-  Headers,
   HttpMethod,
   type Parsable,
   type RequestAdapter,
