@@ -32,7 +32,7 @@ export class MultipartSerializationWriter implements SerializationWriter {
   public onStartObjectSerialization:
     | ((value: Parsable, writer: SerializationWriter) => void)
     | undefined;
-  public writeStringValue = (key?: string, value?: string, newline: boolean = true): void => {
+  public writeStringValue = (key?: string, value?: string): void => {
     if (key) {
       this.writeRawStringValue(key);
     }
@@ -42,9 +42,7 @@ export class MultipartSerializationWriter implements SerializationWriter {
       }
       this.writeRawStringValue(value);
     }
-    if(newline) {
-      this.writeRawStringValue("\r\n");
-    }
+    this.writeRawStringValue("\r\n");
   };
   private writeRawStringValue = (value?: string): void => {
     if (value) {

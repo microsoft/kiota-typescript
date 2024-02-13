@@ -31,7 +31,6 @@ export class MultipartBody implements Parsable {
     partName: string,
     partContentType: string,
     content: T,
-    additionalKV: {[key: string]: string} | undefined,
     serializationCallback?: ModelSerializerFunction<Parsable>,
   ): void {
     if (!partName) throw new Error("partName cannot be undefined");
@@ -44,7 +43,6 @@ export class MultipartBody implements Parsable {
       contentType: partContentType,
       content,
       originalName: partName,
-      additionalKV: additionalKV,
       serializationCallback,
     };
   }
@@ -96,7 +94,6 @@ interface MultipartEntry {
   contentType: string;
   content: any;
   originalName: string;
-  additionalKV: {[key: string]: string} | undefined;
   serializationCallback?: ModelSerializerFunction<Parsable>;
 }
 
@@ -131,18 +128,13 @@ export function serializeMultipartBody(
     writer.writeStringValue(undefined, "--" + boundary);
     const part = parts[partName];
     writer.writeStringValue("Content-Type", part.contentType);
-    let dispositionValue = 'form-data; name="' + part.originalName + '"';
-    if(part.additionalKV && Object.keys(part.additionalKV).length) {
-      const additionalString = Object.entries(part.additionalKV).map(([k, v]) => `${k}="${v}"`).join("; ");
-      dispositionValue += "; " + additionalString;
-    }
     writer.writeStringValue(
       "Content-Disposition",
-      dispositionValue,
+      'form-data; name="' + part.originalName + '"',
     );
     writer.writeStringValue(undefined, "");
     if (typeof part.content === "string") {
-      writer.writeStringValue(undefined, part.content, false);
+      writer.writeStringValue(undefined, part.content);
     } else if (part.content instanceof ArrayBuffer) {
       writer.writeByteArrayValue(undefined, new Uint8Array(part.content));
     } else if (part.content instanceof Uint8Array) {
