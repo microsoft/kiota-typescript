@@ -10,12 +10,14 @@ import {
   isBackingStoreEnabled,
   toFirstCharacterUpper,
   isUntypedNode,
+  UntypedNode,
+  UntypedArray,
+  UntypedBoolean,
+  UntypedNumber,
+  UntypedObject,
+  UntypedString,
+  createUntypedNodeFromDiscriminatorValue,
 } from "@microsoft/kiota-abstractions";
-import { UntypedArray } from "@microsoft/kiota-abstractions/src/serialization/untypedArray";
-import { UntypedBoolean, UntypedNode } from "@microsoft/kiota-abstractions/src/serialization/untypedBoolean";
-import { UntypedNumber } from "@microsoft/kiota-abstractions/src/serialization/untypedNumber";
-import { UntypedObject } from "@microsoft/kiota-abstractions/src/serialization/untypedObject";
-import { UntypedString } from "@microsoft/kiota-abstractions/src/serialization/untypedString";
 
 export class JsonParseNode implements ParseNode {
   /**
@@ -92,15 +94,18 @@ export class JsonParseNode implements ParseNode {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         value.forEach((v, idx) => {
           const currentParseNode = new JsonParseNode(v);
-          const untypedNode: UntypedNode =
-            currentParseNode.getObjectValue(parsableFactory);
+          const untypedNode: UntypedNode = currentParseNode.getObjectValue(
+            createUntypedNodeFromDiscriminatorValue,
+          );
           nodes.push(untypedNode);
         });
         value = new UntypedArray(nodes) as any as T;
       } else if (valueType === "object") {
         const properties: Record<string, UntypedNode> = {};
         Object.entries(this._jsonNode as any).forEach(([k, v]) => {
-          properties[k] = new JsonParseNode(v).getObjectValue(parsableFactory);
+          properties[k] = new JsonParseNode(v).getObjectValue(
+            createUntypedNodeFromDiscriminatorValue,
+          );
         });
         value = new UntypedObject(properties) as any as T;
       }
