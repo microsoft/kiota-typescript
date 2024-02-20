@@ -2,10 +2,19 @@
 import {
   DateOnly,
   Duration,
+  isUntypedNode,
   type ModelSerializerFunction,
   type Parsable,
   type SerializationWriter,
-  TimeOnly} from "@microsoft/kiota-abstractions";
+  TimeOnly,
+  type UntypedNode,
+} from "@microsoft/kiota-abstractions";
+import { isUntypedArray } from "@microsoft/kiota-abstractions/src/serialization/untypedArray";
+import { isUntypedBoolean } from "@microsoft/kiota-abstractions/src/serialization/untypedBoolean";
+import { isUntypedNull } from "@microsoft/kiota-abstractions/src/serialization/untypedNull";
+import { isUntypedNumber } from "@microsoft/kiota-abstractions/src/serialization/untypedNumber";
+import { isUntypedObject } from "@microsoft/kiota-abstractions/src/serialization/untypedObject";
+import { isUntypedString } from "@microsoft/kiota-abstractions/src/serialization/untypedString";
 import type { Guid } from "guid-typescript";
 
 export class JsonSerializationWriter implements SerializationWriter {
@@ -103,6 +112,43 @@ export class JsonSerializationWriter implements SerializationWriter {
     value: T,
     serializerMethod: ModelSerializerFunction<T>,
   ): void {
+    if (isUntypedNode(value)) {
+      const untypedNode = value as UntypedNode;
+      if (isUntypedBoolean(untypedNode)) {
+        this.writeBooleanValue(key, untypedNode.getValue());
+      } else if (isUntypedString(untypedNode)) {
+        this.writeStringValue(key, untypedNode.getValue());
+      } else if (isUntypedNull(untypedNode)) {
+        this.writeNullValue(key);
+      } else if (isUntypedNumber(untypedNode)) {
+        this.writeNumberValue(key, untypedNode.getValue());
+      } else if (isUntypedObject(untypedNode)) {
+        const value = untypedNode.getValue();
+        this.writer.push(`{`);
+        for (const key in value) {
+          this.writeObjectValue(
+            key,
+            value[key] as unknown as T,
+            serializerMethod,
+          );
+          this.writer.push(JsonSerializationWriter.propertySeparator);
+        }
+        this.writer.push(`}`);
+      } else if (isUntypedArray(untypedNode)) {
+        const value = untypedNode.getValue();
+        this.writer.push(`[`);
+        value.forEach((v, idx) => {
+          this.writeObjectValue(undefined, v as unknown as T, serializerMethod);
+          idx + 1 < value.length &&
+            this.writer.push(JsonSerializationWriter.propertySeparator);
+        });
+        this.writer.push(`]`);
+      } else {
+        this.writeAnyValue(key, untypedNode.getValue());
+      }
+      return; // nothing to do here, the value has been written
+    }
+
     if (key) {
       this.writePropertyName(key);
     }
