@@ -1,7 +1,12 @@
-import type { UntypedNode } from "./untypedNode";
+import { UntypedNode } from "./untypedNode";
 
-export interface UntypedNumber extends UntypedNode {
-  getValue(): number;
+export class UntypedNumber extends UntypedNode {
+  constructor(value: number) {
+    super(value);
+  }
+  getValue(): number {
+    return this.value as number;
+  }
 }
 
 export function isUntypedNumber(node: UntypedNode): node is UntypedNumber {

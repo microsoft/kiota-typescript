@@ -1,7 +1,12 @@
-import type { UntypedNode } from "./untypedNode";
+import { UntypedNode } from "./untypedNode";
 
-export interface UntypedBoolean extends UntypedNode {
-  getValue(): boolean;
+export class UntypedBoolean extends UntypedNode {
+  constructor(value: boolean) {
+    super(value);
+  }
+  getValue(): boolean {
+    return this.value as boolean;
+  }
 }
 
 export function isUntypedBoolean(node: UntypedNode): node is UntypedBoolean {

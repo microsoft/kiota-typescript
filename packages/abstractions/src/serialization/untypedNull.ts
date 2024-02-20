@@ -1,7 +1,12 @@
-import type { UntypedNode } from "./untypedNode";
+import { UntypedNode } from "./untypedNode";
 
-export interface UntypedNull extends UntypedNode {
-  getValue(): null;
+export class UntypedNull extends UntypedNode {
+  constructor() {
+    super(null);
+  }
+  getValue(): null {
+    return null;
+  }
 }
 
 export function isUntypedNull(node: UntypedNode): node is UntypedNull {

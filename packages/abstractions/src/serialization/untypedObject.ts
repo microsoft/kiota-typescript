@@ -1,7 +1,12 @@
-import { isUntypedNode, type UntypedNode } from "./untypedNode";
+import { isUntypedNode, UntypedNode } from "./untypedNode";
 
-export interface UntypedObject extends UntypedNode {
-  getValue(): Record<string, UntypedNode>;
+export class UntypedObject extends UntypedNode {
+  constructor(value: Record<string, UntypedNode>) {
+    super(value);
+  }
+  getValue(): Record<string, UntypedNode> {
+    return this.value as Record<string, UntypedNode>;
+  }
 }
 
 export function isUntypedObject(node: UntypedNode): node is UntypedObject {
