@@ -13,6 +13,7 @@ export function isUntypedObject(node: UntypedNode): node is UntypedObject {
   const value = (node as UntypedObject).value;
   return (
     value instanceof Object &&
+    value instanceof Array === false &&
     Object.values(value).every((item) => isUntypedNode(item))
   );
 }

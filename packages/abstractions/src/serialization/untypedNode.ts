@@ -20,7 +20,8 @@ export function createUntypedNodeFromDiscriminatorValue(
 }
 
 export function isUntypedNode(node: any): node is UntypedNode {
-  return (node as UntypedNode).getValue !== undefined;
+  const potentialNode = node as UntypedNode;
+  return potentialNode && potentialNode.getValue !== undefined;
 }
 
 export function deserializeIntoUntypedNode(

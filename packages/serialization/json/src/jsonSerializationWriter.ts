@@ -8,13 +8,13 @@ import {
   type SerializationWriter,
   TimeOnly,
   type UntypedNode,
+  isUntypedBoolean,
+  isUntypedString,
+  isUntypedNull,
+  isUntypedNumber,
+  isUntypedObject,
+  isUntypedArray,
 } from "@microsoft/kiota-abstractions";
-import { isUntypedArray } from "@microsoft/kiota-abstractions/src/serialization/untypedArray";
-import { isUntypedBoolean } from "@microsoft/kiota-abstractions/src/serialization/untypedBoolean";
-import { isUntypedNull } from "@microsoft/kiota-abstractions/src/serialization/untypedNull";
-import { isUntypedNumber } from "@microsoft/kiota-abstractions/src/serialization/untypedNumber";
-import { isUntypedObject } from "@microsoft/kiota-abstractions/src/serialization/untypedObject";
-import { isUntypedString } from "@microsoft/kiota-abstractions/src/serialization/untypedString";
 import type { Guid } from "guid-typescript";
 
 export class JsonSerializationWriter implements SerializationWriter {
@@ -124,17 +124,31 @@ export class JsonSerializationWriter implements SerializationWriter {
         this.writeNumberValue(key, untypedNode.getValue());
       } else if (isUntypedObject(untypedNode)) {
         const value = untypedNode.getValue();
-        this.writer.push(`{`);
+        if (key && value) {
+          this.writePropertyName(key);
+        }
+        value && this.writer.push(`{`);
         for (const key in value) {
           this.writeObjectValue(
             key,
             value[key] as unknown as T,
             serializerMethod,
           );
-          this.writer.push(JsonSerializationWriter.propertySeparator);
         }
-        this.writer.push(`}`);
+        if (
+          this.writer.length > 0 &&
+          this.writer[this.writer.length - 1] ===
+            JsonSerializationWriter.propertySeparator
+        ) {
+          //removing the last separator
+          this.writer.pop();
+        }
+        value && this.writer.push(`}`);
+        key && this.writer.push(JsonSerializationWriter.propertySeparator);
       } else if (isUntypedArray(untypedNode)) {
+        if (key) {
+          this.writePropertyName(key);
+        }
         const value = untypedNode.getValue();
         this.writer.push(`[`);
         value.forEach((v, idx) => {
@@ -142,19 +156,28 @@ export class JsonSerializationWriter implements SerializationWriter {
           idx + 1 < value.length &&
             this.writer.push(JsonSerializationWriter.propertySeparator);
         });
+        if (
+          this.writer.length > 0 &&
+          this.writer[this.writer.length - 1] ===
+            JsonSerializationWriter.propertySeparator
+        ) {
+          //removing the last separator
+          this.writer.pop();
+        }
         this.writer.push(`]`);
+        key && this.writer.push(JsonSerializationWriter.propertySeparator);
       } else {
         this.writeAnyValue(key, untypedNode.getValue());
       }
       return; // nothing to do here, the value has been written
     }
 
-    if (key) {
+    if (key && value) {
       this.writePropertyName(key);
     }
     this.onBeforeObjectSerialization &&
       this.onBeforeObjectSerialization(value as unknown as Parsable);
-    this.writer.push(`{`);
+    value && this.writer.push(`{`);
 
     this.onStartObjectSerialization &&
       this.onStartObjectSerialization(value as unknown as Parsable, this);
@@ -170,7 +193,7 @@ export class JsonSerializationWriter implements SerializationWriter {
       //removing the last separator
       this.writer.pop();
     }
-    this.writer.push(`}`);
+    value && this.writer.push(`}`);
 
     key && this.writer.push(JsonSerializationWriter.propertySeparator);
   }
