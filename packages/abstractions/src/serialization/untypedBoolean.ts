@@ -10,5 +10,5 @@ export class UntypedBoolean extends UntypedNode {
 }
 
 export function isUntypedBoolean(node: UntypedNode): node is UntypedBoolean {
-  return typeof (node as UntypedBoolean).value === "boolean";
+  return typeof (node as UntypedBoolean)?.value === "boolean";
 }

@@ -10,5 +10,5 @@ export class UntypedNull extends UntypedNode {
 }
 
 export function isUntypedNull(node: UntypedNode): node is UntypedNull {
-  return (node as UntypedNull).value === null;
+  return (node as UntypedNull)?.value === null;
 }

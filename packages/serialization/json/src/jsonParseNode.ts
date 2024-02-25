@@ -17,6 +17,7 @@ import {
   UntypedObject,
   UntypedString,
   createUntypedNodeFromDiscriminatorValue,
+  UntypedNull,
 } from "@microsoft/kiota-abstractions";
 
 export class JsonParseNode implements ParseNode {
@@ -81,26 +82,26 @@ export class JsonParseNode implements ParseNode {
   ): T => {
     const temp: T = {} as T;
     if (isUntypedNode(parsableFactory(this)(temp))) {
-      const valueType = typeof temp;
+      const valueType = typeof this._jsonNode;
       let value: T = temp;
       if (valueType === "boolean") {
-        value = new UntypedBoolean(value as any as boolean) as any as T;
+        value = new UntypedBoolean(this._jsonNode as boolean) as any as T;
       } else if (valueType === "string") {
-        value = new UntypedString(value as any as string) as any as T;
+        value = new UntypedString(this._jsonNode as string) as any as T;
       } else if (valueType === "number") {
-        value = new UntypedNumber(value as any as number) as any as T;
-      } else if (Array.isArray(value)) {
+        value = new UntypedNumber(this._jsonNode as number) as any as T;
+      } else if (Array.isArray(this._jsonNode)) {
         const nodes: UntypedNode[] = [];
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        value.forEach((v, idx) => {
-          const currentParseNode = new JsonParseNode(v);
-          const untypedNode: UntypedNode = currentParseNode.getObjectValue(
-            createUntypedNodeFromDiscriminatorValue,
+        (this._jsonNode as any[]).forEach((x) => {
+          nodes.push(
+            new JsonParseNode(x).getObjectValue(
+              createUntypedNodeFromDiscriminatorValue,
+            ),
           );
-          nodes.push(untypedNode);
         });
         value = new UntypedArray(nodes) as any as T;
-      } else if (valueType === "object") {
+      } else if (this._jsonNode && valueType === "object") {
         const properties: Record<string, UntypedNode> = {};
         Object.entries(this._jsonNode as any).forEach(([k, v]) => {
           properties[k] = new JsonParseNode(v).getObjectValue(
@@ -108,6 +109,8 @@ export class JsonParseNode implements ParseNode {
           );
         });
         value = new UntypedObject(properties) as any as T;
+      } else if (!this._jsonNode) {
+        value = new UntypedNull() as any as T;
       }
       return value;
     }

@@ -10,7 +10,7 @@ export class UntypedObject extends UntypedNode {
 }
 
 export function isUntypedObject(node: UntypedNode): node is UntypedObject {
-  const value = (node as UntypedObject).value;
+  const value = (node as UntypedObject)?.value;
   return (
     value instanceof Object &&
     value instanceof Array === false &&

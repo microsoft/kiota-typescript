@@ -32,19 +32,19 @@ export function deserializeUntypedTestEntity(
       untypedTestEntity.title = n.getStringValue();
     },
     location: (n) => {
-      untypedTestEntity.location = n.getObjectValue(
+      untypedTestEntity.location = n.getObjectValue<UntypedNode>(
         createUntypedNodeFromDiscriminatorValue,
-      ) as UntypedNode;
+      );
     },
     keywords: (n) => {
-      untypedTestEntity.keywords = n.getObjectValue(
+      untypedTestEntity.keywords = n.getObjectValue<UntypedNode>(
         createUntypedNodeFromDiscriminatorValue,
-      ) as UntypedNode;
+      );
     },
     detail: (n) => {
-      untypedTestEntity.detail = n.getObjectValue(
+      untypedTestEntity.detail = n.getObjectValue<UntypedNode>(
         createUntypedNodeFromDiscriminatorValue,
-      ) as UntypedNode;
+      );
     },
   };
 }

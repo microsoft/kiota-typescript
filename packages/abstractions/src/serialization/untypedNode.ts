@@ -25,9 +25,16 @@ export function isUntypedNode(node: any): node is UntypedNode {
 }
 
 export function deserializeIntoUntypedNode(
-  _untypedNode: Partial<UntypedNode> | undefined = {},
+  untypedNode: Partial<UntypedNode> | undefined = {},
 ): Record<string, (node: ParseNode) => void> {
-  return {};
+  return {
+    value: (n) => {
+      untypedNode.value = null;
+    },
+    getValue: (n) => {
+      untypedNode.getValue = () => untypedNode.value;
+    },
+  };
 }
 
 export function serializeUntypedNode(

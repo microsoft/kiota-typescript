@@ -10,5 +10,5 @@ export class UntypedString extends UntypedNode {
 }
 
 export function isUntypedString(node: UntypedNode): node is UntypedString {
-  return typeof (node as UntypedString).value === "string";
+  return typeof (node as UntypedString)?.value === "string";
 }

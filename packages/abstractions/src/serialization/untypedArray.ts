@@ -10,6 +10,10 @@ export class UntypedArray extends UntypedNode {
 }
 
 export function isUntypedArray(node: UntypedNode): node is UntypedArray {
-  const value = (node as UntypedArray).value;
-  return value instanceof Array && value.every((item) => isUntypedNode(item));
+  const proposedNode = node as UntypedArray;
+  return (
+    proposedNode &&
+    proposedNode.value instanceof Array &&
+    proposedNode.value.every((item) => isUntypedNode(item))
+  );
 }
