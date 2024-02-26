@@ -30,7 +30,8 @@ export * from "../middlewares/options/userAgentHandlerOptions";
 export * from "../middlewares/options/urlReplaceHandlerOptions";
 export * from "../middlewares/telemetryHandler";
 
-export * from "../middlewares/middlewareFactory";
+export * from "../middlewares/browser/middlewareFactory";
 export * from "../observabilityOptions";
 export * from "../utils/headersUtil";
 export * from "../utils/fetchDefinitions";
+export * from "../kiotaClientFactory";
