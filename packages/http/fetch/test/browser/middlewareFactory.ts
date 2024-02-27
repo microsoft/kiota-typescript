@@ -6,14 +6,11 @@
  */
 
 import { assert } from "chai";
-
-import { HeadersInspectionHandler } from "../../src";
-import { CustomFetchHandler, MiddlewareFactory, ParametersNameDecodingHandler, RetryHandler, UserAgentHandler } from "../../src/browser";
+import { CustomFetchHandler, HeadersInspectionHandler, MiddlewareFactory, ParametersNameDecodingHandler, RetryHandler, UserAgentHandler } from "../../src";
 
 describe("browser - MiddlewareFactory", () => {
 	it("Should return the default pipeline", () => {
-		const defaultMiddleWareArray = MiddlewareFactory.getDefaultMiddlewareChain();
-
+		const defaultMiddleWareArray = MiddlewareFactory.getDefaultMiddlewares();
 		assert.equal(defaultMiddleWareArray.length, 5);
 		assert.isTrue(defaultMiddleWareArray[0] instanceof RetryHandler);
 		assert.isTrue(defaultMiddleWareArray[1] instanceof ParametersNameDecodingHandler);
