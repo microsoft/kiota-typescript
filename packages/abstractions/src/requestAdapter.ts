@@ -24,7 +24,7 @@ export interface RequestAdapter {
    * @typeParam ModelType the type of the response model to deserialize the response into.
    * @return a {@link Promise} with the deserialized response model.
    */
-  sendAsync<ModelType extends Parsable>(
+  send<ModelType extends Parsable>(
     requestInfo: RequestInformation,
     type: ParsableFactory<ModelType>,
     errorMappings: ErrorMappings | undefined,
@@ -37,7 +37,7 @@ export interface RequestAdapter {
    * @typeParam ModelType the type of the response model to deserialize the response into.
    * @return a {@link Promise} with the deserialized response model collection.
    */
-  sendCollectionAsync<ModelType extends Parsable>(
+  sendCollection<ModelType extends Parsable>(
     requestInfo: RequestInformation,
     type: ParsableFactory<ModelType>,
     errorMappings: ErrorMappings | undefined,
@@ -51,7 +51,7 @@ export interface RequestAdapter {
    * @typeParam ResponseType the type of the response model to deserialize the response into.
    * @return a {@link Promise} with the deserialized response model collection.
    */
-  sendCollectionOfPrimitiveAsync<
+  sendCollectionOfPrimitive<
     ResponseType extends Exclude<
       PrimitiveTypesForDeserializationType,
       ArrayBuffer
@@ -69,7 +69,7 @@ export interface RequestAdapter {
    * @typeParam ResponseType the type of the response model to deserialize the response into.
    * @return a {@link Promise} with the deserialized primitive response model.
    */
-  sendPrimitiveAsync<ResponseType extends PrimitiveTypesForDeserializationType>(
+  sendPrimitive<ResponseType extends PrimitiveTypesForDeserializationType>(
     requestInfo: RequestInformation,
     responseType: PrimitiveTypesForDeserialization,
     errorMappings: ErrorMappings | undefined,
@@ -80,7 +80,7 @@ export interface RequestAdapter {
    * @param errorMappings the error factories mapping to use in case of a failed request.
    * @return a {@link Promise} of void.
    */
-  sendNoResponseContentAsync(
+  sendNoResponseContent(
     requestInfo: RequestInformation,
     errorMappings: ErrorMappings | undefined,
   ): Promise<void>;
@@ -99,7 +99,7 @@ export interface RequestAdapter {
    * @typeParam T the type of the native request.
    * @return a {@link Promise} with the native request.
    */
-  convertToNativeRequestAsync<T>(requestInfo: RequestInformation): Promise<T>;
+  convertToNativeRequest<T>(requestInfo: RequestInformation): Promise<T>;
 }
 export interface ErrorMappings {
   _4XX?: ParsableFactory<Parsable>;

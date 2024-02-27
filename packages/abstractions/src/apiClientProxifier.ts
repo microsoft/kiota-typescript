@@ -125,35 +125,35 @@ function getRequestConfigurationValue(args: any[]) {
   }
   return undefined;
 }
-function sendAsync(
+function send(
   requestAdapter: RequestAdapter,
   requestInfo: RequestInformation,
   metadata: RequestMetadata,
 ) {
   switch (metadata.adapterMethodName) {
-    case "sendAsync":
+    case "send":
       if (!metadata.responseBodyFactory) {
         throw new Error("couldn't find response body factory");
       }
-      return requestAdapter.sendAsync(
+      return requestAdapter.send(
         requestInfo,
         metadata.responseBodyFactory as ParsableFactory<Parsable>,
         metadata.errorMappings,
       );
-    case "sendCollectionAsync":
+    case "sendCollection":
       if (!metadata.responseBodyFactory) {
         throw new Error("couldn't find response body factory");
       }
-      return requestAdapter.sendCollectionAsync(
+      return requestAdapter.sendCollection(
         requestInfo,
         metadata.responseBodyFactory as ParsableFactory<Parsable>,
         metadata.errorMappings,
       );
-    case "sendCollectionOfPrimitiveAsync":
+    case "sendCollectionOfPrimitive":
       if (!metadata.responseBodyFactory) {
         throw new Error("couldn't find response body factory");
       }
-      return requestAdapter.sendCollectionOfPrimitiveAsync(
+      return requestAdapter.sendCollectionOfPrimitive(
         requestInfo,
         metadata.responseBodyFactory as Exclude<
           PrimitiveTypesForDeserialization,
@@ -161,17 +161,17 @@ function sendAsync(
         >,
         metadata.errorMappings,
       );
-    case "sendPrimitiveAsync":
+    case "sendPrimitive":
       if (!metadata.responseBodyFactory) {
         throw new Error("couldn't find response body factory");
       }
-      return requestAdapter.sendPrimitiveAsync(
+      return requestAdapter.sendPrimitive(
         requestInfo,
         metadata.responseBodyFactory as PrimitiveTypesForDeserialization,
         metadata.errorMappings,
       );
-    case "sendNoResponseContentAsync":
-      return requestAdapter.sendNoResponseContentAsync(
+    case "sendNoResponseContent":
+      return requestAdapter.sendNoResponseContent(
         requestInfo,
         metadata.errorMappings,
       );
@@ -223,7 +223,7 @@ export function apiClientProxifier<T extends object>(
                     undefined,
                     requestConfiguration,
                   );
-                  return sendAsync(requestAdapter, requestInfo, metadata);
+                  return send(requestAdapter, requestInfo, metadata);
                 };
               case "patch":
                 return (...args: any[]) => {
@@ -237,7 +237,7 @@ export function apiClientProxifier<T extends object>(
                     getRequestMediaTypeUserDefinedValue(metadata, args),
                     getRequestConfigurationValue(args),
                   );
-                  return sendAsync(requestAdapter, requestInfo, metadata);
+                  return send(requestAdapter, requestInfo, metadata);
                 };
               case "put":
                 return (...args: any[]) => {
@@ -251,7 +251,7 @@ export function apiClientProxifier<T extends object>(
                     getRequestMediaTypeUserDefinedValue(metadata, args),
                     getRequestConfigurationValue(args),
                   );
-                  return sendAsync(requestAdapter, requestInfo, metadata);
+                  return send(requestAdapter, requestInfo, metadata);
                 };
               case "delete":
                 return (...args: any[]) => {
@@ -265,7 +265,7 @@ export function apiClientProxifier<T extends object>(
                     getRequestMediaTypeUserDefinedValue(metadata, args),
                     getRequestConfigurationValue(args),
                   );
-                  return sendAsync(requestAdapter, requestInfo, metadata);
+                  return send(requestAdapter, requestInfo, metadata);
                 };
               case "post":
                 return (...args: any[]) => {
@@ -279,7 +279,7 @@ export function apiClientProxifier<T extends object>(
                     getRequestMediaTypeUserDefinedValue(metadata, args),
                     getRequestConfigurationValue(args),
                   );
-                  return sendAsync(requestAdapter, requestInfo, metadata);
+                  return send(requestAdapter, requestInfo, metadata);
                 };
               case "toGetRequestInformation":
                 return (

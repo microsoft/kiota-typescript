@@ -82,7 +82,7 @@ export const InferenceClassificationOverrideItemRequestBuilderRequestsMetadata: 
         errorMappings: {
             XXX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
         },
-        adapterMethodName: "sendPrimitiveAsync",
+        adapterMethodName: "sendPrimitive",
         responseBodyFactory:  "ArrayBuffer",
     },
     get: {
@@ -91,7 +91,7 @@ export const InferenceClassificationOverrideItemRequestBuilderRequestsMetadata: 
         errorMappings: {
             XXX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
         },
-        adapterMethodName: "sendAsync",
+        adapterMethodName: "send",
         responseBodyFactory:  createInferenceClassificationOverrideFromDiscriminatorValue,
         queryParametersMapper: InferenceClassificationOverrideItemRequestBuilderGetQueryParametersMapper,
     },
@@ -101,7 +101,7 @@ export const InferenceClassificationOverrideItemRequestBuilderRequestsMetadata: 
         errorMappings: {
             XXX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
         },
-        adapterMethodName: "sendAsync",
+        adapterMethodName: "send",
         responseBodyFactory:  createInferenceClassificationOverrideFromDiscriminatorValue,
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeInferenceClassificationOverride,
