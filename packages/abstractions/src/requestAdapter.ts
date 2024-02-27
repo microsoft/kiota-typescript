@@ -127,3 +127,11 @@ export type PrimitiveTypesForDeserialization =
   | "TimeOnly"
   | "Duration"
   | "ArrayBuffer";
+
+export type SendMethods = Exclude<
+  keyof RequestAdapter,
+  | "enableBackingStore"
+  | "getSerializationWriterFactory"
+  | "convertToNativeRequest"
+  | "baseUrl"
+>;

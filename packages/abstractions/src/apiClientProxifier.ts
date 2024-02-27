@@ -5,6 +5,7 @@ import type {
   PrimitiveTypesForDeserialization,
   PrimitiveTypesForDeserializationType,
   RequestAdapter,
+  SendMethods,
 } from "./requestAdapter";
 import type { RequestConfiguration } from "./requestConfiguration";
 import {
@@ -405,7 +406,7 @@ export interface RequestMetadata {
   requestBodyContentType?: string;
   responseBodyContentType?: string;
   errorMappings?: ErrorMappings;
-  adapterMethodName?: keyof RequestAdapter;
+  adapterMethodName?: SendMethods;
   responseBodyFactory?:
     | ParsableFactory<Parsable>
     | PrimitiveTypesForDeserialization;
