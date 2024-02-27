@@ -13,7 +13,7 @@ export class FormParseNodeFactory implements ParseNodeFactory {
     if (!content) {
       throw new Error("content cannot be undefined of empty");
     } else if (!contentType) {
-      throw new Error("content type cannot be undefined or pempty");
+      throw new Error("content type cannot be undefined or empty");
     } else if (this.getValidContentType() !== contentType) {
       throw new Error(`expected a ${this.getValidContentType()} content type`);
     }
