@@ -112,7 +112,7 @@ export const MailFolderItemRequestBuilderRequestsMetadata: RequestsMetadata = {
         errorMappings: {
             XXX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
         },
-        adapterMethodName: "sendPrimitiveAsync",
+        adapterMethodName: "sendPrimitive",
         responseBodyFactory:  "ArrayBuffer",
     },
     get: {
@@ -121,7 +121,7 @@ export const MailFolderItemRequestBuilderRequestsMetadata: RequestsMetadata = {
         errorMappings: {
             XXX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
         },
-        adapterMethodName: "sendAsync",
+        adapterMethodName: "send",
         responseBodyFactory:  createMailFolderFromDiscriminatorValue,
         queryParametersMapper: MailFolderItemRequestBuilderGetQueryParametersMapper,
     },
@@ -131,7 +131,7 @@ export const MailFolderItemRequestBuilderRequestsMetadata: RequestsMetadata = {
         errorMappings: {
             XXX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
         },
-        adapterMethodName: "sendAsync",
+        adapterMethodName: "send",
         responseBodyFactory:  createMailFolderFromDiscriminatorValue,
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeMailFolder,
