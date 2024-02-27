@@ -9,7 +9,6 @@ import { assert } from "chai";
 
 import { CustomFetchHandler, HeadersInspectionHandler, HttpClient, ParametersNameDecodingHandler, RedirectHandler, RetryHandler, UserAgentHandler } from "../../src";
 import { DummyFetchHandler } from "../common/middleware/dummyFetchHandler";
-import { validateHeaderName } from "http";
 
 describe("node - HTTPClient.ts", () => {
 	describe("constructor", () => {
