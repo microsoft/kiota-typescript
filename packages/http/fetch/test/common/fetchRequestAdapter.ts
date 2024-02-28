@@ -41,7 +41,7 @@ describe("FetchRequestAdapter.ts", () => {
 			const requestInformation = new RequestInformation();
 			requestInformation.URL = "https://www.example.com";
 			requestInformation.httpMethod = HttpMethod.GET;
-			await requestAdapter.sendNoResponseContentAsync(requestInformation, undefined);
+			await requestAdapter.sendNoResponseContent(requestInformation, undefined);
 			assert.equal(executeFetchCount, 2);
 		});
 	});
@@ -59,7 +59,7 @@ describe("FetchRequestAdapter.ts", () => {
 				const requestInformation = new RequestInformation();
 				requestInformation.URL = "https://www.example.com";
 				requestInformation.httpMethod = HttpMethod.GET;
-				const result = await requestAdapter.sendPrimitiveAsync(requestInformation, "ArrayBuffer", undefined);
+				const result = await requestAdapter.sendPrimitive(requestInformation, "ArrayBuffer", undefined);
 				assert.isDefined(result);
 			});
 		}
@@ -78,7 +78,7 @@ describe("FetchRequestAdapter.ts", () => {
 				const requestInformation = new RequestInformation();
 				requestInformation.URL = "https://www.example.com";
 				requestInformation.httpMethod = HttpMethod.GET;
-				const result = await requestAdapter.sendPrimitiveAsync(requestInformation, "ArrayBuffer", undefined);
+				const result = await requestAdapter.sendPrimitive(requestInformation, "ArrayBuffer", undefined);
 				assert.isUndefined(result);
 			});
 		}
@@ -97,7 +97,7 @@ describe("FetchRequestAdapter.ts", () => {
 				const requestInformation = new RequestInformation();
 				requestInformation.URL = "https://www.example.com";
 				requestInformation.httpMethod = HttpMethod.GET;
-				const result = await requestAdapter.sendAsync(requestInformation, createMockEntityFromDiscriminatorValue, undefined);
+				const result = await requestAdapter.send(requestInformation, createMockEntityFromDiscriminatorValue, undefined);
 				assert.isUndefined(result);
 			});
 		}
@@ -118,7 +118,7 @@ describe("FetchRequestAdapter.ts", () => {
 				const requestInformation = new RequestInformation();
 				requestInformation.URL = "https://www.example.com";
 				requestInformation.httpMethod = HttpMethod.GET;
-				const result = await requestAdapter.sendAsync(requestInformation, createMockEntityFromDiscriminatorValue, undefined);
+				const result = await requestAdapter.send(requestInformation, createMockEntityFromDiscriminatorValue, undefined);
 				assert.isDefined(result);
 			});
 		}
@@ -139,7 +139,7 @@ describe("FetchRequestAdapter.ts", () => {
 			requestInformation.httpMethod = HttpMethod.GET;
 
 			try {
-				await requestAdapter.sendNoResponseContentAsync(requestInformation, undefined);
+				await requestAdapter.sendNoResponseContent(requestInformation, undefined);
 				assert.fail("Should have thrown an error");
 			} catch (error) {
 				assert.equal(error.responseStatusCode, 500);

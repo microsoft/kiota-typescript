@@ -81,7 +81,7 @@ export const InferenceClassificationRequestBuilderRequestsMetadata: RequestsMeta
         errorMappings: {
             XXX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
         },
-        adapterMethodName: "sendAsync",
+        adapterMethodName: "send",
         responseBodyFactory:  createInferenceClassificationFromDiscriminatorValue,
         queryParametersMapper: InferenceClassificationRequestBuilderGetQueryParametersMapper,
     },
@@ -91,7 +91,7 @@ export const InferenceClassificationRequestBuilderRequestsMetadata: RequestsMeta
         errorMappings: {
             XXX: createODataErrorFromDiscriminatorValue as ParsableFactory<Parsable>,
         },
-        adapterMethodName: "sendAsync",
+        adapterMethodName: "send",
         responseBodyFactory:  createInferenceClassificationFromDiscriminatorValue,
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeInferenceClassification,

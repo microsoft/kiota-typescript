@@ -34,3 +34,4 @@ export * from "./middlewares/middlewareFactory";
 export * from "./observabilityOptions";
 export * from "./utils/headersUtil";
 export * from "./utils/fetchDefinitions";
+export * from "./kiotaClientFactory";
