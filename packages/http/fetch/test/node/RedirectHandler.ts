@@ -6,7 +6,6 @@
  */
 
 import { assert } from "chai";
-import { Response } from "node-fetch";
 
 import { RedirectHandlerOptionKey, RedirectHandlerOptions } from "../../src/middlewares/options/redirectHandlerOptions";
 import { RedirectHandler } from "../../src/middlewares/redirectHandler";

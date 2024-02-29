@@ -7,7 +7,6 @@
 
 import { HttpMethod } from "@microsoft/kiota-abstractions";
 import { assert } from "chai";
-import { Response } from "node-fetch";
 
 import { ChaosHandler, ChaosStrategy, type FetchRequestInit } from "../../src";
 import { DummyFetchHandler } from "./middleware/dummyFetchHandler";
