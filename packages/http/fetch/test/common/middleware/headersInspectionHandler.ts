@@ -6,7 +6,6 @@
  */
 
 import { assert } from "chai";
-import { Response } from "node-fetch";
 
 import { HeadersInspectionHandler, HeadersInspectionOptions } from "../../../src";
 import { DummyFetchHandler } from "./dummyFetchHandler";

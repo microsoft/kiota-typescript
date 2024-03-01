@@ -7,7 +7,6 @@
     "@types/chai": "^4.3.11",
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.11.15",
-    "@types/node-fetch": "^2.6.11",
     "@types/sinon": "^17.0.3",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
