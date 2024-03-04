@@ -36,7 +36,7 @@ export type FetchHeaders = Headers & {
 	 */
 	values?(): IterableIterator<string>;
 
-	/** Node-fetch extension */
+	/** Node extension */
 	raw?(): Record<string, string[]>;
 };
 
@@ -48,7 +48,7 @@ export type FetchRequestInit = Omit<RequestInit, "body" | "headers" | "redirect"
 	/**
 	 * Request's body
 	 * Expected type in case of dom - ReadableStream | XMLHttpRequestBodyInit|null
-	 * Expected type in case of node-fetch - | Blob | Buffer | URLSearchParams | NodeJS.ReadableStream | string|null
+	 * Expected type in case of node.js - | Blob | Buffer | URLSearchParams | NodeJS.ReadableStream | string|null
 	 */
 	body?: unknown;
 	/**

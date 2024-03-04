@@ -41,7 +41,6 @@
 		"@microsoft/kiota-abstractions": "^1.0.0-preview.44",
 		"@opentelemetry/api": "^1.7.0",
 		"guid-typescript": "^1.0.9",
-		"node-fetch": "^2.7.0",
 		"tslib": "^2.6.2"
 	},
 	"publishConfig": {

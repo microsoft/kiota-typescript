@@ -19,13 +19,14 @@ var Response = Response;
 if (typeof Response !== "object") {
 	Response = getResponse();
 }
+
 describe("FetchRequestAdapter.ts", () => {
 	describe("getClaimsFromResponse", () => {
 		it("should get claims from response header", async () => {
 			const mockHttpClient = new HttpClient();
 			let executeFetchCount = 0;
 			mockHttpClient.executeFetch = async (url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>) => {
-				let response = new Response("", {
+				let response = new Response(null, {
 					status: 204,
 				} as ResponseInit);
 				if (executeFetchCount === 0) {
@@ -103,7 +104,7 @@ describe("FetchRequestAdapter.ts", () => {
 		}
 	});
 	describe("send returns object on content", () => {
-		for (const statusCode of [200, 201, 202, 203, 205]) {
+		for (const statusCode of [200, 201, 202, 203]) {
 			it(`should return object for status code ${statusCode}`, async () => {
 				const mockHttpClient = new HttpClient();
 				mockHttpClient.executeFetch = async (url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>) => {

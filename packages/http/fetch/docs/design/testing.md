@@ -6,7 +6,7 @@
 - Test formats:
     - script to test `CommonJS` modules: `npm run test:cjs`
     - script to test `ES` modules:  `npm run test:es`
-- Examples of node environment specific tests: Test `DefaultFetchHandler` using `node-fetch` library.
+- Examples of node environment specific tests: Test `middlewareFactory.ts`.
  
 
 ### Testing for browser
