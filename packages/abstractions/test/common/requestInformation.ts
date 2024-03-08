@@ -5,10 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import * as chai from "chai";
+import { assert, describe, it } from "vitest";
 import { URL } from "url";
-
-const assert = chai.assert;
 
 import {
   Headers,

@@ -5,14 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import * as chai from "chai";
+import { assert, describe, it } from "vitest";
 
 import {
   ApiKeyAuthenticationProvider,
   ApiKeyLocation,
 } from "../../../src/authentication";
 import { RequestInformation } from "../../../src/requestInformation";
-const assert = chai.assert;
 
 describe("ApiKeyAuthenticationProvider", () => {
   it("Throws on invalid initialization", () => {

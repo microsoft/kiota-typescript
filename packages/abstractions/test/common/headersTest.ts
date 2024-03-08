@@ -1,5 +1,5 @@
 import { Headers } from "../../src";
-import { assert, expect } from "chai";
+import { assert, describe, it, beforeEach, expect } from "vitest";
 
 /**
  * 

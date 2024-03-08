@@ -1,4 +1,4 @@
-import { assert } from "chai";
+import { assert, it } from "vitest";
 import { isBackingStoreEnabled } from "../../../src/store/backingStoreUtils";
 import { type TestBackedModel, createTestBackedModelFromDiscriminatorValue, createTestParserFromDiscriminatorValue } from "./testEntity";
 import { type ParseNode } from "../../../src";

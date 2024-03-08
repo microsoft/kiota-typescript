@@ -1,4 +1,4 @@
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import { MultipartBody, serializeMultipartBody } from "../../src/multipartBody";
 import type { SerializationWriter } from "../../src/serialization";
