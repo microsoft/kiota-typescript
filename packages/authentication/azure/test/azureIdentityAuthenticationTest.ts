@@ -10,7 +10,7 @@ import {
   BaseBearerTokenAuthenticationProvider,
   RequestInformation,
 } from "@microsoft/kiota-abstractions";
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 import * as sinon from "sinon";
 
 import { AzureIdentityAuthenticationProvider } from "../src";
