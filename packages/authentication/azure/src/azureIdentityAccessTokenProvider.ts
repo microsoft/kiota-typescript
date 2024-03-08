@@ -7,6 +7,7 @@ import {
 import { type Span, trace } from "@opentelemetry/api";
 
 import { type ObservabilityOptions, ObservabilityOptionsImpl } from "./observabilityOptions";
+import { inBrowserEnv } from "./utils";
 
 /** Access token provider that leverages the Azure Identity library to retrieve an access token. */
 export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
@@ -82,7 +83,7 @@ export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
       const rawClaims = additionalAuthenticationContext[
         AzureIdentityAccessTokenProvider.claimsKey
       ] as string;
-      decodedClaims = Buffer.from(rawClaims, "base64").toString();
+      decodedClaims = inBrowserEnv() ? atob(rawClaims): Buffer.from(rawClaims, "base64").toString();
     }
     span?.setAttribute(
       "com.microsoft.kiota.authentication.additional_claims_provided",
