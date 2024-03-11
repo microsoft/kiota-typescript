@@ -8,6 +8,6 @@ describe('Utility functions', ()=>{
 
     test.runIf(!inBrowserEnv())('inBrowserEnv - should return false in node environment', ()=>{
         expect(inBrowserEnv()).to.be.false
-        expect(typeof window).not.toBe('undefined')
+        expect(typeof window).not.toBe(undefined)
     })
 })
