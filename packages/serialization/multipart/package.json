@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/kiota-serialization-multipart",
-  "version": "1.0.0-preview.24",
+  "version": "1.0.0-preview.25",
   "description": "Implementation of Kiota Serialization interfaces for multipart form data",
   "main": "dist/cjs/src/index.js",
   "module": "dist/es/src/index.js",
@@ -35,12 +35,12 @@
   },
   "homepage": "https://github.com/microsoft/kiota-typescript#readme",
   "dependencies": {
-    "@microsoft/kiota-abstractions": "^1.0.0-preview.45",
+    "@microsoft/kiota-abstractions": "^1.0.0-preview.46",
     "guid-typescript": "^1.0.9",
     "tslib": "^2.6.2"
   },
   "devDependencies": {
-    "@microsoft/kiota-serialization-json": "^1.0.0-preview.45"
+    "@microsoft/kiota-serialization-json": "^1.0.0-preview.46"
   },
   "publishConfig": {
     "access": "public"
