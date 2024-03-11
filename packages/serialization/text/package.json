@@ -16,10 +16,10 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "clean": "rm -r ./dist ./node_modules",
-    "karma": "npm run rollup && karma  start --single-run --browsers ChromeHeadless karma.conf.js",
     "rollup": "rollup -c",
-    "test": "npm run test:cjs && npm run rollup && npm run karma",
-    "test:cjs": "npm run build && mocha  'dist/cjs/test/common/**/*.js'"
+    "test:browser": "vitest run --browser.name=chrome --browser.headless",
+    "test:node": "vitest --run",
+    "test": "npm run test:node && npm run test:browser"
   },
   "repository": {
     "type": "git",

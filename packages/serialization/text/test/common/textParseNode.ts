@@ -1,4 +1,4 @@
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 import { v1 as uuidv1, v4 as uuidv4, v5 as uuidv5} from "uuid";
 
 import { TextParseNode } from "../../src/index";
