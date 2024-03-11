@@ -9,7 +9,9 @@
     "build": "npm run build:cjs && npm run build:esm",
     "build:cjs": "tsc -b tsconfig.cjs.json",
     "build:esm": "tsc -b tsconfig.es.json",
-    "test": "npm run build && mocha  'dist/cjs/test/**/*.js'",
+    "test:browser": "vitest run --browser.name=chrome --browser.headless",
+    "test:node": "vitest --run",
+    "test": "npm run test:node && npm run test:browser",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "clean": "rm -r ./dist"

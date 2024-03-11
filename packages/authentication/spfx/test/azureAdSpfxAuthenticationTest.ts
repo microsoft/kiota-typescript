@@ -1,5 +1,5 @@
 import { RequestInformation } from "@microsoft/kiota-abstractions";
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import { AzureAdSpfxAccessTokenProvider,AzureAdSpfxAuthenticationProvider } from "../src";
 import { MockAadTokenProvider } from "./mockAadTokenProvider";
