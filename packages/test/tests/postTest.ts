@@ -1,6 +1,7 @@
 import { proxyClient, userId } from "./testClient";
 
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
+
 import { type Message } from "../generatedCode/models";
 
 describe("TestPost", () => {
@@ -15,5 +16,5 @@ describe("TestPost", () => {
         assert.isDefined(postmessageResult?.id);
         assert.equal(postmessageResult?.subject, message.subject);
         await proxyClient.users.byUserId(userId).messages.byMessageId(postmessageResult!.id!).delete();
-    }).timeout(10000);
+    }, 10000);
 });
