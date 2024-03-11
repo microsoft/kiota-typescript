@@ -1,5 +1,5 @@
 import { DateOnly, Duration, TimeOnly } from "@microsoft/kiota-abstractions";
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import { FormSerializationWriter } from "../../src";
 import { serializeTestEntity,type TestEntity } from "../testEntity";

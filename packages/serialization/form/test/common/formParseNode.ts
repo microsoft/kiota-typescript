@@ -1,4 +1,4 @@
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import { FormParseNode } from "../../src/index";
 import { createTestParserFromDiscriminatorValue,type TestEntity } from "../testEntity";
