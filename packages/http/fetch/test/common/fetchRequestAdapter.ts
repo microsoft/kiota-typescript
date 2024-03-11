@@ -6,7 +6,7 @@
  */
 /* eslint-disable @typescript-eslint/no-unused-vars*/
 import { AnonymousAuthenticationProvider, HttpMethod, RequestInformation, type RequestOption } from "@microsoft/kiota-abstractions";
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import { FetchRequestAdapter } from "../../src/fetchRequestAdapter";
 import { HttpClient } from "../../src/httpClient";

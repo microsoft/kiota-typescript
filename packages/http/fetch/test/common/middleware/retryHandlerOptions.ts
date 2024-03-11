@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 /* eslint-disable @typescript-eslint/no-unused-vars*/
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import { RetryHandlerOptions, type ShouldRetry } from "../../../src/middlewares/options/retryHandlerOptions";
 

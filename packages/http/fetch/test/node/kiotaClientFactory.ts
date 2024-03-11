@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 import { CustomFetchHandler, HeadersInspectionHandler, KiotaClientFactory, ParametersNameDecodingHandler, RedirectHandler, RetryHandler, UserAgentHandler } from "../../src";
 
 describe("browser - KiotaClientFactory", () => {

@@ -1,4 +1,4 @@
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import { UrlReplaceHandlerOptions } from "../../../src/middlewares/options/urlReplaceHandlerOptions";
 import { UrlReplaceHandler } from "../../../src/middlewares/urlReplaceHandler";

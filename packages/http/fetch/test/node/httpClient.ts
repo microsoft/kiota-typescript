@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import { CustomFetchHandler, HeadersInspectionHandler, HttpClient, ParametersNameDecodingHandler, RedirectHandler, RetryHandler, UserAgentHandler } from "../../src";
 import { DummyFetchHandler } from "../common/middleware/dummyFetchHandler";

@@ -34,8 +34,9 @@
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
 		"rollup": "rollup -c",
-		"test": "npm run build && npm run build:test && npm run test:cjs && npm run karma",
-		"test:cjs": "mocha 'dist/cjs/test/common/**/*.js' && mocha  'dist/cjs/test/node/**/*.js'"
+		"test:browser": "vitest run --browser.name=chrome --browser.headless",
+		"test:node": "vitest --run",
+		"test": "npm run test:node && npm run test:browser"
 	},
 	"dependencies": {
 		"@microsoft/kiota-abstractions": "^1.0.0-preview.44",

@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import { RetryHandlerOptionKey, RetryHandlerOptions, type ShouldRetry } from "../../../src/middlewares/options/retryHandlerOptions";
 import { RetryHandler } from "../../../src/middlewares/retryHandler";
@@ -17,8 +17,7 @@ var Response = Response;
 if (typeof Response !== "object") {
 	Response = getResponse();
 }
-describe("RetryHandler.ts", function () {
-	this.timeout(20 * 1000);
+describe("RetryHandler.ts", () => {
 	const retryHandler = new RetryHandler();
 	const retryHandlerOptions = new RetryHandlerOptions();
 	const tooManyRequestsResponseWithRetryAfterDelay = new Response("", {
@@ -236,7 +235,7 @@ describe("RetryHandler.ts", function () {
 			dummyFetchHandler.setResponses([new Response(null, { status: 429 }), new Response(null, { status: 429 }), new Response("ok", { status: 200 })]);
 			const response = await handler["executeWithRetry"](requestUrl, fetchRequestInit, 0, opts);
 			assert.equal(response.status, 200);
-		});
+		}, 20 * 1000);
 
 		it("Should fail by exceeding max retries", async () => {
 			const opts = new RetryHandlerOptions({delay: 1, maxRetries: 2});
@@ -245,6 +244,6 @@ describe("RetryHandler.ts", function () {
 			dummyFetchHandler.setResponses([new Response(null, { status: 429 }), new Response(null, { status: 429 }), new Response(null, { status: 429 }), new Response("ok", { status: 200 })]);
 			const response = await handler["executeWithRetry"](requestUrl, fetchRequestInit, 0, opts);
 			assert.equal(response.status, 429);
-		});
+		}, 20 * 1000);
 	});
 });

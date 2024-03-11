@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import { HeadersInspectionHandler, HeadersInspectionOptions } from "../../../src";
 import { DummyFetchHandler } from "./dummyFetchHandler";
