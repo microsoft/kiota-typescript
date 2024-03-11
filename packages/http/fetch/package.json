@@ -30,7 +30,6 @@
 		"build:esm": "tsc -b tsconfig.es.json",
 		"build:test": "tsc -b tsconfig.cjs.test.json && tsc -b tsconfig.es.test.json",
 		"clean": "rm -r ./dist",
-		"karma": "npm run rollup && karma  start --single-run --browsers ChromeHeadless karma.conf.js",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
 		"rollup": "rollup -c",
