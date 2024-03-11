@@ -18,7 +18,7 @@ import {
   serializeToJsonAsString,
   serializeToString,
 } from "@microsoft/kiota-abstractions";
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import {
   createTestBackedModelFromDiscriminatorValue,
