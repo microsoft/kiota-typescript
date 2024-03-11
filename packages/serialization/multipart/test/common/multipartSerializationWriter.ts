@@ -7,7 +7,7 @@ import {
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
 import { JsonSerializationWriterFactory } from "@microsoft/kiota-serialization-json";
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import { MultipartSerializationWriter } from "../../src";
 import { serializeTestEntity, type TestEntity } from "../testEntity";
