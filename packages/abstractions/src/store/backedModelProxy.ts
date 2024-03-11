@@ -11,7 +11,6 @@ export function createBackedModelProxyHandler<T extends {}>(): ProxyHandler<T> {
    */
   const handler: ProxyHandler<T> = {
     get(target, prop, receiver) {
-      console.debug(`BackingStore - Getting property '${prop.toString()}' from backing store`);
       if (prop === 'backingStore') {
         return backingStore;
       }
@@ -24,7 +23,6 @@ export function createBackedModelProxyHandler<T extends {}>(): ProxyHandler<T> {
       }
       // set the value on the target object as well to allow it to have keys needed for serialization/deserialization
       Reflect.set(target, prop, value, receiver);
-      console.debug(`BackingStore - Setting property '${prop.toString()}'`);
       backingStore.set(prop.toString(), value);
       return true;
     },
