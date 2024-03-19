@@ -1,12 +1,7 @@
 import { isUntypedNode, UntypedNode } from "./untypedNode";
 
-export class UntypedObject extends UntypedNode {
-  constructor(value: Record<string, UntypedNode>) {
-    super(value);
-  }
-  getValue(): Record<string, UntypedNode> {
-    return this.value as Record<string, UntypedNode>;
-  }
+export interface UntypedObject extends UntypedNode {
+  getValue(): Record<string, UntypedNode> ;
 }
 
 export function isUntypedObject(node: UntypedNode): node is UntypedObject {
@@ -16,4 +11,11 @@ export function isUntypedObject(node: UntypedNode): node is UntypedObject {
     value instanceof Array === false &&
     Object.values(value).every((item) => isUntypedNode(item))
   );
+}
+
+export function createUntypedObject(value: Record<string, UntypedNode>): UntypedObject {
+  return {
+    value: value,
+    getValue:  () => value as Record<string, UntypedNode>,
+  };
 }

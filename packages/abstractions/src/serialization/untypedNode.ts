@@ -3,13 +3,8 @@ import type { Parsable } from "./parsable";
 import type { ParseNode } from "./parseNode";
 import type { SerializationWriter } from "./serializationWriter";
 
-export class UntypedNode implements Parsable {
-  constructor(value?: any) {
-    this.value = value;
-  }
-  getValue(): any {
-    return this.value;
-  }
+export interface UntypedNode extends Parsable {
+  getValue(): any
   value?: any;
 }
 

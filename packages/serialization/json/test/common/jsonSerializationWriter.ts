@@ -7,7 +7,7 @@ import {
   type TestParser,
 } from "./testEntity";
 import { UntypedTestEntity, serializeUntypedTestEntity } from "./untypedTestEntiy";
-import { UntypedArray, UntypedBoolean, UntypedNull, UntypedNumber, UntypedObject, UntypedString } from "@microsoft/kiota-abstractions";
+import { UntypedArray, UntypedBoolean, UntypedNull, UntypedNumber, UntypedObject, UntypedString, createUntypedArray, createUntypedBoolean, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString } from "@microsoft/kiota-abstractions";
 
 describe("JsonParseNode", () => {
   it("Test object serialization", async () => {
@@ -82,39 +82,39 @@ describe("JsonParseNode", () => {
     const inputObject: UntypedTestEntity = {
       id: "1",
       title: "title",
-      location: new UntypedObject({
-        address: new UntypedObject({
-          city: new UntypedString("Redmond"),
-          postalCode: new UntypedString("98052"),
-          state: new UntypedString("Washington"),
-          street: new UntypedString("NE 36th St"),
+      location: createUntypedObject({
+        address: createUntypedObject({
+          city: createUntypedString("Redmond"),
+          postalCode: createUntypedString("98052"),
+          state: createUntypedString("Washington"),
+          street: createUntypedString("NE 36th St"),
         }),
-        coordinates: new UntypedObject({
-          latitude: new UntypedNumber(47.678581),
-          longitude: new UntypedNumber(-122.131577),
+        coordinates: createUntypedObject({
+          latitude: createUntypedNumber(47.678581),
+          longitude: createUntypedNumber(-122.131577),
         }),
-        displayName: new UntypedString("Microsoft Building 25"),
-        floorCount: new UntypedNumber(50),
-        hasReception: new UntypedBoolean(true),
-        contact: new UntypedNull(),
+        displayName: createUntypedString("Microsoft Building 25"),
+        floorCount: createUntypedNumber(50),
+        hasReception: createUntypedBoolean(true),
+        contact: createUntypedNull(),
       }),
-      keywords: new UntypedArray([
-        new UntypedObject({
-          created: new UntypedString("2023-07-26T10:41:26Z"),
-          label: new UntypedString("Keyword1"),
-          termGuid: new UntypedString("10e9cc83-b5a4-4c8d-8dab-4ada1252dd70"),
-          wssId: new UntypedNumber(6442450941),
+      keywords: createUntypedArray([
+        createUntypedObject({
+          created: createUntypedString("2023-07-26T10:41:26Z"),
+          label: createUntypedString("Keyword1"),
+          termGuid: createUntypedString("10e9cc83-b5a4-4c8d-8dab-4ada1252dd70"),
+          wssId: createUntypedNumber(6442450941),
         }),
-        new UntypedObject({
-          created: new UntypedString("2023-07-26T10:51:26Z"),
-          label: new UntypedString("Keyword2"),
-          termGuid: new UntypedString("2cae6c6a-9bb8-4a78-afff-81b88e735fef"),
-          wssId: new UntypedNumber(6442450942),
+        createUntypedObject({
+          created: createUntypedString("2023-07-26T10:51:26Z"),
+          label: createUntypedString("Keyword2"),
+          termGuid: createUntypedString("2cae6c6a-9bb8-4a78-afff-81b88e735fef"),
+          wssId: createUntypedNumber(6442450942),
         }),
       ]),
       additionalData: {
-        extra: new UntypedObject({
-          createdDateTime: new UntypedString("2024-01-15T00:00:00+00:00"),
+        extra: createUntypedObject({
+          createdDateTime: createUntypedString("2024-01-15T00:00:00+00:00"),
         }),
       },
     };

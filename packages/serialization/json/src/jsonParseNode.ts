@@ -18,6 +18,12 @@ import {
   UntypedString,
   createUntypedNodeFromDiscriminatorValue,
   UntypedNull,
+  createUntypedBoolean,
+  createUntypedString,
+  createUntypedNumber,
+  createUntypedArray,
+  createUntypedObject,
+  createUntypedNull,
 } from "@microsoft/kiota-abstractions";
 
 export class JsonParseNode implements ParseNode {
@@ -85,11 +91,11 @@ export class JsonParseNode implements ParseNode {
       const valueType = typeof this._jsonNode;
       let value: T = temp;
       if (valueType === "boolean") {
-        value = new UntypedBoolean(this._jsonNode as boolean) as any as T;
+        value = createUntypedBoolean(this._jsonNode as boolean) as any as T;
       } else if (valueType === "string") {
-        value = new UntypedString(this._jsonNode as string) as any as T;
+        value = createUntypedString(this._jsonNode as string) as any as T;
       } else if (valueType === "number") {
-        value = new UntypedNumber(this._jsonNode as number) as any as T;
+        value = createUntypedNumber(this._jsonNode as number) as any as T;
       } else if (Array.isArray(this._jsonNode)) {
         const nodes: UntypedNode[] = [];
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -100,7 +106,7 @@ export class JsonParseNode implements ParseNode {
             ),
           );
         });
-        value = new UntypedArray(nodes) as any as T;
+        value = createUntypedArray(nodes) as any as T;
       } else if (this._jsonNode && valueType === "object") {
         const properties: Record<string, UntypedNode> = {};
         Object.entries(this._jsonNode as any).forEach(([k, v]) => {
@@ -108,9 +114,9 @@ export class JsonParseNode implements ParseNode {
             createUntypedNodeFromDiscriminatorValue,
           );
         });
-        value = new UntypedObject(properties) as any as T;
+        value = createUntypedObject(properties) as any as T;
       } else if (!this._jsonNode) {
-        value = new UntypedNull() as any as T;
+        value = createUntypedNull() as any as T;
       }
       return value;
     }
