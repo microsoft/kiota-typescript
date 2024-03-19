@@ -35,7 +35,13 @@ export class JsonParseNode implements ParseNode {
   public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
   public getStringValue = () => this._jsonNode as string;
   public getChildNode = (identifier: string): ParseNode | undefined =>
-    new JsonParseNode((this._jsonNode as any)[identifier]);
+    this._jsonNode &&
+    typeof this._jsonNode === "object" &&
+    (this._jsonNode as { [key: string]: any })[identifier] !== undefined
+      ? new JsonParseNode(
+          (this._jsonNode as { [key: string]: any })[identifier],
+        )
+      : undefined;
   public getBooleanValue = () => this._jsonNode as boolean;
   public getNumberValue = () => this._jsonNode as number;
   public getGuidValue = () => parseGuidString(this.getStringValue());
