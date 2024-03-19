@@ -1,3 +1,4 @@
+import { Guid } from 'guid-typescript';
 import { trace } from "@opentelemetry/api";
 import { StdUriTemplate } from "@std-uritemplate/std-uritemplate";
 
@@ -252,6 +253,8 @@ export class RequestInformation implements RequestInformationSetContent {
               writer.writeTimeOnlyValue(undefined, value as any as TimeOnly);
             } else if (value instanceof Duration) {
               writer.writeDurationValue(undefined, value as any as Duration);
+            } else if (value instanceof Guid) {
+              writer.writeStringValue(undefined, value as any as string);
             } else if (valueType === "number") {
               writer.writeNumberValue(undefined, value as any as number);
             } else if (Array.isArray(value)) {
