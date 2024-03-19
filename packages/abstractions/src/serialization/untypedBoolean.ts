@@ -5,7 +5,8 @@ export interface UntypedBoolean extends UntypedNode {
 }
 
 export function isUntypedBoolean(node: UntypedNode): node is UntypedBoolean {
-  return typeof (node as UntypedBoolean)?.value === "boolean";
+  const proposedNode = node as UntypedBoolean;
+  return proposedNode && typeof proposedNode.value === "boolean";
 }
 
 export function createUntypedBoolean(value: boolean): UntypedBoolean {

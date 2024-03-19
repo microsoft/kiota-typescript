@@ -5,11 +5,12 @@ export interface UntypedObject extends UntypedNode {
 }
 
 export function isUntypedObject(node: UntypedNode): node is UntypedObject {
-  const value = (node as UntypedObject)?.value;
+  const proposedNode = node as UntypedObject;
   return (
-    value instanceof Object &&
-    value instanceof Array === false &&
-    Object.values(value).every((item) => isUntypedNode(item))
+    proposedNode &&
+    proposedNode.value instanceof Object &&
+    proposedNode.value instanceof Array === false &&
+    Object.values(proposedNode.value).every((item) => isUntypedNode(item))
   );
 }
 

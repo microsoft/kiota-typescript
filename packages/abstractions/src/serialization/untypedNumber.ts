@@ -5,7 +5,8 @@ export interface UntypedNumber extends UntypedNode {
 }
 
 export function isUntypedNumber(node: UntypedNode): node is UntypedNumber {
-  return typeof (node as UntypedNumber)?.value === "number";
+  const proposedNode = node as UntypedNumber;
+  return proposedNode && typeof proposedNode.value === "number";
 }
 
 export function createUntypedNumber(value: number): UntypedNumber {

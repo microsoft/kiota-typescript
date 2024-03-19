@@ -5,7 +5,8 @@ export interface UntypedString extends UntypedNode {
 }
 
 export function isUntypedString(node: UntypedNode): node is UntypedString {
-  return typeof (node as UntypedString)?.value === "string";
+  const proposedNode = node as UntypedString;
+  return proposedNode && typeof proposedNode.value === "string";
 }
 
 export function createUntypedString(value: string): UntypedString {
