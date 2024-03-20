@@ -9,6 +9,21 @@ import {
   TimeOnly,
   isBackingStoreEnabled,
   toFirstCharacterUpper,
+  isUntypedNode,
+  UntypedNode,
+  UntypedArray,
+  UntypedBoolean,
+  UntypedNumber,
+  UntypedObject,
+  UntypedString,
+  createUntypedNodeFromDiscriminatorValue,
+  UntypedNull,
+  createUntypedBoolean,
+  createUntypedString,
+  createUntypedNumber,
+  createUntypedArray,
+  createUntypedObject,
+  createUntypedNull,
 } from "@microsoft/kiota-abstractions";
 
 export class JsonParseNode implements ParseNode {
@@ -78,6 +93,39 @@ export class JsonParseNode implements ParseNode {
     parsableFactory: ParsableFactory<T>,
   ): T => {
     const temp: T = {} as T;
+    if (isUntypedNode(parsableFactory(this)(temp))) {
+      const valueType = typeof this._jsonNode;
+      let value: T = temp;
+      if (valueType === "boolean") {
+        value = createUntypedBoolean(this._jsonNode as boolean) as any as T;
+      } else if (valueType === "string") {
+        value = createUntypedString(this._jsonNode as string) as any as T;
+      } else if (valueType === "number") {
+        value = createUntypedNumber(this._jsonNode as number) as any as T;
+      } else if (Array.isArray(this._jsonNode)) {
+        const nodes: UntypedNode[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        (this._jsonNode as any[]).forEach((x) => {
+          nodes.push(
+            new JsonParseNode(x).getObjectValue(
+              createUntypedNodeFromDiscriminatorValue,
+            ),
+          );
+        });
+        value = createUntypedArray(nodes) as any as T;
+      } else if (this._jsonNode && valueType === "object") {
+        const properties: Record<string, UntypedNode> = {};
+        Object.entries(this._jsonNode as any).forEach(([k, v]) => {
+          properties[k] = new JsonParseNode(v).getObjectValue(
+            createUntypedNodeFromDiscriminatorValue,
+          );
+        });
+        value = createUntypedObject(properties) as any as T;
+      } else if (!this._jsonNode) {
+        value = createUntypedNull() as any as T;
+      }
+      return value;
+    }
     const enableBackingStore = isBackingStoreEnabled(parsableFactory(this)(temp));
     const value: T = enableBackingStore ? new Proxy(temp, createBackedModelProxyHandler<T>()) : temp;
     if (this.onBeforeAssignFieldValues) {
