@@ -152,7 +152,7 @@ describe("FetchRequestAdapter.ts", () => {
 				const requestInformation = new RequestInformation();
 				requestInformation.URL = "https://www.example.com";
 				requestInformation.httpMethod = HttpMethod.GET;
-				const result = await requestAdapter.sendEnum(requestInformation, TestEnumObject, undefined);
+				const result: TestEnum | undefined = await requestAdapter.sendEnum(requestInformation, TestEnumObject, undefined);
 				assert.isDefined(result);
 				assert.equal(result, TestEnumObject.A);
 			});
@@ -175,7 +175,7 @@ describe("FetchRequestAdapter.ts", () => {
 				const requestInformation = new RequestInformation();
 				requestInformation.URL = "https://www.example.com";
 				requestInformation.httpMethod = HttpMethod.GET;
-				const result = await requestAdapter.sendCollectionOfEnum(requestInformation, TestEnumObject, undefined);
+				const result: TestEnum[] | undefined = await requestAdapter.sendCollectionOfEnum(requestInformation, TestEnumObject, undefined);
 				assert.isDefined(result);
 				assert.equal(result?.length, 3);
 				assert.equal(result![0], TestEnumObject.A);
