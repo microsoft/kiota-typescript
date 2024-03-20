@@ -85,6 +85,34 @@ export interface RequestAdapter {
     errorMappings: ErrorMappings | undefined,
   ): Promise<void>;
   /**
+   * Executes the HTTP request specified by the given RequestInformation and returns the deserialized enum response model.
+   *
+   * @template EnumObject - The type of the enum object. Must extend Record<string, unknown>.
+   * @param {RequestInformation} requestInfo - The request info to execute.
+   * @param {EnumObject} enumObject - The Enum object expected in the response.
+   * @param {ErrorMappings | undefined} errorMappings - the error factories mapping to use in case of a failed request.
+   * @returns {Promise<EnumObject[keyof EnumObject] | undefined>} - A promise that resolves to the response of the request, or undefined if an error occurred.
+   */
+  sendEnum<EnumObject extends Record<string, unknown>>(
+    requestInfo: RequestInformation,
+    enumObject: EnumObject,
+    errorMappings: ErrorMappings | undefined,
+  ): Promise<EnumObject[keyof EnumObject] | undefined>;
+  /**
+   * Executes the HTTP request specified by the given RequestInformation and returns the deserialized response model collection.
+   *
+   * @template EnumObject - The type of the enum objects. Must extend Record<string, unknown>.
+   * @param {RequestInformation} requestInfo - The request info to execute.
+   * @param {EnumObject} enumObject - The Enum object expected in the response.
+   * @param {ErrorMappings | undefined} errorMappings - the error factories mapping to use in case of a failed request.
+   * @returns {Promise<EnumObject[keyof EnumObject][] | undefined>} - with the deserialized response model collection.
+   */
+  sendCollectionOfEnum<EnumObject extends Record<string, unknown>>(
+    requestInfo: RequestInformation,
+    enumObject: EnumObject,
+    errorMappings: ErrorMappings | undefined,
+  ): Promise<EnumObject[keyof EnumObject][] | undefined>;
+  /**
    * Enables the backing store proxies for the SerializationWriters and ParseNodes in use.
    * @param backingStoreFactory the backing store factory to use.
    */

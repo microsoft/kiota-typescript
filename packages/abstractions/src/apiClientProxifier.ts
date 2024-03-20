@@ -150,6 +150,24 @@ function send(
         metadata.responseBodyFactory as ParsableFactory<Parsable>,
         metadata.errorMappings,
       );
+    case "sendEnum":
+      if (!metadata.enumObject) {
+        throw new Error("couldn't find response body factory");
+      }
+      return requestAdapter.sendEnum(
+        requestInfo,
+        metadata.enumObject,
+        metadata.errorMappings,
+      );
+    case "sendCollectionOfEnum":
+      if (!metadata.enumObject) {
+        throw new Error("couldn't find response body factory");
+      }
+      return requestAdapter.sendCollectionOfEnum(
+        requestInfo,
+        metadata.enumObject,
+        metadata.errorMappings,
+      );
     case "sendCollectionOfPrimitive":
       if (!metadata.responseBodyFactory) {
         throw new Error("couldn't find response body factory");
@@ -416,6 +434,7 @@ export interface RequestMetadata {
   requestInformationContentSetMethod?: keyof RequestInformationSetContent;
   queryParametersMapper?: Record<string, string>;
   uriTemplate: string;
+  enumObject?: EnumObject;
 }
 export interface RequestsMetadata {
   delete?: RequestMetadata;
@@ -434,6 +453,8 @@ export interface NavigationMetadata {
   navigationMetadata?: Record<string, NavigationMetadata>;
   pathParametersMappings?: string[];
 }
+
+type EnumObject<T extends Record<string, unknown> = Record<string, unknown>> = T;
 
 export type KeysToExcludeForNavigationMetadata =
   | KeysOfRequestsMetadata
