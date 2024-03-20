@@ -147,14 +147,14 @@ describe("FetchRequestAdapter.ts", () => {
 					response.headers.set("Content-Type", "text/plain");
 					return Promise.resolve(response);
 				};
-				const mockFactory = new TextParseNodeFactory();//new JsonParseNodeFactory();
+				const mockFactory = new TextParseNodeFactory();
 				const requestAdapter = new FetchRequestAdapter(new AnonymousAuthenticationProvider(), mockFactory, undefined, mockHttpClient);
 				const requestInformation = new RequestInformation();
 				requestInformation.URL = "https://www.example.com";
 				requestInformation.httpMethod = HttpMethod.GET;
 				const result: TestEnum | undefined = await requestAdapter.sendEnum(requestInformation, TestEnumObject, undefined);
 				assert.isDefined(result);
-				assert.equal(result, TestEnumObject.A);
+				assert.equal(result, enumResponse);
 			});
 		}
 	});
@@ -178,9 +178,9 @@ describe("FetchRequestAdapter.ts", () => {
 				const result: TestEnum[] | undefined = await requestAdapter.sendCollectionOfEnum(requestInformation, TestEnumObject, undefined);
 				assert.isDefined(result);
 				assert.equal(result?.length, 3);
-				assert.equal(result![0], TestEnumObject.A);
-				assert.equal(result![1], TestEnumObject.B);
-				assert.equal(result![2], TestEnumObject.C);
+				assert.equal(result![0], "a");
+				assert.equal(result![1], "b");
+				assert.equal(result![2], "c");
 			});
 		}
 	});
