@@ -78,6 +78,23 @@ describe("JsonParseNode", () => {
     const result = JSON.parse(contentAsStr);
     assert.equal(result.testComplexString, "Błonie");
   });
+  it("skip undefined objects from json body", async () => {
+    const inputObject: TestParser = {
+      testCollection: undefined,
+      testString: "test",
+      testObject: undefined,
+    };
+    const writer = new JsonSerializationWriter();
+    writer.writeObjectValue("", inputObject, serializeTestParser);
+    const serializedContent = writer.getSerializedContent();
+    const decoder = new TextDecoder();
+    const contentAsStr = decoder.decode(serializedContent);
+    const result = JSON.parse(contentAsStr);
+    console.log(JSON.stringify(result, null, 2));
+    assert.isFalse("testCollection" in result);
+    assert.isTrue("testString" in result);
+    assert.isFalse("testObject" in result);
+  });
   it("serializes untyped nodes as expected", async () => {
     const inputObject: UntypedTestEntity = {
       id: "1",
