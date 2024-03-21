@@ -15,5 +15,10 @@
         "composite": true,
         "module": "Node16",
         "target": "ES2017",
+        "paths": {
+            "@microsoft/kiota-abstractions": [
+                "./packages/abstractions"
+            ],
+        },
     }
 }
