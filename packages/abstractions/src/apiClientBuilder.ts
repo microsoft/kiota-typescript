@@ -1,3 +1,9 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import {
   type ParseNodeFactory,
   ParseNodeFactoryRegistry,
@@ -49,7 +55,7 @@ export function enableBackingStoreForSerializationWriterFactory(
   let result = original;
   if (original instanceof SerializationWriterFactoryRegistry) {
     enableBackingStoreForSerializationRegistry(
-      original as SerializationWriterFactoryRegistry
+      original
     );
   } else {
     result = new BackingStoreSerializationWriterProxyFactory(original);
@@ -74,7 +80,7 @@ export function enableBackingStoreForParseNodeFactory(
   let result = original;
   if (original instanceof ParseNodeFactoryRegistry) {
     enableBackingStoreForParseNodeRegistry(
-      original as ParseNodeFactoryRegistry
+      original
     );
   } else {
     result = new BackingStoreParseNodeFactory(original);

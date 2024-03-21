@@ -1,3 +1,9 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import { type ParseNodeFactory, ParseNodeProxyFactory } from "../serialization";
 import type { BackedModel } from "./backedModel";
 
@@ -12,13 +18,13 @@ export class BackingStoreParseNodeFactory extends ParseNodeProxyFactory {
       concrete,
       (value) => {
         const backedModel = value as unknown as BackedModel;
-        if (backedModel && backedModel.backingStore) {
+        if (backedModel?.backingStore) {
           backedModel.backingStore.initializationCompleted = false;
         }
       },
       (value) => {
         const backedModel = value as unknown as BackedModel;
-        if (backedModel && backedModel.backingStore) {
+        if (backedModel?.backingStore) {
           backedModel.backingStore.initializationCompleted = true;
         }
       }

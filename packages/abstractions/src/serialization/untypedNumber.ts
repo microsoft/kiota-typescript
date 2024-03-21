@@ -1,3 +1,9 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import { UntypedNode } from "./untypedNode";
 
 /** Defines the interface for defining an untyped number value. */
@@ -25,7 +31,7 @@ export function isUntypedNumber(node: UntypedNode): node is UntypedNumber {
  */
 export function createUntypedNumber(value: number): UntypedNumber {
   return {
-    value: value,
-    getValue: () => value as number,
+    value,
+    getValue: () => value,
   };
 }

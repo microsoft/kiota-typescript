@@ -1,7 +1,13 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import { type SerializationWriterFactory, SerializationWriterProxyFactory } from "../serialization";
 import type { BackedModel } from "./backedModel";
 
-/**Proxy implementation of SerializationWriterFactory for the backing store that automatically sets the state of the backing store when serializing. */
+/** Proxy implementation of SerializationWriterFactory for the backing store that automatically sets the state of the backing store when serializing. */
 export class BackingStoreSerializationWriterProxyFactory extends SerializationWriterProxyFactory {
   /**
    * Initializes a new instance of the BackingStoreSerializationWriterProxyFactory class given a concrete implementation of SerializationWriterFactory.
@@ -12,20 +18,20 @@ export class BackingStoreSerializationWriterProxyFactory extends SerializationWr
       concrete,
       (value) => {
         const backedModel = value as unknown as BackedModel;
-        if (backedModel && backedModel.backingStore) {
+        if (backedModel?.backingStore) {
           backedModel.backingStore.returnOnlyChangedValues = true;
         }
       },
       (value) => {
         const backedModel = value as unknown as BackedModel;
-        if (backedModel && backedModel.backingStore) {
+        if (backedModel?.backingStore) {
           backedModel.backingStore.returnOnlyChangedValues = false;
           backedModel.backingStore.initializationCompleted = true;
         }
       },
       (value, writer) => {
         const backedModel = value as unknown as BackedModel;
-        if (backedModel && backedModel.backingStore) {
+        if (backedModel?.backingStore) {
           const keys =
             backedModel.backingStore.enumerateKeysForValuesChangedToNull();
           for (const key of keys) {

@@ -1,3 +1,9 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import { UntypedNode } from "./untypedNode";
 
 /** Defines the interface for defining an untyped string value. */
@@ -25,7 +31,7 @@ export function isUntypedString(node: UntypedNode): node is UntypedString {
  */
 export function createUntypedString(value: string): UntypedString {
   return {
-    value: value,
-    getValue: () => value as string,
+    value,
+    getValue: () => value,
   };
 }

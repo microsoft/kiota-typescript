@@ -1,3 +1,9 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import { isUntypedNode, UntypedNode } from "./untypedNode";
 
 /** Defines the interface for defining an untyped object value. */
@@ -32,7 +38,7 @@ export function createUntypedObject(
   value: Record<string, UntypedNode>,
 ): UntypedObject {
   return {
-    value: value,
-    getValue: () => value as Record<string, UntypedNode>,
+    value,
+    getValue: () => value,
   };
 }

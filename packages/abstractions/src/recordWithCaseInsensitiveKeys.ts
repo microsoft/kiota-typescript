@@ -1,7 +1,8 @@
 /**
- * A Proxy that allows implementation of a Object with case insensitive keys
- * @param canon A function that takes a property name and returns its canonical form.
- * @returns A new object that can be used as a dictionary with case-insensitive keys.
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
  */
 function dictionaryWithCanonicalKeys<V>(canon: (prop: keyof any) => string) {
   const keysNormalizationMap = new Map<string, string>();

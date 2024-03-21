@@ -2,6 +2,7 @@
   "name": "kiota-typescript",
   "private": true,
   "devDependencies": {
+    "@microsoft/eslint-config-msgraph": "^2.0.0",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@types/node": "^20.11.15",
@@ -12,8 +13,13 @@
     "@vitest/ui": "^1.3.1",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-header": "^3.1.1",
+    "eslint-plugin-jsdoc": "^46.10.1",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-simple-import-sort": "^12.0.0",
+    "husky": "^9.0.11",
     "lerna": "^8.0.2",
     "prettier": "^3.2.4",
     "rollup": "2.79.1",
@@ -44,7 +50,9 @@
     "test:node": "vitest --run",
     "test": "npm run test:node && npm run test:browser",
     "tsc:version": "tsc --version",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix"
+    "lint:eslint": "eslint -c .eslintrc.js --quiet 'packages/*/src/**/*.ts'",
+    "lint": "npm run lint:eslint",
+    "lint:fix": "npm run lint:eslint -- --fix",
+    "prepare": "husky"
   }
 }

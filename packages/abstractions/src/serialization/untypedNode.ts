@@ -1,4 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import type { Parsable } from "./parsable";
 import type { ParseNode } from "./parseNode";
 import type { SerializationWriter } from "./serializationWriter";
@@ -31,7 +36,7 @@ export function createUntypedNodeFromDiscriminatorValue(
  */
 export function isUntypedNode(node: any): node is UntypedNode {
   const potentialNode = node as UntypedNode;
-  return potentialNode && potentialNode.getValue !== undefined;
+  return potentialNode?.getValue !== undefined;
 }
 
 /**

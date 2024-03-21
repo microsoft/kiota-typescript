@@ -1,3 +1,9 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import { trace } from "@opentelemetry/api";
 import { StdUriTemplate } from "@std-uritemplate/std-uritemplate";
 
@@ -170,7 +176,7 @@ export class RequestInformation implements RequestInformationSetContent {
               undefined,
               value,
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              modelSerializerFunction!,
+              modelSerializerFunction,
             );
           } else {
             span.setAttribute(RequestInformation.requestTypeKey, "object");
@@ -182,7 +188,7 @@ export class RequestInformation implements RequestInformationSetContent {
         }
       });
   };
-  private setContentAndContentType = (
+  private readonly setContentAndContentType = (
     writer: SerializationWriter,
     contentType?: string | undefined,
   ) => {
@@ -191,7 +197,7 @@ export class RequestInformation implements RequestInformationSetContent {
     }
     this.content = writer.getSerializedContent();
   };
-  private getSerializationWriter = <T>(
+  private readonly getSerializationWriter = <T>(
     requestAdapter?: RequestAdapter | undefined,
     contentType?: string | undefined,
     ...values: T[]

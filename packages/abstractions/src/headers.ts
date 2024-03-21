@@ -1,3 +1,9 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitiveKeys";
 
 /**
@@ -12,7 +18,7 @@ import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitive
 export class Headers extends Map<string, Set<string>> {
   private headers: Record<string, Set<string>> =
     createRecordWithCaseInsensitiveKeys<Set<string>>();
-  private singleValueHeaders: Set<string> = new Set([
+  private readonly singleValueHeaders = new Set<string>([
     "Content-Type",
     "Content-Encoding",
     "Content-Length",

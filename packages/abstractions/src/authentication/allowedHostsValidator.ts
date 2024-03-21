@@ -1,4 +1,9 @@
-/** Maintains a list of valid hosts and allows authentication providers to check whether a host is valid before authenticating a request */
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 export class AllowedHostsValidator {
   private allowedHosts: Set<string>;
   /**
@@ -39,12 +44,12 @@ export class AllowedHostsValidator {
       // protocol relative URL domain.tld/path
       return this.isHostAndPathValid(url);
     }
-    //@ts-ignore
+    // @ts-ignore
     if (window && window.location && window.location.host) {
       // we're in a browser, and we're using paths only ../path, ./path, /path, etc.
-      //@ts-ignore
+      // @ts-ignore
       return this.allowedHosts.has(
-        (window.location.host as string)?.toLowerCase()
+        (window.location.host)?.toLowerCase()
       );
     }
     return false;

@@ -1,3 +1,9 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import { isUntypedNode, UntypedNode } from "./untypedNode";
 
 /** Defines an interface for defining an untyped array. */
@@ -29,7 +35,7 @@ export function isUntypedArray(node: UntypedNode): node is UntypedArray {
  */
 export function createUntypedArray(value: UntypedNode[]): UntypedArray {
   return {
-    value: value,
-    getValue: () => value as UntypedNode[],
+    value,
+    getValue: () => value,
   };
 }

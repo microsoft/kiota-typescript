@@ -1,3 +1,9 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import { UntypedNode } from "./untypedNode";
 
 /** Defines an interface for defining an untyped boolean. */
@@ -25,7 +31,7 @@ export function isUntypedBoolean(node: UntypedNode): node is UntypedBoolean {
  */
 export function createUntypedBoolean(value: boolean): UntypedBoolean {
   return {
-    value: value,
-    getValue: () => value as boolean,
+    value,
+    getValue: () => value,
   };
 }

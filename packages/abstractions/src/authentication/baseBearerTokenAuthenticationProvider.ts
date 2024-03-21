@@ -1,3 +1,9 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import { Headers } from "../headers";
 import { type RequestInformation } from "../requestInformation";
 import type { AccessTokenProvider } from "./accessTokenProvider";
@@ -24,8 +30,7 @@ export class BaseBearerTokenAuthenticationProvider
       throw new Error("request info cannot be null");
     }
     if (
-      additionalAuthenticationContext &&
-      additionalAuthenticationContext["claims"] &&
+      additionalAuthenticationContext?.claims &&
       request.headers.has(
         BaseBearerTokenAuthenticationProvider.authorizationHeaderKey
       )
