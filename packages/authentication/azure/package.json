@@ -6,7 +6,8 @@
   "module": "dist/es/src/index.js",
   "types": "dist/es/src/index.d.ts",
   "scripts": {
-    "build": "npm run clean && tsc -b",
+    "build": "npm run clean && npm run build:esm",
+    "build:esm": "tsc",
     "test:node": "vitest run",
     "test:browser": "vitest run --browser.name=chrome --browser.headless",
     "test": "npm run test:node && npm run test:browser",
