@@ -2,6 +2,7 @@ import { assert, describe, it } from "vitest";
 
 import { FormSerializationWriterFactory } from "../../src/index";
 
+// TODO (musale) fix this test for browser
 describe("formSerializationWriterFactory", () => {
   it("formSerializationWriterFactory", () => {
     const factory = new FormSerializationWriterFactory();

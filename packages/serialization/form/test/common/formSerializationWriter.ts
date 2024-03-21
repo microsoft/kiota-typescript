@@ -4,6 +4,7 @@ import { assert, describe, it } from "vitest";
 import { FormSerializationWriter } from "../../src";
 import { serializeTestEntity,type TestEntity } from "../testEntity";
 
+// TODO (musale) fix this test for browser
 describe("FormSerializationWriter", () => {
   it("writesSampleObjectValue", () => {
     const testEntity = {} as TestEntity;
