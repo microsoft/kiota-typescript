@@ -281,6 +281,74 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		});
 	};
+	public sendEnum = <EnumObject extends Record<string, unknown>>(requestInfo: RequestInformation, enumObject: EnumObject, errorMappings: ErrorMappings | undefined): Promise<EnumObject[keyof EnumObject] | undefined> => {
+		if (!requestInfo) {
+			throw new Error("requestInfo cannot be null");
+		}
+		return this.startTracingSpan(requestInfo, "sendEnum", async (span) => {
+			try {
+				const response = await this.getHttpResponseMessage(requestInfo, span);
+				const responseHandler = this.getResponseHandler(requestInfo);
+				if (responseHandler) {
+					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
+					return await responseHandler.handleResponse(response, errorMappings);
+				} else {
+					try {
+						await this.throwIfFailedResponse(response, errorMappings, span);
+						if (this.shouldReturnUndefined(response)) return undefined;
+						const rootNode = await this.getRootParseNode(response);
+						return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getEnumValue", (deserializeSpan) => {
+							try {
+								span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "enum");
+								const result = rootNode.getEnumValue(enumObject);
+								return result as unknown as EnumObject[keyof EnumObject];
+							} finally {
+								deserializeSpan.end();
+							}
+						});
+					} finally {
+						await this.purgeResponseBody(response);
+					}
+				}
+			} finally {
+				span.end();
+			}
+		}) as Promise<EnumObject[keyof EnumObject]>;
+	}
+	public sendCollectionOfEnum = <EnumObject extends Record<string, unknown>>(requestInfo: RequestInformation, enumObject: EnumObject, errorMappings: ErrorMappings | undefined): Promise<EnumObject[keyof EnumObject][] | undefined> => {
+		if (!requestInfo) {
+			throw new Error("requestInfo cannot be null");
+		}
+		return this.startTracingSpan(requestInfo, "sendCollectionOfEnum", async (span) => {
+			try {
+				const response = await this.getHttpResponseMessage(requestInfo, span);
+				const responseHandler = this.getResponseHandler(requestInfo);
+				if (responseHandler) {
+					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
+					return await responseHandler.handleResponse(response, errorMappings);
+				} else {
+					try {
+						await this.throwIfFailedResponse(response, errorMappings, span);
+						if (this.shouldReturnUndefined(response)) return undefined;
+						const rootNode = await this.getRootParseNode(response);
+						return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getCollectionOfEnumValues", (deserializeSpan) => {
+							try {
+								const result = rootNode.getCollectionOfEnumValues(enumObject);
+								span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "enum[]");
+								return result as unknown as EnumObject[keyof EnumObject][];
+							} finally {
+								deserializeSpan.end();
+							}
+						});
+					} finally {
+						await this.purgeResponseBody(response);
+					}
+				}
+			} finally {
+				span.end();
+			}
+		});
+	}
 	public enableBackingStore = (backingStoreFactory?: BackingStoreFactory | undefined): void => {
 		this.parseNodeFactory = enableBackingStoreForParseNodeFactory(this.parseNodeFactory);
 		this.serializationWriterFactory = enableBackingStoreForSerializationWriterFactory(this.serializationWriterFactory);

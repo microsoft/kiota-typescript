@@ -7,6 +7,8 @@ import {
   createTestBackedModelFromDiscriminatorValue,
   type TestParser 
 } from "./testEntity";
+import { UntypedTestEntity, createUntypedTestEntityFromDiscriminatorValue } from "./untypedTestEntiy";
+import { UntypedNode, UntypedObject, isUntypedArray, isUntypedBoolean, isUntypedNode, isUntypedNumber, isUntypedObject } from "@microsoft/kiota-abstractions";
 
 describe("JsonParseNode", () => {
   it("jsonParseNode:initializes", async () => {
@@ -169,4 +171,72 @@ describe("JsonParseNode", () => {
     assert.equal(jsonObjectStr, resultStr);
   });
 
+  it("untyped nodes are deserialized correctly", async () => {
+    const jsonObject = {
+      id: "1",
+      title: "title",
+      location: {
+        address: {
+          city: "Redmond",
+          postalCode: "98052",
+          state: "Washington",
+          street: "NE 36th St",
+        },
+        coordinates: {
+          latitude: 47.678581,
+          longitude: -122.131577,
+        },
+        displayName: "Microsoft Building 25",
+        floorCount: 50,
+        hasReception: true,
+        contact: null,
+      },
+      keywords: [
+        {
+          created: "2023-07-26T10:41:26Z",
+          label: "Keyword1",
+          termGuid: "10e9cc83-b5a4-4c8d-8dab-4ada1252dd70",
+          wssId: 6442450941,
+        },
+        {
+          created: "2023-07-26T10:51:26Z",
+          label: "Keyword2",
+          termGuid: "2cae6c6a-9bb8-4a78-afff-81b88e735fef",
+          wssId: 6442450942,
+        },
+      ],
+      extra: {
+        value: {
+          createdDateTime: {
+            value: "2024-01-15T00:00:00+00:00",
+          },
+        },
+      },
+    };
+
+    const result = new JsonParseNode(jsonObject).getObjectValue(
+      createUntypedTestEntityFromDiscriminatorValue,
+    ) as UntypedTestEntity;
+    assert.equal(result.id, "1");
+    assert.equal(result.title, "title");
+    assert.isNotNull(result.location);
+    assert.isTrue(isUntypedNode(result.location));
+    const location = result.location as UntypedObject;
+    const locationProperties = location.getValue();
+    assert.isTrue(isUntypedObject(location));
+    assert.isTrue(isUntypedObject(locationProperties["address"]));
+    assert.isTrue(isUntypedObject(locationProperties["coordinates"]));
+    assert.isTrue(isUntypedBoolean(locationProperties["hasReception"]));
+    assert.isTrue(isUntypedNumber(locationProperties["floorCount"]));
+    assert.isTrue(isUntypedBoolean(locationProperties["hasReception"]));
+    assert.equal(locationProperties["hasReception"].getValue(), true);
+    assert.equal(locationProperties["contact"].getValue(), null);
+    assert.equal(locationProperties["floorCount"].getValue(), 50);
+    const keywords = result.keywords as UntypedNode;
+    assert.isTrue(isUntypedArray(keywords));
+    assert.equal(
+      locationProperties["displayName"].getValue(),
+      "Microsoft Building 25",
+    );
+  });
 });
