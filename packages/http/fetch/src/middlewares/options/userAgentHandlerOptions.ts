@@ -56,13 +56,13 @@ export class UserAgentHandlerOptions implements RequestOption {
 	 * @default "kiota-typescript"
 	 * The product name to be added to the user agent header
 	 */
-  	public productName: string;
+	public productName: string;
 
 	/**
 	 * @member
 	 * The product version to be added to the user agent header
 	 */
-  	public productVersion: string;
+	public productVersion: string;
 
 	getKey(): string {
 		return UserAgentHandlerOptionsKey;

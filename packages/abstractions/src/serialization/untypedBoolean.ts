@@ -8,10 +8,10 @@ import { UntypedNode } from "./untypedNode";
 
 /** Defines an interface for defining an untyped boolean. */
 export interface UntypedBoolean extends UntypedNode {
-  /**
-   * Gets the value of the UntypedNode as a boolean value.
-   */
-  getValue(): boolean;
+	/**
+	 * Gets the value of the UntypedNode as a boolean value.
+	 */
+	getValue(): boolean;
 }
 
 /**
@@ -20,8 +20,8 @@ export interface UntypedBoolean extends UntypedNode {
  * @return boolean indicating if the node is an UntypedBoolean.
  */
 export function isUntypedBoolean(node: UntypedNode): node is UntypedBoolean {
-  const proposedNode = node as UntypedBoolean;
-  return proposedNode && typeof proposedNode.value === "boolean";
+	const proposedNode = node as UntypedBoolean;
+	return proposedNode && typeof proposedNode.value === "boolean";
 }
 
 /**
@@ -30,8 +30,8 @@ export function isUntypedBoolean(node: UntypedNode): node is UntypedBoolean {
  * @return The created UntypedBoolean.
  */
 export function createUntypedBoolean(value: boolean): UntypedBoolean {
-  return {
-    value,
-    getValue: () => value,
-  };
+	return {
+		value,
+		getValue: () => value,
+	};
 }

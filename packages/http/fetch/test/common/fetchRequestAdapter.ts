@@ -26,7 +26,7 @@ if (typeof Response !== "object") {
 const TestEnumObject = {
 	A: "a",
 	B: "b",
-	C: "c"
+	C: "c",
 } as const;
 
 type TestEnum = (typeof TestEnumObject)[keyof typeof TestEnumObject];
@@ -167,7 +167,7 @@ describe("FetchRequestAdapter.ts", () => {
 					const response = new Response(enumResponse, {
 						status: statusCode,
 					} as ResponseInit);
-					response.headers.set("Content-Type",  "application/json");
+					response.headers.set("Content-Type", "application/json");
 					return Promise.resolve(response);
 				};
 				const mockFactory = new JsonParseNodeFactory();

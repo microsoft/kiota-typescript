@@ -270,7 +270,7 @@ describe("RedirectHandler.ts", () => {
 		});
 
 		it("Should not redirect for shouldRedirect callback returning false", async () => {
-			const options = new RedirectHandlerOptions({maxRedirects: undefined, shouldRedirect: () => false });
+			const options = new RedirectHandlerOptions({ maxRedirects: undefined, shouldRedirect: () => false });
 			const handler = new RedirectHandler(options);
 			handler.next = dummyFetchHandler;
 			dummyFetchHandler.setResponses([new Response("", { status: 301 }), new Response("ok", { status: 200 }) as any]);

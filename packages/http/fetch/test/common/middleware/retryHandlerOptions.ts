@@ -20,7 +20,7 @@ describe("RetryHandlerOptions.ts", () => {
 
 		it("Should throw error for both delay and maxRetries are higher than the limit", () => {
 			try {
-				const options = new RetryHandlerOptions({ delay: 1000, maxRetries: 1000});
+				const options = new RetryHandlerOptions({ delay: 1000, maxRetries: 1000 });
 				throw new Error("Test Failed - Something wrong with the delay and maxRetries max limit validation");
 			} catch (error) {
 				assert.equal((error as Error).name, "MaxLimitExceeded");
@@ -29,7 +29,7 @@ describe("RetryHandlerOptions.ts", () => {
 
 		it("Should throw error for delay is higher than the limit", () => {
 			try {
-				const options = new RetryHandlerOptions({delay: 1000, maxRetries: 2});
+				const options = new RetryHandlerOptions({ delay: 1000, maxRetries: 2 });
 				throw new Error("Test Failed - Test Failed - Something wrong with the delay max limit validation");
 			} catch (error) {
 				assert.equal((error as Error).name, "MaxLimitExceeded");
@@ -38,7 +38,7 @@ describe("RetryHandlerOptions.ts", () => {
 
 		it("Should throw error for maxRetries is higher than the limit", () => {
 			try {
-				const options = new RetryHandlerOptions({delay: 1, maxRetries: 2000});
+				const options = new RetryHandlerOptions({ delay: 1, maxRetries: 2000 });
 				throw new Error("Test Failed - Something wrong with the maxRetries max limit validation");
 			} catch (error) {
 				assert.equal((error as Error).name, "MaxLimitExceeded");
@@ -47,7 +47,7 @@ describe("RetryHandlerOptions.ts", () => {
 
 		it("Should throw error for both delay and maxRetries are negative", () => {
 			try {
-				const options = new RetryHandlerOptions({delay: -1, maxRetries: -100});
+				const options = new RetryHandlerOptions({ delay: -1, maxRetries: -100 });
 				throw new Error("Test Failed - Something wrong with the delay and maxRetries max limit validation");
 			} catch (error) {
 				assert.equal((error as Error).name, "MinExpectationNotMet");
@@ -57,7 +57,7 @@ describe("RetryHandlerOptions.ts", () => {
 		it("Should throw error for delay is negative", () => {
 			try {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				const options = new RetryHandlerOptions({delay: -5, maxRetries: 2});
+				const options = new RetryHandlerOptions({ delay: -5, maxRetries: 2 });
 				throw new Error("Test Failed - Something wrong with the delay max limit validation");
 			} catch (error) {
 				assert.equal((error as Error).name, "MinExpectationNotMet");
@@ -66,7 +66,7 @@ describe("RetryHandlerOptions.ts", () => {
 
 		it("Should throw error for maxRetries is negative", () => {
 			try {
-				const options = new RetryHandlerOptions({delay: 1, maxRetries: -10});
+				const options = new RetryHandlerOptions({ delay: 1, maxRetries: -10 });
 				throw new Error("Test Failed - Something wrong with the maxRetries max limit validation");
 			} catch (error) {
 				assert.equal((error as Error).name, "MinExpectationNotMet");
@@ -79,7 +79,7 @@ describe("RetryHandlerOptions.ts", () => {
 			const shouldRetry: ShouldRetry = (d, a, req, o, res) => {
 				return false;
 			};
-			const options = new RetryHandlerOptions({delay, maxRetries, shouldRetry});
+			const options = new RetryHandlerOptions({ delay, maxRetries, shouldRetry });
 			assert.equal(options.delay, delay);
 			assert.equal(options.maxRetries, maxRetries);
 			assert.equal(options.shouldRetry, shouldRetry);

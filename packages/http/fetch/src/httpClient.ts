@@ -24,7 +24,10 @@ export class HttpClient {
 	 * @param {(request: string, init?: RequestInit) => Promise < Response >} custom fetch function - a Fetch API implementation
 	 *
 	 */
-	public constructor(private customFetch?: (request: string, init: RequestInit) => Promise<Response>, ...middlewares: Middleware[]) {
+	public constructor(
+		private customFetch?: (request: string, init: RequestInit) => Promise<Response>,
+		...middlewares: Middleware[]
+	) {
 		// If no middlewares are provided, use the default ones
 		middlewares = middlewares?.length && middlewares[0] ? middlewares : MiddlewareFactory.getDefaultMiddlewares(customFetch);
 
@@ -32,7 +35,7 @@ export class HttpClient {
 		if (this.customFetch) {
 			middlewares.push(new CustomFetchHandler(customFetch as any));
 		}
-		
+
 		// Set the middleware chain
 		this.setMiddleware(...middlewares);
 	}
@@ -45,7 +48,7 @@ export class HttpClient {
 	 * @returns Nothing
 	 */
 	private setMiddleware(...middleware: Middleware[]): void {
-        for (let i = 0; i < middleware.length - 1; i++) {
+		for (let i = 0; i < middleware.length - 1; i++) {
 			middleware[i].next = middleware[i + 1];
 		}
 		this.middleware = middleware[0];
@@ -63,7 +66,7 @@ export class HttpClient {
 		} else if (this.customFetch) {
 			return this.customFetch(url, requestInit);
 		}
-		
+
 		throw new Error("Please provide middlewares or a custom fetch function to execute the request");
 	}
 }

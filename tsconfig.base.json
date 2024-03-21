@@ -16,8 +16,10 @@
         "module": "Node16",
         "target": "ES2017",
         "lib": [
+            "dom",
+            "es5",
             "es6",
-            "DOM"
+            "DOM.Iterable"
         ],
         "outDir": "dist/es"
     },

@@ -6,7 +6,7 @@
   "module": "dist/es/src/index.js",
   "types": "dist/es/src/index.d.ts",
   "scripts": {
-    "build": "npm run clean && npm run build:esm",
+    "build": "npm run build:esm",
     "build:esm": "tsc -b",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",

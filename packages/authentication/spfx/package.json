@@ -6,7 +6,7 @@
   "module": "dist/es/src/index.js",
   "types": "dist/es/src/index.d.ts",
   "scripts": {
-    "build": "npm run clean && npm run build:esm",
+    "build": "npm run build:esm",
     "build:esm": "tsc",
     "test:browser": "vitest run --browser.name=chrome --browser.headless",
     "test:node": "vitest --run",
@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/microsoft/kiota-typescript#readme",
   "dependencies": {
-    "@microsoft/kiota-abstractions": "^1.0.0-preview.49",
+    "@microsoft/kiota-abstractions": "*",
     "@microsoft/sp-http": "^1.15.2",
     "@opentelemetry/api": "^1.7.0",
     "tslib": "^2.6.2"

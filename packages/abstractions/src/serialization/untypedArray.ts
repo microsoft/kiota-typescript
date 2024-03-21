@@ -8,10 +8,10 @@ import { isUntypedNode, UntypedNode } from "./untypedNode";
 
 /** Defines an interface for defining an untyped array. */
 export interface UntypedArray extends UntypedNode {
-  /**
-   * Gets the value of the UntypedNode as an array of UntypedNodes.
-   */
-  getValue(): UntypedNode[];
+	/**
+	 * Gets the value of the UntypedNode as an array of UntypedNodes.
+	 */
+	getValue(): UntypedNode[];
 }
 
 /**
@@ -20,12 +20,8 @@ export interface UntypedArray extends UntypedNode {
  * @return boolean indicating if the node is an UntypedArray.
  */
 export function isUntypedArray(node: UntypedNode): node is UntypedArray {
-  const proposedNode = node as UntypedArray;
-  return (
-    proposedNode &&
-    proposedNode.value instanceof Array &&
-    proposedNode.value.every((item) => isUntypedNode(item))
-  );
+	const proposedNode = node as UntypedArray;
+	return proposedNode && proposedNode.value instanceof Array && proposedNode.value.every((item) => isUntypedNode(item));
 }
 
 /**
@@ -34,8 +30,8 @@ export function isUntypedArray(node: UntypedNode): node is UntypedArray {
  * @return The created UntypedArray.
  */
 export function createUntypedArray(value: UntypedNode[]): UntypedArray {
-  return {
-    value,
-    getValue: () => value,
-  };
+	return {
+		value,
+		getValue: () => value,
+	};
 }

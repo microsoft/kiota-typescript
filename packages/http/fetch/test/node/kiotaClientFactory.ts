@@ -23,13 +23,7 @@ describe("browser - KiotaClientFactory", () => {
 	});
 
 	it("Should maintain the middleware array order", () => {
-		const middlewares = [
-			new UserAgentHandler(),
-			new ParametersNameDecodingHandler(),
-			new RetryHandler(),
-            new RedirectHandler(),
-            new HeadersInspectionHandler(),
-		];
+		const middlewares = [new UserAgentHandler(), new ParametersNameDecodingHandler(), new RetryHandler(), new RedirectHandler(), new HeadersInspectionHandler()];
 
 		const httpClient = KiotaClientFactory.create(undefined, middlewares);
 		assert.isDefined(httpClient);

@@ -3,7 +3,6 @@ module.exports = {
 	embeddedLanguageFormatting: "off",
 	"arrowParens": "always",
 	"bracketSpacing": true,
-	"jsxBracketSameLine": true,
 	"jsxSingleQuote": false,
 	"printWidth": 5000,
 	"proseWrap": "never",

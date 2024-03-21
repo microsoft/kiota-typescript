@@ -13,6 +13,4 @@ import type { DeserializeIntoModelFunction } from "./serializationFunctionTypes"
  * @param parseNode The node to parse use to get the discriminator value from the payload.
  * @returns The parsable object.
  */
-export type ParsableFactory<T extends Parsable> = (
-  parseNode: ParseNode | undefined
-) => DeserializeIntoModelFunction<T>;
+export type ParsableFactory<T extends Parsable> = (parseNode: ParseNode | undefined) => DeserializeIntoModelFunction<T>;

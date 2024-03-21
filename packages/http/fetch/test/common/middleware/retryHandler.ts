@@ -161,7 +161,7 @@ describe("RetryHandler.ts", () => {
 			const delay = 1;
 			const maxRetries = 2;
 			const shouldRetry: ShouldRetry = () => false;
-			const options = new RetryHandlerOptions({delay, maxRetries, shouldRetry});
+			const options = new RetryHandlerOptions({ delay, maxRetries, shouldRetry });
 
 			const requestUrl = "url";
 			const fetchRequestInit = {
@@ -200,7 +200,7 @@ describe("RetryHandler.ts", () => {
 		const fetchRequestInit = {
 			method: "GET",
 		};
-        const opts = new RetryHandlerOptions();
+		const opts = new RetryHandlerOptions();
 
 		it("Should return non retried response incase of maxRetries busted out", async () => {
 			dummyFetchHandler.setResponses([new Response(null, { status: 429 }), new Response("ok", { status: 200 })]);
@@ -228,22 +228,30 @@ describe("RetryHandler.ts", () => {
 			assert.equal(response.status, 429);
 		});
 
-		it("Should successfully retry and return ok response", async () => {
-			const opts = new RetryHandlerOptions({delay: 1});
-			const handler = new RetryHandler(opts);
-			handler.next = dummyFetchHandler;
-			dummyFetchHandler.setResponses([new Response(null, { status: 429 }), new Response(null, { status: 429 }), new Response("ok", { status: 200 })]);
-			const response = await handler["executeWithRetry"](requestUrl, fetchRequestInit, 0, opts);
-			assert.equal(response.status, 200);
-		}, 20 * 1000);
+		it(
+			"Should successfully retry and return ok response",
+			async () => {
+				const opts = new RetryHandlerOptions({ delay: 1 });
+				const handler = new RetryHandler(opts);
+				handler.next = dummyFetchHandler;
+				dummyFetchHandler.setResponses([new Response(null, { status: 429 }), new Response(null, { status: 429 }), new Response("ok", { status: 200 })]);
+				const response = await handler["executeWithRetry"](requestUrl, fetchRequestInit, 0, opts);
+				assert.equal(response.status, 200);
+			},
+			20 * 1000,
+		);
 
-		it("Should fail by exceeding max retries", async () => {
-			const opts = new RetryHandlerOptions({delay: 1, maxRetries: 2});
-			const handler = new RetryHandler(opts);
-			handler.next = dummyFetchHandler;
-			dummyFetchHandler.setResponses([new Response(null, { status: 429 }), new Response(null, { status: 429 }), new Response(null, { status: 429 }), new Response("ok", { status: 200 })]);
-			const response = await handler["executeWithRetry"](requestUrl, fetchRequestInit, 0, opts);
-			assert.equal(response.status, 429);
-		}, 20 * 1000);
+		it(
+			"Should fail by exceeding max retries",
+			async () => {
+				const opts = new RetryHandlerOptions({ delay: 1, maxRetries: 2 });
+				const handler = new RetryHandler(opts);
+				handler.next = dummyFetchHandler;
+				dummyFetchHandler.setResponses([new Response(null, { status: 429 }), new Response(null, { status: 429 }), new Response(null, { status: 429 }), new Response("ok", { status: 200 })]);
+				const response = await handler["executeWithRetry"](requestUrl, fetchRequestInit, 0, opts);
+				assert.equal(response.status, 429);
+			},
+			20 * 1000,
+		);
 	});
 });
