@@ -13,12 +13,23 @@ import { HttpClient } from "../../src/httpClient";
 import { getResponse } from "../testUtils";
 import { createMockEntityFromDiscriminatorValue } from "./mockEntity";
 import { MockParseNode, MockParseNodeFactory } from "./mockParseNodeFactory";
+import { JsonParseNode, JsonParseNodeFactory } from "@microsoft/kiota-serialization-json";
+import { TextParseNodeFactory } from "@microsoft/kiota-serialization-text";
+import { FormParseNodeFactory } from "@microsoft/kiota-serialization-form";
 
 // eslint-disable-next-line no-var
 var Response = Response;
 if (typeof Response !== "object") {
 	Response = getResponse();
 }
+
+const TestEnumObject = {
+	A: "a",
+	B: "b",
+	C: "c"
+} as const;
+
+type TestEnum = (typeof TestEnumObject)[keyof typeof TestEnumObject];
 
 describe("FetchRequestAdapter.ts", () => {
 	describe("getClaimsFromResponse", () => {
@@ -121,6 +132,55 @@ describe("FetchRequestAdapter.ts", () => {
 				requestInformation.httpMethod = HttpMethod.GET;
 				const result = await requestAdapter.send(requestInformation, createMockEntityFromDiscriminatorValue, undefined);
 				assert.isDefined(result);
+			});
+		}
+	});
+	describe("send enum", () => {
+		for (const statusCode of [200, 201, 202, 203]) {
+			const enumResponse = "a";
+			it(`should return object for status code ${statusCode}`, async () => {
+				const mockHttpClient = new HttpClient();
+				mockHttpClient.executeFetch = async (url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>) => {
+					const response = new Response(enumResponse, {
+						status: statusCode,
+					} as ResponseInit);
+					response.headers.set("Content-Type", "text/plain");
+					return Promise.resolve(response);
+				};
+				const mockFactory = new TextParseNodeFactory();
+				const requestAdapter = new FetchRequestAdapter(new AnonymousAuthenticationProvider(), mockFactory, undefined, mockHttpClient);
+				const requestInformation = new RequestInformation();
+				requestInformation.URL = "https://www.example.com";
+				requestInformation.httpMethod = HttpMethod.GET;
+				const result: TestEnum | undefined = await requestAdapter.sendEnum(requestInformation, TestEnumObject, undefined);
+				assert.isDefined(result);
+				assert.equal(result, enumResponse);
+			});
+		}
+	});
+	describe("send and deserialize collection of enum", () => {
+		for (const statusCode of [200, 201, 202, 203]) {
+			const enumResponse = `["a","b","c","e","f"]`;
+			it(`should return object for status code ${statusCode}`, async () => {
+				const mockHttpClient = new HttpClient();
+				mockHttpClient.executeFetch = async (url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>) => {
+					const response = new Response(enumResponse, {
+						status: statusCode,
+					} as ResponseInit);
+					response.headers.set("Content-Type",  "application/json");
+					return Promise.resolve(response);
+				};
+				const mockFactory = new JsonParseNodeFactory();
+				const requestAdapter = new FetchRequestAdapter(new AnonymousAuthenticationProvider(), mockFactory, undefined, mockHttpClient);
+				const requestInformation = new RequestInformation();
+				requestInformation.URL = "https://www.example.com";
+				requestInformation.httpMethod = HttpMethod.GET;
+				const result: TestEnum[] | undefined = await requestAdapter.sendCollectionOfEnum(requestInformation, TestEnumObject, undefined);
+				assert.isDefined(result);
+				assert.equal(result?.length, 3);
+				assert.equal(result![0], "a");
+				assert.equal(result![1], "b");
+				assert.equal(result![2], "c");
 			});
 		}
 	});
