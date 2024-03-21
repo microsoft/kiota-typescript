@@ -9,7 +9,7 @@
     "build": "npm run clean && tsc -b",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
-    "clean": "rm -r ./dist",
+    "clean": "rm -rf ./dist",
     "test:browser": "vitest run --browser.name=chrome --browser.headless",
     "test:node": "vitest --run",
     "test": "npm run test:node && npm run test:browser"

@@ -2,19 +2,17 @@
   "name": "@microsoft/kiota-authentication-azure",
   "version": "1.0.0-preview.44",
   "description": "Authentication provider for Kiota using Azure Identity",
-  "main": "dist/cjs/src/index.js",
+  "main": "dist/es/src/index.js",
   "module": "dist/es/src/index.js",
-  "types": "dist/cjs/src/index.d.ts",
+  "types": "dist/es/src/index.d.ts",
   "scripts": {
-    "build": "npm run build:cjs && npm run build:esm",
-    "build:cjs": "tsc -b tsconfig.cjs.json",
-    "build:esm": "tsc -b tsconfig.es.json",
+    "build": "npm run clean && tsc -b",
     "test:node": "vitest run",
     "test:browser": "vitest run --browser.name=chrome --browser.headless",
     "test": "npm run test:node && npm run test:browser",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
-    "clean": "rm -r ./dist"
+    "clean": "rm -rf ./dist"
   },
   "repository": "git://github.com/microsoft/kiota-typescript.git",
   "keywords": [
