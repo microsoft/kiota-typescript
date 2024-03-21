@@ -1,17 +1,17 @@
 {
-	"compilerOptions": {
-		"importHelpers": true,
-		"noEmitOnError": true,
-		"moduleResolution": "node",
-		"strict": true,
+    "compilerOptions": {
+        "importHelpers": true,
+        "noEmitOnError": true,
+        "moduleResolution": "NodeNext",
+        "strict": true,
         "noImplicitAny": true,
         "noImplicitThis": true,
         "strictFunctionTypes": true,
         "strictNullChecks": true,
         "forceConsistentCasingInFileNames": true,
-		"declaration": true,
+        "declaration": true,
         "declarationMap": true,
         "sourceMap": true,
         "composite": true
-	}
+    }
 }

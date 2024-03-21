@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "module": "NodeNext",
+        "target": "ES2017",
+        "outDir": "dist/es/"
+    },
+    "exclude": [
+        "node_modules",
+        "dist",
+        "./test/**/*.ts"
+    ],
+    "include": [
+        "./src/**/*.ts",
+    ]
+}
