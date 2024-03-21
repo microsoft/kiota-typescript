@@ -15,10 +15,63 @@
         "composite": true,
         "module": "Node16",
         "target": "ES2017",
-        "paths": {
-            "@microsoft/kiota-abstractions": [
-                "./packages/abstractions"
-            ],
+        "lib": [
+            "es6"
+        ],
+    },
+    "references": [
+        {
+            "path": "./abstractions/tsconfig.json"
         },
-    }
+        {
+            "path": "./serialization/form/tsconfig.json"
+        },
+        {
+            "path": "./serialization/json/tsconfig.json"
+        },
+        {
+            "path": "./serialization/text/tsconfig.json"
+        },
+        {
+            "path": "./http/fetch/tsconfig.json"
+        },
+        {
+            "path": "./authentication/azure/tsconfig.json"
+        },
+        {
+            "path": "./authentication/spfx/tsconfig.json"
+        }
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "tests",
+        "./test/**/*.ts"
+    ],
+    "paths": {
+        "@microsoft/kiota-abstractions": [
+            "./abstractions"
+        ],
+        "@microsoft/kiota-serialization-form": [
+            "./serialization/form"
+        ],
+        "@microsoft/kiota-serialization-json": [
+            "./serialization/json"
+        ],
+        "@microsoft/kiota-http-fetchlibrary": [
+            "./http/fetchlibrary"
+        ],
+        "@microsoft/microsoft-graph-client": [
+            "./graph"
+        ],
+        "@microsoft/kiota-serialization-text": [
+            "./serialization/text"
+        ],
+        "@microsoft/kiota-authentication-azure": [
+            "./authentication/azure"
+        ],
+        "@microsoft/kiota-authentication-spfx": [
+            "./authentication/spfx"
+        ],
+    },
 }
