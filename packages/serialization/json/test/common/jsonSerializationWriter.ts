@@ -90,7 +90,6 @@ describe("JsonParseNode", () => {
     const decoder = new TextDecoder();
     const contentAsStr = decoder.decode(serializedContent);
     const result = JSON.parse(contentAsStr);
-    console.log(JSON.stringify(result, null, 2));
     assert.isFalse("testCollection" in result);
     assert.isTrue("testString" in result);
     assert.isFalse("testObject" in result);
