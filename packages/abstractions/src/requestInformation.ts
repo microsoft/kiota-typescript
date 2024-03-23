@@ -254,7 +254,7 @@ export class RequestInformation implements RequestInformationSetContent {
             } else if (value instanceof Duration) {
               writer.writeDurationValue(undefined, value as any as Duration);
             } else if (value instanceof Guid) {
-              writer.writeStringValue(undefined, value as any as string);
+              writer.writeGuidValue(undefined, value as any as Guid);
             } else if (valueType === "number") {
               writer.writeNumberValue(undefined, value as any as number);
             } else if (Array.isArray(value)) {
