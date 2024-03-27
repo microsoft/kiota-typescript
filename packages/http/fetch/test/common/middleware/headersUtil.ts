@@ -6,7 +6,7 @@
  */
 /* eslint-disable @typescript-eslint/no-unused-vars*/
 
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import type { FetchRequestInit } from "../../../src/utils/fetchDefinitions";
 import { appendRequestHeader, getRequestHeader, setRequestHeader } from "../../../src/utils/headersUtil";

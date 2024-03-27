@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import { RedirectHandlerOptions } from "../../src/middlewares/options/redirectHandlerOptions";
 

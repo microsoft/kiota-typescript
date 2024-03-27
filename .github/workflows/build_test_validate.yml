@@ -26,7 +26,7 @@ jobs:
           shell: pwsh
           working-directory: ./
         - run: npm ci
-        - run: npm install -g mocha@10.X
+        - run: npm install -g @vitest/ui @vitest/coverage-v8 vitest webdriverio
         - run: npm run build
         - name: Archive dist folders # archive dist folders to verify if they are transpiled correctly and available for publishing
           uses: actions/upload-artifact@v4
@@ -47,7 +47,7 @@ jobs:
               CLIENT_ID: ${{secrets.client_id}}
               CLIENT_SECRET: ${{secrets.client_secret}}
               USER_ID: "813956a3-4a30-4596-914f-bfd86a657a09"
-        - run: npx lerna run test --parallel
+        - run: npm run test
     
     publish-npm:
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'auto dependabot')}}

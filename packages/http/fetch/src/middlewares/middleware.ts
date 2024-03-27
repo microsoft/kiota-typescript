@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-import type {RequestOption} from "@microsoft/kiota-abstractions";
+import type { RequestOption } from "@microsoft/kiota-abstractions";
 // use import types
 /** Defines the contract for a middleware in the request execution pipeline. */
 export interface Middleware {

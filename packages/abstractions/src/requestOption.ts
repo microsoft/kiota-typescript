@@ -1,5 +1,10 @@
-/** Represents a request option. */
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 export interface RequestOption {
-  /** Gets the option key for when adding it to a request. Must be unique. */
-  getKey(): string;
+	/** Gets the option key for when adding it to a request. Must be unique. */
+	getKey(): string;
 }

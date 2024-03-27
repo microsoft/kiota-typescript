@@ -1,9 +1,9 @@
 export interface ObservabilityOptions {
-  getTracerInstrumentationName(): string;
+	getTracerInstrumentationName(): string;
 }
 
 export class ObservabilityOptionsImpl implements ObservabilityOptions {
-  getTracerInstrumentationName(): string {
-    return "@microsoft/kiota-authentication-azure";
-  }
+	getTracerInstrumentationName(): string {
+		return "@microsoft/kiota-authentication-azure";
+	}
 }

@@ -1,4 +1,4 @@
-import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, BackingStoreFactorySingleton, type DateOnly, DefaultApiError, type Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, type ErrorMappings, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type PrimitiveTypesForDeserialization, type PrimitiveTypesForDeserializationType,type RequestAdapter, type RequestInformation, type ResponseHandler, type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
+import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, BackingStoreFactorySingleton, type DateOnly, DefaultApiError, type Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, type ErrorMappings, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type PrimitiveTypesForDeserialization, type PrimitiveTypesForDeserializationType, type RequestAdapter, type RequestInformation, type ResponseHandler, type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
 import { type Span, SpanStatusCode, trace } from "@opentelemetry/api";
 
 import { HttpClient } from "./httpClient";
@@ -314,7 +314,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				span.end();
 			}
 		}) as Promise<EnumObject[keyof EnumObject]>;
-	}
+	};
 	public sendCollectionOfEnum = <EnumObject extends Record<string, unknown>>(requestInfo: RequestInformation, enumObject: EnumObject, errorMappings: ErrorMappings | undefined): Promise<EnumObject[keyof EnumObject][] | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
@@ -348,7 +348,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				span.end();
 			}
 		});
-	}
+	};
 	public enableBackingStore = (backingStoreFactory?: BackingStoreFactory | undefined): void => {
 		this.parseNodeFactory = enableBackingStoreForParseNodeFactory(this.parseNodeFactory);
 		this.serializationWriterFactory = enableBackingStoreForSerializationWriterFactory(this.serializationWriterFactory);

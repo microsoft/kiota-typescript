@@ -55,12 +55,12 @@ export class RedirectHandlerOptions implements RequestOption {
 	 * A member holding the max redirects value
 	 */
 	public maxRedirects: number;
-    
+
 	/**
 	 * @public
 	 * A member holding the should redirect callback
 	 */
-  	public shouldRedirect: ShouldRedirect;
+	public shouldRedirect: ShouldRedirect;
 
 	/**
 	 * @public
@@ -73,18 +73,18 @@ export class RedirectHandlerOptions implements RequestOption {
 	 */
 	public constructor(options: Partial<RedirectHandlerOptionsParams> = {}) {
 		if (options.maxRedirects && options.maxRedirects > RedirectHandlerOptions.MAX_MAX_REDIRECTS) {
-		  const error = new Error(`MaxRedirects should not be more than ${RedirectHandlerOptions.MAX_MAX_REDIRECTS}`);
-		  error.name = "MaxLimitExceeded";
-		  throw error;
+			const error = new Error(`MaxRedirects should not be more than ${RedirectHandlerOptions.MAX_MAX_REDIRECTS}`);
+			error.name = "MaxLimitExceeded";
+			throw error;
 		}
 		if (options.maxRedirects !== undefined && options.maxRedirects < 0) {
-		  const error = new Error(`MaxRedirects should not be negative`);
-		  error.name = "MinExpectationNotMet";
-		  throw error;
+			const error = new Error(`MaxRedirects should not be negative`);
+			error.name = "MinExpectationNotMet";
+			throw error;
 		}
 		this.maxRedirects = options.maxRedirects ?? RedirectHandlerOptions.DEFAULT_MAX_REDIRECTS;
 		this.shouldRedirect = options.shouldRedirect ?? RedirectHandlerOptions.defaultShouldRetry;
-	  }
+	}
 
 	public getKey(): string {
 		return RedirectHandlerOptionKey;

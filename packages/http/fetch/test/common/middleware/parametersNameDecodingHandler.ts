@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import { ParametersNameDecodingHandler } from "../../../src/middlewares/parametersNameDecodingHandler";
 import { TestCallBackMiddleware } from "./testCallBackMiddleware";

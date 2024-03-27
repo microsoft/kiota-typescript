@@ -11,7 +11,10 @@ if (typeof Response !== "object") {
 }
 
 export class TestCallBackMiddleware implements Middleware {
-	constructor(private callback: (url: string) => void, nextMiddleware: Middleware = new DummyFetchHandler()) {
+	constructor(
+		private callback: (url: string) => void,
+		nextMiddleware: Middleware = new DummyFetchHandler(),
+	) {
 		this.next = nextMiddleware;
 	}
 	next: Middleware;

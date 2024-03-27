@@ -1,11 +1,17 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import { isUntypedNode, UntypedNode } from "./untypedNode";
 
 /** Defines the interface for defining an untyped object value. */
 export interface UntypedObject extends UntypedNode {
-  /**
-   * Gets the value of the UntypedNode as a Record<string, UntypedNode>.
-   */
-  getValue(): Record<string, UntypedNode>;
+	/**
+	 * Gets the value of the UntypedNode as a Record<string, UntypedNode>.
+	 */
+	getValue(): Record<string, UntypedNode>;
 }
 
 /**
@@ -14,13 +20,8 @@ export interface UntypedObject extends UntypedNode {
  * @return boolean indicating if the node is an UntypedObject.
  */
 export function isUntypedObject(node: UntypedNode): node is UntypedObject {
-  const proposedNode = node as UntypedObject;
-  return (
-    proposedNode &&
-    proposedNode.value instanceof Object &&
-    proposedNode.value instanceof Array === false &&
-    Object.values(proposedNode.value).every((item) => isUntypedNode(item))
-  );
+	const proposedNode = node as UntypedObject;
+	return proposedNode && proposedNode.value instanceof Object && proposedNode.value instanceof Array === false && Object.values(proposedNode.value).every((item) => isUntypedNode(item));
 }
 
 /**
@@ -28,11 +29,9 @@ export function isUntypedObject(node: UntypedNode): node is UntypedObject {
  * @param value The Record<string, UntypedNode> value to create from.
  * @return The created UntypedObject.
  */
-export function createUntypedObject(
-  value: Record<string, UntypedNode>,
-): UntypedObject {
-  return {
-    value: value,
-    getValue: () => value as Record<string, UntypedNode>,
-  };
+export function createUntypedObject(value: Record<string, UntypedNode>): UntypedObject {
+	return {
+		value,
+		getValue: () => value,
+	};
 }

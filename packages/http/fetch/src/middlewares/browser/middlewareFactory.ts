@@ -18,12 +18,6 @@ export class MiddlewareFactory {
 	 */
 	public static getDefaultMiddlewares(customFetch: (request: string, init: RequestInit) => Promise<Response> = fetch as any): Middleware[] {
 		// Browsers handles redirection automatically and do not require the redirectionHandler
-		return [
-            new RetryHandler(),
-            new ParametersNameDecodingHandler(),
-            new UserAgentHandler(),
-            new HeadersInspectionHandler(),
-            new CustomFetchHandler(customFetch)
-        ];
+		return [new RetryHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new HeadersInspectionHandler(), new CustomFetchHandler(customFetch)];
 	}
 }

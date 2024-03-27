@@ -62,5 +62,5 @@ export class ParametersNameDecodingHandlerOptions implements RequestOption {
 	public constructor(options: Partial<ParametersNameDecodingHandlerOptionsParams> = {}) {
 		this.enable = options.enable ?? true;
 		this.charactersToDecode = options.charactersToDecode ?? [".", "-", "~", "$"];
-	  }
+	}
 }
