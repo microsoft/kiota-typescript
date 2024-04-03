@@ -2,14 +2,23 @@ import { assert } from "chai";
 
 import { JsonParseNode, JsonSerializationWriter } from "../../src/index";
 import {
+  createTestBackedModelFromDiscriminatorValue,
   createTestParserFromDiscriminatorValue,
   serializeTestParser,
+  TestBackedModel,
   type TestParser,
 } from "./testEntity";
 import { UntypedTestEntity, serializeUntypedTestEntity } from "./untypedTestEntiy";
-import { UntypedArray, UntypedBoolean, UntypedNull, UntypedNumber, UntypedObject, UntypedString, createUntypedArray, createUntypedBoolean, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString } from "@microsoft/kiota-abstractions";
+import { BackingStore, BackingStoreFactorySingleton, createBackedModelProxyHandler, createUntypedArray, createUntypedBoolean, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString } from "@microsoft/kiota-abstractions";
 
 describe("JsonParseNode", () => {
+  let backingStoreFactorySingleton: BackingStoreFactorySingleton;
+  const dummyBackingStore = {} as BackingStore;
+
+  beforeEach(() => {
+    backingStoreFactorySingleton = BackingStoreFactorySingleton.instance;
+  });
+  
   it("Test object serialization", async () => {
     const testDate = new Date();
 
@@ -77,6 +86,70 @@ describe("JsonParseNode", () => {
     const contentAsStr = decoder.decode(serializedContent);
     const result = JSON.parse(contentAsStr);
     assert.equal(result.testComplexString, "Błonie");
+  });
+  it("skip undefined objects from json body", async () => {
+    const inputObject: TestParser = {
+      testCollection: undefined,
+      testString: "test",
+      testObject: undefined,
+    };
+    const writer = new JsonSerializationWriter();
+    writer.writeObjectValue("", inputObject, serializeTestParser);
+    const serializedContent = writer.getSerializedContent();
+    const decoder = new TextDecoder();
+    const contentAsStr = decoder.decode(serializedContent);
+    const result = JSON.parse(contentAsStr);
+    assert.isFalse("testCollection" in result);
+    assert.isTrue("testString" in result);
+    assert.isFalse("testObject" in result);
+  });
+  it("skip undefined objects from json body when Backing store enabled", async () => {
+    const jsonObject = {
+      "testCollection": ["2", "3"],
+      "foos": [
+          {
+            "id": "b089d1f1-e527-4b8a-ba96-094922af6e40",
+            "bars": [
+              {
+                "propA": "property A test value",
+                "propB": "property B test value"
+              }
+            ]
+          }
+      ]
+    };
+
+    const backedModel: TestBackedModel = new JsonParseNode(jsonObject).getObjectValue(createTestBackedModelFromDiscriminatorValue) as TestBackedModel;
+    
+    const writer = new JsonSerializationWriter();
+    writer.writeObjectValue("", backedModel, serializeTestParser);
+    const serializedContent = writer.getSerializedContent();
+    const decoder = new TextDecoder();
+    const contentAsStr = decoder.decode(serializedContent);
+    const result = JSON.parse(contentAsStr);
+    assert.isTrue("testCollection" in result);
+    assert.isTrue("foos" in result);
+    assert.isFalse("testObject" in result);
+    assert.isFalse("testString" in result);
+
+    const handler = createBackedModelProxyHandler<TestBackedModel>();
+    const model = new Proxy<TestBackedModel>({backingStore: dummyBackingStore}, handler);
+    model.id = "abc";
+    model.testCollection = ["2", "3"];
+    model.testString = "test";
+
+    const modelWriter = new JsonSerializationWriter();
+    modelWriter.writeObjectValue("", model, serializeTestParser);
+    const serializedModelContent = modelWriter.getSerializedContent();
+    const modelContentAsString = decoder.decode(serializedModelContent);
+    const modelResult = JSON.parse(modelContentAsString);
+
+    assert.isTrue("id" in modelResult);
+    assert.isTrue("testCollection" in modelResult);
+    assert.isFalse("testObject" in modelResult);
+    assert.isTrue("testString" in modelResult);
+    // backingStore property shouldn't be part of the serialized content
+    assert.isFalse("backingStore:" in modelResult);
   });
   it("serializes untyped nodes as expected", async () => {
     const inputObject: UntypedTestEntity = {

@@ -142,6 +142,7 @@ export function serializeTestParser(
   writer: SerializationWriter,
   entity: TestParser | undefined = {}
 ): void {
+  writer.writeStringValue("id", entity.id);
   writer.writeCollectionOfPrimitiveValues(
     "testCollection",
     entity.testCollection
@@ -151,7 +152,19 @@ export function serializeTestParser(
 
   writer.writeDateValue("testDate", entity.testDate);
   writer.writeObjectValue("testObject", entity.testObject, serializeTestObject);
+  writer.writeCollectionOfObjectValues("foos", entity.foos, serializeFoo);
   writer.writeAdditionalData(entity.additionalData);
+}
+
+export function serializeFoo(writer: SerializationWriter, entity: FooResponse | undefined = {}): void {
+  writer.writeStringValue("id", entity.id);
+  writer.writeCollectionOfObjectValues("bars", entity.bars, serializeBar);
+}
+
+export function serializeBar(writer: SerializationWriter, entity: BarResponse | undefined = {}): void {
+  writer.writeStringValue("propA", entity.propA);
+  writer.writeStringValue("propB", entity.propB);
+  writer.writeDateValue("propC", entity.propC);
 }
 
 export function serializeTestBackModel(
