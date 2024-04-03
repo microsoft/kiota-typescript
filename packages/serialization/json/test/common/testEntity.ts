@@ -5,12 +5,14 @@ const fakeBackingStore: BackingStore = {} as BackingStore;
 export interface TestParser {
   testCollection?: string[] | undefined;
   testString?: string | undefined;
+  testBoolean?: boolean | undefined;
   testComplexString?: string | undefined;
   testObject?: Record<string, unknown> | undefined;
   additionalData?: Record<string, unknown>;
   testDate?: Date | undefined;
   foos?: FooResponse[] | undefined;
   id?: string | undefined;
+  testNumber?: number | undefined;
 }
 export interface TestBackedModel extends TestParser, BackedModel {
   backingStoreEnabled?: boolean | undefined;
@@ -63,6 +65,9 @@ export function deserializeTestParser(
     testString: (n) => {
       testParser.testString = n.getStringValue();
     },
+    testBoolean: (n) => {
+      testParser.testBoolean = n.getBooleanValue();
+    },
     textComplexString: (n) => {
       testParser.testComplexString = n.getStringValue();
     },
@@ -71,6 +76,12 @@ export function deserializeTestParser(
     },
     foos: (n) => {
       testParser.foos = n.getCollectionOfObjectValues(createFooParserFromDiscriminatorValue);
+    },
+    id: (n) => {
+      testParser.id = n.getStringValue();
+    },
+    testNumber: (n) => {
+      testParser.testNumber = n.getNumberValue();
     }
   };
 }
@@ -99,6 +110,12 @@ export function deserializeTestBackedModel(
     },
     id: (n) => {
       testParser.id = n.getStringValue();
+    },
+    testBoolean: (n) => {
+      testParser.testBoolean = n.getBooleanValue();
+    },
+    testNumber: (n) => {
+      testParser.testNumber = n.getNumberValue();
     },
   };
 }
@@ -151,6 +168,8 @@ export function serializeTestParser(
   writer.writeStringValue("testComplexString", entity.testComplexString);
 
   writer.writeDateValue("testDate", entity.testDate);
+  writer.writeNumberValue("testNumber", entity.testNumber);
+  writer.writeBooleanValue("testBoolean", entity.testBoolean);
   writer.writeObjectValue("testObject", entity.testObject, serializeTestObject);
   writer.writeCollectionOfObjectValues("foos", entity.foos, serializeFoo);
   writer.writeAdditionalData(entity.additionalData);

@@ -87,6 +87,7 @@ describe("JsonParseNode", () => {
     const result = JSON.parse(contentAsStr);
     assert.equal(result.testComplexString, "Błonie");
   });
+
   it("skip undefined objects from json body", async () => {
     const inputObject: TestParser = {
       testCollection: undefined,
@@ -103,9 +104,37 @@ describe("JsonParseNode", () => {
     assert.isTrue("testString" in result);
     assert.isFalse("testObject" in result);
   });
+
+  it("skip undefined objects from json body boolean value", async () => {
+    const inputObject: TestParser = {
+      testCollection: undefined,
+      testString: "test",
+      testObject: undefined,
+      testBoolean: false,
+      id: "l",
+      testNumber: 0,
+    };
+
+    const writer = new JsonSerializationWriter();
+    writer.writeObjectValue("", inputObject, serializeTestParser);
+    const serializedContent = writer.getSerializedContent();
+    const decoder = new TextDecoder();
+    const contentAsStr = decoder.decode(serializedContent);
+    const result = JSON.parse(contentAsStr);
+
+    assert.isFalse("testCollection" in result);
+    assert.isTrue("testString" in result);
+    assert.isFalse("testObject" in result);
+    assert.isTrue("testBoolean" in result);
+    assert.isTrue("id" in result);
+  });
+
   it("skip undefined objects from json body when Backing store enabled", async () => {
     const jsonObject = {
       "testCollection": ["2", "3"],
+      "testString": undefined,
+      "testNumber": 0,
+      "testBoolean": false,
       "foos": [
           {
             "id": "b089d1f1-e527-4b8a-ba96-094922af6e40",
@@ -127,10 +156,12 @@ describe("JsonParseNode", () => {
     const decoder = new TextDecoder();
     const contentAsStr = decoder.decode(serializedContent);
     const result = JSON.parse(contentAsStr);
+
     assert.isTrue("testCollection" in result);
     assert.isTrue("foos" in result);
     assert.isFalse("testObject" in result);
     assert.isFalse("testString" in result);
+    assert.isTrue("testNumber" in result);
 
     const handler = createBackedModelProxyHandler<TestBackedModel>();
     const model = new Proxy<TestBackedModel>({backingStore: dummyBackingStore}, handler);
@@ -151,6 +182,7 @@ describe("JsonParseNode", () => {
     // backingStore property shouldn't be part of the serialized content
     assert.isFalse("backingStore:" in modelResult);
   });
+
   it("serializes untyped nodes as expected", async () => {
     const inputObject: UntypedTestEntity = {
       id: "1",
