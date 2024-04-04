@@ -36,26 +36,27 @@ export class JsonSerializationWriter implements SerializationWriter {
     | ((value: Parsable, writer: SerializationWriter) => void)
     | undefined;
   public writeStringValue = (key?: string, value?: string): void => {
-    const valuePresent = value !== null && value !== undefined;
-    key && valuePresent && this.writePropertyName(key);
-    valuePresent && this.writer.push(JSON.stringify(value));
-    key && valuePresent && this.writer.push(JsonSerializationWriter.propertySeparator);
+    if (value !== null && value !== undefined) {
+      key && this.writePropertyName(key);
+      this.writer.push(JSON.stringify(value));
+      key && this.writer.push(JsonSerializationWriter.propertySeparator);
+    }
   };
   private writePropertyName = (key: string): void => {
     this.writer.push(`"${key}":`);
   };
   public writeBooleanValue = (key?: string, value?: boolean): void => {
-    if (value !== null && value !== undefined && key) {
-      this.writePropertyName(key);
+    if (value !== null && value !== undefined) {
+      key && this.writePropertyName(key);
       this.writer.push(`${value}`);
-      this.writer.push(JsonSerializationWriter.propertySeparator);
+      key && this.writer.push(JsonSerializationWriter.propertySeparator);
     }
   };
   public writeNumberValue = (key?: string, value?: number): void => {
-    if (value !== null && value !== undefined && key) {
-      this.writePropertyName(key);
+    if (value !== null && value !== undefined) {
+      key && this.writePropertyName(key);
       this.writer.push(`${value}`);
-      this.writer.push(JsonSerializationWriter.propertySeparator);
+      key && this.writer.push(JsonSerializationWriter.propertySeparator);
     }
   };
   public writeGuidValue = (key?: string, value?: Guid): void => {
