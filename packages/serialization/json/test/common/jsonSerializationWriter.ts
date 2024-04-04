@@ -21,7 +21,6 @@ describe("JsonParseNode", () => {
   
   it("Test object serialization", async () => {
     const testDate = new Date();
-
     const inputObject: TestParser = {
       testCollection: ["2", "3"],
       testString: "test",
@@ -53,18 +52,16 @@ describe("JsonParseNode", () => {
 
     const writer = new JsonSerializationWriter();
     writer.writeObjectValue("", inputObject, serializeTestParser);
-
     const serializedContent = writer.getSerializedContent();
-
     const decoder = new TextDecoder();
     const contentAsStr = decoder.decode(serializedContent);
     const result = JSON.parse(contentAsStr);
     const stringValueResult = new JsonParseNode(result).getObjectValue(
       createTestParserFromDiscriminatorValue,
     ) as TestParser;
-
     assert.deepEqual(stringValueResult, expectedObject);
   });
+
   it("encodes characters properly", async () => {
     const inputObject: TestParser = {
       testCollection: ["2", "3"],
@@ -135,6 +132,7 @@ describe("JsonParseNode", () => {
       "testString": undefined,
       "testNumber": 0,
       "testBoolean": false,
+      "id":"", // empty string are not skipped
       "foos": [
           {
             "id": "b089d1f1-e527-4b8a-ba96-094922af6e40",
@@ -162,6 +160,7 @@ describe("JsonParseNode", () => {
     assert.isFalse("testObject" in result);
     assert.isFalse("testString" in result);
     assert.isTrue("testNumber" in result);
+    assert.isTrue("id" in result);
 
     const handler = createBackedModelProxyHandler<TestBackedModel>();
     const model = new Proxy<TestBackedModel>({backingStore: dummyBackingStore}, handler);
