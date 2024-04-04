@@ -1,4 +1,5 @@
 import type { BackedModel, BackingStore, Parsable, ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
+import { Guid } from "guid-typescript";
 
 const fakeBackingStore: BackingStore = {} as BackingStore;
 
@@ -13,6 +14,7 @@ export interface TestParser {
   foos?: FooResponse[] | undefined;
   id?: string | undefined;
   testNumber?: number | undefined;
+  testGuid?: Guid | undefined;
 }
 export interface TestBackedModel extends TestParser, BackedModel {
   backingStoreEnabled?: boolean | undefined;
@@ -82,6 +84,9 @@ export function deserializeTestParser(
     },
     testNumber: (n) => {
       testParser.testNumber = n.getNumberValue();
+    },
+    testGuid: (n) => {
+      testParser.testGuid = n.getGuidValue();
     }
   };
 }
@@ -93,30 +98,7 @@ export function deserializeTestBackedModel(
     backingStoreEnabled: (n) => {
       testParser.backingStoreEnabled = true;
     },
-    testCollection: (n) => {
-      testParser.testCollection = n.getCollectionOfPrimitiveValues();
-    },
-    testString: (n) => {
-      testParser.testString = n.getStringValue();
-    },
-    textComplexString: (n) => {
-      testParser.testComplexString = n.getStringValue();
-    },
-    testDate: (n) => {
-      testParser.testDate = n.getDateValue()
-    },
-    foos: (n) => {
-      testParser.foos = n.getCollectionOfObjectValues(createFooParserFromDiscriminatorValue);
-    },
-    id: (n) => {
-      testParser.id = n.getStringValue();
-    },
-    testBoolean: (n) => {
-      testParser.testBoolean = n.getBooleanValue();
-    },
-    testNumber: (n) => {
-      testParser.testNumber = n.getNumberValue();
-    },
+    ...deserializeTestParser(testParser),
   };
 }
 
@@ -166,7 +148,7 @@ export function serializeTestParser(
   );
   writer.writeStringValue("testString", entity.testString);
   writer.writeStringValue("testComplexString", entity.testComplexString);
-
+  writer.writeGuidValue("testGuid", entity.testGuid);
   writer.writeDateValue("testDate", entity.testDate);
   writer.writeNumberValue("testNumber", entity.testNumber);
   writer.writeBooleanValue("testBoolean", entity.testBoolean);
@@ -190,15 +172,5 @@ export function serializeTestBackModel(
   writer: SerializationWriter,
   entity: TestBackedModel | undefined = {},
 ): void {
-  writer.writeCollectionOfPrimitiveValues(
-    "testCollection",
-    entity.testCollection,
-  );
-  writer.writeStringValue("testString", entity.testString);
-  writer.writeStringValue("testComplexString", entity.testComplexString);
-  writer.writeStringValue("id", entity.id);
-
-  writer.writeDateValue("testDate", entity.testDate);
-  writer.writeObjectValue("testObject", entity.testObject, serializeTestObject);
-  writer.writeAdditionalData(entity.additionalData);
+  serializeTestParser(writer, entity);
 }

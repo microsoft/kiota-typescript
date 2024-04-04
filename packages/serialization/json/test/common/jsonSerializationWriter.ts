@@ -110,6 +110,7 @@ describe("JsonParseNode", () => {
       testBoolean: false,
       id: "l",
       testNumber: 0,
+      testGuid: undefined,
     };
 
     const writer = new JsonSerializationWriter();
@@ -122,6 +123,7 @@ describe("JsonParseNode", () => {
     assert.isFalse("testCollection" in result);
     assert.isTrue("testString" in result);
     assert.isFalse("testObject" in result);
+    assert.isFalse("testGuid" in result);
     assert.isTrue("testBoolean" in result);
     assert.isTrue("id" in result);
   });
@@ -133,6 +135,7 @@ describe("JsonParseNode", () => {
       "testNumber": 0,
       "testBoolean": false,
       "id":"", // empty string are not skipped
+      "testGuid": "b089d1f1-e527-4b8a-ba96-094922af6e40",
       "foos": [
           {
             "id": "b089d1f1-e527-4b8a-ba96-094922af6e40",
@@ -161,6 +164,7 @@ describe("JsonParseNode", () => {
     assert.isFalse("testString" in result);
     assert.isTrue("testNumber" in result);
     assert.isTrue("id" in result);
+    assert.isTrue("testGuid" in result);
 
     const handler = createBackedModelProxyHandler<TestBackedModel>();
     const model = new Proxy<TestBackedModel>({backingStore: dummyBackingStore}, handler);

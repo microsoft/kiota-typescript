@@ -60,9 +60,11 @@ export class JsonSerializationWriter implements SerializationWriter {
     }
   };
   public writeGuidValue = (key?: string, value?: Guid): void => {
-    key && value && this.writePropertyName(key);
-    value && this.writer.push(`"${value}"`);
-    key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
+    if(value) {
+      key && this.writePropertyName(key);
+      this.writer.push(`"${value}"`);
+      key && this.writer.push(JsonSerializationWriter.propertySeparator);
+    }
   };
   public writeDateValue = (key?: string, value?: Date): void => this.writeStringValue(key, value?.toISOString());
   public writeDateOnlyValue = (key?: string, value?: DateOnly): void => this.writeStringValue(key, value?.toString());
