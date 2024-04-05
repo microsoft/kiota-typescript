@@ -36,30 +36,35 @@ export class JsonSerializationWriter implements SerializationWriter {
     | ((value: Parsable, writer: SerializationWriter) => void)
     | undefined;
   public writeStringValue = (key?: string, value?: string): void => {
-    key && value && this.writePropertyName(key);
-    value && this.writer.push(JSON.stringify(value));
-    key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
+    if (value !== null && value !== undefined) {
+      key && this.writePropertyName(key);
+      this.writer.push(JSON.stringify(value));
+      key && this.writer.push(JsonSerializationWriter.propertySeparator);
+    }
   };
   private writePropertyName = (key: string): void => {
     this.writer.push(`"${key}":`);
   };
   public writeBooleanValue = (key?: string, value?: boolean): void => {
-    const isValuePresent = value !== null && value !== undefined;
-    key && isValuePresent && this.writePropertyName(key);
-    isValuePresent && this.writer.push(`${value}`);
-    key &&
-      isValuePresent &&
-      this.writer.push(JsonSerializationWriter.propertySeparator);
+    if (value !== null && value !== undefined) {
+      key && this.writePropertyName(key);
+      this.writer.push(`${value}`);
+      key && this.writer.push(JsonSerializationWriter.propertySeparator);
+    }
   };
   public writeNumberValue = (key?: string, value?: number): void => {
-    key && value && this.writePropertyName(key);
-    value && this.writer.push(`${value}`);
-    key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
+    if (value !== null && value !== undefined) {
+      key && this.writePropertyName(key);
+      this.writer.push(`${value}`);
+      key && this.writer.push(JsonSerializationWriter.propertySeparator);
+    }
   };
   public writeGuidValue = (key?: string, value?: Guid): void => {
-    key && value && this.writePropertyName(key);
-    value && this.writer.push(`"${value}"`);
-    key && value && this.writer.push(JsonSerializationWriter.propertySeparator);
+    if(value) {
+      key && this.writePropertyName(key);
+      this.writer.push(`"${value}"`);
+      key && this.writer.push(JsonSerializationWriter.propertySeparator);
+    }
   };
   public writeDateValue = (key?: string, value?: Date): void => this.writeStringValue(key, value?.toISOString());
   public writeDateOnlyValue = (key?: string, value?: DateOnly): void => this.writeStringValue(key, value?.toString());

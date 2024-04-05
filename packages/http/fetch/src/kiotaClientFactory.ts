@@ -38,7 +38,7 @@ export class KiotaClientFactory {
 	 * KiotaClientFactory.create();
 	 * ```
 	 */
-	public static create(customFetch: (request: string, init: RequestInit) => Promise<Response> = fetch as any, middlewares?: Middleware[]): HttpClient {
+	public static create(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args) as any, middlewares?: Middleware[]): HttpClient {
 		const middleware = middlewares || MiddlewareFactory.getDefaultMiddlewares(customFetch);
 		return new HttpClient(customFetch, ...middleware);
 	}
