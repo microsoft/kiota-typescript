@@ -4,7 +4,6 @@ import { assert, describe, it } from "vitest";
 import { AzureAdSpfxAccessTokenProvider, AzureAdSpfxAuthenticationProvider } from "../src";
 import { MockAadTokenProvider } from "./mockAadTokenProvider";
 
-// TODO (musale) fix this test for browser
 describe("Test authentication using SharePoint Framework", () => {
 	it("AccessToken is returned correctly from getAuthorizationToken function", async () => {
 		const expectedToken = "dummy_valid_token";

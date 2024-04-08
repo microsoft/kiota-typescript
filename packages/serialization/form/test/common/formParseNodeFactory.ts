@@ -2,7 +2,6 @@ import { assert, describe, it } from "vitest";
 
 import { FormParseNodeFactory } from "../../src/index";
 
-// TODO (musale) fix this test for browser
 describe("formParseNodeFactory", () => {
 	it("formParseNodeFactory", () => {
 		const formParseNodeFactory = new FormParseNodeFactory();
