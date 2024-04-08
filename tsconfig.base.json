@@ -2,7 +2,7 @@
     "compilerOptions": {
         "importHelpers": true,
         "noEmitOnError": true,
-        "moduleResolution": "Node16",
+        "moduleResolution": "Node",
         "strict": true,
         "noImplicitAny": true,
         "noImplicitThis": true,
@@ -13,7 +13,7 @@
         "declarationMap": true,
         "sourceMap": true,
         "composite": true,
-        "module": "Node16",
+        "module": "ES6",
         "target": "ES2017",
         "lib": [
             "dom",

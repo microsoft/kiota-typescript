@@ -1,5 +1,4 @@
 import type { ParseNode, ParseNodeFactory } from "@microsoft/kiota-abstractions";
-import { TextDecoder } from "util";
 
 import { TextParseNode } from "./textParseNode";
 
