@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { DateOnly, Duration, isUntypedNode, type ModelSerializerFunction, type Parsable, type SerializationWriter, TimeOnly, type UntypedNode, isUntypedBoolean, isUntypedString, isUntypedNull, isUntypedNumber, isUntypedObject, isUntypedArray } from "@microsoft/kiota-abstractions";
+import { DateOnly, Duration, isUntypedNode, type ModelSerializerFunction, type Parsable, type SerializationWriter, TimeOnly, type UntypedNode, isUntypedBoolean, isUntypedString, isUntypedNull, isUntypedNumber, isUntypedObject, isUntypedArray, inNodeEnv } from "@microsoft/kiota-abstractions";
 import type { Guid } from "guid-typescript";
 
 export class JsonSerializationWriter implements SerializationWriter {
@@ -7,7 +7,7 @@ export class JsonSerializationWriter implements SerializationWriter {
 		if (!value) {
 			throw new Error("value cannot be undefined");
 		}
-		const b64 = Buffer.from(value).toString("base64");
+		const b64 = inNodeEnv() ? Buffer.from(value).toString("base64") : btoa(new TextDecoder().decode(value));
 		this.writeStringValue(key, b64);
 	}
 	private readonly writer: string[] = [];

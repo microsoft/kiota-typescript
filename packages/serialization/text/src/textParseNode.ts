@@ -1,4 +1,4 @@
-import { DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, toFirstCharacterUpper } from "@microsoft/kiota-abstractions";
+import { DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, toFirstCharacterUpper, inNodeEnv } from "@microsoft/kiota-abstractions";
 
 export class TextParseNode implements ParseNode {
 	private static noStructuredDataMessage = "text does not support structured data";
@@ -13,7 +13,7 @@ export class TextParseNode implements ParseNode {
 	public getByteArrayValue(): ArrayBuffer | undefined {
 		const strValue = this.getStringValue();
 		if (strValue && strValue.length > 0) {
-			return Buffer.from(strValue, "base64").buffer;
+			return inNodeEnv() ? Buffer.from(strValue, "base64").buffer : new TextEncoder().encode(strValue);
 		}
 		return undefined;
 	}

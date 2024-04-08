@@ -1,4 +1,4 @@
-import { createBackedModelProxyHandler, DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, isBackingStoreEnabled, toFirstCharacterUpper, isUntypedNode, UntypedNode, UntypedArray, UntypedBoolean, UntypedNumber, UntypedObject, UntypedString, createUntypedNodeFromDiscriminatorValue, UntypedNull, createUntypedBoolean, createUntypedString, createUntypedNumber, createUntypedArray, createUntypedObject, createUntypedNull } from "@microsoft/kiota-abstractions";
+import { createBackedModelProxyHandler, DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, isBackingStoreEnabled, toFirstCharacterUpper, isUntypedNode, UntypedNode, UntypedArray, UntypedBoolean, UntypedNumber, UntypedObject, UntypedString, createUntypedNodeFromDiscriminatorValue, UntypedNull, createUntypedBoolean, createUntypedString, createUntypedNumber, createUntypedArray, createUntypedObject, createUntypedNull, inNodeEnv } from "@microsoft/kiota-abstractions";
 
 export class JsonParseNode implements ParseNode {
 	/**
@@ -42,7 +42,7 @@ export class JsonParseNode implements ParseNode {
 	public getByteArrayValue(): ArrayBuffer | undefined {
 		const strValue = this.getStringValue();
 		if (strValue && strValue.length > 0) {
-			return Buffer.from(strValue, "base64").buffer;
+			return inNodeEnv() ? Buffer.from(strValue, "base64").buffer : new TextEncoder().encode(strValue);
 		}
 		return undefined;
 	}

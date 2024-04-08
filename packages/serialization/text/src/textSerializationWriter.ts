@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import type { DateOnly, Duration, ModelSerializerFunction, Parsable, SerializationWriter, TimeOnly } from "@microsoft/kiota-abstractions";
+import { inNodeEnv, type DateOnly, type Duration, type ModelSerializerFunction, type Parsable, type SerializationWriter, type TimeOnly } from "@microsoft/kiota-abstractions";
 import type { Guid } from "guid-typescript";
 
 export class TextSerializationWriter implements SerializationWriter {
@@ -7,7 +7,8 @@ export class TextSerializationWriter implements SerializationWriter {
 		if (!value) {
 			throw new Error("value cannot be undefined");
 		}
-		const b64 = Buffer.from(value).toString("base64");
+		const b64 = inNodeEnv() ? Buffer.from(value).toString("base64") : btoa(new TextDecoder().decode(value));
+
 		this.writeStringValue(key, b64);
 	}
 	private static noStructuredDataMessage = "text does not support structured data";
