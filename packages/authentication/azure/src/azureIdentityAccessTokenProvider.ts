@@ -1,5 +1,5 @@
 import type { GetTokenOptions, TokenCredential } from "@azure/core-auth";
-import { type AccessTokenProvider, AllowedHostsValidator, validateProtocol, inBrowserEnv } from "@microsoft/kiota-abstractions";
+import { type AccessTokenProvider, AllowedHostsValidator, validateProtocol, inNodeEnv } from "@microsoft/kiota-abstractions";
 import { type Span, trace } from "@opentelemetry/api";
 
 import { type ObservabilityOptions, ObservabilityOptionsImpl } from "./observabilityOptions";
@@ -55,7 +55,7 @@ export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
 		let decodedClaims = "";
 		if (additionalAuthenticationContext && additionalAuthenticationContext[AzureIdentityAccessTokenProvider.claimsKey]) {
 			const rawClaims = additionalAuthenticationContext[AzureIdentityAccessTokenProvider.claimsKey] as string;
-			decodedClaims = inBrowserEnv() ? atob(rawClaims) : Buffer.from(rawClaims, "base64").toString();
+			decodedClaims = inNodeEnv() ? Buffer.from(rawClaims, "base64").toString() : atob(rawClaims);
 		}
 		span?.setAttribute("com.microsoft.kiota.authentication.additional_claims_provided", decodedClaims !== "");
 		const localOptions = { ...this.options };

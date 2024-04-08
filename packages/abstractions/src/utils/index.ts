@@ -6,4 +6,4 @@
  */
 export * from "./stringUtils";
 export * from "./guidUtils";
-export * from "./inBrowserEnv";
+export * from "./inNodeEnv";

@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-import { inBrowserEnv } from "@microsoft/kiota-abstractions";
+import { inNodeEnv } from "../utils";
 const localhostStrings: Set<string> = new Set<string>(["localhost", "[::1]", "::1", "127.0.0.1"]);
 
 export function validateProtocol(url: string): void {
@@ -13,7 +13,7 @@ export function validateProtocol(url: string): void {
 	}
 }
 function windowUrlStartsWithHttps(): boolean {
-	if (inBrowserEnv()) {
+	if (!inNodeEnv()) {
 		return window.location.protocol.toLocaleLowerCase() === "https:";
 	}
 	return false;

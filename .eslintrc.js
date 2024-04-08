@@ -25,6 +25,7 @@ module.exports = {
     ignorePatterns: ['.eslintrc.js', '*.mjs'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'warn',
+      'prefer-arrow/prefer-arrow-functions': 'warn',
       // prefer-nullish-coalescing requires strictNullChecking to be turned on
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
       'header/header': [

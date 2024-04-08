@@ -43,9 +43,9 @@ export abstract class SerializationWriterProxyFactory implements SerializationWr
 			this._onAfter && this._onAfter(value);
 			originalAfter && originalAfter(value);
 		};
-		writer.onStartObjectSerialization = (value, writer) => {
-			this._onStart && this._onStart(value, writer);
-			originalStart && originalStart(value, writer);
+		writer.onStartObjectSerialization = (value, writer_) => {
+			this._onStart && this._onStart(value, writer_);
+			originalStart && originalStart(value, writer_);
 		};
 		return writer;
 	}

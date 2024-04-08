@@ -4,6 +4,8 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+import { inNodeEnv } from "../utils";
+
 export class AllowedHostsValidator {
 	private allowedHosts: Set<string>;
 	/**
@@ -44,10 +46,8 @@ export class AllowedHostsValidator {
 			// protocol relative URL domain.tld/path
 			return this.isHostAndPathValid(url);
 		}
-		// @ts-ignore
-		if (window && window.location && window.location.host) {
+		if (!inNodeEnv()) {
 			// we're in a browser, and we're using paths only ../path, ./path, /path, etc.
-			// @ts-ignore
 			return this.allowedHosts.has(window.location.host?.toLowerCase());
 		}
 		return false;

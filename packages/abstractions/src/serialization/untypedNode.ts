@@ -23,7 +23,7 @@ export interface UntypedNode extends Parsable {
 /**
  * Factory to create an UntypedNode from a string during deserialization.
  */
-export function createUntypedNodeFromDiscriminatorValue(_parseNode: ParseNode | undefined): (instance?: Parsable) => Record<string, (node: ParseNode) => void> {
+export function createUntypedNodeFromDiscriminatorValue(_parseNode: ParseNode | undefined): (_instance?: Parsable) => Record<string, (_node: ParseNode) => void> {
 	return deserializeIntoUntypedNode;
 }
 
@@ -42,10 +42,10 @@ export function isUntypedNode(node: any): node is UntypedNode {
  */
 export function deserializeIntoUntypedNode(untypedNode: Partial<UntypedNode> | undefined = {}): Record<string, (node: ParseNode) => void> {
 	return {
-		value: (n) => {
+		value: (_n) => {
 			untypedNode.value = null;
 		},
-		getValue: (n) => {
+		getValue: (_n) => {
 			untypedNode.getValue = () => untypedNode.value;
 		},
 	};
