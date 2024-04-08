@@ -49,52 +49,6 @@ export function createBarParserFromDiscriminatorValue(parseNode: ParseNode | und
 	return deserializeBarParser;
 }
 
-<<<<<<< HEAD
-export function deserializeTestParser(testParser: TestParser | undefined = {}): Record<string, (node: ParseNode) => void> {
-	return {
-		testCollection: (n) => {
-			testParser.testCollection = n.getCollectionOfPrimitiveValues();
-		},
-		testString: (n) => {
-			testParser.testString = n.getStringValue();
-		},
-		textComplexString: (n) => {
-			testParser.testComplexString = n.getStringValue();
-		},
-		testDate: (n) => {
-			testParser.testDate = n.getDateValue();
-		},
-		foos: (n) => {
-			testParser.foos = n.getCollectionOfObjectValues(createFooParserFromDiscriminatorValue);
-		},
-	};
-}
-
-export function deserializeTestBackedModel(testParser: TestBackedModel | undefined = {}): Record<string, (node: ParseNode) => void> {
-	return {
-		backingStoreEnabled: (n) => {
-			testParser.backingStoreEnabled = true;
-		},
-		testCollection: (n) => {
-			testParser.testCollection = n.getCollectionOfPrimitiveValues();
-		},
-		testString: (n) => {
-			testParser.testString = n.getStringValue();
-		},
-		textComplexString: (n) => {
-			testParser.testComplexString = n.getStringValue();
-		},
-		testDate: (n) => {
-			testParser.testDate = n.getDateValue();
-		},
-		foos: (n) => {
-			testParser.foos = n.getCollectionOfObjectValues(createFooParserFromDiscriminatorValue);
-		},
-		id: (n) => {
-			testParser.id = n.getStringValue();
-		},
-	};
-=======
 export function deserializeTestParser(
   testParser: TestParser | undefined = {}
 ): Record<string, (node: ParseNode) => void> {
@@ -138,7 +92,6 @@ export function deserializeTestBackedModel(
     },
     ...deserializeTestParser(testParser),
   };
->>>>>>> main
 }
 
 export function deserializeFooParser(fooResponse: FooResponse | undefined = {}): Record<string, (node: ParseNode) => void> {
@@ -169,27 +122,6 @@ export function deserializeBarParser(barResponse: BarResponse | undefined = {}):
 export function serializeTestObject(writer: SerializationWriter, entity: { additionalData?: Record<string, unknown> } | undefined = {}): void {
 	writer.writeAdditionalData(entity.additionalData);
 }
-<<<<<<< HEAD
-export function serializeTestParser(writer: SerializationWriter, entity: TestParser | undefined = {}): void {
-	writer.writeCollectionOfPrimitiveValues("testCollection", entity.testCollection);
-	writer.writeStringValue("testString", entity.testString);
-	writer.writeStringValue("testComplexString", entity.testComplexString);
-
-	writer.writeDateValue("testDate", entity.testDate);
-	writer.writeObjectValue("testObject", entity.testObject, serializeTestObject);
-	writer.writeAdditionalData(entity.additionalData);
-}
-
-export function serializeTestBackModel(writer: SerializationWriter, entity: TestBackedModel | undefined = {}): void {
-	writer.writeCollectionOfPrimitiveValues("testCollection", entity.testCollection);
-	writer.writeStringValue("testString", entity.testString);
-	writer.writeStringValue("testComplexString", entity.testComplexString);
-	writer.writeStringValue("id", entity.id);
-
-	writer.writeDateValue("testDate", entity.testDate);
-	writer.writeObjectValue("testObject", entity.testObject, serializeTestObject);
-	writer.writeAdditionalData(entity.additionalData);
-=======
 export function serializeTestParser(
   writer: SerializationWriter,
   entity: TestParser | undefined = {}
@@ -226,5 +158,4 @@ export function serializeTestBackModel(
   entity: TestBackedModel | undefined = {},
 ): void {
   serializeTestParser(writer, entity);
->>>>>>> main
 }
