@@ -39,7 +39,7 @@ jobs:
               packages/serialization/text/dist
               packages/http/fetch/dist
               packages/authentication/azure/dist
-        - run: npx lerna run test:integrated
+        - run: npm run test:integrated
           if: ${{env.TENANT_ID != '' }}
           env:
               TENANT_ID:  ${{secrets.tenant_id}}
