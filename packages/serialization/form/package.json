@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/kiota-serialization-form",
-  "version": "1.0.0-preview.38",
+  "version": "1.0.0-preview.39",
   "description": "Implementation of Kiota Serialization interfaces for URI from encoded",
   "main": "dist/es/src/index.js",
   "browser": {

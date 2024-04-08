@@ -1,16 +1,20 @@
 import type { BackedModel, BackingStore, Parsable, ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
+import { Guid } from "guid-typescript";
 
 const fakeBackingStore: BackingStore = {} as BackingStore;
 
 export interface TestParser {
-	testCollection?: string[] | undefined;
-	testString?: string | undefined;
-	testComplexString?: string | undefined;
-	testObject?: Record<string, unknown> | undefined;
-	additionalData?: Record<string, unknown>;
-	testDate?: Date | undefined;
-	foos?: FooResponse[] | undefined;
-	id?: string | undefined;
+  testCollection?: string[] | undefined;
+  testString?: string | undefined;
+  testBoolean?: boolean | undefined;
+  testComplexString?: string | undefined;
+  testObject?: Record<string, unknown> | undefined;
+  additionalData?: Record<string, unknown>;
+  testDate?: Date | undefined;
+  foos?: FooResponse[] | undefined;
+  id?: string | undefined;
+  testNumber?: number | undefined;
+  testGuid?: Guid | undefined;
 }
 export interface TestBackedModel extends TestParser, BackedModel {
 	backingStoreEnabled?: boolean | undefined;
@@ -45,6 +49,7 @@ export function createBarParserFromDiscriminatorValue(parseNode: ParseNode | und
 	return deserializeBarParser;
 }
 
+<<<<<<< HEAD
 export function deserializeTestParser(testParser: TestParser | undefined = {}): Record<string, (node: ParseNode) => void> {
 	return {
 		testCollection: (n) => {
@@ -89,6 +94,51 @@ export function deserializeTestBackedModel(testParser: TestBackedModel | undefin
 			testParser.id = n.getStringValue();
 		},
 	};
+=======
+export function deserializeTestParser(
+  testParser: TestParser | undefined = {}
+): Record<string, (node: ParseNode) => void> {
+  return {
+    testCollection: (n) => {
+      testParser.testCollection = n.getCollectionOfPrimitiveValues();
+    },
+    testString: (n) => {
+      testParser.testString = n.getStringValue();
+    },
+    testBoolean: (n) => {
+      testParser.testBoolean = n.getBooleanValue();
+    },
+    textComplexString: (n) => {
+      testParser.testComplexString = n.getStringValue();
+    },
+    testDate: (n) => {
+      testParser.testDate = n.getDateValue();
+    },
+    foos: (n) => {
+      testParser.foos = n.getCollectionOfObjectValues(createFooParserFromDiscriminatorValue);
+    },
+    id: (n) => {
+      testParser.id = n.getStringValue();
+    },
+    testNumber: (n) => {
+      testParser.testNumber = n.getNumberValue();
+    },
+    testGuid: (n) => {
+      testParser.testGuid = n.getGuidValue();
+    }
+  };
+}
+
+export function deserializeTestBackedModel(
+  testParser: TestBackedModel | undefined = {}
+): Record<string, (node: ParseNode) => void> {
+  return {
+    backingStoreEnabled: (n) => {
+      testParser.backingStoreEnabled = true;
+    },
+    ...deserializeTestParser(testParser),
+  };
+>>>>>>> main
 }
 
 export function deserializeFooParser(fooResponse: FooResponse | undefined = {}): Record<string, (node: ParseNode) => void> {
@@ -119,6 +169,7 @@ export function deserializeBarParser(barResponse: BarResponse | undefined = {}):
 export function serializeTestObject(writer: SerializationWriter, entity: { additionalData?: Record<string, unknown> } | undefined = {}): void {
 	writer.writeAdditionalData(entity.additionalData);
 }
+<<<<<<< HEAD
 export function serializeTestParser(writer: SerializationWriter, entity: TestParser | undefined = {}): void {
 	writer.writeCollectionOfPrimitiveValues("testCollection", entity.testCollection);
 	writer.writeStringValue("testString", entity.testString);
@@ -138,4 +189,42 @@ export function serializeTestBackModel(writer: SerializationWriter, entity: Test
 	writer.writeDateValue("testDate", entity.testDate);
 	writer.writeObjectValue("testObject", entity.testObject, serializeTestObject);
 	writer.writeAdditionalData(entity.additionalData);
+=======
+export function serializeTestParser(
+  writer: SerializationWriter,
+  entity: TestParser | undefined = {}
+): void {
+  writer.writeStringValue("id", entity.id);
+  writer.writeCollectionOfPrimitiveValues(
+    "testCollection",
+    entity.testCollection
+  );
+  writer.writeStringValue("testString", entity.testString);
+  writer.writeStringValue("testComplexString", entity.testComplexString);
+  writer.writeGuidValue("testGuid", entity.testGuid);
+  writer.writeDateValue("testDate", entity.testDate);
+  writer.writeNumberValue("testNumber", entity.testNumber);
+  writer.writeBooleanValue("testBoolean", entity.testBoolean);
+  writer.writeObjectValue("testObject", entity.testObject, serializeTestObject);
+  writer.writeCollectionOfObjectValues("foos", entity.foos, serializeFoo);
+  writer.writeAdditionalData(entity.additionalData);
+}
+
+export function serializeFoo(writer: SerializationWriter, entity: FooResponse | undefined = {}): void {
+  writer.writeStringValue("id", entity.id);
+  writer.writeCollectionOfObjectValues("bars", entity.bars, serializeBar);
+}
+
+export function serializeBar(writer: SerializationWriter, entity: BarResponse | undefined = {}): void {
+  writer.writeStringValue("propA", entity.propA);
+  writer.writeStringValue("propB", entity.propB);
+  writer.writeDateValue("propC", entity.propC);
+}
+
+export function serializeTestBackModel(
+  writer: SerializationWriter,
+  entity: TestBackedModel | undefined = {},
+): void {
+  serializeTestParser(writer, entity);
+>>>>>>> main
 }
