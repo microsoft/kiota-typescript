@@ -6,7 +6,6 @@
  */
 
 import { assert, describe, it } from "vitest";
-import { URL } from "url";
 
 import { Headers, HttpMethod, type Parsable, type RequestAdapter, RequestInformation, type SerializationWriter, type SerializationWriterFactory } from "../../src";
 import { MultipartBody } from "../../src/multipartBody";
