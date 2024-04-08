@@ -86,13 +86,13 @@ export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
 		}
 	};
 	private getSchemeFromLocation = (): string => {
-		if (window && window.location && window.location.protocol) {
+		if (!inNodeEnv()) {
 			return window.location.protocol.replace(":", "");
 		}
 		return "";
 	};
 	private getHostFromLocation = (): string => {
-		if (window && window.location && window.location.host) {
+		if (!inNodeEnv()) {
 			return window.location.host;
 		}
 		return "";
