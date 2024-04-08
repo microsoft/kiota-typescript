@@ -3,9 +3,9 @@ import { describe, it, expect } from "vitest";
 
 describe("validateProtocol", () => {
 	// TODO: fix this test
-	// it('should throw an error for non-https and non-localhost URLs', () => {
-	//     expect(() => validateProtocol('http://example.com')).to.throw('Authentication scheme can only be used with https requests');
-	// });
+	it("should throw an error for non-https and non-localhost URLs", () => {
+		expect(() => validateProtocol("http://example.com")).to.throw("Authentication scheme can only be used with https requests");
+	});
 
 	it("should not throw an error for https URLs", () => {
 		expect(() => validateProtocol("https://example.com")).to.not.throw();

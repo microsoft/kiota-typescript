@@ -1,4 +1,4 @@
-import { BackedModel, createBackedModelProxyHandler, DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, isBackingStoreEnabled, toFirstCharacterUpper } from "@microsoft/kiota-abstractions";
+import { createBackedModelProxyHandler, DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, isBackingStoreEnabled, toFirstCharacterUpper } from "@microsoft/kiota-abstractions";
 
 export class FormParseNode implements ParseNode {
 	private readonly _fields: Record<string, string> = {};

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { inBrowserEnv } from "../src/utils";
+import { inBrowserEnv } from "../../src/utils/inBrowserEnv";
 
 describe("Utility functions", () => {
 	test.runIf(inBrowserEnv())("inBrowserEnv - should return true in browser environment", () => {

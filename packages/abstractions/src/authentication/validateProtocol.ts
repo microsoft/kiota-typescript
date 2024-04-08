@@ -4,6 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+import { inBrowserEnv } from "@microsoft/kiota-abstractions";
 const localhostStrings: Set<string> = new Set<string>(["localhost", "[::1]", "::1", "127.0.0.1"]);
 
 export function validateProtocol(url: string): void {
@@ -12,8 +13,10 @@ export function validateProtocol(url: string): void {
 	}
 }
 function windowUrlStartsWithHttps(): boolean {
-	// @ts-ignore
-	return typeof window !== "undefined" && typeof window.location !== "undefined" && window.location.protocol.toLowerCase() !== "https:";
+	if (inBrowserEnv()) {
+		return window.location.protocol.toLocaleLowerCase() === "https:";
+	}
+	return false;
 }
 
 export function isLocalhostUrl(urlString: string) {

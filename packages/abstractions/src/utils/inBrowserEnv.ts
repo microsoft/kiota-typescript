@@ -4,6 +4,10 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-export * from "./stringUtils";
-export * from "./guidUtils";
-export * from "./inBrowserEnv";
+export const inBrowserEnv = (): boolean => {
+	try {
+		return !!Buffer && !!process;
+	} catch (err) {
+		return err instanceof ReferenceError;
+	}
+};
