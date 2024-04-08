@@ -10,7 +10,7 @@ function windowUrlStartsWithHttps(): boolean {
     return typeof window !== "undefined" && typeof window.location !== "undefined" && (window.location.protocol as string).toLowerCase() !== "https:";
 }
 
-export function isLocalhostUrl(urlString: string) {
+export function isLocalhostUrl(urlString: string): boolean {
     try {
         const url = new URL(urlString);
         return localhostStrings.has(url.hostname);
