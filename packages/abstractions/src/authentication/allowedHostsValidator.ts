@@ -13,6 +13,7 @@ export class AllowedHostsValidator {
 	 * @param allowedHosts A list of valid hosts.  If the list is empty, all hosts are valid.
 	 */
 	public constructor(allowedHosts: Set<string> = new Set<string>()) {
+		this.validateHosts(allowedHosts);
 		this.allowedHosts = allowedHosts ?? new Set<string>();
 	}
 	/**
@@ -27,6 +28,7 @@ export class AllowedHostsValidator {
 	 * @param allowedHosts A list of valid hosts.  If the list is empty, all hosts are valid.
 	 */
 	public setAllowedHosts(allowedHosts: Set<string>): void {
+		this.validateHosts(allowedHosts);
 		this.allowedHosts = allowedHosts;
 	}
 	/**
@@ -46,9 +48,11 @@ export class AllowedHostsValidator {
 			// protocol relative URL domain.tld/path
 			return this.isHostAndPathValid(url);
 		}
-		if (!inNodeEnv()) {
+		//@ts-ignore
+		if (window && window.location && window.location.host) {
 			// we're in a browser, and we're using paths only ../path, ./path, /path, etc.
-			return this.allowedHosts.has(window.location.host?.toLowerCase());
+			//@ts-ignore
+			return this.allowedHosts.has((window.location.host as string)?.toLowerCase());
 		}
 		return false;
 	}
@@ -61,5 +65,16 @@ export class AllowedHostsValidator {
 			}
 		}
 		return false;
+	}
+
+	private validateHosts(hostsToValidate: Set<string>) {
+		if (!hostsToValidate) {
+			throw new Error("hostsToValidate cannot be null");
+		}
+		hostsToValidate.forEach((host) => {
+			if (host.toLowerCase().startsWith("http://") || host.toLowerCase().startsWith("https://")) {
+				throw new Error("host should not contain http or https prefix");
+			}
+		});
 	}
 }
