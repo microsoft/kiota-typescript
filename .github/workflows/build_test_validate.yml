@@ -26,7 +26,6 @@ jobs:
           shell: pwsh
           working-directory: ./
         - run: npm ci
-        - run: npm install -g @vitest/ui @vitest/coverage-v8 vitest webdriverio
         - run: npm run build
         - name: Archive dist folders # archive dist folders to verify if they are transpiled correctly and available for publishing
           uses: actions/upload-artifact@v4
@@ -40,7 +39,7 @@ jobs:
               packages/serialization/text/dist
               packages/http/fetch/dist
               packages/authentication/azure/dist
-        - run: npx lerna run test:integrated
+        - run: npm run test:integrated
           if: ${{env.TENANT_ID != '' }}
           env:
               TENANT_ID:  ${{secrets.tenant_id}}

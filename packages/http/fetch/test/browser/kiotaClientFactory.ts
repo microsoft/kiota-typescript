@@ -16,7 +16,7 @@ describe("browser - KiotaClientFactory", () => {
 		assert.isDefined(httpClient["middleware"]);
 		const middleware = httpClient["middleware"];
 		assert.isTrue(middleware instanceof RetryHandler);
-		assert.isTrue(middleware?.next instanceof  RedirectHandler)
+		assert.isTrue(middleware?.next instanceof RedirectHandler);
 		assert.isTrue(middleware?.next?.next instanceof ParametersNameDecodingHandler);
 		assert.isTrue(middleware?.next?.next?.next instanceof UserAgentHandler);
 		assert.isTrue(middleware?.next?.next?.next?.next instanceof HeadersInspectionHandler);

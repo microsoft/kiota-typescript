@@ -1,20 +1,19 @@
 {
   "name": "@microsoft/kiota-authentication-spfx",
-  "version": "1.0.0-preview.34",
+  "version": "1.0.0-preview.40",
   "description": "Authentication provider for using Kiota in SPFx solutions",
-  "main": "dist/cjs/src/index.js",
+  "main": "dist/es/src/index.js",
   "module": "dist/es/src/index.js",
-  "types": "dist/cjs/src/index.d.ts",
+  "types": "dist/es/src/index.d.ts",
   "scripts": {
-    "build": "npm run build:cjs && npm run build:esm",
-    "build:cjs": "tsc -b tsconfig.cjs.json",
-    "build:esm": "tsc -b tsconfig.es.json",
+    "build": "npm run build:esm",
+    "build:esm": "tsc",
     "test:browser": "vitest run --browser.name=chrome --browser.headless",
     "test:node": "vitest --run",
     "test": "npm run test:node && npm run test:browser",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
-    "clean": "rm -r ./dist"
+    "clean": "rm -rf ./dist"
   },
   "repository": "git://github.com/microsoft/kiota-typescript.git",
   "keywords": [
@@ -41,7 +40,7 @@
   },
   "homepage": "https://github.com/microsoft/kiota-typescript#readme",
   "dependencies": {
-    "@microsoft/kiota-abstractions": "^1.0.0-preview.44",
+    "@microsoft/kiota-abstractions": "*",
     "@microsoft/sp-http": "^1.15.2",
     "@opentelemetry/api": "^1.7.0",
     "tslib": "^2.6.2"

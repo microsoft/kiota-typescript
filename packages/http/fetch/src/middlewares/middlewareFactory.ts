@@ -17,14 +17,7 @@ export class MiddlewareFactory {
 	 * Returns the default middleware chain an array with the  middleware handlers
 	 * @returns an array of the middleware handlers of the default middleware chain
 	 */
-	public static getDefaultMiddlewares(customFetch: (request: string, init: RequestInit) => Promise<Response> = fetch as any): Middleware[] {
-		return [
-            new RetryHandler(),
-            new RedirectHandler(),
-            new ParametersNameDecodingHandler(),
-            new UserAgentHandler(),
-            new HeadersInspectionHandler(),
-            new CustomFetchHandler(customFetch)
-        ];
+	public static getDefaultMiddlewares(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args) as any): Middleware[] {
+		return [new RetryHandler(), new RedirectHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new HeadersInspectionHandler(), new CustomFetchHandler(customFetch)];
 	}
 }

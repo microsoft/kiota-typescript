@@ -1,6 +1,6 @@
 {
 	"name": "@microsoft/kiota-http-fetchlibrary",
-	"version": "1.0.0-preview.43",
+	"version": "1.0.0-preview.49",
 	"description": "Kiota request adapter implementation with fetch",
 	"keywords": [
 		"Kiota",
@@ -18,27 +18,21 @@
 	},
 	"license": "MIT",
 	"author": "Microsoft",
-	"main": "dist/cjs/src/index.js",
-	"browser": {
-		"./dist/es/src/index.js": "./dist/es/src/browser/index.js",
-		"./dist/es/src/middlewares/middlewareFactory.js": "./dist/es/src/middlewares/browser/middlewareFactory.js"
-	},
-	"types": "dist/cjs/src/index.d.ts",
+	"main": "dist/es/src/index.js",
+	"module": "dist/es/src/index.js",
+	"types": "dist/es/src/index.d.ts",
 	"scripts": {
-		"build": "npm run build:cjs && npm run build:esm",
-		"build:cjs": "tsc -b tsconfig.cjs.json",
-		"build:esm": "tsc -b tsconfig.es.json",
-		"build:test": "tsc -b tsconfig.cjs.test.json && tsc -b tsconfig.es.test.json",
-		"clean": "rm -r ./dist",
+		"build": "npm run build:esm",
+		"build:esm": "tsc",
+		"clean": "rm -rf ./dist",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
-		"rollup": "rollup -c",
 		"test:browser": "vitest run --browser.name=chrome --browser.headless",
 		"test:node": "vitest --run",
 		"test": "npm run test:node && npm run test:browser"
 	},
 	"dependencies": {
-		"@microsoft/kiota-abstractions": "^1.0.0-preview.44",
+		"@microsoft/kiota-abstractions": "*",
 		"@opentelemetry/api": "^1.7.0",
 		"guid-typescript": "^1.0.9",
 		"tslib": "^2.6.2"

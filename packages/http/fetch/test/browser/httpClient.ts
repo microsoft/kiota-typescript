@@ -36,7 +36,7 @@ describe("browser - HTTPClient.ts", () => {
 			const next = client["middleware"]?.next;
 
 			assert.isTrue(client["middleware"] instanceof RetryHandler);
-			assert.isTrue(next instanceof RedirectHandler)
+			assert.isTrue(next instanceof RedirectHandler);
 			assert.isTrue(next?.next instanceof ParametersNameDecodingHandler);
 			assert.isTrue(next?.next?.next instanceof UserAgentHandler);
 			assert.isTrue(next?.next?.next?.next instanceof HeadersInspectionHandler);
@@ -51,7 +51,7 @@ describe("browser - HTTPClient.ts", () => {
 
 			const next = client["middleware"]?.next;
 
-			assert.isTrue(next instanceof RedirectHandler)
+			assert.isTrue(next instanceof RedirectHandler);
 			assert.isTrue(next?.next instanceof ParametersNameDecodingHandler);
 			assert.isTrue(next?.next?.next instanceof UserAgentHandler);
 			assert.isTrue(next?.next?.next?.next instanceof HeadersInspectionHandler);
