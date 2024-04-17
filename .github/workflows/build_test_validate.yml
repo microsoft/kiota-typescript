@@ -10,7 +10,7 @@ jobs:
     build:
         runs-on: ubuntu-latest
         environment:
-          name: Build and test
+          name: build_test
         env:
           TENANT_ID: ${{ secrets.TENANT_ID }}
         strategy:
