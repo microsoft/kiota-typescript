@@ -6,8 +6,15 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { DateOnly, Duration, type ModelSerializerFunction, type Parsable, type SerializationWriter, TimeOnly } from "@microsoft/kiota-abstractions";
-import type { Guid } from "guid-typescript";
+import {
+  DateOnly,
+  Duration,
+  type ModelSerializerFunction,
+  type Parsable,
+  type SerializationWriter,
+  type Guid,
+  TimeOnly
+} from "@microsoft/kiota-abstractions";
 
 export class FormSerializationWriter implements SerializationWriter {
 	public writeByteArrayValue(

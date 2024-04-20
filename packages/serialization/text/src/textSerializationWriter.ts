@@ -6,8 +6,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { inNodeEnv, type DateOnly, type Duration, type ModelSerializerFunction, type Parsable, type SerializationWriter, type TimeOnly } from "@microsoft/kiota-abstractions";
-import type { Guid } from "guid-typescript";
+import { inNodeEnv, type DateOnly, type Duration, type Guid, type ModelSerializerFunction, type Parsable, type SerializationWriter, type TimeOnly } from "@microsoft/kiota-abstractions";
 
 export class TextSerializationWriter implements SerializationWriter {
 	public writeByteArrayValue(key?: string, value?: ArrayBuffer | null): void {
