@@ -2,6 +2,7 @@
 import {
   DateOnly,
   Duration,
+  type Guid,
   isUntypedNode,
   type ModelSerializerFunction,
   type Parsable,
@@ -15,7 +16,6 @@ import {
   isUntypedObject,
   isUntypedArray,
 } from "@microsoft/kiota-abstractions";
-import type { Guid } from "guid-typescript";
 
 export class JsonSerializationWriter implements SerializationWriter {
   public writeByteArrayValue(

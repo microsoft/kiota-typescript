@@ -2,12 +2,12 @@
 import type {
   DateOnly,
   Duration,
+  Guid,
   ModelSerializerFunction,
   Parsable,
   SerializationWriter,
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
-import type { Guid } from "guid-typescript";
 
 export class TextSerializationWriter implements SerializationWriter {
   public writeByteArrayValue(

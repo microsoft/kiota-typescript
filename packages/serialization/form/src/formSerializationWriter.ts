@@ -5,9 +5,9 @@ import {
   type ModelSerializerFunction,
   type Parsable,
   type SerializationWriter,
+  type Guid,
   TimeOnly,
 } from "@microsoft/kiota-abstractions";
-import type { Guid } from "guid-typescript";
 
 export class FormSerializationWriter implements SerializationWriter {
   public writeByteArrayValue(

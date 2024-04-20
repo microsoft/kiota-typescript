@@ -1,9 +1,14 @@
-import { Guid } from "guid-typescript";
+export type Guid = string
 
-export function parseGuidString(source?: string): Guid | undefined {
-  if (source && Guid.isGuid(source)) {
-    return Guid.parse(source);
-  } else {
-    return undefined;
+export function createGuid(): Guid {
+  return ([gen(2), gen(1), gen(1), gen(1), gen(3)].join("-"));
+}
+
+function gen(count: number) {
+  let out: string = "";
+  for (let i: number = 0; i < count; i++) {
+      // tslint:disable-next-line:no-bitwise
+      out += (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
   }
+  return out;
 }
