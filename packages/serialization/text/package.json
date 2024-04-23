@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/kiota-serialization-text",
-  "version": "1.0.0-preview.47",
+  "version": "1.0.0-preview.48",
   "description": "Implementation of Kiota Serialization interfaces for text",
   "main": "dist/cjs/src/index.js",
   "browser": {
@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/microsoft/kiota-typescript#readme",
   "dependencies": {
-    "@microsoft/kiota-abstractions": "^1.0.0-preview.50",
+    "@microsoft/kiota-abstractions": "^1.0.0-preview.51",
     "guid-typescript": "^1.0.9",
     "tslib": "^2.6.2"
   },
