@@ -88,6 +88,9 @@ export class JsonParseNode implements ParseNode {
   public getCollectionOfObjectValues = <T extends Parsable>(
     method: ParsableFactory<T>
   ): T[] | undefined => {
+    if (!Array.isArray(this._jsonNode)){
+      return undefined;
+    }
     return this._jsonNode
       ? (this._jsonNode as unknown[])
           .map((x) => new JsonParseNode(x))
