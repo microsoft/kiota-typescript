@@ -1,4 +1,4 @@
-import type { Guid } from "guid-typescript";
+import type { Guid } from "../utils/guidUtils";
 
 import type { DateOnly } from "../dateOnly";
 import type { Duration } from "../duration";
