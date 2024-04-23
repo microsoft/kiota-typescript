@@ -39,17 +39,21 @@ export class JsonParseNode implements ParseNode {
     typeof this._jsonNode === "object" &&
     (this._jsonNode as { [key: string]: any })[identifier] !== undefined
       ? new JsonParseNode(
-          (this._jsonNode as { [key: string]: any })[identifier],
+          (this._jsonNode as { [key: string]: any })[identifier]
         )
       : undefined;
   public getBooleanValue = () => this._jsonNode as boolean;
   public getNumberValue = () => this._jsonNode as number;
   public getGuidValue = () => parseGuidString(this.getStringValue());
-  public getDateValue = () => this._jsonNode ? new Date(this._jsonNode as string) : undefined;
+  public getDateValue = () =>
+    this._jsonNode ? new Date(this._jsonNode as string) : undefined;
   public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
   public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
   public getDurationValue = () => Duration.parse(this.getStringValue());
   public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
+    if (!Array.isArray(this._jsonNode)){
+      return undefined;
+    }
     return (this._jsonNode as unknown[]).map((x) => {
       const currentParseNode = new JsonParseNode(x);
       const typeOfX = typeof x;
@@ -69,7 +73,7 @@ export class JsonParseNode implements ParseNode {
         return currentParseNode.getDateValue() as unknown as T;
       } else {
         throw new Error(
-          `encountered an unknown type during deserialization ${typeof x}`,
+          `encountered an unknown type during deserialization ${typeof x}`
         );
       }
     });
@@ -82,15 +86,20 @@ export class JsonParseNode implements ParseNode {
     return undefined;
   }
   public getCollectionOfObjectValues = <T extends Parsable>(
-    method: ParsableFactory<T>,
+    method: ParsableFactory<T>
   ): T[] | undefined => {
-    return this._jsonNode ? (this._jsonNode as unknown[])
-      .map((x) => new JsonParseNode(x))
-      .map((x) => x.getObjectValue<T>(method)) : undefined;
+    if (!Array.isArray(this._jsonNode)){
+      return undefined;
+    }
+    return this._jsonNode
+      ? (this._jsonNode as unknown[])
+          .map((x) => new JsonParseNode(x))
+          .map((x) => x.getObjectValue<T>(method))
+      : undefined;
   };
 
   public getObjectValue = <T extends Parsable>(
-    parsableFactory: ParsableFactory<T>,
+    parsableFactory: ParsableFactory<T>
   ): T => {
     const temp: T = {} as T;
     if (isUntypedNode(parsableFactory(this)(temp))) {
@@ -108,8 +117,8 @@ export class JsonParseNode implements ParseNode {
         (this._jsonNode as any[]).forEach((x) => {
           nodes.push(
             new JsonParseNode(x).getObjectValue(
-              createUntypedNodeFromDiscriminatorValue,
-            ),
+              createUntypedNodeFromDiscriminatorValue
+            )
           );
         });
         value = createUntypedArray(nodes) as any as T;
@@ -117,7 +126,7 @@ export class JsonParseNode implements ParseNode {
         const properties: Record<string, UntypedNode> = {};
         Object.entries(this._jsonNode as any).forEach(([k, v]) => {
           properties[k] = new JsonParseNode(v).getObjectValue(
-            createUntypedNodeFromDiscriminatorValue,
+            createUntypedNodeFromDiscriminatorValue
           );
         });
         value = createUntypedObject(properties) as any as T;
@@ -126,8 +135,12 @@ export class JsonParseNode implements ParseNode {
       }
       return value;
     }
-    const enableBackingStore = isBackingStoreEnabled(parsableFactory(this)(temp));
-    const value: T = enableBackingStore ? new Proxy(temp, createBackedModelProxyHandler<T>()) : temp;
+    const enableBackingStore = isBackingStoreEnabled(
+      parsableFactory(this)(temp)
+    );
+    const value: T = enableBackingStore
+      ? new Proxy(temp, createBackedModelProxyHandler<T>())
+      : temp;
     if (this.onBeforeAssignFieldValues) {
       this.onBeforeAssignFieldValues(value);
     }
@@ -140,7 +153,7 @@ export class JsonParseNode implements ParseNode {
 
   private assignFieldValues = <T extends Parsable>(
     model: T,
-    parsableFactory: ParsableFactory<T>,
+    parsableFactory: ParsableFactory<T>
   ): void => {
     const fields = parsableFactory(this)(model);
     if (!this._jsonNode) return;
