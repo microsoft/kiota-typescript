@@ -4,6 +4,8 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+
+/** Parent interface for errors thrown by the client when receiving failed responses to its requests. */
 export interface ApiError extends Error {
 	/** The status code for the error. */
 	responseStatusCode: number | undefined;
