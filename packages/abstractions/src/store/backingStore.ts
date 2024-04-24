@@ -4,6 +4,10 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+
+/**
+ * Stores model information in a different location than the object properties. Implementations can provide dirty tracking capabilities, caching capabilities or integration with 3rd party stores.
+ */
 export interface BackingStore {
 	/**
 	 * Gets a value from the backing store based on its key. Returns null if the value hasn't changed and "ReturnOnlyChangedValues" is true.

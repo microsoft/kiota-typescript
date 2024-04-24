@@ -4,6 +4,10 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+
+/**
+ * Represents a date only. ISO 8601.
+ */
 export class DateOnly implements DateOnlyInterface {
 	/**
 	 * Creates a new DateOnly from the given string.

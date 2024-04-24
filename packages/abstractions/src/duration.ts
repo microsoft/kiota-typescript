@@ -5,6 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 import { parse as parseDuration, serialize as serializeDuration } from "tinyduration";
+
 /**
  * Represents a duration value. ISO 8601.
  */

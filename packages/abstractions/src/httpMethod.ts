@@ -4,6 +4,10 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+
+/**
+ * Represents the HTTP method used by a request.
+ */
 export enum HttpMethod {
 	/** The HTTP GET method */
 	GET = "GET",

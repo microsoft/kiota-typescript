@@ -4,6 +4,9 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+
+/** Maintains a list of valid hosts and allows authentication providers to
+ * check whether a host is valid before authenticating a request */
 import { inNodeEnv } from "../utils";
 
 export class AllowedHostsValidator {

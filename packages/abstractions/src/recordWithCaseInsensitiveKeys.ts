@@ -4,6 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+
 function dictionaryWithCanonicalKeys<V>(canon: (prop: keyof any) => string) {
 	const keysNormalizationMap = new Map<string, string>();
 	return new Proxy<{ [k: string]: V }>(
