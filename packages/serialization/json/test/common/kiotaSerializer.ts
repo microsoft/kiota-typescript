@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { deserialize, deserializeCollection, deserializeFromJson, type ModelSerializerFunction, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type SerializationWriter, type SerializationWriterFactory, SerializationWriterFactoryRegistry, serialize, serializeCollection, serializeCollectionToJsonAsString, serializeCollectionToString, serializeToJsonAsString, serializeToString } from "@microsoft/kiota-abstractions";
 import { assert, describe, it } from "vitest";
 

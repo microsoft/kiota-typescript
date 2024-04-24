@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { FetchRequestAdapter } from "@microsoft/kiota-http-fetchlibrary";
 import { AzureIdentityAuthenticationProvider } from "@microsoft/kiota-authentication-azure";
 import { ClientSecretCredential } from "@azure/identity";

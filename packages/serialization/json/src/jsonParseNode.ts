@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { createBackedModelProxyHandler, DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, isBackingStoreEnabled, toFirstCharacterUpper, isUntypedNode, UntypedNode, UntypedArray, UntypedBoolean, UntypedNumber, UntypedObject, UntypedString, createUntypedNodeFromDiscriminatorValue, UntypedNull, createUntypedBoolean, createUntypedString, createUntypedNumber, createUntypedArray, createUntypedObject, createUntypedNull, inNodeEnv } from "@microsoft/kiota-abstractions";
 
 export class JsonParseNode implements ParseNode {

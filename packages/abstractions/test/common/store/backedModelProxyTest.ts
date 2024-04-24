@@ -1,3 +1,9 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import { type BackedModel, type BackingStore, BackingStoreFactorySingleton, createBackedModelProxyHandler } from "../../../src/store";
 import { assert, describe, it, beforeEach, afterEach } from "vitest";
 

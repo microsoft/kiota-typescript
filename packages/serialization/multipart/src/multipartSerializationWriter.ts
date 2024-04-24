@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { type DateOnly, type Duration, MultipartBody, type Parsable, type SerializationWriter, type ModelSerializerFunction, type TimeOnly } from "@microsoft/kiota-abstractions";
 import type { Guid } from "guid-typescript";

@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, BackingStoreFactorySingleton, type DateOnly, DefaultApiError, type Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, type ErrorMappings, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type PrimitiveTypesForDeserialization, type PrimitiveTypesForDeserializationType, type RequestAdapter, type RequestInformation, type ResponseHandler, type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
 import { type Span, SpanStatusCode, trace } from "@opentelemetry/api";
 

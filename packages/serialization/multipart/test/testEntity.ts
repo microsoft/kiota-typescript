@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import type { AdditionalDataHolder, DateOnly, Duration, Parsable, ParseNode, SerializationWriter, TimeOnly } from "@microsoft/kiota-abstractions";
 
 export interface TestEntity extends Parsable, AdditionalDataHolder {

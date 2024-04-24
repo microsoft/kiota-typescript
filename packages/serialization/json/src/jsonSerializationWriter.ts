@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { DateOnly, Duration, isUntypedNode, type ModelSerializerFunction, type Parsable, type SerializationWriter, TimeOnly, type UntypedNode, isUntypedBoolean, isUntypedString, isUntypedNull, isUntypedNumber, isUntypedObject, isUntypedArray, inNodeEnv } from "@microsoft/kiota-abstractions";
 import type { Guid } from "guid-typescript";
