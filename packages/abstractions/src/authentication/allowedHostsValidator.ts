@@ -51,11 +51,11 @@ export class AllowedHostsValidator {
 			// protocol relative URL domain.tld/path
 			return this.isHostAndPathValid(url);
 		}
-		//@ts-ignore
+		// @ts-ignore
 		if (window && window.location && window.location.host) {
 			// we're in a browser, and we're using paths only ../path, ./path, /path, etc.
-			//@ts-ignore
-			return this.allowedHosts.has((window.location.host as string)?.toLowerCase());
+			// @ts-ignore
+			return this.allowedHosts.has(window.location.host?.toLowerCase());
 		}
 		return false;
 	}

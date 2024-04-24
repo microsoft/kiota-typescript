@@ -24,6 +24,9 @@ export class JsonParseNode implements ParseNode {
 	public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
 	public getDurationValue = () => Duration.parse(this.getStringValue());
 	public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
+		if (!Array.isArray(this._jsonNode)) {
+			return undefined;
+		}
 		return (this._jsonNode as unknown[]).map((x) => {
 			const currentParseNode = new JsonParseNode(x);
 			const typeOfX = typeof x;
@@ -49,11 +52,14 @@ export class JsonParseNode implements ParseNode {
 	public getByteArrayValue(): ArrayBuffer | undefined {
 		const strValue = this.getStringValue();
 		if (strValue && strValue.length > 0) {
-			return inNodeEnv() ? Buffer.from(strValue, "base64").buffer : new TextEncoder().encode(strValue);
+			return Buffer.from(strValue, "base64").buffer;
 		}
 		return undefined;
 	}
 	public getCollectionOfObjectValues = <T extends Parsable>(method: ParsableFactory<T>): T[] | undefined => {
+		if (!Array.isArray(this._jsonNode)) {
+			return undefined;
+		}
 		return this._jsonNode ? (this._jsonNode as unknown[]).map((x) => new JsonParseNode(x)).map((x) => x.getObjectValue<T>(method)) : undefined;
 	};
 

@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/kiota-serialization-multipart",
-  "version": "1.0.0-preview.28",
+  "version": "1.0.0-preview.29",
   "description": "Implementation of Kiota Serialization interfaces for multipart form data",
   "main": "dist/es/src/index.js",
   "module": "dist/es/src/index.js",

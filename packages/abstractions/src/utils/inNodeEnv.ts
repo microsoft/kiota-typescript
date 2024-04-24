@@ -14,6 +14,6 @@ export const inNodeEnv = (): boolean => {
 	} catch (err) {
 		// ReferenceError is thrown if you use node js APIs in a browser,
 		// cast it to a false if that's the case.
-		return !Boolean(err instanceof ReferenceError);
+		return !(err instanceof ReferenceError);
 	}
 };

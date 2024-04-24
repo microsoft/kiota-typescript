@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/kiota-abstractions",
-  "version": "1.0.0-preview.50",
+  "version": "1.0.0-preview.51",
   "description": "Core abstractions for kiota generated libraries in TypeScript and JavaScript",
   "main": "dist/es/src/index.js",
   "module": "dist/es/src/index.js",
@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@opentelemetry/api": "^1.7.0",
-    "@std-uritemplate/std-uritemplate": "^0.0.56",
+    "@std-uritemplate/std-uritemplate": "^0.0.57",
     "guid-typescript": "^1.0.9",
     "tinyduration": "^3.3.0",
     "tslib": "^2.6.2",
