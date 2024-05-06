@@ -211,6 +211,11 @@ describe("JsonParseNode", () => {
           },
         },
       },
+      table: [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9],
+      ],
     };
 
     const result = new JsonParseNode(jsonObject).getObjectValue(
@@ -237,5 +242,19 @@ describe("JsonParseNode", () => {
       locationProperties["displayName"].getValue(),
       "Microsoft Building 25",
     );
+    const table = result.table as UntypedNode;
+    if (isUntypedArray(table)) {
+      table.getValue().forEach((row) => {
+        if (isUntypedArray(row)) {
+          row.getValue().forEach((cell) => {
+            assert.isTrue(isUntypedNumber(cell));
+          });
+        } else {
+          assert.fail("Expected row to be an array");
+        }
+      });
+    } else {
+      assert.fail("Expected table to be an array");
+    }
   });
 });
