@@ -11,6 +11,7 @@ export interface UntypedTestEntity {
   location?: UntypedNode | undefined;
   keywords?: UntypedNode | undefined;
   detail?: UntypedNode | undefined;
+  table?: UntypedNode | undefined;
   additionalData?: Record<string, unknown>;
 }
 
@@ -46,6 +47,11 @@ export function deserializeUntypedTestEntity(
         createUntypedNodeFromDiscriminatorValue,
       );
     },
+    table: (n) => {
+      untypedTestEntity.table = n.getObjectValue<UntypedNode>(
+        createUntypedNodeFromDiscriminatorValue,
+      );
+    },
   };
 }
 
@@ -58,5 +64,6 @@ export function serializeUntypedTestEntity(
   writer.writeObjectValue("location", untypedTestEntity.location);
   writer.writeObjectValue("keywords", untypedTestEntity.keywords);
   writer.writeObjectValue("detail", untypedTestEntity.detail);
+  writer.writeObjectValue("table", untypedTestEntity.table);
   writer.writeAdditionalData(untypedTestEntity.additionalData);
 }
