@@ -97,6 +97,7 @@ interface MultipartEntry {
   serializationCallback?: ModelSerializerFunction<Parsable>;
 }
 
+
 export function serializeMultipartBody(
   writer: SerializationWriter,
   multipartBody: Partial<MultipartBody> = new MultipartBody(),
@@ -123,16 +124,19 @@ export function serializeMultipartBody(
     if (first) {
       first = false;
     } else {
-      writer.writeStringValue(undefined, "");
+      writer.writeStringValue(undefined, "\r\n");
     }
     writer.writeStringValue(undefined, "--" + boundary);
+    writer.writeStringValue(undefined, "\r\n");
     const part = parts[partName];
     writer.writeStringValue("Content-Type", part.contentType);
+    writer.writeStringValue(undefined, "\r\n");
     writer.writeStringValue(
       "Content-Disposition",
       'form-data; name="' + part.originalName + '"',
     );
-    writer.writeStringValue(undefined, "");
+    writer.writeStringValue(undefined, "\r\n");
+    writer.writeStringValue(undefined, "\r\n");
     if (typeof part.content === "string") {
       writer.writeStringValue(undefined, part.content);
     } else if (part.content instanceof ArrayBuffer) {
@@ -169,8 +173,9 @@ export function serializeMultipartBody(
       );
     }
   }
-  writer.writeStringValue(undefined, "");
+  writer.writeStringValue(undefined, "\r\n");
   writer.writeStringValue(undefined, "--" + boundary + "--");
+  writer.writeStringValue(undefined, "\r\n");
 }
 
 export function deserializeIntoMultipartBody(

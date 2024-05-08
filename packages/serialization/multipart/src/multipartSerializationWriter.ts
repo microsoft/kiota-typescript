@@ -42,7 +42,6 @@ export class MultipartSerializationWriter implements SerializationWriter {
       }
       this.writeRawStringValue(value);
     }
-    this.writeRawStringValue("\r\n");
   };
   private writeRawStringValue = (value?: string): void => {
     if (value) {
