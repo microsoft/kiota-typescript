@@ -1,4 +1,11 @@
-import { assert } from "chai";
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+import { assert, describe, it } from "vitest";
 
 import { UserAgentHandler, UserAgentHandlerOptions } from "../../../src";
 import { getResponse } from "../../testUtils";

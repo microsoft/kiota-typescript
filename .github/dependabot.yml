@@ -125,3 +125,7 @@ updates:
     eslint:
       patterns:
         - "*eslint*"
+    vitest:
+      patterns:
+        - "*vitest*"
+

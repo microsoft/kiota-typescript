@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { CustomFetchHandler } from "../customFetchHandler";
 import { HeadersInspectionHandler } from "../headersInspectionHandler";
 import { Middleware } from "../middleware";
@@ -18,12 +25,6 @@ export class MiddlewareFactory {
 	 */
 	public static getDefaultMiddlewares(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args) as any): Middleware[] {
 		// Browsers handles redirection automatically and do not require the redirectionHandler
-		return [
-            new RetryHandler(),
-            new ParametersNameDecodingHandler(),
-            new UserAgentHandler(),
-            new HeadersInspectionHandler(),
-            new CustomFetchHandler(customFetch)
-        ];
+		return [new RetryHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new HeadersInspectionHandler(), new CustomFetchHandler(customFetch)];
 	}
 }

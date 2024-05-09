@@ -1,23 +1,30 @@
 /**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+/**
  * Represents the HTTP method used by a request.
  */
 export enum HttpMethod {
-  /** The HTTP GET method */
-  GET = "GET",
-  /** The HTTP POST method */
-  POST = "POST",
-  /** The HTTP PATCH method */
-  PATCH = "PATCH",
-  /** The HTTP DELETE method */
-  DELETE = "DELETE",
-  /** The HTTP OPTIONS method */
-  OPTIONS = "OPTIONS",
-  /** The HTTP CONNECT method */
-  CONNECT = "CONNECT",
-  /** The HTTP TRACE method */
-  TRACE = "TRACE",
-  /** The HTTP HEAD method */
-  HEAD = "HEAD",
-  /** The HTTP PUT method */
-  PUT = "PUT",
+	/** The HTTP GET method */
+	GET = "GET",
+	/** The HTTP POST method */
+	POST = "POST",
+	/** The HTTP PATCH method */
+	PATCH = "PATCH",
+	/** The HTTP DELETE method */
+	DELETE = "DELETE",
+	/** The HTTP OPTIONS method */
+	OPTIONS = "OPTIONS",
+	/** The HTTP CONNECT method */
+	CONNECT = "CONNECT",
+	/** The HTTP TRACE method */
+	TRACE = "TRACE",
+	/** The HTTP HEAD method */
+	HEAD = "HEAD",
+	/** The HTTP PUT method */
+	PUT = "PUT",
 }

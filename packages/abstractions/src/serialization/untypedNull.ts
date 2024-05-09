@@ -1,11 +1,17 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import { UntypedNode } from "./untypedNode";
 
 /** Defines the interface for defining an untyped null value. */
 export interface UntypedNull extends UntypedNode {
-  /**
-   * Gets the value of the UntypedNode as null.
-   */
-  getValue(): null;
+	/**
+	 * Gets the value of the UntypedNode as null.
+	 */
+	getValue(): null;
 }
 
 /**
@@ -14,7 +20,7 @@ export interface UntypedNull extends UntypedNode {
  * @return boolean indicating if the node is an UntypedNull.
  */
 export function isUntypedNull(node: UntypedNode): node is UntypedNull {
-  return node.value === null;
+	return node.value === null;
 }
 
 /**
@@ -22,8 +28,8 @@ export function isUntypedNull(node: UntypedNode): node is UntypedNull {
  * @return The created UntypedNull.
  */
 export function createUntypedNull(): UntypedNull {
-  return {
-    value: null,
-    getValue: () => null,
-  };
+	return {
+		value: null,
+		getValue: () => null,
+	};
 }

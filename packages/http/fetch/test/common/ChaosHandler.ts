@@ -6,7 +6,7 @@
  */
 
 import { HttpMethod } from "@microsoft/kiota-abstractions";
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import { ChaosHandler, ChaosStrategy, type FetchRequestInit } from "../../src";
 import { DummyFetchHandler } from "./middleware/dummyFetchHandler";
