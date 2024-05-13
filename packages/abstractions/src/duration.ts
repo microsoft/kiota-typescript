@@ -26,23 +26,26 @@ export class Duration implements DurationInterface {
 		if (years < 0 || years > 9999) {
 			throw new Error("Year must be between 0 and 9999");
 		}
-		if (months < 0 || months > 11) {
-			throw new Error("Month must be between 0 and 11");
+		if (months < 0) {
+			throw new Error("Month must be greater or equal to 0");
 		}
-		if (weeks < 0 || weeks > 53) {
-			throw new Error("Week must be between 0 and 53");
+		if (weeks < 0) {
+			throw new Error("Week must be greater or equal to 0");
 		}
-		if (days < 0 || days > 6) {
-			throw new Error("Day must be between 0 and 6");
+		if (days < 0) {
+			throw new Error("Day must be greater or equal to 0");
 		}
-		if (hours < 0 || hours > 23) {
-			throw new Error("Hour must be between 0 and 23");
+		if (hours < 0) {
+			throw new Error("Hour must be greater or equal to 0");
 		}
-		if (minutes < 0 || minutes > 59) {
-			throw new Error("Minute must be between 0 and 59");
+		if (minutes < 0) {
+			throw new Error("Minute must be greater or equal to 0");
 		}
-		if (seconds < 0 || seconds > 59) {
-			throw new Error("Second must be between 0 and 59");
+		if (seconds < 0) {
+			throw new Error("Second must be greater or equal to 0");
+		}
+		if (weeks > 0 && (days > 0 || hours > 0 || minutes > 0 || seconds > 0)) {
+			throw new Error("Cannot have weeks and days or hours or minutes or seconds");
 		}
 		if ((years > 0 || months > 0) && weeks > 0) {
 			throw new Error("Cannot have weeks and months or weeks and years");
