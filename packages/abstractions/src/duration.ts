@@ -44,6 +44,9 @@ export class Duration implements DurationInterface {
 		if (seconds < 0) {
 			throw new Error("Second must be greater or equal to 0");
 		}
+		if (weeks > 0 && (days > 0 || hours > 0 || minutes > 0 || seconds > 0)) {
+			throw new Error("Cannot have weeks and days or hours or minutes or seconds");
+		}
 		if ((years > 0 || months > 0) && weeks > 0) {
 			throw new Error("Cannot have weeks and months or weeks and years");
 		}
