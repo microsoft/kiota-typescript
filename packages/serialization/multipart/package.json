@@ -1,46 +1,46 @@
 {
-  "name": "@microsoft/kiota-serialization-multipart",
-  "version": "1.0.0-preview.29",
-  "description": "Implementation of Kiota Serialization interfaces for multipart form data",
-  "main": "dist/es/src/index.js",
-  "module": "dist/es/src/index.js",
-  "types": "dist/es/src/index.d.ts",
-  "scripts": {
-    "build": "npm run build:esm",
-    "build:esm": "tsc -b",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
-    "clean": "rm -rf ./dist",
-    "test:browser": "vitest run --browser.name=chrome --browser.headless",
-    "test:node": "vitest --run",
-    "test": "npm run test:node && npm run test:browser"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/microsoft/kiota-typescript.git"
-  },
-  "keywords": [
-    "kiota",
-    "openAPI",
-    "Microsoft",
-    "Graph",
-    "multipart"
-  ],
-  "author": "Microsoft",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/microsoft/kiota-typescript/issues"
-  },
-  "homepage": "https://github.com/microsoft/kiota-typescript#readme",
-  "dependencies": {
-    "@microsoft/kiota-abstractions": "*",
-    "guid-typescript": "^1.0.9",
-    "tslib": "^2.6.2"
-  },
-  "devDependencies": {
-    "@microsoft/kiota-serialization-json": "*"
-  },
-  "publishConfig": {
-    "access": "public"
-  }
+	"name": "@microsoft/kiota-serialization-multipart",
+	"version": "1.0.0-preview.30",
+	"description": "Implementation of Kiota Serialization interfaces for multipart form data",
+	"main": "dist/es/src/index.js",
+	"module": "dist/es/src/index.js",
+	"types": "dist/es/src/index.d.ts",
+	"scripts": {
+		"build": "npm run build:esm",
+		"build:esm": "tsc -b",
+		"lint": "eslint . --ext .ts",
+		"lint:fix": "eslint . --ext .ts --fix",
+		"clean": "rm -rf ./dist",
+		"test:browser": "vitest run --browser.name=chrome --browser.headless",
+		"test:node": "vitest --run",
+		"test": "npm run test:node && npm run test:browser"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/microsoft/kiota-typescript.git"
+	},
+	"keywords": [
+		"kiota",
+		"openAPI",
+		"Microsoft",
+		"Graph",
+		"multipart"
+	],
+	"author": "Microsoft",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/microsoft/kiota-typescript/issues"
+	},
+	"homepage": "https://github.com/microsoft/kiota-typescript#readme",
+	"dependencies": {
+		"@microsoft/kiota-abstractions": "*",
+		"guid-typescript": "^1.0.9",
+		"tslib": "^2.6.2"
+	},
+	"devDependencies": {
+		"@microsoft/kiota-serialization-json": "*"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
 }
