@@ -1,46 +1,46 @@
 {
-  "name": "@microsoft/kiota-abstractions",
-  "version": "1.0.0-preview.51",
-  "description": "Core abstractions for kiota generated libraries in TypeScript and JavaScript",
-  "main": "dist/es/src/index.js",
-  "module": "dist/es/src/index.js",
-  "types": "dist/es/src/index.d.ts",
-  "scripts": {
-    "build": "npm run build:esm",
-    "build:esm": "tsc",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
-    "clean": "rm -rf ./dist",
-    "test:browser": "vitest run --browser.name=chrome --browser.headless",
-    "test:node": "vitest --run",
-    "test": "npm run test:node && npm run test:browser"
-  },
-  "repository": "git://github.com/microsoft/kiota-typescript.git",
-  "keywords": [
-    "kiota",
-    "openAPI",
-    "Microsoft",
-    "Graph"
-  ],
-  "author": "Microsoft",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/microsoft/kiota-typescript/issues"
-  },
-  "homepage": "https://github.com/microsoft/kiota#readme",
-  "devDependencies": {
-    "@types/node": "^20.11.15",
-    "@types/uuid": "^9.0.8"
-  },
-  "dependencies": {
-    "@opentelemetry/api": "^1.7.0",
-    "@std-uritemplate/std-uritemplate": "^0.0.57",
-    "guid-typescript": "^1.0.9",
-    "tinyduration": "^3.3.0",
-    "tslib": "^2.6.2",
-    "uuid": "^9.0.1"
-  },
-  "publishConfig": {
-    "access": "public"
-  }
+	"name": "@microsoft/kiota-abstractions",
+	"version": "1.0.0-preview.52",
+	"description": "Core abstractions for kiota generated libraries in TypeScript and JavaScript",
+	"main": "dist/es/src/index.js",
+	"module": "dist/es/src/index.js",
+	"types": "dist/es/src/index.d.ts",
+	"scripts": {
+		"build": "npm run build:esm",
+		"build:esm": "tsc",
+		"lint": "eslint . --ext .ts",
+		"lint:fix": "eslint . --ext .ts --fix",
+		"clean": "rm -rf ./dist",
+		"test:browser": "vitest run --browser.name=chrome --browser.headless",
+		"test:node": "vitest --run",
+		"test": "npm run test:node && npm run test:browser"
+	},
+	"repository": "git://github.com/microsoft/kiota-typescript.git",
+	"keywords": [
+		"kiota",
+		"openAPI",
+		"Microsoft",
+		"Graph"
+	],
+	"author": "Microsoft",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/microsoft/kiota-typescript/issues"
+	},
+	"homepage": "https://github.com/microsoft/kiota#readme",
+	"devDependencies": {
+		"@types/node": "^20.11.15",
+		"@types/uuid": "^9.0.8"
+	},
+	"dependencies": {
+		"@opentelemetry/api": "^1.7.0",
+		"@std-uritemplate/std-uritemplate": "^0.0.57",
+		"guid-typescript": "^1.0.9",
+		"tinyduration": "^3.3.0",
+		"tslib": "^2.6.2",
+		"uuid": "^9.0.1"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
 }

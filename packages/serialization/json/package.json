@@ -1,47 +1,47 @@
 {
-  "name": "@microsoft/kiota-serialization-json",
-  "version": "1.0.0-preview.51",
-  "description": "Implementation of Kiota Serialization interfaces for JSON",
-  "main": "dist/es/src/index.js",
-  "browser": {
-    "./dist/es/src/index.js": "./dist/es/src/browser/index.js",
-    "./dist/es/src/jsonParseNodeFactory.js": "./dist/es/src/browser/jsonParseNodeFactory.js"
-  },
-  "module": "dist/es/src/index.js",
-  "types": "dist/es/src/index.d.ts",
-  "scripts": {
-    "build": "npm run clean &&  npm run build:esm",
-    "build:esm": "tsc -b",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
-    "clean": "rm -rf ./dist",
-    "test:browser": "vitest run --browser.name=chrome --browser.headless",
-    "test:node": "vitest --run",
-    "test": "npm run test:node && npm run test:browser"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/microsoft/kiota-typescript.git"
-  },
-  "keywords": [
-    "kiota",
-    "openAPI",
-    "Microsoft",
-    "Graph",
-    "JSON"
-  ],
-  "author": "Microsoft",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/microsoft/kiota-typescript/issues"
-  },
-  "homepage": "https://github.com/microsoft/kiota-typescript#readme",
-  "dependencies": {
-    "@microsoft/kiota-abstractions": "*",
-    "guid-typescript": "^1.0.9",
-    "tslib": "^2.6.2"
-  },
-  "publishConfig": {
-    "access": "public"
-  }
+	"name": "@microsoft/kiota-serialization-json",
+	"version": "1.0.0-preview.52",
+	"description": "Implementation of Kiota Serialization interfaces for JSON",
+	"main": "dist/es/src/index.js",
+	"browser": {
+		"./dist/es/src/index.js": "./dist/es/src/browser/index.js",
+		"./dist/es/src/jsonParseNodeFactory.js": "./dist/es/src/browser/jsonParseNodeFactory.js"
+	},
+	"module": "dist/es/src/index.js",
+	"types": "dist/es/src/index.d.ts",
+	"scripts": {
+		"build": "npm run clean &&  npm run build:esm",
+		"build:esm": "tsc -b",
+		"lint": "eslint . --ext .ts",
+		"lint:fix": "eslint . --ext .ts --fix",
+		"clean": "rm -rf ./dist",
+		"test:browser": "vitest run --browser.name=chrome --browser.headless",
+		"test:node": "vitest --run",
+		"test": "npm run test:node && npm run test:browser"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/microsoft/kiota-typescript.git"
+	},
+	"keywords": [
+		"kiota",
+		"openAPI",
+		"Microsoft",
+		"Graph",
+		"JSON"
+	],
+	"author": "Microsoft",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/microsoft/kiota-typescript/issues"
+	},
+	"homepage": "https://github.com/microsoft/kiota-typescript#readme",
+	"dependencies": {
+		"@microsoft/kiota-abstractions": "*",
+		"guid-typescript": "^1.0.9",
+		"tslib": "^2.6.2"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
 }
