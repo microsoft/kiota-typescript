@@ -33,12 +33,12 @@ export abstract class ParseNodeProxyFactory implements ParseNodeFactory {
 		const originalBefore = node.onBeforeAssignFieldValues;
 		const originalAfter = node.onAfterAssignFieldValues;
 		node.onBeforeAssignFieldValues = (value) => {
-			this._onBefore && this._onBefore(value);
-			originalBefore && originalBefore(value);
+			if (this._onBefore) this._onBefore(value);
+			if (originalBefore) originalBefore(value);
 		};
 		node.onAfterAssignFieldValues = (value) => {
-			this._onAfter && this._onAfter(value);
-			originalAfter && originalAfter(value);
+			if (this._onAfter) this._onAfter(value);
+			if (originalAfter) originalAfter(value);
 		};
 		return node;
 	}

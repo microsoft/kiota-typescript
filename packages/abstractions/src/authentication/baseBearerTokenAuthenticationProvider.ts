@@ -11,7 +11,7 @@ import type { AuthenticationProvider } from "./authenticationProvider";
 
 /** Provides a base class for implementing AuthenticationProvider for Bearer token scheme. */
 export class BaseBearerTokenAuthenticationProvider implements AuthenticationProvider {
-	private static readonly authorizationHeaderKey = "Authorization";
+	private static get authorizationHeaderKey() { return "Authorization"; }
 
 	/**
 	 *

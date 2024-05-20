@@ -7,8 +7,6 @@
 
 /** Maintains a list of valid hosts and allows authentication providers to
  * check whether a host is valid before authenticating a request */
-import { inNodeEnv } from "../utils";
-
 export class AllowedHostsValidator {
 	private allowedHosts: Set<string>;
 	/**
@@ -51,10 +49,7 @@ export class AllowedHostsValidator {
 			// protocol relative URL domain.tld/path
 			return this.isHostAndPathValid(url);
 		}
-		// @ts-ignore
-		if (window && window.location && window.location.host) {
-			// we're in a browser, and we're using paths only ../path, ./path, /path, etc.
-			// @ts-ignore
+		if (window?.location?.host) {
 			return this.allowedHosts.has(window.location.host?.toLowerCase());
 		}
 		return false;

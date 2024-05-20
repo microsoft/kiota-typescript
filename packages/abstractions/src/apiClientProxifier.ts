@@ -10,13 +10,13 @@ import type { ErrorMappings, PrimitiveTypesForDeserialization, PrimitiveTypesFor
 import type { RequestConfiguration } from "./requestConfiguration";
 import { RequestInformation, type RequestInformationSetContent } from "./requestInformation";
 import type { ModelSerializerFunction, Parsable, ParsableFactory } from "./serialization";
-function sanitizeMethodName(methodName: string): string {
+const sanitizeMethodName = (methodName: string): string => {
 	if (methodName.startsWith("to")) {
 		return methodName.substring(2).replace("RequestInformation", "").toLowerCase();
 	}
 	return methodName;
 }
-function getRequestMethod(key: string): KeysOfRequestsMetadata | undefined {
+const getRequestMethod = (key: string): KeysOfRequestsMetadata | undefined => {
 	switch (sanitizeMethodName(key)) {
 		case "delete":
 			return "delete";
@@ -37,7 +37,8 @@ function getRequestMethod(key: string): KeysOfRequestsMetadata | undefined {
 	}
 }
 
-function toRequestInformation<QueryParametersType extends object>(urlTemplate: string, pathParameters: Record<string, unknown>, metadata: RequestMetadata, requestAdapter: RequestAdapter, httpMethod: HttpMethod, body: unknown | ArrayBuffer | undefined, bodyMediaType: string | undefined, requestConfiguration: RequestConfiguration<QueryParametersType> | undefined): RequestInformation {
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+const toRequestInformation = <QueryParametersType extends object>(urlTemplate: string, pathParameters: Record<string, unknown>, metadata: RequestMetadata, requestAdapter: RequestAdapter, httpMethod: HttpMethod, body: unknown | ArrayBuffer | undefined, bodyMediaType: string | undefined, requestConfiguration: RequestConfiguration<QueryParametersType> | undefined): RequestInformation => {
 	const requestInfo = new RequestInformation(httpMethod, urlTemplate, pathParameters);
 	requestInfo.configure(requestConfiguration, metadata.queryParametersMapper);
 	addAcceptHeaderIfPresent(metadata, requestInfo);
@@ -54,26 +55,26 @@ function toRequestInformation<QueryParametersType extends object>(urlTemplate: s
 	}
 	return requestInfo;
 }
-function addAcceptHeaderIfPresent(metadata: RequestMetadata, requestInfo: RequestInformation): void {
+const addAcceptHeaderIfPresent = (metadata: RequestMetadata, requestInfo: RequestInformation): void => {
 	if (metadata.responseBodyContentType) {
 		requestInfo.headers.tryAdd("Accept", metadata.responseBodyContentType);
 	}
 }
-function getRequestMediaTypeUserDefinedValue(requestMetadata: RequestMetadata, args: any[]) {
-	if (args.length > 2 && !requestMetadata.requestBodySerializer && requestMetadata.requestInformationContentSetMethod === "setStreamContent") {
+const getRequestMediaTypeUserDefinedValue = (requestMetadata: RequestMetadata, args: unknown[]) : string | undefined => {
+	if (args.length > 2 && !requestMetadata.requestBodySerializer && requestMetadata.requestInformationContentSetMethod === "setStreamContent" && typeof args[1] === "string") {
 		// request body with unknown media type so we have an argument for it.
 		return args[1];
 	}
 	return undefined;
 }
-function getRequestConfigurationValue(args: any[]) {
+const getRequestConfigurationValue = (args: unknown[]) : RequestConfiguration<object> | undefined => {
 	if (args.length > 0) {
 		// request configuration is always the last argument
-		return args[args.length - 1];
+		return args[args.length - 1] as RequestConfiguration<object>;
 	}
 	return undefined;
 }
-function send(requestAdapter: RequestAdapter, requestInfo: RequestInformation, metadata: RequestMetadata) {
+const send = (requestAdapter: RequestAdapter, requestInfo: RequestInformation, metadata: RequestMetadata) => {
 	switch (metadata.adapterMethodName) {
 		case "send":
 			if (!metadata.responseBodyFactory) {
@@ -111,11 +112,11 @@ function send(requestAdapter: RequestAdapter, requestInfo: RequestInformation, m
 			throw new Error("couldn't find adapter method");
 	}
 }
-export function apiClientProxifier<T extends object>(requestAdapter: RequestAdapter, pathParameters: Record<string, unknown>, navigationMetadata?: Record<string, NavigationMetadata>, requestsMetadata?: RequestsMetadata): T {
+export const apiClientProxifier = <T extends object>(requestAdapter: RequestAdapter, pathParameters: Record<string, unknown>, navigationMetadata?: Record<string, NavigationMetadata>, requestsMetadata?: RequestsMetadata): T => {
 	if (!requestAdapter) throw new Error("requestAdapter cannot be undefined");
 	if (!pathParameters) throw new Error("pathParameters cannot be undefined");
 	return new Proxy({} as T, {
-		get(target, property) {
+		get: (_, property) => {
 			const name = String(property);
 			if (name === "withUrl") {
 				return (rawUrl: string) => {
@@ -135,22 +136,22 @@ export function apiClientProxifier<T extends object>(requestAdapter: RequestAdap
 									return send(requestAdapter, requestInfo, metadata);
 								};
 							case "patch":
-								return (...args: any[]) => {
+								return (...args: unknown[]) => {
 									const requestInfo = toRequestInformation(metadata.uriTemplate, pathParameters, metadata, requestAdapter, HttpMethod.PATCH, args.length > 0 ? args[0] : undefined, getRequestMediaTypeUserDefinedValue(metadata, args), getRequestConfigurationValue(args));
 									return send(requestAdapter, requestInfo, metadata);
 								};
 							case "put":
-								return (...args: any[]) => {
+								return (...args: unknown[]) => {
 									const requestInfo = toRequestInformation(metadata.uriTemplate, pathParameters, metadata, requestAdapter, HttpMethod.PUT, args.length > 0 ? args[0] : undefined, getRequestMediaTypeUserDefinedValue(metadata, args), getRequestConfigurationValue(args));
 									return send(requestAdapter, requestInfo, metadata);
 								};
 							case "delete":
-								return (...args: any[]) => {
+								return (...args: unknown[]) => {
 									const requestInfo = toRequestInformation(metadata.uriTemplate, pathParameters, metadata, requestAdapter, HttpMethod.DELETE, args.length > 0 ? args[0] : undefined, getRequestMediaTypeUserDefinedValue(metadata, args), getRequestConfigurationValue(args));
 									return send(requestAdapter, requestInfo, metadata);
 								};
 							case "post":
-								return (...args: any[]) => {
+								return (...args: unknown[]) => {
 									const requestInfo = toRequestInformation(metadata.uriTemplate, pathParameters, metadata, requestAdapter, HttpMethod.POST, args.length > 0 ? args[0] : undefined, getRequestMediaTypeUserDefinedValue(metadata, args), getRequestConfigurationValue(args));
 									return send(requestAdapter, requestInfo, metadata);
 								};
@@ -159,19 +160,19 @@ export function apiClientProxifier<T extends object>(requestAdapter: RequestAdap
 									return toRequestInformation(metadata.uriTemplate, pathParameters, metadata, requestAdapter, HttpMethod.GET, undefined, undefined, requestConfiguration);
 								};
 							case "toPatchRequestInformation":
-								return (...args: any[]) => {
+								return (...args: unknown[]) => {
 									return toRequestInformation(metadata.uriTemplate, pathParameters, metadata, requestAdapter, HttpMethod.PATCH, args.length > 0 ? args[0] : undefined, getRequestMediaTypeUserDefinedValue(metadata, args), getRequestConfigurationValue(args));
 								};
 							case "toPutRequestInformation":
-								return (...args: any[]) => {
+								return (...args: unknown[]) => {
 									return toRequestInformation(metadata.uriTemplate, pathParameters, metadata, requestAdapter, HttpMethod.PUT, args.length > 0 ? args[0] : undefined, getRequestMediaTypeUserDefinedValue(metadata, args), getRequestConfigurationValue(args));
 								};
 							case "toDeleteRequestInformation":
-								return (...args: any[]) => {
+								return (...args: unknown[]) => {
 									return toRequestInformation(metadata.uriTemplate, pathParameters, metadata, requestAdapter, HttpMethod.DELETE, args.length > 0 ? args[0] : undefined, getRequestMediaTypeUserDefinedValue(metadata, args), getRequestConfigurationValue(args));
 								};
 							case "toPostRequestInformation":
-								return (...args: any[]) => {
+								return (...args: unknown[]) => {
 									return toRequestInformation(metadata.uriTemplate, pathParameters, metadata, requestAdapter, HttpMethod.POST, args.length > 0 ? args[0] : undefined, getRequestMediaTypeUserDefinedValue(metadata, args), getRequestConfigurationValue(args));
 								};
 							default:
@@ -185,9 +186,9 @@ export function apiClientProxifier<T extends object>(requestAdapter: RequestAdap
 				if (navigationCandidate) {
 					if (!navigationCandidate.pathParametersMappings || navigationCandidate.pathParametersMappings.length === 0) {
 						// navigation property
-						return apiClientProxifier(requestAdapter, getPathParameters(pathParameters), navigationCandidate.navigationMetadata, navigationCandidate.requestsMetadata);
+						return apiClientProxifier<object>(requestAdapter, getPathParameters(pathParameters), navigationCandidate.navigationMetadata, navigationCandidate.requestsMetadata);
 					}
-					return (...argArray: any[]) => {
+					return (...argArray: unknown[]) => {
 						// navigation method like indexers or multiple path parameters
 						const downWardPathParameters = getPathParameters(pathParameters);
 						if (navigationCandidate.pathParametersMappings && navigationCandidate.pathParametersMappings.length > 0) {
