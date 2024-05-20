@@ -87,7 +87,7 @@ export class RequestInformation implements RequestInformationSetContent {
 	/** The Request Body. */
 	public content?: ArrayBuffer;
 	/** The Query Parameters of the request. */
-	public queryParameters: Record<string, string | number | boolean | undefined> = createRecordWithCaseInsensitiveKeys<string | number | boolean | undefined>();
+	public queryParameters: Record<string, string | number | boolean | string[] | number[] | undefined> = createRecordWithCaseInsensitiveKeys<string | number | boolean | string[] | number[] | undefined>();
 	/** The Request Headers. */
 	public headers: Headers = new Headers();
 	private _requestOptions: Record<string, RequestOption> = createRecordWithCaseInsensitiveKeys<RequestOption>();
@@ -253,7 +253,7 @@ export class RequestInformation implements RequestInformationSetContent {
 					key = keyCandidate;
 				}
 			}
-			if (typeof v === "boolean" || typeof v === "number" || typeof v === "string") this.queryParameters[key] = v;
+			if (typeof v === "boolean" || typeof v === "number" || typeof v === "string" || Array.isArray(v)) this.queryParameters[key] = v;
 			else if (v === undefined) this.queryParameters[key] = undefined;
 		});
 	}

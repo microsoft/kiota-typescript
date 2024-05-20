@@ -196,7 +196,7 @@ export class Headers extends Map<string, Set<string>> {
 			throw new Error("headers cannot be null");
 		}
 		for (const header in headers.headers) {
-			if (Object.prototype.hasOwnProperty.call(this.headers, header)) {
+			if (Object.prototype.hasOwnProperty.call(headers.headers, header)) {
 				headers.headers[header].forEach((value) => this.add(header, value));
 			}
 		}
@@ -213,7 +213,7 @@ export class Headers extends Map<string, Set<string>> {
 			throw new Error("headers cannot be null");
 		}
 		for (const header in headers) {
-			if (Object.prototype.hasOwnProperty.call(this.headers, header)) {
+			if (Object.prototype.hasOwnProperty.call(headers, header)) {
 				const headerValues = headers[header];
 				if (Array.isArray(headerValues)) {
 					this.add(header, ...headerValues);
