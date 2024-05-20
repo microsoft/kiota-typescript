@@ -22,7 +22,7 @@ export interface UntypedObject extends UntypedNode {
 export const isUntypedObject = (node: UntypedNode): node is UntypedObject => {
 	const proposedNode = node as UntypedObject;
 	return proposedNode && proposedNode.value instanceof Object && proposedNode.value instanceof Array === false && Object.values(proposedNode.value as Record<string, unknown>).every((item) => isUntypedNode(item));
-}
+};
 
 /**
  * Factory to create an UntypedObject from a Record<string, UntypedNode>.
@@ -34,4 +34,4 @@ export const createUntypedObject = (value: Record<string, UntypedNode>): Untyped
 		value,
 		getValue: () => value,
 	};
-}
+};

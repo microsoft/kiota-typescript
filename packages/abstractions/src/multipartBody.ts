@@ -113,54 +113,54 @@ export const serializeMultipartBody = (writer: SerializationWriter, multipartBod
 	const boundary = multipartBody.getBoundary();
 	let first = true;
 	for (const partName in parts) {
-    if (Object.prototype.hasOwnProperty.call(parts, partName)) {
-      if (first) {
-        first = false;
-      } else {
-        writer.writeStringValue(undefined, "");
-      }
-      writer.writeStringValue(undefined, "--" + boundary);
-      const part = parts[partName];
-      writer.writeStringValue("Content-Type", part.contentType);
-      writer.writeStringValue("Content-Disposition", 'form-data; name="' + part.originalName + '"');
-      writer.writeStringValue(undefined, "");
-      if (typeof part.content === "string") {
-        writer.writeStringValue(undefined, part.content);
-      } else if (part.content instanceof ArrayBuffer) {
-        writer.writeByteArrayValue(undefined, new Uint8Array(part.content));
-      } else if (part.content instanceof Uint8Array) {
-        writer.writeByteArrayValue(undefined, part.content);
-      } else if (part.serializationCallback) {
-        if (!multipartBody.requestAdapter) {
-          throw new Error("requestAdapter cannot be undefined");
-        }
-        const serializationWriterFactory = multipartBody.requestAdapter.getSerializationWriterFactory();
-        if (!serializationWriterFactory) {
-          throw new Error("serializationWriterFactory cannot be undefined");
-        }
-        const partSerializationWriter = serializationWriterFactory.getSerializationWriter(part.contentType);
-        if (!partSerializationWriter) {
-          throw new Error("no serialization writer factory for content type: " + part.contentType);
-        }
-        partSerializationWriter.writeObjectValue(undefined, part.content as Parsable, part.serializationCallback);
-        const partContent = partSerializationWriter.getSerializedContent();
-        writer.writeByteArrayValue(undefined, new Uint8Array(partContent));
-      } else {
-        throw new Error("unsupported content type for multipart body: " + typeof part.content);
-      }
-    }
+		if (Object.prototype.hasOwnProperty.call(parts, partName)) {
+			if (first) {
+				first = false;
+			} else {
+				writer.writeStringValue(undefined, "");
+			}
+			writer.writeStringValue(undefined, "--" + boundary);
+			const part = parts[partName];
+			writer.writeStringValue("Content-Type", part.contentType);
+			writer.writeStringValue("Content-Disposition", 'form-data; name="' + part.originalName + '"');
+			writer.writeStringValue(undefined, "");
+			if (typeof part.content === "string") {
+				writer.writeStringValue(undefined, part.content);
+			} else if (part.content instanceof ArrayBuffer) {
+				writer.writeByteArrayValue(undefined, new Uint8Array(part.content));
+			} else if (part.content instanceof Uint8Array) {
+				writer.writeByteArrayValue(undefined, part.content);
+			} else if (part.serializationCallback) {
+				if (!multipartBody.requestAdapter) {
+					throw new Error("requestAdapter cannot be undefined");
+				}
+				const serializationWriterFactory = multipartBody.requestAdapter.getSerializationWriterFactory();
+				if (!serializationWriterFactory) {
+					throw new Error("serializationWriterFactory cannot be undefined");
+				}
+				const partSerializationWriter = serializationWriterFactory.getSerializationWriter(part.contentType);
+				if (!partSerializationWriter) {
+					throw new Error("no serialization writer factory for content type: " + part.contentType);
+				}
+				partSerializationWriter.writeObjectValue(undefined, part.content as Parsable, part.serializationCallback);
+				const partContent = partSerializationWriter.getSerializedContent();
+				writer.writeByteArrayValue(undefined, new Uint8Array(partContent));
+			} else {
+				throw new Error("unsupported content type for multipart body: " + typeof part.content);
+			}
+		}
 	}
 	writer.writeStringValue(undefined, "");
 	writer.writeStringValue(undefined, "--" + boundary + "--");
-}
+};
 
 export const deserializeIntoMultipartBody = (
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_: Partial<MultipartBody> | undefined = new MultipartBody(),
 ): Record<string, (node: ParseNode) => void> => {
 	throw new Error("Not implemented");
-}
+};
 export const createMessageFromDiscriminatorValue = (parseNode: ParseNode | undefined) => {
 	if (!parseNode) throw new Error("parseNode cannot be undefined");
 	return deserializeIntoMultipartBody;
-}
+};

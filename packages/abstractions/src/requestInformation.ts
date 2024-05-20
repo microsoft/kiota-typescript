@@ -115,10 +115,18 @@ export class RequestInformation implements RequestInformationSetContent {
 			delete this._requestOptions[option.getKey()];
 		});
 	}
-	private static get binaryContentType() { return "application/octet-stream"; }
-	private static get contentTypeHeader() { return "Content-Type"; }
-	private static get tracerKey() { return "@microsoft/kiota-abstractions"; }
-	private static get requestTypeKey() { return "com.microsoft.kiota.request.type"; }
+	private static get binaryContentType() {
+		return "application/octet-stream";
+	}
+	private static get contentTypeHeader() {
+		return "Content-Type";
+	}
+	private static get tracerKey() {
+		return "@microsoft/kiota-abstractions";
+	}
+	private static get requestTypeKey() {
+		return "com.microsoft.kiota.request.type";
+	}
 	/**
 	 * Sets the request body from a model with the specified content type.
 	 * @param value the models.
@@ -245,8 +253,8 @@ export class RequestInformation implements RequestInformationSetContent {
 					key = keyCandidate;
 				}
 			}
-      if (typeof v === "boolean" || typeof v === "number" || typeof v === "string") this.queryParameters[key] = v;
-      else if (v === undefined) this.queryParameters[key] = undefined;
+			if (typeof v === "boolean" || typeof v === "number" || typeof v === "string") this.queryParameters[key] = v;
+			else if (v === undefined) this.queryParameters[key] = undefined;
 		});
 	}
 	/**

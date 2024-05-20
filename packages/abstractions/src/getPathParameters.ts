@@ -12,10 +12,10 @@ export const getPathParameters = (parameters: Record<string, unknown> | string |
 		result[RequestInformation.raw_url_key] = parameters;
 	} else if (parameters) {
 		for (const key in parameters) {
-      if (Object.prototype.hasOwnProperty.call(parameters, key)) {
-			  result[key] = parameters[key];
-      }
+			if (Object.prototype.hasOwnProperty.call(parameters, key)) {
+				result[key] = parameters[key];
+			}
 		}
 	}
 	return result;
-}
+};

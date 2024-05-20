@@ -15,7 +15,7 @@ const sanitizeMethodName = (methodName: string): string => {
 		return methodName.substring(2).replace("RequestInformation", "").toLowerCase();
 	}
 	return methodName;
-}
+};
 const getRequestMethod = (key: string): KeysOfRequestsMetadata | undefined => {
 	switch (sanitizeMethodName(key)) {
 		case "delete":
@@ -35,7 +35,7 @@ const getRequestMethod = (key: string): KeysOfRequestsMetadata | undefined => {
 		default:
 			return undefined;
 	}
-}
+};
 
 // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 const toRequestInformation = <QueryParametersType extends object>(urlTemplate: string, pathParameters: Record<string, unknown>, metadata: RequestMetadata, requestAdapter: RequestAdapter, httpMethod: HttpMethod, body: unknown | ArrayBuffer | undefined, bodyMediaType: string | undefined, requestConfiguration: RequestConfiguration<QueryParametersType> | undefined): RequestInformation => {
@@ -54,26 +54,26 @@ const toRequestInformation = <QueryParametersType extends object>(urlTemplate: s
 		requestInfo.setStreamContent(body as ArrayBuffer, metadata.requestBodyContentType ? metadata.requestBodyContentType : bodyMediaType);
 	}
 	return requestInfo;
-}
+};
 const addAcceptHeaderIfPresent = (metadata: RequestMetadata, requestInfo: RequestInformation): void => {
 	if (metadata.responseBodyContentType) {
 		requestInfo.headers.tryAdd("Accept", metadata.responseBodyContentType);
 	}
-}
-const getRequestMediaTypeUserDefinedValue = (requestMetadata: RequestMetadata, args: unknown[]) : string | undefined => {
+};
+const getRequestMediaTypeUserDefinedValue = (requestMetadata: RequestMetadata, args: unknown[]): string | undefined => {
 	if (args.length > 2 && !requestMetadata.requestBodySerializer && requestMetadata.requestInformationContentSetMethod === "setStreamContent" && typeof args[1] === "string") {
 		// request body with unknown media type so we have an argument for it.
 		return args[1];
 	}
 	return undefined;
-}
-const getRequestConfigurationValue = (args: unknown[]) : RequestConfiguration<object> | undefined => {
+};
+const getRequestConfigurationValue = (args: unknown[]): RequestConfiguration<object> | undefined => {
 	if (args.length > 0) {
 		// request configuration is always the last argument
 		return args[args.length - 1] as RequestConfiguration<object>;
 	}
 	return undefined;
-}
+};
 const send = (requestAdapter: RequestAdapter, requestInfo: RequestInformation, metadata: RequestMetadata) => {
 	switch (metadata.adapterMethodName) {
 		case "send":
@@ -111,7 +111,7 @@ const send = (requestAdapter: RequestAdapter, requestInfo: RequestInformation, m
 		default:
 			throw new Error("couldn't find adapter method");
 	}
-}
+};
 export const apiClientProxifier = <T extends object>(requestAdapter: RequestAdapter, pathParameters: Record<string, unknown>, navigationMetadata?: Record<string, NavigationMetadata>, requestsMetadata?: RequestsMetadata): T => {
 	if (!requestAdapter) throw new Error("requestAdapter cannot be undefined");
 	if (!pathParameters) throw new Error("pathParameters cannot be undefined");
@@ -204,7 +204,7 @@ export const apiClientProxifier = <T extends object>(requestAdapter: RequestAdap
 			}
 		},
 	});
-}
+};
 
 export interface RequestMetadata {
 	requestBodyContentType?: string;
