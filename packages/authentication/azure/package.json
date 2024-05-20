@@ -13,7 +13,7 @@
 		"test": "npm run test:node && npm run test:browser",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
-		"clean": "rm -rf ./dist"
+		"clean": "rimraf ./dist"
 	},
 	"repository": "git://github.com/microsoft/kiota-typescript.git",
 	"keywords": [

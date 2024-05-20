@@ -24,7 +24,7 @@
 	"scripts": {
 		"build": "npm run build:esm",
 		"build:esm": "tsc",
-		"clean": "rm -rf ./dist",
+		"clean": "rimraf ./dist",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
 		"test:browser": "vitest run --browser.name=chrome --browser.headless",

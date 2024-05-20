@@ -14,7 +14,7 @@
 		"build:esm": "tsc -b",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
-		"clean": "rm -rf ./dist",
+		"clean": "rimraf ./dist",
 		"test:browser": "vitest run --browser.name=chrome --browser.headless",
 		"test:node": "vitest --run",
 		"test": "npm run test:node && npm run test:browser"
