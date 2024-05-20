@@ -81,7 +81,7 @@ export class RequestInformation implements RequestInformationSetContent {
 		this.queryParameters = {};
 		this.pathParameters = {};
 	}
-	public static raw_url_key = "request-raw-url";
+	public static get raw_url_key() { return "request-raw-url"; }
 	/** The HTTP method for the request */
 	public httpMethod?: HttpMethod;
 	/** The Request Body. */
@@ -201,19 +201,19 @@ export class RequestInformation implements RequestInformationSetContent {
 					if (!value) {
 						writer.writeNullValue(undefined);
 					} else if (valueType === "boolean") {
-						writer.writeBooleanValue(undefined, value as any as boolean);
+						writer.writeBooleanValue(undefined, value as boolean);
 					} else if (valueType === "string") {
-						writer.writeStringValue(undefined, value as any as string);
+						writer.writeStringValue(undefined, value as string);
 					} else if (value instanceof Date) {
-						writer.writeDateValue(undefined, value as any as Date);
+						writer.writeDateValue(undefined, value as unknown as Date);
 					} else if (value instanceof DateOnly) {
-						writer.writeDateOnlyValue(undefined, value as any as DateOnly);
+						writer.writeDateOnlyValue(undefined, value as unknown as DateOnly);
 					} else if (value instanceof TimeOnly) {
-						writer.writeTimeOnlyValue(undefined, value as any as TimeOnly);
+						writer.writeTimeOnlyValue(undefined, value as unknown as TimeOnly);
 					} else if (value instanceof Duration) {
-						writer.writeDurationValue(undefined, value as any as Duration);
+						writer.writeDurationValue(undefined, value as unknown as Duration);
 					} else if (valueType === "number") {
-						writer.writeNumberValue(undefined, value as any as number);
+						writer.writeNumberValue(undefined, value as number);
 					} else if (Array.isArray(value)) {
 						writer.writeCollectionOfPrimitiveValues(undefined, value);
 					} else {
