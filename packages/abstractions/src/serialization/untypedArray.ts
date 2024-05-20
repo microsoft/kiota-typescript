@@ -22,7 +22,7 @@ export interface UntypedArray extends UntypedNode {
 export const isUntypedArray = (node: UntypedNode): node is UntypedArray => {
 	const proposedNode = node as UntypedArray;
 	return proposedNode && proposedNode.value instanceof Array && proposedNode.value.every((item) => isUntypedNode(item));
-}
+};
 
 /**
  * Factory to create an UntypedArray from an array of UntypedNodes.
@@ -34,4 +34,4 @@ export const createUntypedArray = (value: UntypedNode[]): UntypedArray => {
 		value,
 		getValue: () => value,
 	};
-}
+};

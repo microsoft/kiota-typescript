@@ -81,7 +81,9 @@ export class RequestInformation implements RequestInformationSetContent {
 		this.queryParameters = {};
 		this.pathParameters = {};
 	}
-	public static get raw_url_key() { return "request-raw-url"; }
+	public static get raw_url_key() {
+		return "request-raw-url";
+	}
 	/** The HTTP method for the request */
 	public httpMethod?: HttpMethod;
 	/** The Request Body. */
