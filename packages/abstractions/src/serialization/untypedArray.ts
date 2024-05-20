@@ -19,7 +19,7 @@ export interface UntypedArray extends UntypedNode {
  * @param node The UntypedNode to check.
  * @return boolean indicating if the node is an UntypedArray.
  */
-export function isUntypedArray(node: UntypedNode): node is UntypedArray {
+export const isUntypedArray = (node: UntypedNode): node is UntypedArray => {
 	const proposedNode = node as UntypedArray;
 	return proposedNode && proposedNode.value instanceof Array && proposedNode.value.every((item) => isUntypedNode(item));
 }
@@ -29,7 +29,7 @@ export function isUntypedArray(node: UntypedNode): node is UntypedArray {
  * @param value The value to create from.
  * @return The created UntypedArray.
  */
-export function createUntypedArray(value: UntypedNode[]): UntypedArray {
+export const createUntypedArray = (value: UntypedNode[]): UntypedArray => {
 	return {
 		value,
 		getValue: () => value,
