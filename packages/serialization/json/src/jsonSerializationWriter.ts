@@ -65,19 +65,19 @@ export class JsonSerializationWriter implements SerializationWriter {
 	public writeCollectionOfPrimitiveValues = <T>(key?: string, values?: T[]): void => {
 		if (values) {
 			key && this.writePropertyName(key);
-			this.writer.push(`[`);
+			this.startArray();
 			values.forEach((v, idx) => {
 				this.writeAnyValue(undefined, v);
 				idx + 1 < values.length && this.writer.push(JsonSerializationWriter.propertySeparator);
 			});
-			this.writer.push(`]`);
+			this.endArray();
 			key && this.writer.push(JsonSerializationWriter.propertySeparator);
 		}
 	};
 	public writeCollectionOfObjectValues = <T extends Parsable>(key: string, values: T[], serializerMethod: ModelSerializerFunction<T>): void => {
 		if (values) {
 			key && this.writePropertyName(key);
-			this.writer.push(`[`);
+			this.startArray();
 			values.forEach((v) => {
 				this.writeObjectValue(undefined, v, serializerMethod);
 				this.writer.push(JsonSerializationWriter.propertySeparator);
@@ -86,12 +86,19 @@ export class JsonSerializationWriter implements SerializationWriter {
 				//removing the last separator
 				this.writer.pop();
 			}
-			this.writer.push(`]`);
+			this.endArray();
 			key && this.writer.push(JsonSerializationWriter.propertySeparator);
 		}
 	};
 
 	public writeObjectValue<T extends Parsable>(key: string | undefined, value: T, serializerMethod: ModelSerializerFunction<T>): void {
+		if (value === null) {
+			this.writeNullValue(key);
+			return;
+		}
+		if (value === undefined) {
+			return;
+		}
 		if (isUntypedNode(value)) {
 			const untypedNode = value as UntypedNode;
 			if (isUntypedBoolean(untypedNode)) {
@@ -103,35 +110,32 @@ export class JsonSerializationWriter implements SerializationWriter {
 			} else if (isUntypedNumber(untypedNode)) {
 				this.writeNumberValue(key, untypedNode.getValue());
 			} else if (isUntypedObject(untypedNode)) {
-				const value = untypedNode.getValue();
-				if (key && value) {
-					this.writePropertyName(key);
+				const objectValue = untypedNode.getValue();
+				if (objectValue === undefined) return;
+				if (key) this.writePropertyName(key);
+				this.startObject();
+				for (const vKey in objectValue) {
+					if (Object.prototype.hasOwnProperty.call(objectValue, vKey)) {
+						this.writeObjectValue(vKey, objectValue[vKey] as unknown as T, serializerMethod);
+					}
 				}
-				value && this.writer.push(`{`);
-				for (const key in value) {
-					this.writeObjectValue(key, value[key] as unknown as T, serializerMethod);
-				}
-				if (this.writer.length > 0 && this.writer[this.writer.length - 1] === JsonSerializationWriter.propertySeparator) {
-					//removing the last separator
-					this.writer.pop();
-				}
-				value && this.writer.push(`}`);
-				key && this.writer.push(JsonSerializationWriter.propertySeparator);
+				this.removeLastSeparator();
+
+				this.endObject();
+				if (key) this.writer.push(JsonSerializationWriter.propertySeparator);
 			} else if (isUntypedArray(untypedNode)) {
 				if (key) {
 					this.writePropertyName(key);
 				}
-				const value = untypedNode.getValue();
-				this.writer.push(`[`);
-				value.forEach((v, idx) => {
+				const arrValue = untypedNode.getValue();
+				this.startArray();
+				arrValue.forEach((v, idx) => {
 					this.writeObjectValue(undefined, v as unknown as T, serializerMethod);
-					idx + 1 < value.length && this.writer.push(JsonSerializationWriter.propertySeparator);
+					idx + 1 < arrValue.length && this.writer.push(JsonSerializationWriter.propertySeparator);
 				});
-				if (this.writer.length > 0 && this.writer[this.writer.length - 1] === JsonSerializationWriter.propertySeparator) {
-					//removing the last separator
-					this.writer.pop();
-				}
-				this.writer.push(`]`);
+				this.removeLastSeparator();
+
+				this.endArray();
 				key && this.writer.push(JsonSerializationWriter.propertySeparator);
 			} else {
 				this.writeAnyValue(key, untypedNode.getValue());
@@ -139,24 +143,39 @@ export class JsonSerializationWriter implements SerializationWriter {
 			return; // nothing to do here, the value has been written
 		}
 
-		if (key && value) {
-			this.writePropertyName(key);
-		}
+		if (key) this.writePropertyName(key);
+
 		this.onBeforeObjectSerialization && this.onBeforeObjectSerialization(value as unknown as Parsable);
-		value && this.writer.push(`{`);
+		this.startObject();
 
 		this.onStartObjectSerialization && this.onStartObjectSerialization(value as unknown as Parsable, this);
-		value && serializerMethod && serializerMethod(this, value);
+		serializerMethod && serializerMethod(this, value);
 		this.onAfterObjectSerialization && this.onAfterObjectSerialization(value as unknown as Parsable);
 
+		this.removeLastSeparator();
+		this.endObject();
+
+		if (key) this.writer.push(JsonSerializationWriter.propertySeparator);
+	}
+
+	private readonly startObject = () => {
+		this.writer.push(`{`);
+	};
+	private readonly endObject = () => {
+		this.writer.push(`}`);
+	};
+	private readonly startArray = () => {
+		this.writer.push(`[`);
+	};
+	private readonly endArray = () => {
+		this.writer.push(`]`);
+	};
+
+	private readonly removeLastSeparator = () => {
 		if (this.writer.length > 0 && this.writer[this.writer.length - 1] === JsonSerializationWriter.propertySeparator) {
-			//removing the last separator
 			this.writer.pop();
 		}
-		value && this.writer.push(`}`);
-
-		key && this.writer.push(JsonSerializationWriter.propertySeparator);
-	}
+	};
 
 	public writeEnumValue = <T>(key?: string | undefined, ...values: (T | undefined)[]): void => {
 		if (values.length > 0) {
@@ -173,7 +192,7 @@ export class JsonSerializationWriter implements SerializationWriter {
 		return this.convertStringToArrayBuffer(this.writer.join(``));
 	};
 
-	private convertStringToArrayBuffer = (str: string): ArrayBuffer => {
+	private readonly convertStringToArrayBuffer = (str: string): ArrayBuffer => {
 		const encoder = new TextEncoder();
 		const encodedString = encoder.encode(str);
 		return encodedString.buffer;
@@ -183,17 +202,19 @@ export class JsonSerializationWriter implements SerializationWriter {
 		// !value will fail to serialize false and null values which can be valid input
 		if (additionalData === undefined) return;
 		for (const key in additionalData) {
-			this.writeAnyValue(key, additionalData[key]);
+			if (Object.prototype.hasOwnProperty.call(additionalData, key)) {
+				this.writeAnyValue(key, additionalData[key]);
+			}
 		}
 	};
 
-	private writeNonParsableObjectValue = (key?: string | undefined, value?: object | undefined) => {
+	private readonly writeNonParsableObjectValue = (key?: string | undefined, value?: object | undefined) => {
 		if (key) {
 			this.writePropertyName(key);
 		}
 		this.writer.push(JSON.stringify(value), JsonSerializationWriter.propertySeparator);
 	};
-	private writeAnyValue = (key?: string | undefined, value?: unknown | undefined): void => {
+	private readonly writeAnyValue = (key?: string | undefined, value?: unknown | undefined): void => {
 		if (value !== undefined && value !== null) {
 			const valueType = typeof value;
 			if (valueType === "boolean") {

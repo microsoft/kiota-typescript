@@ -1,6 +1,6 @@
 {
 	"name": "@microsoft/kiota-serialization-text",
-	"version": "1.0.0-preview.49",
+	"version": "1.0.0-preview.50",
 	"description": "Implementation of Kiota Serialization interfaces for text",
 	"main": "dist/es/src/index.js",
 	"browser": {
