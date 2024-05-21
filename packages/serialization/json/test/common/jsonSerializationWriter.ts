@@ -228,6 +228,6 @@ describe("JsonParseNode", () => {
 		const serializedContent = writer.getSerializedContent();
 		const decoder = new TextDecoder();
 		const contentAsStr = decoder.decode(serializedContent);
-		assert.equal('{"id":"1","title":"title","location":{"address":{"city":"Redmond","postalCode":"98052","state":"Washington","street":"NE 36th St"},"coordinates":{"latitude":47.678581,"longitude":-122.131577},"displayName":"Microsoft Building 25","floorCount":50,"hasReception":true,"contact":null},"keywords":[{"created":"2023-07-26T10:41:26Z","label":"Keyword1","termGuid":"10e9cc83-b5a4-4c8d-8dab-4ada1252dd70","wssId":6442450941},{"created":"2023-07-26T10:51:26Z","label":"Keyword2","termGuid":"2cae6c6a-9bb8-4a78-afff-81b88e735fef","wssId":6442450942}],"extra":{"value":{"createdDateTime":{"value":"2024-01-15T00:00:00+00:00"}}}}', contentAsStr);
+		assert.equal(contentAsStr, '{"id":"1","title":"title","location":{"address":{"city":"Redmond","postalCode":"98052","state":"Washington","street":"NE 36th St"},"coordinates":{"latitude":47.678581,"longitude":-122.131577},"displayName":"Microsoft Building 25","floorCount":50,"hasReception":true,"contact":null},"keywords":[{"created":"2023-07-26T10:41:26Z","label":"Keyword1","termGuid":"10e9cc83-b5a4-4c8d-8dab-4ada1252dd70","wssId":6442450941},{"created":"2023-07-26T10:51:26Z","label":"Keyword2","termGuid":"2cae6c6a-9bb8-4a78-afff-81b88e735fef","wssId":6442450942}],"extra":{"value":{"createdDateTime":{"value":"2024-01-15T00:00:00+00:00"}}}}');
 	});
 });

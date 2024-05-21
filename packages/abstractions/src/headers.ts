@@ -94,7 +94,9 @@ export class Headers extends Map<string, Set<string>> {
 	 */
 	public clear(): void {
 		for (const header in this.headers) {
-			delete this.headers[header];
+			if (Object.prototype.hasOwnProperty.call(this.headers, header)) {
+				delete this.headers[header];
+			}
 		}
 	}
 
@@ -105,7 +107,9 @@ export class Headers extends Map<string, Set<string>> {
 	 */
 	public forEach(callbackfn: (value: Set<string>, key: string, map: Map<string, Set<string>>) => void, thisArg?: any): void {
 		for (const header in this.headers) {
-			callbackfn.call(thisArg, this.headers[header], header, this);
+			if (Object.prototype.hasOwnProperty.call(this.headers, header)) {
+				callbackfn.call(thisArg, this.headers[header], header, this);
+			}
 		}
 	}
 
@@ -192,7 +196,9 @@ export class Headers extends Map<string, Set<string>> {
 			throw new Error("headers cannot be null");
 		}
 		for (const header in headers.headers) {
-			headers.headers[header].forEach((value) => this.add(header, value));
+			if (Object.prototype.hasOwnProperty.call(headers.headers, header)) {
+				headers.headers[header].forEach((value) => this.add(header, value));
+			}
 		}
 	}
 
@@ -207,11 +213,13 @@ export class Headers extends Map<string, Set<string>> {
 			throw new Error("headers cannot be null");
 		}
 		for (const header in headers) {
-			const headerValues = headers[header];
-			if (Array.isArray(headerValues)) {
-				this.add(header, ...headerValues);
-			} else {
-				this.add(header, headerValues);
+			if (Object.prototype.hasOwnProperty.call(headers, header)) {
+				const headerValues = headers[header];
+				if (Array.isArray(headerValues)) {
+					this.add(header, ...headerValues);
+				} else {
+					this.add(header, headerValues);
+				}
 			}
 		}
 	}
@@ -234,6 +242,7 @@ export class Headers extends Map<string, Set<string>> {
 	 * @returns a string representation of the headers collection
 	 */
 	public toString(): string {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return JSON.stringify(this.headers, (_key, value) => (value instanceof Set ? [...value] : value));
 	}
 

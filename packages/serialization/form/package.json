@@ -1,6 +1,6 @@
 {
 	"name": "@microsoft/kiota-serialization-form",
-	"version": "1.0.0-preview.41",
+	"version": "1.0.0-preview.42",
 	"description": "Implementation of Kiota Serialization interfaces for URI from encoded",
 	"main": "dist/es/src/index.js",
 	"browser": {
@@ -14,7 +14,7 @@
 		"build:esm": "tsc -b",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
-		"clean": "rm -rf ./dist",
+		"clean": "rimraf ./dist",
 		"test:browser": "vitest run --browser.name=chrome --browser.headless",
 		"test:node": "vitest --run",
 		"test": "npm run test:node && npm run test:browser"

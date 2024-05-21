@@ -15,34 +15,34 @@ export interface UntypedNode extends Parsable {
 	/**
 	 * Gets the value of the UntypedNode.
 	 */
-	getValue(): any;
+	getValue(): unknown;
 	/**
 	 * The value represented by the UntypedNode.
 	 */
-	value?: any;
+	value?: unknown;
 }
 
 /**
  * Factory to create an UntypedNode from a string during deserialization.
  */
-export function createUntypedNodeFromDiscriminatorValue(_parseNode: ParseNode | undefined): (_instance?: Parsable) => Record<string, (_node: ParseNode) => void> {
+export const createUntypedNodeFromDiscriminatorValue = (_parseNode: ParseNode | undefined): ((_instance?: Parsable) => Record<string, (_node: ParseNode) => void>) => {
 	return deserializeIntoUntypedNode;
-}
+};
 
 /**
  * Type guard to assert that an object instance is an UntypedNode.
  * @param node The object to check.
  * @return boolean indicating if the node is an UntypedNode.
  */
-export function isUntypedNode(node: any): node is UntypedNode {
+export const isUntypedNode = (node: unknown): node is UntypedNode => {
 	const potentialNode = node as UntypedNode;
 	return potentialNode?.getValue !== undefined;
-}
+};
 
 /**
  * The deserialization implementation for UntypedNode.
  */
-export function deserializeIntoUntypedNode(untypedNode: Partial<UntypedNode> | undefined = {}): Record<string, (node: ParseNode) => void> {
+export const deserializeIntoUntypedNode = (untypedNode: Partial<UntypedNode> | undefined = {}): Record<string, (node: ParseNode) => void> => {
 	return {
 		value: (_n) => {
 			untypedNode.value = null;
@@ -51,11 +51,11 @@ export function deserializeIntoUntypedNode(untypedNode: Partial<UntypedNode> | u
 			untypedNode.getValue = () => untypedNode.value;
 		},
 	};
-}
+};
 
 /**
  * The serialization implementation for UntypedNode.
  */
-export function serializeUntypedNode(_writer: SerializationWriter, _errorDetails: Partial<UntypedNode> | undefined = {}): void {
+export const serializeUntypedNode = (_writer: SerializationWriter, _errorDetails: Partial<UntypedNode> | undefined = {}): void => {
 	return;
-}
+};

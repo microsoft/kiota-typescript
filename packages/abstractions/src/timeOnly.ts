@@ -71,10 +71,10 @@ export class TimeOnly implements TimeOnlyInterface {
 		if (isNaN(ticks)) {
 			const exec = /^(?<hours>[01]\d|2[0-3]):(?<minutes>[0-5]\d):(?<seconds>[0-5]\d)(?:[.](?<milliseconds>\d{1,12}))?$/gi.exec(value);
 			if (exec) {
-				const hours = parseInt(exec.groups?.hours ?? "");
-				const minutes = parseInt(exec.groups?.minutes ?? "");
-				const seconds = parseInt(exec.groups?.seconds ?? "");
-				const milliseconds = parseInt(exec.groups?.milliseconds ?? "0");
+				const hours = parseInt(exec.groups?.hours ?? "", 10);
+				const minutes = parseInt(exec.groups?.minutes ?? "", 10);
+				const seconds = parseInt(exec.groups?.seconds ?? "", 10);
+				const milliseconds = parseInt(exec.groups?.milliseconds ?? "0", 10);
 				return new TimeOnly({
 					hours,
 					minutes,

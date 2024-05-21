@@ -60,7 +60,7 @@ export class RequestInformation implements RequestInformationSetContent {
 		} else if (!this.urlTemplate) {
 			throw new Error("urlTemplate cannot be undefined");
 		} else {
-			const data = {} as { [key: string]: unknown };
+			const data = {} as Record<string, unknown>;
 			for (const key in this.queryParameters) {
 				if (this.queryParameters[key] !== null && this.queryParameters[key] !== undefined) {
 					data[key] = this.queryParameters[key];
@@ -81,13 +81,13 @@ export class RequestInformation implements RequestInformationSetContent {
 		this.queryParameters = {};
 		this.pathParameters = {};
 	}
-	public static raw_url_key = "request-raw-url";
+	public static readonly raw_url_key = "request-raw-url";
 	/** The HTTP method for the request */
 	public httpMethod?: HttpMethod;
 	/** The Request Body. */
 	public content?: ArrayBuffer;
 	/** The Query Parameters of the request. */
-	public queryParameters: Record<string, string | number | boolean | undefined> = createRecordWithCaseInsensitiveKeys<string | number | boolean | undefined>();
+	public queryParameters: Record<string, string | number | boolean | string[] | number[] | undefined> = createRecordWithCaseInsensitiveKeys<string | number | boolean | string[] | number[] | undefined>();
 	/** The Request Headers. */
 	public headers: Headers = new Headers();
 	private _requestOptions: Record<string, RequestOption> = createRecordWithCaseInsensitiveKeys<RequestOption>();
@@ -193,19 +193,19 @@ export class RequestInformation implements RequestInformationSetContent {
 					if (!value) {
 						writer.writeNullValue(undefined);
 					} else if (valueType === "boolean") {
-						writer.writeBooleanValue(undefined, value as any as boolean);
+						writer.writeBooleanValue(undefined, value as boolean);
 					} else if (valueType === "string") {
-						writer.writeStringValue(undefined, value as any as string);
+						writer.writeStringValue(undefined, value as string);
 					} else if (value instanceof Date) {
-						writer.writeDateValue(undefined, value as any as Date);
+						writer.writeDateValue(undefined, value as unknown as Date);
 					} else if (value instanceof DateOnly) {
-						writer.writeDateOnlyValue(undefined, value as any as DateOnly);
+						writer.writeDateOnlyValue(undefined, value as unknown as DateOnly);
 					} else if (value instanceof TimeOnly) {
-						writer.writeTimeOnlyValue(undefined, value as any as TimeOnly);
+						writer.writeTimeOnlyValue(undefined, value as unknown as TimeOnly);
 					} else if (value instanceof Duration) {
-						writer.writeDurationValue(undefined, value as any as Duration);
+						writer.writeDurationValue(undefined, value as unknown as Duration);
 					} else if (valueType === "number") {
-						writer.writeNumberValue(undefined, value as any as number);
+						writer.writeNumberValue(undefined, value as number);
 					} else if (Array.isArray(value)) {
 						writer.writeCollectionOfPrimitiveValues(undefined, value);
 					} else {
@@ -245,7 +245,8 @@ export class RequestInformation implements RequestInformationSetContent {
 					key = keyCandidate;
 				}
 			}
-			this.queryParameters[key] = v;
+			if (typeof v === "boolean" || typeof v === "number" || typeof v === "string" || Array.isArray(v)) this.queryParameters[key] = v;
+			else if (v === undefined) this.queryParameters[key] = undefined;
 		});
 	}
 	/**

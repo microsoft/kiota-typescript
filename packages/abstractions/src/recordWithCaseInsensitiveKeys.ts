@@ -7,7 +7,7 @@
 
 function dictionaryWithCanonicalKeys<V>(canon: (prop: keyof any) => string) {
 	const keysNormalizationMap = new Map<string, string>();
-	return new Proxy<{ [k: string]: V }>(
+	return new Proxy<Record<string, V>>(
 		{},
 		{
 			/**
