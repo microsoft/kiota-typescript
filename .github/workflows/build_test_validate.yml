@@ -27,8 +27,8 @@ jobs:
           working-directory: ./
         - run: npm ci
         - run: npm run build
-        - run: lint:eslint:loud
-        - run: prettier:check
+        - run: npm run lint:eslint:loud
+        - run: npm run prettier:check
         - name: Archive dist folders # archive dist folders to verify if they are transpiled correctly and available for publishing
           uses: actions/upload-artifact@v4
           with:
