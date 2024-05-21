@@ -60,7 +60,7 @@ export class RequestInformation implements RequestInformationSetContent {
 		} else if (!this.urlTemplate) {
 			throw new Error("urlTemplate cannot be undefined");
 		} else {
-			const data = {} as { [key: string]: unknown };
+			const data = {} as Record<string, unknown>;
 			for (const key in this.queryParameters) {
 				if (this.queryParameters[key] !== null && this.queryParameters[key] !== undefined) {
 					data[key] = this.queryParameters[key];
@@ -81,9 +81,7 @@ export class RequestInformation implements RequestInformationSetContent {
 		this.queryParameters = {};
 		this.pathParameters = {};
 	}
-	public static get raw_url_key() {
-		return "request-raw-url";
-	}
+	public static readonly raw_url_key = "request-raw-url";
 	/** The HTTP method for the request */
 	public httpMethod?: HttpMethod;
 	/** The Request Body. */
@@ -117,18 +115,10 @@ export class RequestInformation implements RequestInformationSetContent {
 			delete this._requestOptions[option.getKey()];
 		});
 	}
-	private static get binaryContentType() {
-		return "application/octet-stream";
-	}
-	private static get contentTypeHeader() {
-		return "Content-Type";
-	}
-	private static get tracerKey() {
-		return "@microsoft/kiota-abstractions";
-	}
-	private static get requestTypeKey() {
-		return "com.microsoft.kiota.request.type";
-	}
+	private static readonly binaryContentType = "application/octet-stream";
+	private static readonly contentTypeHeader = "Content-Type";
+	private static readonly tracerKey = "@microsoft/kiota-abstractions";
+	private static readonly requestTypeKey = "com.microsoft.kiota.request.type";
 	/**
 	 * Sets the request body from a model with the specified content type.
 	 * @param value the models.

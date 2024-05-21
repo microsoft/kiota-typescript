@@ -15,7 +15,7 @@ export const createBackedModelProxyHandler = <T extends object>(): ProxyHandler<
 	 * The ProxyHandler for the model.
 	 */
 	const handler: ProxyHandler<T> = {
-		get: (_target, prop, _receiver) => {
+		get: (_target, prop) => {
 			if (prop === "backingStore") {
 				return backingStore;
 			}
