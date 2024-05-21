@@ -1,10 +1,11 @@
+const MicrosoftGraph = require('@microsoft/eslint-config-msgraph');
 module.exports = {
     env: {
       browser: true,
       es6: true,
       node: true
     },
-    extends: ['@microsoft/eslint-config-msgraph'],
+    extends: MicrosoftGraph.extends.filter((ext) => ext !== 'plugin:react/recommended'),
     parser: '@typescript-eslint/parser',
     parserOptions: {
       project: [
@@ -20,7 +21,7 @@ module.exports = {
       ],
       sourceType: 'module'
     },
-    plugins: ['eslint-plugin-jsdoc', 'eslint-plugin-prefer-arrow', 'eslint-plugin-react', '@typescript-eslint', 'header'],
+    plugins: ['eslint-plugin-jsdoc', 'eslint-plugin-prefer-arrow', '@typescript-eslint', 'header'],
     root: true,
     ignorePatterns: ['.eslintrc.js', '*.mjs'],
     rules: {
