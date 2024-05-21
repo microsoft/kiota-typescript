@@ -27,6 +27,8 @@ jobs:
           working-directory: ./
         - run: npm ci
         - run: npm run build
+        - run: lint:eslint:loud
+        - run: prettier:check
         - name: Archive dist folders # archive dist folders to verify if they are transpiled correctly and available for publishing
           uses: actions/upload-artifact@v4
           with:
@@ -47,7 +49,7 @@ jobs:
               CLIENT_SECRET: ${{secrets.client_secret}}
               USER_ID: "813956a3-4a30-4596-914f-bfd86a657a09"
         - run: npm run test
-    
+
     publish-npm:
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'auto dependabot')}}
         needs: build
