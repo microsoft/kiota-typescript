@@ -28,8 +28,8 @@ export class TimeOnly implements TimeOnlyInterface {
 		if (seconds < 0 || seconds > 59) {
 			throw new Error("Second must be between 0 and 59");
 		}
-		if (picoseconds < 0 || picoseconds > 999999999999) {
-			throw new Error("Millisecond must be between 0 and 999999999999");
+		if (picoseconds < 0 || picoseconds > 9999999) {
+			throw new Error("Millisecond must be between 0 and 9999999");
 		}
 		this.hours = hours;
 		this.minutes = minutes;
@@ -54,7 +54,7 @@ export class TimeOnly implements TimeOnlyInterface {
 			hours: date.getHours(),
 			minutes: date.getMinutes(),
 			seconds: date.getSeconds(),
-			picoseconds: date.getMilliseconds() * 1000000000,
+			picoseconds: date.getMilliseconds() * 10000,
 		});
 	}
 	/**
@@ -90,12 +90,12 @@ export class TimeOnly implements TimeOnlyInterface {
 		}
 	}
 	/**
-	 * Returns a string representation of the time in the format HH:MM:SS.SSSSSSSSSSSSSS
-	 * @returns The time in the format HH:MM:SS.SSSSSSSSSSSSSS
+	 * Returns a string representation of the time in the format HH:MM:SS.SSSSSSS
+	 * @returns The time in the format HH:MM:SS.SSSSSSS
 	 * @throws An error if the time is invalid
 	 */
 	public toString(): string {
-		return `${formatSegment(this.hours, 2)}:${formatSegment(this.minutes, 2)}:${formatSegment(this.seconds, 2)}.${formatSegment(this.picoseconds, 12)}`;
+		return `${formatSegment(this.hours, 2)}:${formatSegment(this.minutes, 2)}:${formatSegment(this.seconds, 2)}.${formatSegment(this.picoseconds, 7)}`;
 	}
 }
 interface TimeOnlyInterface {
@@ -124,7 +124,7 @@ interface TimeOnlyInterface {
 	 * The milliseconds
 	 * @default 0
 	 * @minimum 0
-	 * @maximum 999999999999
+	 * @maximum 9999999
 	 */
 	picoseconds: number;
 }
