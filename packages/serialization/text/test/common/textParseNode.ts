@@ -35,4 +35,11 @@ describe("textParseNode", () => {
 		const v5Guid = new TextParseNode(v5);
 		assert.isDefined(v5Guid.getGuidValue());
 	});
+
+  it("should get the node value", async () => {
+    const testNodeValue = "testStringValue";
+		const result = new TextParseNode(testNodeValue);
+		assert.equal(result.getNodeValue(), testNodeValue);
+    assert.equal(typeof result.getNodeValue(), "string");
+	});
 });

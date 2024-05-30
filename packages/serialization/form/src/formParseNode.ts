@@ -51,6 +51,7 @@ export class FormParseNode implements ParseNode {
 		}
 		return undefined;
 	};
+  public getNodeValue = () => this._rawString;
 	public getNumberValue = () => parseFloat(this.getStringValue());
 	public getGuidValue = () => parseGuidString(this.getStringValue());
 	public getDateValue = () => new Date(Date.parse(this.getStringValue()));

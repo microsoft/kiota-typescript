@@ -240,4 +240,30 @@ describe("JsonParseNode", () => {
 			assert.fail("Expected table to be an array");
 		}
 	});
+
+  it("should get the node value", async () => {
+    const testNodeValue = "testStringValue";
+		const result = new JsonParseNode(testNodeValue);
+		assert.equal(result.getNodeValue(), testNodeValue);
+    assert.equal(typeof result.getNodeValue(), "string");
+
+    const testNodeNumberValue = 1234;
+		const numberResult = new JsonParseNode(testNodeNumberValue);
+		assert.equal(numberResult.getNodeValue(), testNodeNumberValue);
+    assert.equal(typeof numberResult.getNodeValue(), "number");
+
+    const testNodeBooleanValue = true;
+		const booleanResult = new JsonParseNode(testNodeBooleanValue);
+		assert.equal(booleanResult.getNodeValue(), testNodeBooleanValue);
+    assert.equal(typeof booleanResult.getNodeValue(), "boolean");
+
+    const testNodeUndefinedValue = undefined;
+		const undefinedResult = new JsonParseNode(testNodeUndefinedValue);
+		assert.equal(undefinedResult.getNodeValue(), testNodeUndefinedValue);
+    assert.equal(typeof undefinedResult.getNodeValue(), "undefined");
+
+    const testNodeObjectValue = {foo: "bar"};
+		const objectResult = new JsonParseNode(testNodeObjectValue);
+		assert.equal(JSON.stringify(objectResult.getNodeValue()), JSON.stringify(testNodeObjectValue));
+	});
 });

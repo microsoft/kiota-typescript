@@ -55,4 +55,14 @@ describe("FormParseNode", () => {
 		const imaginaryNode = parseNode.getChildNode("imaginaryNode");
 		assert.isUndefined(imaginaryNode);
 	});
+  it("should get the node value", async () => {
+    const testNodeValue = "testStringValue";
+		const result = new FormParseNode(testNodeValue);
+		assert.equal(result.getNodeValue(), testNodeValue);
+    assert.equal(typeof result.getNodeValue(), "string");
+
+    const testNodeObjectValue = "{\"foo\": \"bar\"}";
+		const objectResult = new FormParseNode(testNodeObjectValue);
+		assert.equal(JSON.stringify(objectResult.getNodeValue()), JSON.stringify(testNodeObjectValue));
+	});
 });

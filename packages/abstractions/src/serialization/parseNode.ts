@@ -104,4 +104,9 @@ export interface ParseNode {
 	 * @return the byte array value of the node.
 	 */
 	getByteArrayValue(): ArrayBuffer | undefined;
+  /**
+	 * Gets the value for the current node
+	 * @return a parse node value for the current node element.
+	 */
+  getNodeValue(): unknown;
 }
