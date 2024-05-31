@@ -80,7 +80,7 @@ describe("MultipartSerializationWriter", () => {
 		const multipartContent = multipartSerializationWriter.getSerializedContent();
 		const result = new TextDecoder().decode(multipartContent);
 
-		const expectedString = "--" + mpBody.getBoundary() + '\r\nContent-Type: application/octet-stream\r\nContent-Disposition: form-data; name="image"\r\n\r\n' + new TextDecoder().decode(byteForTest) + "\r\n--" + mpBody.getBoundary() + '\r\nContent-Type: application/json\r\nContent-Disposition: form-data; name="testEntity"\r\n\r\n{"id":"48d31887-5fad-4d73-a9f5-3c356e68a038","birthday":"2017-09-04","workDuration":"P1M","startWorkTime":"08:00:00.000000000000","mobilePhone":null,"accountEnabled":false,"jobTitle":"Author","createdDateTime":"1970-01-01T00:00:00.000Z"}\r\n--' + mpBody.getBoundary() + "--\r\n";
+		const expectedString = "--" + mpBody.getBoundary() + '\r\nContent-Type: application/octet-stream\r\nContent-Disposition: form-data; name="image"\r\n\r\n' + new TextDecoder().decode(byteForTest) + "\r\n--" + mpBody.getBoundary() + '\r\nContent-Type: application/json\r\nContent-Disposition: form-data; name="testEntity"\r\n\r\n{"id":"48d31887-5fad-4d73-a9f5-3c356e68a038","birthday":"2017-09-04","workDuration":"P1M","startWorkTime":"08:00:00.0000000","mobilePhone":null,"accountEnabled":false,"jobTitle":"Author","createdDateTime":"1970-01-01T00:00:00.000Z"}\r\n--' + mpBody.getBoundary() + "--\r\n";
 		assert.equal(result, expectedString);
 	});
 

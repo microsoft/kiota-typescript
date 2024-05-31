@@ -42,8 +42,8 @@ describe("FormParseNode", () => {
 		assert.equal(2, testEntity.deviceNames?.length);
 		assert.equal(testEntity.deviceNames?.[0], "device1");
 		assert.equal(testEntity.deviceNames?.[1], "device2");
-		assert.equal(testEntity.startWorkTime?.toString(), "08:00:00.000000000000");
-		assert.equal(testEntity.endWorkTime?.toString(), "17:00:00.000000000000");
+		assert.equal(testEntity.startWorkTime?.toString(), "08:00:00.0000000");
+		assert.equal(testEntity.endWorkTime?.toString(), "17:00:00.0000000");
 		assert.equal(testEntity.birthday?.toString(), "2017-09-04");
 	});
 	it("getCollectionOfObjectValuesFromForm", () => {
