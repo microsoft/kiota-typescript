@@ -40,7 +40,6 @@ export class TextParseNode implements ParseNode {
 		}
 		return undefined;
 	};
-	public getNodeValue = () => this.text;
 	public getNumberValue = () => Number(this.text);
 	public getGuidValue = () => parseGuidString(this.text);
 	public getDateValue = () => new Date(Date.parse(this.text));
