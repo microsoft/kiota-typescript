@@ -1,6 +1,6 @@
 {
 	"name": "@microsoft/kiota-serialization-form",
-	"version": "1.0.0-preview.42",
+	"version": "1.0.0-preview.43",
 	"description": "Implementation of Kiota Serialization interfaces for URI from encoded",
 	"main": "dist/es/src/index.js",
 	"browser": {
@@ -9,7 +9,7 @@
 	},
 	"module": "dist/es/src/index.js",
 	"types": "dist/es/src/index.d.ts",
-  "type": "module",
+	"type": "module",
 	"scripts": {
 		"build": "npm run build:esm",
 		"build:esm": "tsc -b",
