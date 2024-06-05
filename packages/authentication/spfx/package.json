@@ -1,10 +1,11 @@
 {
 	"name": "@microsoft/kiota-authentication-spfx",
-	"version": "1.0.0-preview.43",
+	"version": "1.0.0-preview.44",
 	"description": "Authentication provider for using Kiota in SPFx solutions",
 	"main": "dist/es/src/index.js",
 	"module": "dist/es/src/index.js",
 	"types": "dist/es/src/index.d.ts",
+	"type": "module",
 	"scripts": {
 		"build": "npm run build:esm",
 		"build:esm": "tsc",

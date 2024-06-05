@@ -1,8 +1,9 @@
 {
 	"name": "@microsoft/kiota-serialization-json",
-	"version": "1.0.0-preview.53",
+	"version": "1.0.0-preview.54",
 	"description": "Implementation of Kiota Serialization interfaces for JSON",
 	"main": "dist/es/src/index.js",
+  "type": "module",
 	"browser": {
 		"./dist/es/src/index.js": "./dist/es/src/browser/index.js",
 		"./dist/es/src/jsonParseNodeFactory.js": "./dist/es/src/browser/jsonParseNodeFactory.js"
