@@ -240,4 +240,52 @@ describe("JsonParseNode", () => {
 			assert.fail("Expected table to be an array");
 		}
 	});
+
+	it("should get string value", async () => {
+		const testNodeValue = "testStringValue";
+		const result = new JsonParseNode(testNodeValue);
+		assert.equal(result.getStringValue(), testNodeValue);
+
+		const result2 = new JsonParseNode(true);
+		assert.isUndefined(result2.getStringValue());
+
+		const result3 = new JsonParseNode(false);
+		assert.isUndefined(result3.getStringValue());
+
+		const result4 = new JsonParseNode(1234);
+		assert.isUndefined(result4.getStringValue());
+	});
+
+	it("should get number value", async () => {
+		const testNodeValue = 12345;
+		const result = new JsonParseNode(testNodeValue);
+		assert.equal(result.getNumberValue(), testNodeValue);
+
+		const result2 = new JsonParseNode(true);
+		assert.isUndefined(result2.getNumberValue());
+
+		const result3 = new JsonParseNode(false);
+		assert.isUndefined(result3.getNumberValue());
+
+		const result4 = new JsonParseNode("test value");
+		assert.isUndefined(result4.getNumberValue());
+	});
+
+	it("should get boolean value", async () => {
+		const testNodeValue = true;
+		const result = new JsonParseNode(testNodeValue);
+		assert.equal(result.getBooleanValue(), testNodeValue);
+
+		const result2 = new JsonParseNode(false);
+		assert.equal(result2.getBooleanValue(), false);
+
+		const result3 = new JsonParseNode(123);
+		assert.isUndefined(result3.getBooleanValue());
+
+		const result4 = new JsonParseNode("false");
+		assert.isUndefined(result4.getBooleanValue());
+
+		const result5 = new JsonParseNode("true");
+		assert.isUndefined(result5.getBooleanValue());
+	});
 });
