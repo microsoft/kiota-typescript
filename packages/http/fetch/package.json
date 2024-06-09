@@ -24,7 +24,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "npm run build:esm",
-		"build:esm": "tsc",
+		"build:esm": "tsc && tsc-alias",
 		"clean": "rimraf ./dist",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
