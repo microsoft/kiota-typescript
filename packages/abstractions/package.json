@@ -8,7 +8,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "npm run build:esm",
-		"build:esm": "tsc",
+		"build:esm": "tsc && tsc-alias",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
 		"clean": "rimraf ./dist",

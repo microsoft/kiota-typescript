@@ -12,7 +12,7 @@
 	"types": "dist/es/src/index.d.ts",
 	"scripts": {
 		"build": "npm run clean &&  npm run build:esm",
-		"build:esm": "tsc -b",
+		"build:esm": "tsc -b && tsc-alias",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
 		"clean": "rimraf ./dist",

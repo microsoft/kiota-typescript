@@ -8,7 +8,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "npm run build:esm",
-		"build:esm": "tsc",
+		"build:esm": "tsc && tsc-alias",
 		"test:node": "vitest run",
 		"test:browser": "vitest run --browser.name=chrome --browser.headless",
 		"test": "npm run test:node && npm run test:browser",
