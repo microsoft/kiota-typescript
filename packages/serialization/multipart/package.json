@@ -39,7 +39,8 @@
 		"tslib": "^2.6.2"
 	},
 	"devDependencies": {
-		"@microsoft/kiota-serialization-json": "file:../../abstractions/"
+    "@microsoft/kiota-abstractions": "file:../../abstractions/",
+    "@microsoft/kiota-serialization-json": "file:../json/"
 	},
 	"publishConfig": {
 		"access": "public"
