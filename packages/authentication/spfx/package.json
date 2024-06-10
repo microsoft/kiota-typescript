@@ -41,7 +41,7 @@
 	},
 	"homepage": "https://github.com/microsoft/kiota-typescript#readme",
 	"dependencies": {
-		"@microsoft/kiota-abstractions": "*",
+		"@microsoft/kiota-abstractions": "file:../../abstractions/",
 		"@microsoft/sp-http": "^1.15.2",
 		"@opentelemetry/api": "^1.7.0",
 		"tslib": "^2.6.2"

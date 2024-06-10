@@ -38,7 +38,7 @@
 	},
 	"homepage": "https://github.com/microsoft/kiota-typescript#readme",
 	"dependencies": {
-		"@microsoft/kiota-abstractions": "*",
+		"@microsoft/kiota-abstractions": "file:../../abstractions/",
 		"guid-typescript": "^1.0.9",
 		"tslib": "^2.6.2"
 	},
