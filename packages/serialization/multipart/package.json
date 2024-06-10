@@ -34,13 +34,10 @@
 	},
 	"homepage": "https://github.com/microsoft/kiota-typescript#readme",
 	"dependencies": {
-		"@microsoft/kiota-abstractions": "*",
+		"@microsoft/kiota-abstractions": "file:../../abstractions/",
+    "@microsoft/kiota-serialization-json": "file:../json/",
 		"guid-typescript": "^1.0.9",
 		"tslib": "^2.6.2"
-	},
-	"devDependencies": {
-    "@microsoft/kiota-abstractions": "file:../../abstractions/",
-    "@microsoft/kiota-serialization-json": "file:../json/"
 	},
 	"publishConfig": {
 		"access": "public"
