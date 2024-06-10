@@ -39,7 +39,7 @@
 		"guid-typescript": "^1.0.9",
 		"tinyduration": "^3.3.0",
 		"tslib": "^2.6.2",
-		"uuid": "^9.0.1"
+		"uuid": "^10.0.0"
 	},
 	"publishConfig": {
 		"access": "public"
