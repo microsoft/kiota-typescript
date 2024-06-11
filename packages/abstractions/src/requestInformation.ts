@@ -233,16 +233,16 @@ export class RequestInformation implements RequestInformationSetContent {
 	};
 
 	private normalizeValue(value: unknown): unknown {
-		if ((value instanceof Guid) || (value instanceof DateOnly) || (value instanceof TimeOnly)) {
+		if (value instanceof Guid || value instanceof DateOnly || value instanceof TimeOnly) {
 			return value.toString();
-    }
+		}
 
-    if (value instanceof Date) {
-      return value.toISOString();
-    }
-    if (Array.isArray(value)) {
-      return value.map((val) => this.normalizeValue(val));
-    }
+		if (value instanceof Date) {
+			return value.toISOString();
+		}
+		if (Array.isArray(value)) {
+			return value.map((val) => this.normalizeValue(val));
+		}
 		return value;
 	}
 	/**
@@ -262,7 +262,7 @@ export class RequestInformation implements RequestInformationSetContent {
 			}
 			if (typeof v === "boolean" || typeof v === "number" || typeof v === "string" || Array.isArray(v)) this.queryParameters[key] = v;
 			else if (v instanceof Guid || v instanceof DateOnly || v instanceof TimeOnly) this.queryParameters[key] = v.toString();
-      else if (v instanceof Date) this.queryParameters[key] = v.toISOString();
+			else if (v instanceof Date) this.queryParameters[key] = v.toISOString();
 			else if (v === undefined) this.queryParameters[key] = undefined;
 		});
 	}
