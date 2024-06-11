@@ -32,7 +32,7 @@
 	"homepage": "https://github.com/microsoft/kiota-typescript#readme",
 	"dependencies": {
 		"@azure/core-auth": "^1.5.0",
-		"@microsoft/kiota-abstractions": "file:../../abstractions/",
+		"@microsoft/kiota-abstractions": "*",
 		"@opentelemetry/api": "^1.7.0",
 		"tslib": "^2.6.2"
 	},
