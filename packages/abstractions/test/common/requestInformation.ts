@@ -5,12 +5,20 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { assert, describe, it } from "vitest";
+import {assert, describe, it} from "vitest";
 
-import { HttpMethod, type Parsable, parseGuidString, type RequestAdapter, RequestInformation, type SerializationWriter, type SerializationWriterFactory } from "../../src";
-import { MultipartBody } from "../../src/multipartBody";
-import { TestEnum } from "./store/testEnum";
-import { Guid } from "guid-typescript";
+import {
+  HttpMethod,
+  type Parsable,
+  parseGuidString,
+  type RequestAdapter,
+  RequestInformation,
+  type SerializationWriter,
+  type SerializationWriterFactory
+} from "../../src";
+import {MultipartBody} from "../../src/multipartBody";
+import {TestEnum} from "./store/testEnum";
+import {Guid} from "guid-typescript";
 
 interface GetQueryParameters {
 	select?: string[];
@@ -192,11 +200,12 @@ describe("RequestInformation", () => {
 		assert.equal(methodCalledCount, 1);
 	});
 
-	it("should correctly handle Guid type query parameter", () => {
-		const expected: string = `http://localhost/me?objectId=${parseGuidString("83afbf49-5583-152c-d7fb-176105d518bc")}`;
-		const requestInformation = new RequestInformation();
+	it("should correctly handle Guid type query/path parameter", () => {
+		const expected: string = `http://localhost/users/33933a8d-32bb-c6a8-784a-f60b5a1dd66a?objectId=${parseGuidString("83afbf49-5583-152c-d7fb-176105d518bc")}`;
+		const requestInformation = new RequestInformation(HttpMethod.GET);
 		requestInformation.pathParameters["baseurl"] = baseUrl;
-		requestInformation.urlTemplate = "http://localhost/me{?objectId}";
+    requestInformation.pathParameters['userId']= Guid.parse('33933a8d-32bb-c6a8-784a-f60b5a1dd66a');
+		requestInformation.urlTemplate = "http://localhost/users/{userId}{?objectId}";
 		requestInformation.setQueryStringParametersFromRawObject<GetQueryParameters>({ objectId: parseGuidString("83afbf49-5583-152c-d7fb-176105d518bc") }, getQueryParameterMapper);
 		assert.equal(requestInformation.URL, expected);
 	});
