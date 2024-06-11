@@ -1,6 +1,6 @@
 {
 	"name": "@microsoft/kiota-authentication-azure",
-	"version": "1.0.0-preview.49",
+	"version": "1.0.0-preview.51",
 	"description": "Authentication provider for Kiota using Azure Identity",
 	"main": "dist/es/src/index.js",
 	"module": "dist/es/src/index.js",
@@ -8,7 +8,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "npm run build:esm",
-		"build:esm": "tsc",
+		"build:esm": "tsc && tsc-alias",
 		"test:node": "vitest run",
 		"test:browser": "vitest run --browser.name=chrome --browser.headless",
 		"test": "npm run test:node && npm run test:browser",
