@@ -8,13 +8,14 @@
 import {assert, describe, it} from "vitest";
 
 import {
+  DateOnly,
   HttpMethod,
   type Parsable,
   parseGuidString,
   type RequestAdapter,
   RequestInformation,
   type SerializationWriter,
-  type SerializationWriterFactory
+  type SerializationWriterFactory, TimeOnly
 } from "../../src";
 import {MultipartBody} from "../../src/multipartBody";
 import {TestEnum} from "./store/testEnum";
@@ -29,6 +30,11 @@ interface GetQueryParameters {
 	dataset?: TestEnum;
 	datasets?: TestEnum[];
 	objectId?: Guid;
+  startDate?: DateOnly;
+  startTime?: TimeOnly;
+  endTime?: TimeOnly;
+  endDate?: DateOnly;
+  timeStamp?: Date;
 }
 
 const getQueryParameterMapper: Record<string, string> = {
@@ -201,12 +207,13 @@ describe("RequestInformation", () => {
 	});
 
 	it("should correctly handle Guid type query/path parameter", () => {
-		const expected: string = `http://localhost/users/33933a8d-32bb-c6a8-784a-f60b5a1dd66a?objectId=${parseGuidString("83afbf49-5583-152c-d7fb-176105d518bc")}`;
+		const expected: string = 'http://localhost/users/33933a8d-32bb-c6a8-784a-f60b5a1dd66a/2021-12-12?objectId=83afbf49-5583-152c-d7fb-176105d518bc&startDate=2021-12-12&startTime=23%3A12%3A00.0000000&timeStamp=2024-06-10T21%3A00%3A00.000Z';
 		const requestInformation = new RequestInformation(HttpMethod.GET);
 		requestInformation.pathParameters["baseurl"] = baseUrl;
     requestInformation.pathParameters['userId']= Guid.parse('33933a8d-32bb-c6a8-784a-f60b5a1dd66a');
-		requestInformation.urlTemplate = "http://localhost/users/{userId}{?objectId}";
-		requestInformation.setQueryStringParametersFromRawObject<GetQueryParameters>({ objectId: parseGuidString("83afbf49-5583-152c-d7fb-176105d518bc") }, getQueryParameterMapper);
+    requestInformation.pathParameters['date'] = DateOnly.fromDate(new Date('2021-12-12'));
+		requestInformation.urlTemplate = "http://localhost/users/{userId}/{date}{?objectId,startDate,startTime,endDate,endTime,timeStamp}";
+		requestInformation.setQueryStringParametersFromRawObject<GetQueryParameters>({ objectId: parseGuidString("83afbf49-5583-152c-d7fb-176105d518bc"), startDate: new DateOnly({year: 2021, month: 12, day: 12}), startTime: new TimeOnly({hours: 23, minutes: 12}), timeStamp: new Date('2024-6-11') }, getQueryParameterMapper);
 		assert.equal(requestInformation.URL, expected);
 	});
 
