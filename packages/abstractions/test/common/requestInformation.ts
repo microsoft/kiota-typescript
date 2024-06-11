@@ -7,18 +7,10 @@
 
 import { assert, describe, it } from "vitest";
 
-import {
-  HttpMethod,
-  type Parsable,
-  parseGuidString,
-  type RequestAdapter,
-  RequestInformation,
-  type SerializationWriter,
-  type SerializationWriterFactory
-} from "../../src";
+import { HttpMethod, type Parsable, parseGuidString, type RequestAdapter, RequestInformation, type SerializationWriter, type SerializationWriterFactory } from "../../src";
 import { MultipartBody } from "../../src/multipartBody";
 import { TestEnum } from "./store/testEnum";
-import {Guid} from "guid-typescript";
+import { Guid } from "guid-typescript";
 
 interface GetQueryParameters {
 	select?: string[];
@@ -28,7 +20,7 @@ interface GetQueryParameters {
 	search?: string;
 	dataset?: TestEnum;
 	datasets?: TestEnum[];
-  objectId?: Guid;
+	objectId?: Guid;
 }
 
 const getQueryParameterMapper: Record<string, string> = {
@@ -200,16 +192,16 @@ describe("RequestInformation", () => {
 		assert.equal(methodCalledCount, 1);
 	});
 
-  it('should correctly handle Guid type query parameter', () => {
-    const expected: string = `http://localhost/me?objectId=${parseGuidString('83afbf49-5583-152c-d7fb-176105d518bc')}`;
-    const requestInformation = new RequestInformation();
-    requestInformation.pathParameters["baseurl"] = baseUrl;
-    requestInformation.urlTemplate = "http://localhost/me{?objectId}";
-    requestInformation.setQueryStringParametersFromRawObject<GetQueryParameters>({ objectId: parseGuidString('83afbf49-5583-152c-d7fb-176105d518bc') }, getQueryParameterMapper);
-    assert.equal(requestInformation.URL, expected);
-  });
+	it("should correctly handle Guid type query parameter", () => {
+		const expected: string = `http://localhost/me?objectId=${parseGuidString("83afbf49-5583-152c-d7fb-176105d518bc")}`;
+		const requestInformation = new RequestInformation();
+		requestInformation.pathParameters["baseurl"] = baseUrl;
+		requestInformation.urlTemplate = "http://localhost/me{?objectId}";
+		requestInformation.setQueryStringParametersFromRawObject<GetQueryParameters>({ objectId: parseGuidString("83afbf49-5583-152c-d7fb-176105d518bc") }, getQueryParameterMapper);
+		assert.equal(requestInformation.URL, expected);
+	});
 
-  it("Sets a scalar content", () => {
+	it("Sets a scalar content", () => {
 		const requestInformation = new RequestInformation();
 		let writtenValue = "";
 		const mockRequestAdapter = {

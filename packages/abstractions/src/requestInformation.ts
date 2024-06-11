@@ -247,7 +247,7 @@ export class RequestInformation implements RequestInformationSetContent {
 				}
 			}
 			if (typeof v === "boolean" || typeof v === "number" || typeof v === "string" || Array.isArray(v)) this.queryParameters[key] = v;
-      else if (v instanceof Guid) this.queryParameters[key] = v.toString();
+			else if (v instanceof Guid) this.queryParameters[key] = v.toString();
 			else if (v === undefined) this.queryParameters[key] = undefined;
 		});
 	}
