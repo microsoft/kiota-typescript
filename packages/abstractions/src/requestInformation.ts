@@ -236,7 +236,6 @@ export class RequestInformation implements RequestInformationSetContent {
 		if (value instanceof Guid || value instanceof DateOnly || value instanceof TimeOnly) {
 			return value.toString();
 		}
-
 		if (value instanceof Date) {
 			return value.toISOString();
 		}
