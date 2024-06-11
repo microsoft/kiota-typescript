@@ -204,7 +204,7 @@ describe("RequestInformation", () => {
 		requestInformation.pathParameters["userId"] = Guid.parse("33933a8d-32bb-c6a8-784a-f60b5a1dd66a");
 		requestInformation.pathParameters["date"] = DateOnly.parse("2021-12-12");
 		requestInformation.urlTemplate = "http://localhost/users/{userId}/{date}{?objectId,startDate,startTime,endDate,endTime,timeStamp}";
-		requestInformation.setQueryStringParametersFromRawObject<GetQueryParameters>({ objectId: parseGuidString("83afbf49-5583-152c-d7fb-176105d518bc"), startDate: new DateOnly({ year: 2021, month: 12, day: 12 }), startTime: new TimeOnly({ hours: 23, minutes: 12}), timeStamp: new Date("2024-06-11T00:00:00.000Z") }, getQueryParameterMapper);
+		requestInformation.setQueryStringParametersFromRawObject<GetQueryParameters>({ objectId: parseGuidString("83afbf49-5583-152c-d7fb-176105d518bc"), startDate: new DateOnly({ year: 2021, month: 12, day: 12 }), startTime: new TimeOnly({ hours: 23, minutes: 12 }), timeStamp: new Date("2024-06-11T00:00:00.000Z") }, getQueryParameterMapper);
 		assert.equal(requestInformation.URL, expected);
 	});
 
