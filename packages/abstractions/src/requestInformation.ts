@@ -18,6 +18,7 @@ import type { RequestConfiguration } from "./requestConfiguration";
 import type { RequestOption } from "./requestOption";
 import type { ModelSerializerFunction, Parsable, SerializationWriter } from "./serialization";
 import { TimeOnly } from "./timeOnly";
+import { Guid } from "guid-typescript";
 
 /** This class represents an abstract HTTP request. */
 export class RequestInformation implements RequestInformationSetContent {
@@ -232,7 +233,7 @@ export class RequestInformation implements RequestInformationSetContent {
 	};
 	/**
 	 * Sets the query string parameters from a raw object.
-	 * @param parameters the parameters.
+	 * @param q parameters the parameters.
 	 * @param p the mapping from code symbol to URI template parameter name.
 	 */
 	public setQueryStringParametersFromRawObject<T extends object>(q?: T, p?: Record<string, string>): void {
@@ -246,6 +247,7 @@ export class RequestInformation implements RequestInformationSetContent {
 				}
 			}
 			if (typeof v === "boolean" || typeof v === "number" || typeof v === "string" || Array.isArray(v)) this.queryParameters[key] = v;
+      else if (v instanceof Guid) this.queryParameters[key] = v.toString();
 			else if (v === undefined) this.queryParameters[key] = undefined;
 		});
 	}
