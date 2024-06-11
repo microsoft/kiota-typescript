@@ -19,7 +19,6 @@ import type { RequestOption } from "./requestOption";
 import type { ModelSerializerFunction, Parsable, SerializationWriter } from "./serialization";
 import { TimeOnly } from "./timeOnly";
 import { Guid } from "guid-typescript";
-import {match} from "sinon";
 
 /** This class represents an abstract HTTP request. */
 export class RequestInformation implements RequestInformationSetContent {
@@ -233,12 +232,12 @@ export class RequestInformation implements RequestInformationSetContent {
 		this.content = value;
 	};
 
-  private normalizeValue(value: unknown): unknown {
-    if (value instanceof Guid) {
-      return value.toString();
-    }
-    return value;
-  }
+	private normalizeValue(value: unknown): unknown {
+		if (value instanceof Guid) {
+			return value.toString();
+		}
+		return value;
+	}
 	/**
 	 * Sets the query string parameters from a raw object.
 	 * @param q parameters the parameters.
