@@ -1,13 +1,14 @@
 {
 	"name": "@microsoft/kiota-authentication-spfx",
-	"version": "1.0.0-preview.43",
+	"version": "1.0.0-preview.46",
 	"description": "Authentication provider for using Kiota in SPFx solutions",
 	"main": "dist/es/src/index.js",
 	"module": "dist/es/src/index.js",
 	"types": "dist/es/src/index.d.ts",
+	"type": "module",
 	"scripts": {
 		"build": "npm run build:esm",
-		"build:esm": "tsc",
+		"build:esm": "tsc && tsc-alias",
 		"test:browser": "vitest run --browser.name=chrome --browser.headless",
 		"test:node": "vitest --run",
 		"test": "npm run test:node && npm run test:browser",

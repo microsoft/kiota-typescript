@@ -18,6 +18,7 @@ import type { RequestConfiguration } from "./requestConfiguration";
 import type { RequestOption } from "./requestOption";
 import type { ModelSerializerFunction, Parsable, SerializationWriter } from "./serialization";
 import { TimeOnly } from "./timeOnly";
+import { Guid } from "guid-typescript";
 
 /** This class represents an abstract HTTP request. */
 export class RequestInformation implements RequestInformationSetContent {
@@ -63,12 +64,12 @@ export class RequestInformation implements RequestInformationSetContent {
 			const data = {} as Record<string, unknown>;
 			for (const key in this.queryParameters) {
 				if (this.queryParameters[key] !== null && this.queryParameters[key] !== undefined) {
-					data[key] = this.queryParameters[key];
+					data[key] = this.normalizeValue(this.queryParameters[key]);
 				}
 			}
 			for (const key in this.pathParameters) {
 				if (this.pathParameters[key]) {
-					data[key] = this.pathParameters[key];
+					data[key] = this.normalizeValue(this.pathParameters[key]);
 				}
 			}
 			return StdUriTemplate.expand(this.urlTemplate, data);
@@ -230,9 +231,22 @@ export class RequestInformation implements RequestInformationSetContent {
 		this.headers.tryAdd(RequestInformation.contentTypeHeader, contentType);
 		this.content = value;
 	};
+
+	private normalizeValue(value: unknown): unknown {
+		if (value instanceof Guid || value instanceof DateOnly || value instanceof TimeOnly) {
+			return value.toString();
+		}
+		if (value instanceof Date) {
+			return value.toISOString();
+		}
+		if (Array.isArray(value)) {
+			return value.map((val) => this.normalizeValue(val));
+		}
+		return value;
+	}
 	/**
 	 * Sets the query string parameters from a raw object.
-	 * @param parameters the parameters.
+	 * @param q parameters the parameters.
 	 * @param p the mapping from code symbol to URI template parameter name.
 	 */
 	public setQueryStringParametersFromRawObject<T extends object>(q?: T, p?: Record<string, string>): void {
@@ -246,6 +260,8 @@ export class RequestInformation implements RequestInformationSetContent {
 				}
 			}
 			if (typeof v === "boolean" || typeof v === "number" || typeof v === "string" || Array.isArray(v)) this.queryParameters[key] = v;
+			else if (v instanceof Guid || v instanceof DateOnly || v instanceof TimeOnly) this.queryParameters[key] = v.toString();
+			else if (v instanceof Date) this.queryParameters[key] = v.toISOString();
 			else if (v === undefined) this.queryParameters[key] = undefined;
 		});
 	}

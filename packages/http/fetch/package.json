@@ -1,6 +1,6 @@
 {
 	"name": "@microsoft/kiota-http-fetchlibrary",
-	"version": "1.0.0-preview.52",
+	"version": "1.0.0-preview.55",
 	"description": "Kiota request adapter implementation with fetch",
 	"keywords": [
 		"Kiota",
@@ -21,9 +21,10 @@
 	"main": "dist/es/src/index.js",
 	"module": "dist/es/src/index.js",
 	"types": "dist/es/src/index.d.ts",
+	"type": "module",
 	"scripts": {
 		"build": "npm run build:esm",
-		"build:esm": "tsc",
+		"build:esm": "tsc && tsc-alias",
 		"clean": "rimraf ./dist",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
