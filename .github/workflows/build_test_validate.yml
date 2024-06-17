@@ -47,7 +47,7 @@ jobs:
               TENANT_ID:  ${{secrets.tenant_id}}
               CLIENT_ID: ${{secrets.client_id}}
               CLIENT_SECRET: ${{secrets.client_secret}}
-              USER_ID: "813956a3-4a30-4596-914f-bfd86a657a09"
+              USER_ID: ${{secrets.user_id}}
         - run: npm run test
 
     publish-npm:

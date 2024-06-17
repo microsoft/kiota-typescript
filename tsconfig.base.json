@@ -4,6 +4,7 @@
         "noEmitOnError": true,
         "moduleResolution": "Node",
         "strict": true,
+        "skipLibCheck": true,
         "noImplicitAny": true,
         "noImplicitThis": true,
         "strictFunctionTypes": true,
