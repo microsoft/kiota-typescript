@@ -69,12 +69,13 @@ export class TimeOnly implements TimeOnlyInterface {
 		}
 		const ticks = Date.parse(value);
 		if (isNaN(ticks)) {
-			const exec = /^(?<hours>[01]\d|2[0-3]):(?<minutes>[0-5]\d):(?<seconds>[0-5]\d)(?:[.](?<milliseconds>\d{1,12}))?$/gi.exec(value);
+			// not using name groups as it's an ES2018 feature
+			const exec = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(?:[.](\d{1,12}))?$/gi.exec(value);
 			if (exec) {
-				const hours = parseInt(exec.groups?.hours ?? "", 10);
-				const minutes = parseInt(exec.groups?.minutes ?? "", 10);
-				const seconds = parseInt(exec.groups?.seconds ?? "", 10);
-				const milliseconds = parseInt(exec.groups?.milliseconds ?? "0", 10);
+				const hours = parseInt(exec[1] ?? "", 10);
+				const minutes = parseInt(exec[2] ?? "", 10);
+				const seconds = parseInt(exec[3] ?? "", 10);
+				const milliseconds = parseInt(exec[4] ?? "0", 10);
 				return new TimeOnly({
 					hours,
 					minutes,
