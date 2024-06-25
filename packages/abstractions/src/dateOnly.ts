@@ -51,11 +51,12 @@ export class DateOnly implements DateOnlyInterface {
 		if (!value || value.length === 0) {
 			return undefined;
 		}
-		const exec = /^(?<year>\d{4,})-(?<month>0[1-9]|1[012])-(?<day>0[1-9]|[12]\d|3[01])$/gi.exec(value);
+		// not using name groups as it's an ES2018 feature
+		const exec = /^(\d{4,})-(0[1-9]|1[012])-(0[1-9]|[12]\d|3[01])$/gi.exec(value);
 		if (exec) {
-			const year = parseInt(exec.groups?.year ?? "", 10);
-			const month = parseInt(exec.groups?.month ?? "", 10);
-			const day = parseInt(exec.groups?.day ?? "", 10);
+			const year = parseInt(exec[1], 10);
+			const month = parseInt(exec[2], 10);
+			const day = parseInt(exec[3], 10);
 			return new DateOnly({ year, month, day });
 		}
 		const ticks = Date.parse(value);
