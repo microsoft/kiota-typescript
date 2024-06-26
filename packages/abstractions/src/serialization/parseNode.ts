@@ -20,7 +20,7 @@ export interface ParseNode {
 	 * Gets the string value of the node.
 	 * @return the string value of the node.
 	 */
-	getStringValue(): string | undefined;
+	getStringValue(): string | null | undefined;
 	/**
 	 * Gets a new parse node for the given identifier.
 	 * @param identifier the identifier of the current node property.
@@ -31,12 +31,12 @@ export interface ParseNode {
 	 * Gets the boolean value of the node.
 	 * @return the boolean value of the node.
 	 */
-	getBooleanValue(): boolean | undefined;
+	getBooleanValue(): boolean | null | undefined;
 	/**
 	 * Gets the Number value of the node.
 	 * @return the Number value of the node.
 	 */
-	getNumberValue(): number | undefined;
+	getNumberValue(): number | null | undefined;
 	/**
 	 * Gets the Guid value of the node.
 	 * @return the Guid value of the node.

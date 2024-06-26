@@ -22,29 +22,53 @@ export class JsonSerializationWriter implements SerializationWriter {
 	public onBeforeObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onStartObjectSerialization: ((value: Parsable, writer: SerializationWriter) => void) | undefined;
-	public writeStringValue = (key?: string, value?: string): void => {
-		if (value !== null && value !== undefined) {
-			key && this.writePropertyName(key);
-			this.writer.push(JSON.stringify(value));
-			key && this.writer.push(JsonSerializationWriter.propertySeparator);
+	public writeStringValue = (key?: string, value?: string | null): void => {
+		if (value === undefined) {
+			return;
 		}
+
+		if (value === null) {
+			key && this.writeNullValue(key);
+
+			return;
+		}
+
+		key && this.writePropertyName(key);
+		this.writer.push(JSON.stringify(value));
+		key && this.writer.push(JsonSerializationWriter.propertySeparator);
 	};
 	private writePropertyName = (key: string): void => {
 		this.writer.push(`"${key}":`);
 	};
 	public writeBooleanValue = (key?: string, value?: boolean): void => {
-		if (value !== null && value !== undefined) {
-			key && this.writePropertyName(key);
-			this.writer.push(`${value}`);
-			key && this.writer.push(JsonSerializationWriter.propertySeparator);
+		if (value === undefined) {
+			return;
 		}
+
+		if (value === null) {
+			key && this.writeNullValue(key);
+
+			return;
+		}
+
+		key && this.writePropertyName(key);
+		this.writer.push(`${value}`);
+		key && this.writer.push(JsonSerializationWriter.propertySeparator);
 	};
 	public writeNumberValue = (key?: string, value?: number): void => {
-		if (value !== null && value !== undefined) {
-			key && this.writePropertyName(key);
-			this.writer.push(`${value}`);
-			key && this.writer.push(JsonSerializationWriter.propertySeparator);
+		if (value === undefined) {
+			return;
 		}
+
+		if (value === null) {
+			key && this.writeNullValue(key);
+
+			return;
+		}
+
+		key && this.writePropertyName(key);
+		this.writer.push(`${value}`);
+		key && this.writer.push(JsonSerializationWriter.propertySeparator);
 	};
 	public writeGuidValue = (key?: string, value?: Guid): void => {
 		if (value) {

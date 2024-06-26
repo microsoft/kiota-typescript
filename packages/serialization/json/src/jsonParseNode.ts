@@ -11,10 +11,10 @@ export class JsonParseNode implements ParseNode {
 	constructor(private readonly _jsonNode: unknown) {}
 	public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
 	public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
-	public getStringValue = () => (typeof this._jsonNode === "string" ? (this._jsonNode as string) : undefined);
+	public getStringValue = () => (typeof this._jsonNode === "string" || this._jsonNode == null  ? this._jsonNode : undefined);
 	public getChildNode = (identifier: string): ParseNode | undefined => (this._jsonNode && typeof this._jsonNode === "object" && (this._jsonNode as { [key: string]: any })[identifier] !== undefined ? new JsonParseNode((this._jsonNode as { [key: string]: any })[identifier]) : undefined);
-	public getBooleanValue = () => (typeof this._jsonNode === "boolean" ? (this._jsonNode as boolean) : undefined);
-	public getNumberValue = () => (typeof this._jsonNode === "number" ? (this._jsonNode as number) : undefined);
+	public getBooleanValue = () => (typeof this._jsonNode === "boolean" || this._jsonNode == null  ? this._jsonNode : undefined);
+	public getNumberValue = () => (typeof this._jsonNode === "number" || this._jsonNode == null  ? this._jsonNode : undefined);
 	public getGuidValue = () => parseGuidString(this.getStringValue());
 	public getDateValue = () => (this._jsonNode ? new Date(this._jsonNode as string) : undefined);
 	public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());

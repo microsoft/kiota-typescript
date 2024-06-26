@@ -25,19 +25,19 @@ export interface SerializationWriter {
 	 * @param key the key to write the value with.
 	 * @param value the value to write to the stream.
 	 */
-	writeStringValue(key?: string | undefined, value?: string | undefined): void;
+	writeStringValue(key?: string | undefined, value?: string | null | undefined): void;
 	/**
 	 * Writes the specified boolean value to the stream with an optional given key.
 	 * @param key the key to write the value with.
 	 * @param value the value to write to the stream.
 	 */
-	writeBooleanValue(key?: string | undefined, value?: boolean | undefined): void;
+	writeBooleanValue(key?: string | undefined, value?: boolean | null | undefined): void;
 	/**
 	 * Writes the specified number value to the stream with an optional given key.
 	 * @param key the key to write the value with.
 	 * @param value the value to write to the stream.
 	 */
-	writeNumberValue(key?: string | undefined, value?: number | undefined): void;
+	writeNumberValue(key?: string | undefined, value?: number | null | undefined): void;
 	/**
 	 * Writes the specified Guid value to the stream with an optional given key.
 	 * @param key the key to write the value with.
