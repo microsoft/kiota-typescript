@@ -40,7 +40,7 @@ export class JsonSerializationWriter implements SerializationWriter {
 	private writePropertyName = (key: string): void => {
 		this.writer.push(`"${key}":`);
 	};
-	public writeBooleanValue = (key?: string, value?: boolean): void => {
+	public writeBooleanValue = (key?: string, value?: boolean | null): void => {
 		if (value === undefined) {
 			return;
 		}
@@ -55,7 +55,7 @@ export class JsonSerializationWriter implements SerializationWriter {
 		this.writer.push(`${value}`);
 		key && this.writer.push(JsonSerializationWriter.propertySeparator);
 	};
-	public writeNumberValue = (key?: string, value?: number): void => {
+	public writeNumberValue = (key?: string, value?: number | null): void => {
 		if (value === undefined) {
 			return;
 		}
@@ -70,23 +70,34 @@ export class JsonSerializationWriter implements SerializationWriter {
 		this.writer.push(`${value}`);
 		key && this.writer.push(JsonSerializationWriter.propertySeparator);
 	};
-	public writeGuidValue = (key?: string, value?: Guid): void => {
+	public writeGuidValue = (key?: string, value?: Guid | null): void => {
+		if (value === null) {
+			key && this.writeNullValue(key);
+
+			return;
+		}
+
 		if (value) {
 			key && this.writePropertyName(key);
 			this.writer.push(`"${value}"`);
 			key && this.writer.push(JsonSerializationWriter.propertySeparator);
 		}
 	};
-	public writeDateValue = (key?: string, value?: Date): void => this.writeStringValue(key, value?.toISOString());
-	public writeDateOnlyValue = (key?: string, value?: DateOnly): void => this.writeStringValue(key, value?.toString());
-	public writeTimeOnlyValue = (key?: string, value?: TimeOnly): void => this.writeStringValue(key, value?.toString());
-	public writeDurationValue = (key?: string, value?: Duration): void => this.writeStringValue(key, value?.toString());
+	public writeDateValue = (key?: string, value?: Date | null): void => this.writeStringValue(key, value === null ? null : value?.toISOString());
+	public writeDateOnlyValue = (key?: string, value?: DateOnly | null): void => this.writeStringValue(key, value === null ? null : value?.toString());
+	public writeTimeOnlyValue = (key?: string, value?: TimeOnly | null): void => this.writeStringValue(key, value === null ? null : value?.toString());
+	public writeDurationValue = (key?: string, value?: Duration | null): void => this.writeStringValue(key, value === null ? null : value?.toString());
 	public writeNullValue = (key?: string): void => {
 		key && this.writePropertyName(key);
 		this.writer.push(`null`);
 		key && this.writer.push(JsonSerializationWriter.propertySeparator);
 	};
 	public writeCollectionOfPrimitiveValues = <T>(key?: string, values?: T[]): void => {
+		if (values === null) {
+			key && this.writeNullValue(key);
+			return;
+		}
+
 		if (values) {
 			key && this.writePropertyName(key);
 			this.startArray();
@@ -99,6 +110,11 @@ export class JsonSerializationWriter implements SerializationWriter {
 		}
 	};
 	public writeCollectionOfObjectValues = <T extends Parsable>(key: string, values: T[], serializerMethod: ModelSerializerFunction<T>): void => {
+    if (values === null) {
+			key && this.writeNullValue(key);
+			return;
+		}
+
 		if (values) {
 			key && this.writePropertyName(key);
 			this.startArray();
@@ -238,7 +254,7 @@ export class JsonSerializationWriter implements SerializationWriter {
 		}
 		this.writer.push(JSON.stringify(value), JsonSerializationWriter.propertySeparator);
 	};
-	private readonly writeAnyValue = (key?: string | undefined, value?: unknown | undefined): void => {
+	private readonly writeAnyValue = (key?: string | undefined, value?: unknown | null | undefined): void => {
 		if (value !== undefined && value !== null) {
 			const valueType = typeof value;
 			if (valueType === "boolean") {

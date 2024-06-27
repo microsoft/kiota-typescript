@@ -43,37 +43,37 @@ export interface SerializationWriter {
 	 * @param key the key to write the value with.
 	 * @param value the value to write to the stream.
 	 */
-	writeGuidValue(key?: string | undefined, value?: Guid | undefined): void;
+	writeGuidValue(key?: string | undefined, value?: Guid | null | undefined): void;
 	/**
 	 * Writes the specified Date value to the stream with an optional given key.
 	 * @param key the key to write the value with.
 	 * @param value the value to write to the stream.
 	 */
-	writeDateValue(key?: string | undefined, value?: Date | undefined): void;
+	writeDateValue(key?: string | undefined, value?: Date | null | undefined): void;
 	/**
 	 * Writes the specified Duration value to the stream with an optional given key.
 	 * @param key the key to write the value with.
 	 * @param value the value to write to the stream.
 	 */
-	writeDurationValue(key?: string | undefined, value?: Duration | undefined): void;
+	writeDurationValue(key?: string | undefined, value?: Duration | null | undefined): void;
 	/**
 	 * Writes the specified TimeOnly value to the stream with an optional given key.
 	 * @param key the key to write the value with.
 	 * @param value the value to write to the stream.
 	 */
-	writeTimeOnlyValue(key?: string | undefined, value?: TimeOnly | undefined): void;
+	writeTimeOnlyValue(key?: string | undefined, value?: TimeOnly | null | undefined): void;
 	/**
 	 * Writes the specified DateOnly value to the stream with an optional given key.
 	 * @param key the key to write the value with.
 	 * @param value the value to write to the stream.
 	 */
-	writeDateOnlyValue(key?: string | undefined, value?: DateOnly | undefined): void;
+	writeDateOnlyValue(key?: string | undefined, value?: DateOnly | null | undefined): void;
 	/**
 	 * Writes the specified collection of primitive values to the stream with an optional given key.
 	 * @param key the key to write the value with.
 	 * @param value the value to write to the stream.
 	 */
-	writeCollectionOfPrimitiveValues<T>(key?: string | undefined, values?: T[] | undefined): void;
+	writeCollectionOfPrimitiveValues<T>(key?: string | undefined, values?: T[] | null | undefined): void;
 	/**
 	 * Writes the specified collection of object values to the stream with an optional given key.
 	 * @param key the key to write the value with.
@@ -85,14 +85,14 @@ export interface SerializationWriter {
 	 * @param key the key to write the value with.
 	 * @param value the value to write to the stream.
 	 */
-	writeObjectValue<T extends Parsable>(key?: string | undefined, value?: T | undefined, serializerMethod?: ModelSerializerFunction<T>): void;
+	writeObjectValue<T extends Parsable>(key?: string | undefined, value?: T | null | undefined, serializerMethod?: ModelSerializerFunction<T>): void;
 
 	/**
 	 * Writes the specified enum value to the stream with an optional given key.
 	 * @param key the key to write the value with.
 	 * @param values the value to write to the stream.
 	 */
-	writeEnumValue<T>(key?: string | undefined, ...values: (T | undefined)[]): void;
+	writeEnumValue<T>(key?: string | undefined, ...values: (T | null | undefined)[]): void;
 	/**
 	 * Writes a null value for the specified key.
 	 * @param key the key to write the value with.
