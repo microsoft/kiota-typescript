@@ -9,13 +9,13 @@
   },
   "dependencies": {
     "@azure/identity": "^4.0.1",
-    "@microsoft/kiota-abstractions": "file:../abstractions/",
-    "@microsoft/kiota-authentication-azure": "file:../authentication/azure/",
-    "@microsoft/kiota-http-fetchlibrary": "file:../http/fetch/",
-    "@microsoft/kiota-serialization-form": "file:../serialization/form/",
-    "@microsoft/kiota-serialization-json": "file:../serialization/json/",
-    "@microsoft/kiota-serialization-text": "file:../serialization/text/",
-    "@microsoft/kiota-serialization-multipart": "file:../serialization/multipart/"
+    "@microsoft/kiota-abstractions": "*",
+    "@microsoft/kiota-authentication-azure": "*",
+    "@microsoft/kiota-http-fetchlibrary": "*",
+    "@microsoft/kiota-serialization-form": "*",
+    "@microsoft/kiota-serialization-json": "*",
+    "@microsoft/kiota-serialization-text": "*",
+    "@microsoft/kiota-serialization-multipart": "*"
   },
   "files": [
     "lib/"
