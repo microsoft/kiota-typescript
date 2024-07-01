@@ -1,6 +1,6 @@
 {
 	"name": "@microsoft/kiota-http-fetchlibrary",
-	"version": "1.0.0-preview.55",
+	"version": "1.0.0-preview.56",
 	"description": "Kiota request adapter implementation with fetch",
 	"keywords": [
 		"Kiota",
