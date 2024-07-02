@@ -20,58 +20,58 @@ export interface ParseNode {
 	 * Gets the string value of the node.
 	 * @return the string value of the node.
 	 */
-	getStringValue(): string | undefined;
+	getStringValue(): string | null | undefined;
 	/**
 	 * Gets a new parse node for the given identifier.
 	 * @param identifier the identifier of the current node property.
 	 * @return a new parse node for the given identifier.
 	 */
-	getChildNode(identifier: string): ParseNode | undefined;
+	getChildNode(identifier: string): ParseNode | null | undefined;
 	/**
 	 * Gets the boolean value of the node.
 	 * @return the boolean value of the node.
 	 */
-	getBooleanValue(): boolean | undefined;
+	getBooleanValue(): boolean | null | undefined;
 	/**
 	 * Gets the Number value of the node.
 	 * @return the Number value of the node.
 	 */
-	getNumberValue(): number | undefined;
+	getNumberValue(): number | null | undefined;
 	/**
 	 * Gets the Guid value of the node.
 	 * @return the Guid value of the node.
 	 */
-	getGuidValue(): Guid | undefined;
+	getGuidValue(): Guid | null | undefined;
 	/**
 	 * Gets the Date value of the node.
 	 * @return the Date value of the node.
 	 */
-	getDateValue(): Date | undefined;
+	getDateValue(): Date | null | undefined;
 	/**
 	 * Gets the Duration value of the node.
 	 * @return the Duration value of the node.
 	 */
-	getDurationValue(): Duration | undefined;
+	getDurationValue(): Duration | null | undefined;
 	/**
 	 * Gets the DateOnly value of the node.
 	 * @return the DateOnly value of the node.
 	 */
-	getDateOnlyValue(): DateOnly | undefined;
+	getDateOnlyValue(): DateOnly | null | undefined;
 	/**
 	 * Gets the TimeOnly value of the node.
 	 * @return the TimeOnly value of the node.
 	 */
-	getTimeOnlyValue(): TimeOnly | undefined;
+	getTimeOnlyValue(): TimeOnly | null | undefined;
 	/**
 	 * Gets the collection of primitive values of the node.
 	 * @return the collection of primitive values of the node.
 	 */
-	getCollectionOfPrimitiveValues<T>(): T[] | undefined;
+	getCollectionOfPrimitiveValues<T>(): T[] | null | undefined;
 	/**
 	 * Gets the collection of object values of the node.
 	 * @return the collection of object values of the node.
 	 */
-	getCollectionOfObjectValues<T extends Parsable>(parsableFactory: ParsableFactory<T>): T[] | undefined;
+	getCollectionOfObjectValues<T extends Parsable>(parsableFactory: ParsableFactory<T>): T[] | null | undefined;
 
 	/**
 	 * Gets the model object value of the node.

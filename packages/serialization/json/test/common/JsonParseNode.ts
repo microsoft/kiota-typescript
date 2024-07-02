@@ -41,6 +41,14 @@ describe("JsonParseNode", () => {
 		assert.equal(stringValueResult.testDate?.getTime(), jsDate.getTime());
 	});
 
+	it("Test null dates staying as null", async () => {
+		const stringValueResult = new JsonParseNode({
+			testDate: null,
+		}).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
+
+		assert.isNull(stringValueResult.testDate);
+	});
+
 	it("Test undefined dates staying as undefined", async () => {
 		const stringValueResult = new JsonParseNode({
 			testDate: undefined,
@@ -79,7 +87,20 @@ describe("JsonParseNode", () => {
 				},
 			],
 		}).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
-		assert.equal(result.foos![0].bars, undefined);
+
+		assert.isNull(result.foos![0].bars);
+	});
+
+	it("Test an undefined collection of object values", async () => {
+		const result = new JsonParseNode({
+			foos: [
+				{
+					id: "b089d1f1-e527-4b8a-ba96-094922af6e40",
+					bars: undefined,
+				},
+			],
+		}).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
+		assert.isUndefined(result.foos![0].bars);
 	});
 
 	it("Test collection of object values", async () => {
@@ -98,6 +119,8 @@ describe("JsonParseNode", () => {
 			],
 		}).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
 		assert.equal(result.foos![0].bars![0].propA, "property A test value");
+
+		assert.isNull(result.foos![0].bars![0].propC);
 	});
 
 	it("Test collection of backed object values", async () => {
@@ -254,6 +277,9 @@ describe("JsonParseNode", () => {
 
 		const result4 = new JsonParseNode(1234);
 		assert.isUndefined(result4.getStringValue());
+
+		const result5 = new JsonParseNode(null);
+		assert.isNull(result5.getStringValue());
 	});
 
 	it("should get number value", async () => {
@@ -269,6 +295,9 @@ describe("JsonParseNode", () => {
 
 		const result4 = new JsonParseNode("test value");
 		assert.isUndefined(result4.getNumberValue());
+
+		const result5 = new JsonParseNode(null);
+		assert.isNull(result5.getNumberValue());
 	});
 
 	it("should get boolean value", async () => {
@@ -287,5 +316,8 @@ describe("JsonParseNode", () => {
 
 		const result5 = new JsonParseNode("true");
 		assert.isUndefined(result5.getBooleanValue());
+
+		const result6 = new JsonParseNode(null);
+		assert.isNull(result6.getBooleanValue());
 	});
 });
