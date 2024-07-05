@@ -14,7 +14,7 @@ export class FormSerializationWriter implements SerializationWriter {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		key?: string | undefined,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		value?: ArrayBuffer | undefined,
+		value?: ArrayBuffer | null | undefined,
 	): void {
 		throw new Error("serialization of byt arrays is not supported with URI encoding");
 	}
@@ -24,7 +24,15 @@ export class FormSerializationWriter implements SerializationWriter {
 	public onBeforeObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onStartObjectSerialization: ((value: Parsable, writer: SerializationWriter) => void) | undefined;
-	public writeStringValue = (key?: string, value?: string): void => {
+	public writeStringValue = (key?: string, value?: string | null): void => {
+		if (key && value === null) {
+			this.writePropertyName(key);
+			this.writer.push(`=${encodeURIComponent("null")}`);
+			this.writer.push(FormSerializationWriter.propertySeparator);
+
+			return;
+		}
+
 		if (key && value) {
 			this.writePropertyName(key);
 			this.writer.push(`=${encodeURIComponent(value)}`);
@@ -34,31 +42,31 @@ export class FormSerializationWriter implements SerializationWriter {
 	private writePropertyName = (key: string): void => {
 		this.writer.push(encodeURIComponent(key));
 	};
-	public writeBooleanValue = (key?: string, value?: boolean): void => {
-		value !== null && value !== undefined && this.writeStringValue(key, `${value}`);
+	public writeBooleanValue = (key?: string, value?: boolean | null): void => {
+		value !== undefined && this.writeStringValue(key, `${value}`);
 	};
-	public writeNumberValue = (key?: string, value?: number): void => {
+	public writeNumberValue = (key?: string, value?: number | null): void => {
 		value && this.writeStringValue(key, `${value}`);
 	};
-	public writeGuidValue = (key?: string, value?: Guid): void => {
+	public writeGuidValue = (key?: string, value?: Guid | null): void => {
 		value && this.writeStringValue(key, `${value}`);
 	};
-	public writeDateValue = (key?: string, value?: Date): void => {
+	public writeDateValue = (key?: string, value?: Date | null): void => {
 		value && this.writeStringValue(key, value.toISOString());
 	};
-	public writeDateOnlyValue = (key?: string, value?: DateOnly): void => {
+	public writeDateOnlyValue = (key?: string, value?: DateOnly | null): void => {
 		value && this.writeStringValue(key, value.toString());
 	};
-	public writeTimeOnlyValue = (key?: string, value?: TimeOnly): void => {
+	public writeTimeOnlyValue = (key?: string, value?: TimeOnly | null): void => {
 		value && this.writeStringValue(key, value.toString());
 	};
-	public writeDurationValue = (key?: string, value?: Duration): void => {
+	public writeDurationValue = (key?: string, value?: Duration | null): void => {
 		value && this.writeStringValue(key, value.toString());
 	};
 	public writeNullValue = (key?: string): void => {
 		this.writeStringValue(key, `null`);
 	};
-	public writeCollectionOfPrimitiveValues = <T>(_key?: string, _values?: T[]): void => {
+	public writeCollectionOfPrimitiveValues = <T>(_key?: string, _values?: T[] | null): void => {
 		if (_key && _values) {
 			_values.forEach((val) => {
 				this.writeAnyValue(_key, val);
@@ -69,14 +77,19 @@ export class FormSerializationWriter implements SerializationWriter {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_key?: string,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		_values?: T[],
+		_values?: T[] | null,
 	): void => {
 		throw new Error(`serialization of collections is not supported with URI encoding`);
 	};
-	public writeObjectValue = <T extends Parsable>(key: string | undefined, value: T | undefined, serializerMethod: ModelSerializerFunction<T>): void => {
+	public writeObjectValue = <T extends Parsable>(key: string | undefined, value: T | null | undefined, serializerMethod: ModelSerializerFunction<T>): void => {
 		if (++this.depth > 0) {
 			throw new Error(`serialization of nested objects is not supported with URI encoding`);
 		}
+
+		if (key && value === null) {
+			return this.writeNullValue(key);
+		}
+
 		if (value) {
 			if (key) {
 				this.writePropertyName(key);
@@ -92,7 +105,7 @@ export class FormSerializationWriter implements SerializationWriter {
 			key && this.writer.push(FormSerializationWriter.propertySeparator);
 		}
 	};
-	public writeEnumValue = <T>(key?: string | undefined, ...values: (T | undefined)[]): void => {
+	public writeEnumValue = <T>(key?: string | undefined, ...values: (T | null | undefined)[]): void => {
 		if (values.length > 0) {
 			const rawValues = values.filter((x) => x !== undefined).map((x) => `${x}`);
 			if (rawValues.length > 0) {
@@ -121,8 +134,12 @@ export class FormSerializationWriter implements SerializationWriter {
 		}
 	};
 
-	private writeAnyValue = (key?: string | undefined, value?: unknown | undefined): void => {
-		if (value !== null && value !== undefined) {
+	private writeAnyValue = (key?: string | undefined, value?: unknown | null | undefined): void => {
+		if (value === null) {
+			return this.writeNullValue(key);
+		}
+
+		if (value !== undefined) {
 			const valueType = typeof value;
 			if (valueType === "boolean") {
 				this.writeBooleanValue(key, value as any as boolean);
@@ -141,8 +158,6 @@ export class FormSerializationWriter implements SerializationWriter {
 			} else {
 				throw new Error(`encountered unknown ${value} value type during serialization ${valueType} for key ${key}`);
 			}
-		} else {
-			this.writeNullValue(key);
 		}
 	};
 }

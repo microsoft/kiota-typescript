@@ -92,7 +92,7 @@ export class JsonSerializationWriter implements SerializationWriter {
 		this.writer.push(`null`);
 		key && this.writer.push(JsonSerializationWriter.propertySeparator);
 	};
-	public writeCollectionOfPrimitiveValues = <T>(key?: string, values?: T[]): void => {
+	public writeCollectionOfPrimitiveValues = <T>(key?: string, values?: T[] | null): void => {
 		if (values === null) {
 			key && this.writeNullValue(key);
 			return;
@@ -109,8 +109,8 @@ export class JsonSerializationWriter implements SerializationWriter {
 			key && this.writer.push(JsonSerializationWriter.propertySeparator);
 		}
 	};
-	public writeCollectionOfObjectValues = <T extends Parsable>(key: string, values: T[], serializerMethod: ModelSerializerFunction<T>): void => {
-    if (values === null) {
+	public writeCollectionOfObjectValues = <T extends Parsable>(key: string, values: T[] | null, serializerMethod: ModelSerializerFunction<T>): void => {
+		if (values === null) {
 			key && this.writeNullValue(key);
 			return;
 		}
@@ -131,14 +131,15 @@ export class JsonSerializationWriter implements SerializationWriter {
 		}
 	};
 
-	public writeObjectValue<T extends Parsable>(key: string | undefined, value: T, serializerMethod: ModelSerializerFunction<T>): void {
-		if (value === null) {
-			this.writeNullValue(key);
-			return;
-		}
+	public writeObjectValue<T extends Parsable>(key: string | undefined, value: T | null, serializerMethod: ModelSerializerFunction<T>): void {
 		if (value === undefined) {
 			return;
 		}
+
+		if (value === null) {
+			return this.writeNullValue(key);
+		}
+
 		if (isUntypedNode(value)) {
 			const untypedNode = value as UntypedNode;
 			if (isUntypedBoolean(untypedNode)) {
@@ -217,7 +218,7 @@ export class JsonSerializationWriter implements SerializationWriter {
 		}
 	};
 
-	public writeEnumValue = <T>(key?: string | undefined, ...values: (T | undefined)[]): void => {
+	public writeEnumValue = <T>(key?: string | undefined, ...values: (T | undefined | null)[]): void => {
 		if (values.length > 0) {
 			const rawValues = values.filter((x) => x !== undefined).map((x) => `${x}`);
 			if (rawValues.length > 0) {
@@ -255,31 +256,35 @@ export class JsonSerializationWriter implements SerializationWriter {
 		this.writer.push(JSON.stringify(value), JsonSerializationWriter.propertySeparator);
 	};
 	private readonly writeAnyValue = (key?: string | undefined, value?: unknown | null | undefined): void => {
-		if (value !== undefined && value !== null) {
-			const valueType = typeof value;
-			if (valueType === "boolean") {
-				this.writeBooleanValue(key, value as any as boolean);
-			} else if (valueType === "string") {
-				this.writeStringValue(key, value as any as string);
-			} else if (value instanceof Date) {
-				this.writeDateValue(key, value as any as Date);
-			} else if (value instanceof DateOnly) {
-				this.writeDateOnlyValue(key, value as any as DateOnly);
-			} else if (value instanceof TimeOnly) {
-				this.writeTimeOnlyValue(key, value as any as TimeOnly);
-			} else if (value instanceof Duration) {
-				this.writeDurationValue(key, value as any as Duration);
-			} else if (valueType === "number") {
-				this.writeNumberValue(key, value as any as number);
-			} else if (Array.isArray(value)) {
-				this.writeCollectionOfPrimitiveValues(key, value);
-			} else if (valueType === "object") {
-				this.writeNonParsableObjectValue(key, value as any as object);
-			} else {
-				throw new Error(`encountered unknown value type during serialization ${valueType}`);
-			}
+		if (value === undefined) {
+			return;
+		}
+
+		if (value === null) {
+			return this.writeNullValue(key);
+		}
+
+		const valueType = typeof value;
+		if (valueType === "boolean") {
+			this.writeBooleanValue(key, value as any as boolean);
+		} else if (valueType === "string") {
+			this.writeStringValue(key, value as any as string);
+		} else if (value instanceof Date) {
+			this.writeDateValue(key, value as any as Date);
+		} else if (value instanceof DateOnly) {
+			this.writeDateOnlyValue(key, value as any as DateOnly);
+		} else if (value instanceof TimeOnly) {
+			this.writeTimeOnlyValue(key, value as any as TimeOnly);
+		} else if (value instanceof Duration) {
+			this.writeDurationValue(key, value as any as Duration);
+		} else if (valueType === "number") {
+			this.writeNumberValue(key, value as any as number);
+		} else if (Array.isArray(value)) {
+			this.writeCollectionOfPrimitiveValues(key, value);
+		} else if (valueType === "object") {
+			this.writeNonParsableObjectValue(key, value as any as object);
 		} else {
-			this.writeNullValue(key);
+			throw new Error(`encountered unknown value type during serialization ${valueType}`);
 		}
 	};
 }

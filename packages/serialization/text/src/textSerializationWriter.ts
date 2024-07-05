@@ -10,7 +10,7 @@ import { inNodeEnv, type DateOnly, type Duration, type ModelSerializerFunction, 
 import type { Guid } from "guid-typescript";
 
 export class TextSerializationWriter implements SerializationWriter {
-	public writeByteArrayValue(key?: string | undefined, value?: ArrayBuffer | undefined): void {
+	public writeByteArrayValue(key?: string | undefined, value?: ArrayBuffer | null | undefined): void {
 		if (!value) {
 			throw new Error("value cannot be undefined");
 		}
@@ -19,15 +19,15 @@ export class TextSerializationWriter implements SerializationWriter {
 		this.writeStringValue(key, b64);
 	}
 	private static noStructuredDataMessage = "text does not support structured data";
-	private readonly writer: string[] = [];
+	private readonly writer: (string | null)[] = [];
 	public onBeforeObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onStartObjectSerialization: ((value: Parsable, writer: SerializationWriter) => void) | undefined;
-	public writeStringValue = (key?: string, value?: string): void => {
+	public writeStringValue = (key?: string, value?: string | null): void => {
 		if (key || key !== "") {
 			throw new Error(TextSerializationWriter.noStructuredDataMessage);
 		}
-		if (value) {
+		if (value !== undefined) {
 			if (this.writer.length > 0) {
 				throw new Error("a value was already written for this serialization writer, text content only supports a single value");
 			} else {
@@ -35,37 +35,61 @@ export class TextSerializationWriter implements SerializationWriter {
 			}
 		}
 	};
-	public writeBooleanValue = (key?: string, value?: boolean): void => {
-		if (value !== null && value !== undefined) {
+	public writeBooleanValue = (key?: string, value?: boolean | null): void => {
+		if (value !== undefined) {
 			this.writeStringValue(key, `${value}`);
 		}
 	};
-	public writeNumberValue = (key?: string, value?: number): void => {
+	public writeNumberValue = (key?: string, value?: number | null): void => {
+		if (value === null) {
+			return this.writeNullValue(key);
+		}
+
 		if (value) {
 			this.writeStringValue(key, `${value}`);
 		}
 	};
-	public writeGuidValue = (key?: string, value?: Guid): void => {
+	public writeGuidValue = (key?: string, value?: Guid | null): void => {
+		if (value === null) {
+			return this.writeNullValue(key);
+		}
+
 		if (value) {
 			this.writeStringValue(key, `"${value}"`);
 		}
 	};
-	public writeDateValue = (key?: string, value?: Date): void => {
+	public writeDateValue = (key?: string, value?: Date | null): void => {
+		if (value === null) {
+			return this.writeNullValue(key);
+		}
+
 		if (value) {
 			this.writeStringValue(key, `"${value.toISOString()}"`);
 		}
 	};
-	public writeDateOnlyValue = (key?: string, value?: DateOnly): void => {
+	public writeDateOnlyValue = (key?: string, value?: DateOnly | null): void => {
+		if (value === null) {
+			return this.writeNullValue(key);
+		}
+
 		if (value) {
 			this.writeStringValue(key, `"${value.toString()}"`);
 		}
 	};
-	public writeTimeOnlyValue = (key?: string, value?: TimeOnly): void => {
+	public writeTimeOnlyValue = (key?: string, value?: TimeOnly | null): void => {
+		if (value === null) {
+			return this.writeNullValue(key);
+		}
+
 		if (value) {
 			this.writeStringValue(key, `"${value.toString()}"`);
 		}
 	};
-	public writeDurationValue = (key?: string, value?: Duration): void => {
+	public writeDurationValue = (key?: string, value?: Duration | null): void => {
+		if (value === null) {
+			return this.writeNullValue(key);
+		}
+
 		if (value) {
 			this.writeStringValue(key, `"${value.toString()}"`);
 		}
@@ -77,7 +101,7 @@ export class TextSerializationWriter implements SerializationWriter {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		key?: string,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		values?: T[],
+		values?: T[] | null,
 	): void => {
 		throw new Error(TextSerializationWriter.noStructuredDataMessage);
 	};
@@ -85,7 +109,7 @@ export class TextSerializationWriter implements SerializationWriter {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		key?: string,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		values?: T[],
+		values?: T[] | null,
 		serializerMethod?: ModelSerializerFunction<T>,
 	): void => {
 		throw new Error(TextSerializationWriter.noStructuredDataMessage);
@@ -94,12 +118,12 @@ export class TextSerializationWriter implements SerializationWriter {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		key?: string,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		value?: T,
+		value?: T | null,
 		serializerMethod?: ModelSerializerFunction<T>,
 	): void => {
 		throw new Error(TextSerializationWriter.noStructuredDataMessage);
 	};
-	public writeEnumValue = <T>(key?: string | undefined, ...values: (T | undefined)[]): void => {
+	public writeEnumValue = <T>(key?: string | undefined, ...values: (T | null | undefined)[]): void => {
 		if (values.length > 0) {
 			const rawValues = values.filter((x) => x !== undefined).map((x) => `${x}`);
 			if (rawValues.length > 0) {

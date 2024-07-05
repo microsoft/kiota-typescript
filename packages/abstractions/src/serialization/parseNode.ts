@@ -77,18 +77,18 @@ export interface ParseNode {
 	 * Gets the model object value of the node.
 	 * @return the model object value of the node.
 	 */
-	getObjectValue<T extends Parsable>(parsableFactory: ParsableFactory<T>): T;
+	getObjectValue<T extends Parsable>(parsableFactory: ParsableFactory<T>): T | null;
 
 	/**
 	 * Gets the Enum values of the node.
 	 * @return the Enum values of the node.
 	 */
-	getCollectionOfEnumValues<T>(type: any): T[];
+	getCollectionOfEnumValues<T>(type: any): T[] | null;
 	/**
 	 * Gets the Enum value of the node.
 	 * @return the Enum value of the node.
 	 */
-	getEnumValue<T>(type: any): T | undefined;
+	getEnumValue<T>(type: any): T | null | undefined;
 	/**
 	 * Gets the callback called before the node is deserialized.
 	 * @return the callback called before the node is deserialized.
