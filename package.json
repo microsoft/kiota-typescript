@@ -5,7 +5,7 @@
     "@microsoft/eslint-config-msgraph": "^2.0.0",
     "@types/node": "^20.11.15",
     "@types/sinon": "^17.0.3",
-    "@vitest/browser": "^1.6.0",
+    "@vitest/browser": "^2.0.0",
     "@vitest/coverage-v8": "^1.6.0",
     "@vitest/ui": "^1.6.0",
     "eslint": "^8.56.0",
