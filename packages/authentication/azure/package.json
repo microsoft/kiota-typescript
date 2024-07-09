@@ -10,7 +10,7 @@
 		"build": "npm run build:esm",
 		"build:esm": "tsc && tsc-alias",
 		"test:node": "vitest run",
-		"test:browser": "vitest run --browser.name=chrome --browser.headless",
+		"test:browser": "vitest run --browser.name=chrome --browser.headless --browser.provider=webdriverio",
 		"test": "npm run test:node && npm run test:browser",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
