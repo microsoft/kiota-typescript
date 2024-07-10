@@ -56,7 +56,7 @@ export function serializeCollectionToJsonAsString<T extends Parsable>(values: T[
  * @param factory the factory for the model type
  * @returns the deserialized parsable object
  */
-export function deserializeFromJson<T extends Parsable>(bufferOrString: ArrayBuffer | string, factory: ParsableFactory<T>): Parsable | null {
+export function deserializeFromJson<T extends Parsable>(bufferOrString: ArrayBuffer | string, factory: ParsableFactory<T>): Parsable {
 	return deserialize(jsonContentType, bufferOrString, factory);
 }
 
@@ -66,6 +66,6 @@ export function deserializeFromJson<T extends Parsable>(bufferOrString: ArrayBuf
  * @param factory the factory for the model type
  * @returns the deserialized collection of parsable objects
  */
-export function deserializeCollectionFromJson<T extends Parsable>(bufferOrString: ArrayBuffer | string, factory: ParsableFactory<T>): T[] | null | undefined {
+export function deserializeCollectionFromJson<T extends Parsable>(bufferOrString: ArrayBuffer | string, factory: ParsableFactory<T>): T[] | undefined {
 	return deserializeCollection(jsonContentType, bufferOrString, factory);
 }

@@ -12,7 +12,7 @@ export class JsonParseNode implements ParseNode {
 	public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
 	public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
 	public getStringValue = () => (typeof this._jsonNode === "string" ? (this._jsonNode as string) : undefined);
-	public getChildNode = (identifier: string): ParseNode | null | undefined => (this._jsonNode && typeof this._jsonNode === "object" && (this._jsonNode as { [key: string]: any })[identifier] !== undefined ? new JsonParseNode((this._jsonNode as { [key: string]: any })[identifier]) : undefined);
+	public getChildNode = (identifier: string): ParseNode | undefined => (this._jsonNode && typeof this._jsonNode === "object" && (this._jsonNode as { [key: string]: any })[identifier] !== undefined ? new JsonParseNode((this._jsonNode as { [key: string]: any })[identifier]) : undefined);
 	public getBooleanValue = () => (typeof this._jsonNode === "boolean" ? (this._jsonNode as boolean) : undefined);
 	public getNumberValue = () => (typeof this._jsonNode === "number" ? (this._jsonNode as number) : undefined);
 	public getGuidValue = () => parseGuidString(this.getStringValue());
@@ -20,7 +20,7 @@ export class JsonParseNode implements ParseNode {
 	public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
 	public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
 	public getDurationValue = () => Duration.parse(this.getStringValue());
-	public getCollectionOfPrimitiveValues = <T>(): T[] | null | undefined => {
+	public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
 		if (!Array.isArray(this._jsonNode)) {
 			return undefined;
 		}
@@ -46,21 +46,21 @@ export class JsonParseNode implements ParseNode {
 			}
 		});
 	};
-	public getByteArrayValue(): ArrayBuffer | null | undefined {
+	public getByteArrayValue(): ArrayBuffer | undefined {
 		const strValue = this.getStringValue();
 		if (strValue && strValue.length > 0) {
 			return inNodeEnv() ? Buffer.from(strValue, "base64").buffer : new TextEncoder().encode(strValue);
 		}
 		return undefined;
 	}
-	public getCollectionOfObjectValues = <T extends Parsable>(method: ParsableFactory<T>): T[] | null | undefined => {
+	public getCollectionOfObjectValues = <T extends Parsable>(method: ParsableFactory<T>): T[] | undefined => {
 		if (!Array.isArray(this._jsonNode)) {
 			return undefined;
 		}
 		return this._jsonNode ? (this._jsonNode as unknown[]).map((x) => new JsonParseNode(x)).map((x) => x.getObjectValue<T>(method)) : undefined;
 	};
 
-	public getObjectValue = <T extends Parsable>(parsableFactory: ParsableFactory<T>): T | null => {
+	public getObjectValue = <T extends Parsable>(parsableFactory: ParsableFactory<T>): T => {
 		const temp: T = {} as T;
 		if (isUntypedNode(parsableFactory(this)(temp))) {
 			const valueType = typeof this._jsonNode;
@@ -125,7 +125,7 @@ export class JsonParseNode implements ParseNode {
 		}
 		return [];
 	};
-	public getEnumValue = <T>(type: any): T | null | undefined => {
+	public getEnumValue = <T>(type: any): T | undefined => {
 		const rawValue = this.getStringValue();
 		if (!rawValue) {
 			return undefined;

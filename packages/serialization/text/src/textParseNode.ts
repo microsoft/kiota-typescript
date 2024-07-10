@@ -17,7 +17,7 @@ export class TextParseNode implements ParseNode {
 			this.text = this.text.substring(1, this.text.length - 2);
 		}
 	}
-	public getByteArrayValue(): ArrayBuffer | null | undefined {
+	public getByteArrayValue(): ArrayBuffer | undefined {
 		const strValue = this.getStringValue();
 		if (strValue && strValue.length > 0) {
 			return inNodeEnv() ? Buffer.from(strValue, "base64").buffer : new TextEncoder().encode(strValue);
@@ -28,10 +28,10 @@ export class TextParseNode implements ParseNode {
 	public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
 	public getStringValue = () => this.text;
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public getChildNode = (identifier: string): ParseNode | null | undefined => {
+	public getChildNode = (identifier: string): ParseNode | undefined => {
 		throw new Error(TextParseNode.noStructuredDataMessage);
 	};
-	public getBooleanValue = (): boolean | null | undefined => {
+	public getBooleanValue = (): boolean | undefined => {
 		const value = this.getStringValue()?.toLowerCase();
 		if (value === "true" || value === "1") {
 			return true;
@@ -46,24 +46,24 @@ export class TextParseNode implements ParseNode {
 	public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
 	public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
 	public getDurationValue = () => Duration.parse(this.getStringValue());
-	public getCollectionOfPrimitiveValues = <T>(): T[] | null | undefined => {
+	public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
 		throw new Error(TextParseNode.noStructuredDataMessage);
 	};
 	/* eslint-disable @typescript-eslint/no-unused-vars */
-	public getCollectionOfObjectValues<T extends Parsable>(parsableFactory: ParsableFactory<T>): T[] | null | undefined {
+	public getCollectionOfObjectValues<T extends Parsable>(parsableFactory: ParsableFactory<T>): T[] | undefined {
 		throw new Error(TextParseNode.noStructuredDataMessage);
 	}
 
 	/* eslint-disable @typescript-eslint/no-unused-vars */
-	public getObjectValue<T extends Parsable>(parsableFactory: ParsableFactory<T>): T | null {
+	public getObjectValue<T extends Parsable>(parsableFactory: ParsableFactory<T>): T {
 		throw new Error(TextParseNode.noStructuredDataMessage);
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public getCollectionOfEnumValues = <T>(type: any): T[] | null => {
+	public getCollectionOfEnumValues = <T>(type: any): T[] => {
 		throw new Error(TextParseNode.noStructuredDataMessage);
 	};
-	public getEnumValue = <T>(type: any): T | null | undefined => {
+	public getEnumValue = <T>(type: any): T | undefined => {
 		return type[toFirstCharacterUpper(this.text)] as T;
 	};
 }

@@ -36,7 +36,7 @@ export class FormParseNode implements ParseNode {
 	public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
 	public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
 	public getStringValue = (): string => decodeURIComponent(this._rawString);
-	public getChildNode = (identifier: string): ParseNode | null | undefined => {
+	public getChildNode = (identifier: string): ParseNode | undefined => {
 		if (this._fields[identifier]) {
 			return new FormParseNode(this._fields[identifier]);
 		}
@@ -57,7 +57,7 @@ export class FormParseNode implements ParseNode {
 	public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
 	public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
 	public getDurationValue = () => Duration.parse(this.getStringValue());
-	public getCollectionOfPrimitiveValues = <T>(): T[] | null | undefined => {
+	public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
 		return (this._rawString.split(",") as unknown[]).map((x) => {
 			const currentParseNode = new FormParseNode(x as string);
 			const typeOfX = typeof x;
@@ -83,10 +83,10 @@ export class FormParseNode implements ParseNode {
 	public getCollectionOfObjectValues = <T extends Parsable>(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		parsableFactory: ParsableFactory<T>,
-	): T[] | null | undefined => {
+	): T[] | undefined => {
 		throw new Error(`serialization of collections is not supported with URI encoding`);
 	};
-	public getObjectValue = <T extends Parsable>(parsableFactory: ParsableFactory<T>): T | null => {
+	public getObjectValue = <T extends Parsable>(parsableFactory: ParsableFactory<T>): T => {
 		const temp: T = {} as T;
 		const enableBackingStore = isBackingStoreEnabled(parsableFactory(this)(temp));
 		const value: T = enableBackingStore ? new Proxy(temp, createBackedModelProxyHandler<T>()) : temp;
@@ -106,7 +106,7 @@ export class FormParseNode implements ParseNode {
 		}
 		return rawValues.split(",").map((x) => type[toFirstCharacterUpper(x)] as T);
 	};
-	public getEnumValue = <T>(type: any): T | null | undefined => {
+	public getEnumValue = <T>(type: any): T | undefined => {
 		const values = this.getCollectionOfEnumValues(type);
 		if (values.length > 0) {
 			return values[0] as T;

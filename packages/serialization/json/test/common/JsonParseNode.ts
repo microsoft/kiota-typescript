@@ -82,6 +82,18 @@ describe("JsonParseNode", () => {
 		assert.isUndefined(result.foos![0].bars);
 	});
 
+	it("Test null collection of object values", async () => {
+		const result = new JsonParseNode({
+			foos: [
+				{
+					id: "b089d1f1-e527-4b8a-ba96-094922af6e40",
+					bars: null,
+				},
+			],
+		}).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
+		assert.isNull(result.foos![0].bars);
+	});
+
 	it("Test collection of object values", async () => {
 		const result = new JsonParseNode({
 			foos: [

@@ -20,75 +20,75 @@ export interface ParseNode {
 	 * Gets the string value of the node.
 	 * @return the string value of the node.
 	 */
-	getStringValue(): string | null | undefined;
+	getStringValue(): string | undefined;
 	/**
 	 * Gets a new parse node for the given identifier.
 	 * @param identifier the identifier of the current node property.
 	 * @return a new parse node for the given identifier.
 	 */
-	getChildNode(identifier: string): ParseNode | null | undefined;
+	getChildNode(identifier: string): ParseNode | undefined;
 	/**
 	 * Gets the boolean value of the node.
 	 * @return the boolean value of the node.
 	 */
-	getBooleanValue(): boolean | null | undefined;
+	getBooleanValue(): boolean | undefined;
 	/**
 	 * Gets the Number value of the node.
 	 * @return the Number value of the node.
 	 */
-	getNumberValue(): number | null | undefined;
+	getNumberValue(): number | undefined;
 	/**
 	 * Gets the Guid value of the node.
 	 * @return the Guid value of the node.
 	 */
-	getGuidValue(): Guid | null | undefined;
+	getGuidValue(): Guid | undefined;
 	/**
 	 * Gets the Date value of the node.
 	 * @return the Date value of the node.
 	 */
-	getDateValue(): Date | null | undefined;
+	getDateValue(): Date | undefined;
 	/**
 	 * Gets the Duration value of the node.
 	 * @return the Duration value of the node.
 	 */
-	getDurationValue(): Duration | null | undefined;
+	getDurationValue(): Duration | undefined;
 	/**
 	 * Gets the DateOnly value of the node.
 	 * @return the DateOnly value of the node.
 	 */
-	getDateOnlyValue(): DateOnly | null | undefined;
+	getDateOnlyValue(): DateOnly | undefined;
 	/**
 	 * Gets the TimeOnly value of the node.
 	 * @return the TimeOnly value of the node.
 	 */
-	getTimeOnlyValue(): TimeOnly | null | undefined;
+	getTimeOnlyValue(): TimeOnly | undefined;
 	/**
 	 * Gets the collection of primitive values of the node.
 	 * @return the collection of primitive values of the node.
 	 */
-	getCollectionOfPrimitiveValues<T>(): T[] | null | undefined;
+	getCollectionOfPrimitiveValues<T>(): T[] | undefined;
 	/**
 	 * Gets the collection of object values of the node.
 	 * @return the collection of object values of the node.
 	 */
-	getCollectionOfObjectValues<T extends Parsable>(parsableFactory: ParsableFactory<T>): T[] | null | undefined;
+	getCollectionOfObjectValues<T extends Parsable>(parsableFactory: ParsableFactory<T>): T[] | undefined;
 
 	/**
 	 * Gets the model object value of the node.
 	 * @return the model object value of the node.
 	 */
-	getObjectValue<T extends Parsable>(parsableFactory: ParsableFactory<T>): T | null;
+	getObjectValue<T extends Parsable>(parsableFactory: ParsableFactory<T>): T;
 
 	/**
 	 * Gets the Enum values of the node.
 	 * @return the Enum values of the node.
 	 */
-	getCollectionOfEnumValues<T>(type: any): T[] | null;
+	getCollectionOfEnumValues<T>(type: any): T[];
 	/**
 	 * Gets the Enum value of the node.
 	 * @return the Enum value of the node.
 	 */
-	getEnumValue<T>(type: any): T | null | undefined;
+	getEnumValue<T>(type: any): T | undefined;
 	/**
 	 * Gets the callback called before the node is deserialized.
 	 * @return the callback called before the node is deserialized.

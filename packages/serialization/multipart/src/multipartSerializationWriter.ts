@@ -46,7 +46,7 @@ export class MultipartSerializationWriter implements SerializationWriter {
 		if (value !== undefined) {
 			const isNullValue = value === null;
 
-			this.writeByteArrayValue(undefined, new TextEncoder().encode(isNullValue ? `${value}` : value).buffer);
+			this.writeByteArrayValue(undefined, new TextEncoder().encode(isNullValue ? "null" : value).buffer);
 		}
 	};
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars

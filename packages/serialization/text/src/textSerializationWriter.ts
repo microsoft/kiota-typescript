@@ -19,7 +19,7 @@ export class TextSerializationWriter implements SerializationWriter {
 		this.writeStringValue(key, b64);
 	}
 	private static noStructuredDataMessage = "text does not support structured data";
-	private readonly writer: (string | null)[] = [];
+	private readonly writer: string[] = [];
 	public onBeforeObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onStartObjectSerialization: ((value: Parsable, writer: SerializationWriter) => void) | undefined;
@@ -31,7 +31,8 @@ export class TextSerializationWriter implements SerializationWriter {
 			if (this.writer.length > 0) {
 				throw new Error("a value was already written for this serialization writer, text content only supports a single value");
 			} else {
-				this.writer.push(value);
+				const isNullValue = value === null;
+				this.writer.push(isNullValue ? "null" : value);
 			}
 		}
 	};
