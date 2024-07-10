@@ -25,9 +25,9 @@ export class FormSerializationWriter implements SerializationWriter {
 	public onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onStartObjectSerialization: ((value: Parsable, writer: SerializationWriter) => void) | undefined;
 	public writeStringValue = (key?: string, value?: string | null): void => {
-    if (value === null) {
-      value = "null";
-    }
+		if (value === null) {
+			value = "null";
+		}
 		if (key && value) {
 			this.writePropertyName(key);
 			this.writer.push(`=${encodeURIComponent(value)}`);
@@ -37,47 +37,47 @@ export class FormSerializationWriter implements SerializationWriter {
 	private writePropertyName = (key: string): void => {
 		this.writer.push(encodeURIComponent(key));
 	};
-  private shouldWriteValueOrNull = <T>(key?: string, value?: T | null): boolean => {
-    if (value === null) {
-      this.writeNullValue(key);
-      return false;
-    }
-    return true;
-  };
+	private shouldWriteValueOrNull = <T>(key?: string, value?: T | null): boolean => {
+		if (value === null) {
+			this.writeNullValue(key);
+			return false;
+		}
+		return true;
+	};
 	public writeBooleanValue = (key?: string, value?: boolean | null): void => {
 		if (this.shouldWriteValueOrNull(key, value)) {
-      value !== undefined && this.writeStringValue(key, `${value}`);
-    }
+			value !== undefined && this.writeStringValue(key, `${value}`);
+		}
 	};
 	public writeNumberValue = (key?: string, value?: number | null): void => {
 		if (this.shouldWriteValueOrNull(key, value)) {
-      value && this.writeStringValue(key, `${value}`);
-    }
+			value && this.writeStringValue(key, `${value}`);
+		}
 	};
 	public writeGuidValue = (key?: string, value?: Guid | null): void => {
 		if (this.shouldWriteValueOrNull(key, value)) {
-      value && this.writeStringValue(key, value.toString());
-    }
+			value && this.writeStringValue(key, value.toString());
+		}
 	};
 	public writeDateValue = (key?: string, value?: Date | null): void => {
 		if (this.shouldWriteValueOrNull(key, value)) {
-      value && this.writeStringValue(key, value.toISOString());
-    }
+			value && this.writeStringValue(key, value.toISOString());
+		}
 	};
 	public writeDateOnlyValue = (key?: string, value?: DateOnly | null): void => {
 		if (this.shouldWriteValueOrNull(key, value)) {
-      value && this.writeStringValue(key, value.toString());
-    }
+			value && this.writeStringValue(key, value.toString());
+		}
 	};
 	public writeTimeOnlyValue = (key?: string, value?: TimeOnly | null): void => {
 		if (this.shouldWriteValueOrNull(key, value)) {
-      value && this.writeStringValue(key, value.toString());
-    }
+			value && this.writeStringValue(key, value.toString());
+		}
 	};
 	public writeDurationValue = (key?: string, value?: Duration | null): void => {
 		if (this.shouldWriteValueOrNull(key, value)) {
-      value && this.writeStringValue(key, value.toString());
-    }
+			value && this.writeStringValue(key, value.toString());
+		}
 	};
 	public writeNullValue = (key?: string): void => {
 		key && this.writeStringValue(key, null);
