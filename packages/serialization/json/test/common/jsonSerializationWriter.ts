@@ -105,7 +105,7 @@ describe("JsonParseNode", () => {
 
 		const result = JSON.parse(contentAsStr);
 
-    assert.isNull(result.testCollection);
+		assert.isNull(result.testCollection);
 		assert.isNull(result.testString);
 		assert.isNull(result.testComplexString);
 		assert.isNull(result.testObject);
