@@ -85,7 +85,7 @@ function getStringValueFromBuffer(buffer: ArrayBuffer): string {
  * @param factory the factory for the model type
  * @returns the deserialized parsable object
  */
-export function deserialize<T extends Parsable>(contentType: string, bufferOrString: ArrayBuffer | string, factory: ParsableFactory<T>): Parsable {
+export function deserialize<T extends Parsable>(contentType: string, bufferOrString: ArrayBuffer | string, factory: ParsableFactory<T>): Parsable | null {
 	if (typeof bufferOrString === "string") {
 		bufferOrString = getBufferFromString(bufferOrString);
 	}
@@ -111,7 +111,7 @@ function getParseNode(contentType: string, buffer: ArrayBuffer, factory: unknown
  * @param factory the factory for the model type
  * @returns the deserialized collection of parsable objects
  */
-export function deserializeCollection<T extends Parsable>(contentType: string, bufferOrString: ArrayBuffer | string, factory: ParsableFactory<T>): T[] | undefined {
+export function deserializeCollection<T extends Parsable>(contentType: string, bufferOrString: ArrayBuffer | string, factory: ParsableFactory<T>): T[] | null | undefined {
 	if (typeof bufferOrString === "string") {
 		bufferOrString = getBufferFromString(bufferOrString);
 	}
