@@ -25,14 +25,9 @@ export class FormSerializationWriter implements SerializationWriter {
 	public onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onStartObjectSerialization: ((value: Parsable, writer: SerializationWriter) => void) | undefined;
 	public writeStringValue = (key?: string, value?: string | null): void => {
-		if (key && value === null) {
-			this.writePropertyName(key);
-			this.writer.push(`=${encodeURIComponent("null")}`);
-			this.writer.push(FormSerializationWriter.propertySeparator);
-
-			return;
-		}
-
+    if (value === null) {
+      value = "null";
+    }
 		if (key && value) {
 			this.writePropertyName(key);
 			this.writer.push(`=${encodeURIComponent(value)}`);
@@ -42,29 +37,50 @@ export class FormSerializationWriter implements SerializationWriter {
 	private writePropertyName = (key: string): void => {
 		this.writer.push(encodeURIComponent(key));
 	};
+  private shouldWriteValueOrNull = <T>(key?: string, value?: T | null): boolean => {
+    if (value === null) {
+      this.writeNullValue(key);
+      return false;
+    }
+    return true;
+  };
 	public writeBooleanValue = (key?: string, value?: boolean | null): void => {
-		value !== undefined && this.writeStringValue(key, `${value}`);
+		if (this.shouldWriteValueOrNull(key, value)) {
+      value !== undefined && this.writeStringValue(key, `${value}`);
+    }
 	};
 	public writeNumberValue = (key?: string, value?: number | null): void => {
-		value && this.writeStringValue(key, `${value}`);
+		if (this.shouldWriteValueOrNull(key, value)) {
+      value && this.writeStringValue(key, `${value}`);
+    }
 	};
 	public writeGuidValue = (key?: string, value?: Guid | null): void => {
-		value && this.writeStringValue(key, `${value}`);
+		if (this.shouldWriteValueOrNull(key, value)) {
+      value && this.writeStringValue(key, value.toString());
+    }
 	};
 	public writeDateValue = (key?: string, value?: Date | null): void => {
-		value && this.writeStringValue(key, value.toISOString());
+		if (this.shouldWriteValueOrNull(key, value)) {
+      value && this.writeStringValue(key, value.toISOString());
+    }
 	};
 	public writeDateOnlyValue = (key?: string, value?: DateOnly | null): void => {
-		value && this.writeStringValue(key, value.toString());
+		if (this.shouldWriteValueOrNull(key, value)) {
+      value && this.writeStringValue(key, value.toString());
+    }
 	};
 	public writeTimeOnlyValue = (key?: string, value?: TimeOnly | null): void => {
-		value && this.writeStringValue(key, value.toString());
+		if (this.shouldWriteValueOrNull(key, value)) {
+      value && this.writeStringValue(key, value.toString());
+    }
 	};
 	public writeDurationValue = (key?: string, value?: Duration | null): void => {
-		value && this.writeStringValue(key, value.toString());
+		if (this.shouldWriteValueOrNull(key, value)) {
+      value && this.writeStringValue(key, value.toString());
+    }
 	};
 	public writeNullValue = (key?: string): void => {
-		this.writeStringValue(key, `null`);
+		key && this.writeStringValue(key, null);
 	};
 	public writeCollectionOfPrimitiveValues = <T>(_key?: string, _values?: T[] | null): void => {
 		if (_key && _values) {
@@ -86,8 +102,8 @@ export class FormSerializationWriter implements SerializationWriter {
 			throw new Error(`serialization of nested objects is not supported with URI encoding`);
 		}
 
-		if (key && value === null) {
-			return this.writeNullValue(key);
+		if (!this.shouldWriteValueOrNull(key, value)) {
+			return;
 		}
 
 		if (value) {
