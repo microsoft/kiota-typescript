@@ -1,6 +1,6 @@
 {
 	"name": "@microsoft/kiota-serialization-text",
-	"version": "1.0.0-preview.53",
+	"version": "1.0.0-preview.54",
 	"description": "Implementation of Kiota Serialization interfaces for text",
 	"main": "dist/es/src/index.js",
 	"browser": {
@@ -16,7 +16,7 @@
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
 		"clean": "rimraf -rf ./dist",
-		"test:browser": "vitest run --browser.name=chrome --browser.headless",
+		"test:browser": "vitest run --browser.name=chrome --browser.headless --browser.provider=webdriverio",
 		"test:node": "vitest --run",
 		"test": "npm run test:node && npm run test:browser"
 	},

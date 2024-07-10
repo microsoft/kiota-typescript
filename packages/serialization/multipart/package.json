@@ -1,6 +1,6 @@
 {
 	"name": "@microsoft/kiota-serialization-multipart",
-	"version": "1.0.0-preview.34",
+	"version": "1.0.0-preview.35",
 	"description": "Implementation of Kiota Serialization interfaces for multipart form data",
 	"main": "dist/es/src/index.js",
 	"module": "dist/es/src/index.js",
@@ -12,7 +12,7 @@
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
 		"clean": "rimraf -rf ./dist",
-		"test:browser": "vitest run --browser.name=chrome --browser.headless",
+		"test:browser": "vitest run --browser.name=chrome --browser.headless --browser.provider=webdriverio",
 		"test:node": "vitest --run",
 		"test": "npm run test:node && npm run test:browser"
 	},

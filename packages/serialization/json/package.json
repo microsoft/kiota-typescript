@@ -1,6 +1,6 @@
 {
 	"name": "@microsoft/kiota-serialization-json",
-	"version": "1.0.0-preview.56",
+	"version": "1.0.0-preview.57",
 	"description": "Implementation of Kiota Serialization interfaces for JSON",
 	"main": "dist/es/src/index.js",
 	"type": "module",
@@ -16,7 +16,7 @@
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
 		"clean": "rimraf ./dist",
-		"test:browser": "vitest run --browser.name=chrome --browser.headless",
+		"test:browser": "vitest run --browser.name=chrome --browser.headless --browser.provider=webdriverio",
 		"test:node": "vitest --run",
 		"test": "npm run test:node && npm run test:browser"
 	},

@@ -21,6 +21,9 @@ updates:
     eslint:
       patterns:
         - "*eslint*"
+    vitest:
+      patterns:
+        - "*vitest*"
 
 - package-ecosystem: npm
   directory: "/packages/abstractions"
@@ -34,6 +37,9 @@ updates:
     eslint:
       patterns:
         - "*eslint*"
+    vitest:
+      patterns:
+        - "*vitest*"
 
 - package-ecosystem: npm
   directory: "/packages/authentication/azure"
@@ -47,6 +53,9 @@ updates:
     eslint:
       patterns:
         - "*eslint*"
+    vitest:
+      patterns:
+        - "*vitest*"
 
 - package-ecosystem: npm
   directory: "/packages/serialization/form"
@@ -60,6 +69,9 @@ updates:
     eslint:
       patterns:
         - "*eslint*"
+    vitest:
+      patterns:
+        - "*vitest*"
 
 - package-ecosystem: npm
   directory: "/packages/serialization/multipart"
@@ -73,6 +85,9 @@ updates:
     eslint:
       patterns:
         - "*eslint*"
+    vitest:
+      patterns:
+        - "*vitest*"
 
 - package-ecosystem: npm
   directory: "/packages/serialization/json"
@@ -86,6 +101,9 @@ updates:
     eslint:
       patterns:
         - "*eslint*"
+    vitest:
+      patterns:
+        - "*vitest*"
 
 - package-ecosystem: npm
   directory: "/packages/serialization/text"
@@ -99,6 +117,9 @@ updates:
     eslint:
       patterns:
         - "*eslint*"
+    vitest:
+      patterns:
+        - "*vitest*"
 
 - package-ecosystem: npm
   directory: "/packages/http/fetch"
@@ -112,6 +133,9 @@ updates:
     eslint:
       patterns:
         - "*eslint*"
+    vitest:
+      patterns:
+        - "*vitest*"
 
 - package-ecosystem: npm
   directory: "/packages/test"

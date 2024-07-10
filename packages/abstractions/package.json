@@ -1,6 +1,6 @@
 {
 	"name": "@microsoft/kiota-abstractions",
-	"version": "1.0.0-preview.56",
+	"version": "1.0.0-preview.57",
 	"description": "Core abstractions for kiota generated libraries in TypeScript and JavaScript",
 	"main": "dist/es/src/index.js",
 	"module": "dist/es/src/index.js",
@@ -12,7 +12,7 @@
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
 		"clean": "rimraf ./dist",
-		"test:browser": "vitest run --browser.name=chrome --browser.headless",
+		"test:browser": "vitest run --browser.name=chrome --browser.headless --browser.provider=webdriverio",
 		"test:node": "vitest --run",
 		"test": "npm run test:node && npm run test:browser"
 	},
