@@ -19,6 +19,13 @@ export class JsonSerializationWriter implements SerializationWriter {
 	}
 	private readonly writer: string[] = [];
 	private static propertySeparator = `,`;
+	private shouldWriteValueOrNull = <T>(key?: string, value?: T | null): boolean => {
+		if (value === null) {
+			this.writeNullValue(key);
+			return false;
+		}
+		return true;
+	};
 	public onBeforeObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onStartObjectSerialization: ((value: Parsable, writer: SerializationWriter) => void) | undefined;
@@ -27,15 +34,11 @@ export class JsonSerializationWriter implements SerializationWriter {
 			return;
 		}
 
-		if (value === null) {
-			key && this.writeNullValue(key);
-
-			return;
+		if (this.shouldWriteValueOrNull(key, value)) {
+			key && this.writePropertyName(key);
+			this.writer.push(JSON.stringify(value));
+			key && this.writer.push(JsonSerializationWriter.propertySeparator);
 		}
-
-		key && this.writePropertyName(key);
-		this.writer.push(JSON.stringify(value));
-		key && this.writer.push(JsonSerializationWriter.propertySeparator);
 	};
 	private writePropertyName = (key: string): void => {
 		this.writer.push(`"${key}":`);
@@ -45,39 +48,29 @@ export class JsonSerializationWriter implements SerializationWriter {
 			return;
 		}
 
-		if (value === null) {
-			key && this.writeNullValue(key);
-
-			return;
+		if (this.shouldWriteValueOrNull(key, value)) {
+			key && this.writePropertyName(key);
+			this.writer.push(`${value}`);
+			key && this.writer.push(JsonSerializationWriter.propertySeparator);
 		}
-
-		key && this.writePropertyName(key);
-		this.writer.push(`${value}`);
-		key && this.writer.push(JsonSerializationWriter.propertySeparator);
 	};
 	public writeNumberValue = (key?: string, value?: number | null): void => {
 		if (value === undefined) {
 			return;
 		}
 
-		if (value === null) {
-			key && this.writeNullValue(key);
-
-			return;
+		if (this.shouldWriteValueOrNull(key, value)) {
+			key && this.writePropertyName(key);
+			this.writer.push(`${value}`);
+			key && this.writer.push(JsonSerializationWriter.propertySeparator);
 		}
-
-		key && this.writePropertyName(key);
-		this.writer.push(`${value}`);
-		key && this.writer.push(JsonSerializationWriter.propertySeparator);
 	};
 	public writeGuidValue = (key?: string, value?: Guid | null): void => {
-		if (value === null) {
-			key && this.writeNullValue(key);
-
+		if (value === undefined) {
 			return;
 		}
 
-		if (value) {
+		if (this.shouldWriteValueOrNull(key, value)) {
 			key && this.writePropertyName(key);
 			this.writer.push(`"${value}"`);
 			key && this.writer.push(JsonSerializationWriter.propertySeparator);
@@ -93,8 +86,7 @@ export class JsonSerializationWriter implements SerializationWriter {
 		key && this.writer.push(JsonSerializationWriter.propertySeparator);
 	};
 	public writeCollectionOfPrimitiveValues = <T>(key?: string, values?: T[] | null): void => {
-		if (values === null) {
-			key && this.writeNullValue(key);
+		if (!this.shouldWriteValueOrNull(key, values)) {
 			return;
 		}
 
@@ -109,9 +101,8 @@ export class JsonSerializationWriter implements SerializationWriter {
 			key && this.writer.push(JsonSerializationWriter.propertySeparator);
 		}
 	};
-	public writeCollectionOfObjectValues = <T extends Parsable>(key: string, values: T[] | null, serializerMethod: ModelSerializerFunction<T>): void => {
-		if (values === null) {
-			key && this.writeNullValue(key);
+	public writeCollectionOfObjectValues = <T extends Parsable>(key: string, values: T[] | null | undefined, serializerMethod: ModelSerializerFunction<T>): void => {
+		if (!this.shouldWriteValueOrNull(key, values)) {
 			return;
 		}
 
@@ -136,8 +127,8 @@ export class JsonSerializationWriter implements SerializationWriter {
 			return;
 		}
 
-		if (value === null) {
-			return this.writeNullValue(key);
+		if (!this.shouldWriteValueOrNull(key, value)) {
+			return;
 		}
 
 		if (isUntypedNode(value)) {
@@ -260,8 +251,8 @@ export class JsonSerializationWriter implements SerializationWriter {
 			return;
 		}
 
-		if (value === null) {
-			return this.writeNullValue(key);
+		if (!this.shouldWriteValueOrNull(key, value)) {
+			return;
 		}
 
 		const valueType = typeof value;

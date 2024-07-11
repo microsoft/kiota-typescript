@@ -79,7 +79,7 @@ export interface SerializationWriter {
 	 * @param key the key to write the value with.
 	 * @param value the value to write to the stream.
 	 */
-	writeCollectionOfObjectValues<T extends Parsable>(key?: string | undefined, values?: T[], serializerMethod?: ModelSerializerFunction<T>): void;
+	writeCollectionOfObjectValues<T extends Parsable>(key?: string | undefined, values?: T[] | null, serializerMethod?: ModelSerializerFunction<T>): void;
 	/**
 	 * Writes the specified model object value to the stream with an optional given key.
 	 * @param key the key to write the value with.
