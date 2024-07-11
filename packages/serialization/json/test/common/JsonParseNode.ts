@@ -82,7 +82,7 @@ describe("JsonParseNode", () => {
 		assert.isUndefined(result.foos![0].bars);
 	});
 
-	it.only("Test null collection of object values", async () => {
+	it("Test null collection of object values", async () => {
 		const result = new JsonParseNode({
 			foos: [
 				{
