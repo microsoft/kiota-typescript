@@ -10,4 +10,4 @@ import type { SerializationWriter } from "./serializationWriter";
 
 export type ModelSerializerFunction<T extends Parsable> = (writer: SerializationWriter, value?: Partial<T> | null | undefined) => void;
 
-export type DeserializeIntoModelFunction<T extends Parsable> = (value?: Partial<T> | null | undefined) => Record<string, (node: ParseNode) => void>;
+export type DeserializeIntoModelFunction<T extends Parsable> = (value?: Partial<T> | undefined) => Record<string, (node: ParseNode) => void>;
