@@ -33,6 +33,7 @@ export default [{
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
     "prettier",
+    "@microsoft/eslint-config-msgraph",
 ), {
     plugins: {
         jsdoc,
@@ -67,6 +68,7 @@ export default [{
     },
 
     rules: {
+        "@typescript-eslint/class-literal-property-style": ["error", "fields"],
         "@typescript-eslint/no-explicit-any": "warn",
         "prefer-arrow/prefer-arrow-functions": "warn",
         "@typescript-eslint/prefer-nullish-coalescing": "off",
