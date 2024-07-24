@@ -48,7 +48,7 @@ export class ApiKeyAuthenticationProvider implements AuthenticationProvider {
 		validateProtocol(url);
 		switch (this.location) {
 			case ApiKeyLocation.QueryParameter:
-				request.URL += (url.indexOf("?") === -1 ? "?" : "&") + this.parameterName + "=" + this.apiKey;
+				request.URL += (url.includes("?") ? "?" : "&") + this.parameterName + "=" + this.apiKey;
 				break;
 			case ApiKeyLocation.Header:
 				request.headers.add(this.parameterName, this.apiKey);
