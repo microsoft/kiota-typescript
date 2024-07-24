@@ -7,6 +7,8 @@
 
 import type { BackedModel, BackingStore, Parsable, ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
 import { Guid } from "guid-typescript";
+import { write } from "node:fs";
+import test from "node:test";
 
 const fakeBackingStore: BackingStore = {} as BackingStore;
 
@@ -22,6 +24,7 @@ export interface TestParser {
 	id?: string | undefined;
 	testNumber?: number | undefined;
 	testGuid?: Guid | undefined;
+	testUnionObject?: TestUnionObject | undefined;
 }
 export interface TestBackedModel extends TestParser, BackedModel {
 	backingStoreEnabled?: boolean | undefined;
@@ -35,6 +38,7 @@ export interface BarResponse extends Parsable {
 	propB?: string | undefined;
 	propC?: Date | undefined;
 }
+export type TestUnionObject = FooResponse | BarResponse | string | number;
 
 export function createTestParserFromDiscriminatorValue(parseNode: ParseNode | undefined) {
 	if (!parseNode) throw new Error("parseNode cannot be undefined");
@@ -84,6 +88,9 @@ export function deserializeTestParser(testParser: TestParser | undefined = {}): 
 		},
 		testGuid: (n) => {
 			testParser.testGuid = n.getGuidValue();
+		},
+		testUnionObject: (n) => {
+			testParser.testUnionObject = n.getStringValue() ?? n.getNumberValue() ?? n.getObjectValue(createTestUnionObjectFromDiscriminatorValue);
 		},
 	};
 }
@@ -137,6 +144,13 @@ export function serializeTestParser(writer: SerializationWriter, entity: TestPar
 	writer.writeObjectValue("testObject", entity.testObject, serializeTestObject);
 	writer.writeCollectionOfObjectValues("foos", entity.foos, serializeFoo);
 	writer.writeAdditionalData(entity.additionalData);
+	if (typeof entity.testUnionObject === "string") {
+		writer.writeStringValue("testUnionObject", entity.testUnionObject);
+	} else if (typeof entity.testUnionObject === "number") {
+		writer.writeNumberValue("testUnionObject", entity.testUnionObject);
+	} else {
+		writer.writeObjectValue("testUnionObject", entity.testUnionObject as any, serializeTestUnionObject);
+	}
 }
 
 export function serializeFoo(writer: SerializationWriter, entity: FooResponse | undefined = {}): void {
@@ -152,4 +166,22 @@ export function serializeBar(writer: SerializationWriter, entity: BarResponse | 
 
 export function serializeTestBackModel(writer: SerializationWriter, entity: TestBackedModel | undefined = {}): void {
 	serializeTestParser(writer, entity);
+}
+
+// Factory Method
+export function createTestUnionObjectFromDiscriminatorValue(parseNode: ParseNode | undefined): (instance?: Parsable) => Record<string, (node: ParseNode) => void> {
+	return deserializeIntoTestUnionObject;
+}
+
+// Deserialization methods
+export function deserializeIntoTestUnionObject(fooBar: Partial<TestUnionObject> | undefined = {}): Record<string, (node: ParseNode) => void> {
+	return {
+		...deserializeFooParser(fooBar as FooResponse),
+		...deserializeBarParser(fooBar as BarResponse),
+	};
+}
+
+export function serializeTestUnionObject(writer: SerializationWriter, fooBar: Partial<TestUnionObject> | undefined = {}): void {
+	serializeFoo(writer, fooBar as FooResponse);
+	serializeBar(writer, fooBar as BarResponse);
 }

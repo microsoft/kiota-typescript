@@ -7,7 +7,7 @@
 
 import { assert, describe, it } from "vitest";
 import { JsonParseNode } from "../../src/index";
-import { createTestParserFromDiscriminatorValue, type TestBackedModel, createTestBackedModelFromDiscriminatorValue, type TestParser } from "./testEntity";
+import { createTestParserFromDiscriminatorValue, type TestBackedModel, createTestBackedModelFromDiscriminatorValue, type TestParser, TestUnionObject, BarResponse } from "./testEntity";
 import { UntypedTestEntity, createUntypedTestEntityFromDiscriminatorValue } from "./untypedTestEntiy";
 import { UntypedNode, UntypedObject, isUntypedArray, isUntypedBoolean, isUntypedNode, isUntypedNumber, isUntypedObject } from "@microsoft/kiota-abstractions";
 
@@ -287,5 +287,31 @@ describe("JsonParseNode", () => {
 
 		const result5 = new JsonParseNode("true");
 		assert.isUndefined(result5.getBooleanValue());
+	});
+
+	it("should parse a union of objects and primitive values when value is primitive", async () => {
+		const result = new JsonParseNode({
+			testUnionObject: "Test String Value",
+		}).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
+		assert.equal(result.testUnionObject, "Test String Value");
+	});
+
+	it("should parse a union of objects and primitive values when value is an object", async () => {
+		const barResponse = {
+			propA: "property A test value",
+			propB: "property B test value",
+			propC: undefined,
+		};
+		const result = new JsonParseNode({
+			testUnionObject: barResponse as TestUnionObject,
+		}).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
+		assert.equal(JSON.stringify(result.testUnionObject), JSON.stringify(barResponse));
+	});
+
+	it("should parse a union of objects and primitive values when value is a number", async () => {
+		const result = new JsonParseNode({
+			testUnionObject: 1234,
+		}).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
+		assert.equal(result.testUnionObject, 1234);
 	});
 });
