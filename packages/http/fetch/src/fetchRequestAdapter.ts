@@ -403,7 +403,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				response.headers.forEach((value, key) => {
 					responseHeaders[key] = value.split(",");
 				});
-				const factory = errorMappings ? errorMappings[statusCode] ?? (statusCode >= 400 && statusCode < 500 ? errorMappings._4XX : undefined) ?? (statusCode >= 500 && statusCode < 600 ? errorMappings._5XX : undefined) ?? errorMappings.XXX : undefined;
+				const factory = errorMappings ? (errorMappings[statusCode] ?? (statusCode >= 400 && statusCode < 500 ? errorMappings._4XX : undefined) ?? (statusCode >= 500 && statusCode < 600 ? errorMappings._5XX : undefined) ?? errorMappings.XXX) : undefined;
 				if (!factory) {
 					spanForAttributes.setAttribute(FetchRequestAdapter.errorMappingFoundAttributeName, false);
 					const error = new DefaultApiError("the server returned an unexpected status code and no error class is registered for this code " + statusCode);
