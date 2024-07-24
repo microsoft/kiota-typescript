@@ -3,8 +3,10 @@
   "private": true,
   "devDependencies": {
     "@microsoft/eslint-config-msgraph": "^3.0.3",
-    "@types/node": "^20.11.15",
+    "@types/node": "^20.14.12",
     "@types/sinon": "^17.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.0.0-alpha.54",
+    "@typescript-eslint/parser": "^8.0.0-alpha.54",
     "@vitest/browser": "^2.0.1",
     "@vitest/coverage-v8": "^2.0.1",
     "@vitest/ui": "^2.0.1",
