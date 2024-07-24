@@ -33,7 +33,7 @@ export default [{
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
     "prettier",
-    "@microsoft/eslint-config-msgraph",
+    "@microsoft/eslint-config-msgraph/core",
 ), {
     plugins: {
         jsdoc,
