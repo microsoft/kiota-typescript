@@ -2,7 +2,7 @@
   "name": "kiota-typescript",
   "private": true,
   "devDependencies": {
-    "@microsoft/eslint-config-msgraph": "^3.0.3",
+    "@microsoft/eslint-config-msgraph": "^4.1.0",
     "@tony.ganchev/eslint-plugin-header": "^3.1.2",
     "@types/node": "^20.14.12",
     "@types/sinon": "^17.0.3",
