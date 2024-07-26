@@ -1,14 +1,15 @@
 {
-  "descriptionHash": "33264054EC56DBD30FD86D31BC572362006E9ED000AAACEBD62B904956BEA68FA1BD9539279F02EBC03638A7709BC99D504510494848B03F647B8A91F30AD180",
+  "descriptionHash": "15B53EEA450FFEA381255C759A9849B94369AD6D91DCAAA7FFAE2BD687679A765FAAF7983F39DDBFF137CEB8C2652619212CE813C8BAB3E4265638626A99127E",
   "descriptionLocation": "https://raw.githubusercontent.com/microsoftgraph/msgraph-sdk-powershell/dev/openApiDocs/v1.0/Mail.yml",
   "lockFileVersion": "1.0.0",
-  "kiotaVersion": "1.12.0",
+  "kiotaVersion": "1.17.0",
   "clientClassName": "ApiClient",
   "clientNamespaceName": "ApiSdk",
   "language": "TypeScript",
   "usesBackingStore": false,
   "excludeBackwardCompatible": false,
   "includeAdditionalData": true,
+  "disableSSLValidation": false,
   "serializers": [
     "Microsoft.Kiota.Serialization.Json.JsonSerializationWriterFactory",
     "Microsoft.Kiota.Serialization.Text.TextSerializationWriterFactory",
