@@ -30,7 +30,6 @@
 	},
 	"homepage": "https://github.com/microsoft/kiota#readme",
 	"devDependencies": {
-		"@types/node": "^20.11.15",
 		"@types/uuid": "^10.0.0"
 	},
 	"dependencies": {
