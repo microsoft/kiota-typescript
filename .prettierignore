@@ -3,3 +3,4 @@ packages/**/*/lib/
 packages/**/*.js
 packages/**/*.js.map
 packages/**/*.d.ts
+**/generatedCode/**
