@@ -30,6 +30,7 @@
   "workspaces": [
     "packages/test/",
     "packages/abstractions",
+    "packages/bundle",
     "packages/http/*",
     "packages/serialization/*",
     "packages/authentication/*"
