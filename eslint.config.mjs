@@ -55,6 +55,7 @@ export default [{
         parserOptions: {
             project: [
                 "packages/abstractions/tsconfig.json",
+                "packages/bundle/tsconfig.json",
                 "packages/authentication/azure/tsconfig.json",
                 "packages/authentication/azure/tsconfig.json",
                 "packages/http/fetch/tsconfig.json",

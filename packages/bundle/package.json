@@ -1,18 +1,14 @@
 {
-	"name": "@microsoft/kiota-serialization-form",
-	"version": "1.0.0-preview.47",
-	"description": "Implementation of Kiota Serialization interfaces for URI from encoded",
+	"name": "@microsoft/kiota-bundle",
+	"version": "1.0.0-preview.1",
+	"description": "Kiota Bundle package providing default implementations for client setup for kiota generated libraries in TypeScript and JavaScript",
 	"main": "dist/es/src/index.js",
-	"browser": {
-		"./dist/es/src/index.js": "./dist/es/src/browser/index.js",
-		"./dist/es/src/formParseNodeFactory.js": "./dist/es/src/browser/formParseNodeFactory.js"
-	},
 	"module": "dist/es/src/index.js",
 	"types": "dist/es/src/index.d.ts",
 	"type": "module",
 	"scripts": {
 		"build": "npm run build:esm",
-		"build:esm": "tsc -b && tsc-alias",
+		"build:esm": "tsc && tsc-alias",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
 		"clean": "rimraf ./dist",
@@ -20,27 +16,28 @@
 		"test:node": "vitest --run",
 		"test": "npm run test:node && npm run test:browser"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/microsoft/kiota-typescript.git"
-	},
+	"repository": "git://github.com/microsoft/kiota-typescript.git",
 	"keywords": [
 		"kiota",
 		"openAPI",
 		"Microsoft",
-		"Graph",
-		"form"
+		"Graph"
 	],
 	"author": "Microsoft",
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/microsoft/kiota-typescript/issues"
 	},
-	"homepage": "https://github.com/microsoft/kiota-typescript#readme",
+	"homepage": "https://github.com/microsoft/kiota#readme",
+	"devDependencies": {
+	},
 	"dependencies": {
-		"@microsoft/kiota-abstractions": "*",
-		"guid-typescript": "^1.0.9",
-		"tslib": "^2.6.2"
+    "@microsoft/kiota-abstractions": "*",
+    "@microsoft/kiota-http-fetchlibrary": "*",
+    "@microsoft/kiota-serialization-form": "*",
+    "@microsoft/kiota-serialization-json": "*",
+    "@microsoft/kiota-serialization-text": "*",
+    "@microsoft/kiota-serialization-multipart": "*"
 	},
 	"publishConfig": {
 		"access": "public"
