@@ -11,10 +11,10 @@ export class JsonParseNode implements ParseNode {
 	constructor(private readonly _jsonNode: unknown) {}
 	public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
 	public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
-	public getStringValue = () => (typeof this._jsonNode === "string" ? (this._jsonNode as string) : undefined);
-	public getChildNode = (identifier: string): ParseNode | undefined => (this._jsonNode && typeof this._jsonNode === "object" && (this._jsonNode as { [key: string]: any })[identifier] !== undefined ? new JsonParseNode((this._jsonNode as { [key: string]: any })[identifier]) : undefined);
-	public getBooleanValue = () => (typeof this._jsonNode === "boolean" ? (this._jsonNode as boolean) : undefined);
-	public getNumberValue = () => (typeof this._jsonNode === "number" ? (this._jsonNode as number) : undefined);
+	public getStringValue = () => (typeof this._jsonNode === "string" ? this._jsonNode : undefined);
+	public getChildNode = (identifier: string): ParseNode | undefined => (this._jsonNode && typeof this._jsonNode === "object" && (this._jsonNode as Record<string, unknown>)[identifier] !== undefined ? new JsonParseNode((this._jsonNode as Record<string, unknown>)[identifier]) : undefined);
+	public getBooleanValue = () => (typeof this._jsonNode === "boolean" ? this._jsonNode : undefined);
+	public getNumberValue = () => (typeof this._jsonNode === "number" ? this._jsonNode : undefined);
 	public getGuidValue = () => parseGuidString(this.getStringValue());
 	public getDateValue = () => (this._jsonNode ? new Date(this._jsonNode as string) : undefined);
 	public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
@@ -66,26 +66,26 @@ export class JsonParseNode implements ParseNode {
 			const valueType = typeof this._jsonNode;
 			let value: T = temp;
 			if (valueType === "boolean") {
-				value = createUntypedBoolean(this._jsonNode as boolean) as any as T;
+				value = createUntypedBoolean(this._jsonNode as boolean) as unknown as T;
 			} else if (valueType === "string") {
-				value = createUntypedString(this._jsonNode as string) as any as T;
+				value = createUntypedString(this._jsonNode as string) as unknown as T;
 			} else if (valueType === "number") {
-				value = createUntypedNumber(this._jsonNode as number) as any as T;
+				value = createUntypedNumber(this._jsonNode as number) as unknown as T;
 			} else if (Array.isArray(this._jsonNode)) {
 				const nodes: UntypedNode[] = [];
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				(this._jsonNode as any[]).forEach((x) => {
+				this._jsonNode.forEach((x) => {
 					nodes.push(new JsonParseNode(x).getObjectValue(createUntypedNodeFromDiscriminatorValue));
 				});
-				value = createUntypedArray(nodes) as any as T;
+				value = createUntypedArray(nodes) as unknown as T;
 			} else if (this._jsonNode && valueType === "object") {
 				const properties: Record<string, UntypedNode> = {};
-				Object.entries(this._jsonNode as any).forEach(([k, v]) => {
+				Object.entries(this._jsonNode).forEach(([k, v]) => {
 					properties[k] = new JsonParseNode(v).getObjectValue(createUntypedNodeFromDiscriminatorValue);
 				});
-				value = createUntypedObject(properties) as any as T;
+				value = createUntypedObject(properties) as unknown as T;
 			} else if (!this._jsonNode) {
-				value = createUntypedNull() as any as T;
+				value = createUntypedNull() as unknown as T;
 			}
 			return value;
 		}
@@ -104,7 +104,7 @@ export class JsonParseNode implements ParseNode {
 	private assignFieldValues = <T extends Parsable>(model: T, parsableFactory: ParsableFactory<T>): void => {
 		const fields = parsableFactory(this)(model);
 		if (!this._jsonNode) return;
-		Object.entries(this._jsonNode as any).forEach(([k, v]) => {
+		Object.entries(this._jsonNode).forEach(([k, v]) => {
 			const deserializer = fields[k];
 			if (deserializer) {
 				deserializer(new JsonParseNode(v));
@@ -114,7 +114,7 @@ export class JsonParseNode implements ParseNode {
 			}
 		});
 	};
-	public getCollectionOfEnumValues = <T>(type: any): T[] => {
+	public getCollectionOfEnumValues = <T>(type: unknown): T[] => {
 		if (Array.isArray(this._jsonNode)) {
 			return this._jsonNode
 				.map((x) => {
@@ -125,11 +125,11 @@ export class JsonParseNode implements ParseNode {
 		}
 		return [];
 	};
-	public getEnumValue = <T>(type: any): T | undefined => {
+	public getEnumValue = <T>(type: unknown): T | undefined => {
 		const rawValue = this.getStringValue();
 		if (!rawValue) {
 			return undefined;
 		}
-		return type[toFirstCharacterUpper(rawValue)];
+		return (type as Record<string, T>)[toFirstCharacterUpper(rawValue)];
 	};
 }

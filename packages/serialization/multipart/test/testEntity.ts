@@ -8,13 +8,13 @@
 import type { AdditionalDataHolder, DateOnly, Duration, Parsable, ParseNode, SerializationWriter, TimeOnly } from "@microsoft/kiota-abstractions";
 
 export interface TestEntity extends Parsable, AdditionalDataHolder {
-	id?: string;
-	birthday?: DateOnly;
-	createdDateTime?: Date;
-	workDuration?: Duration;
-	startWorkTime?: TimeOnly;
-	endWorkTime?: TimeOnly;
-	officeLocation?: string;
+	id?: string | null;
+	birthday?: DateOnly | null;
+	createdDateTime?: Date | null;
+	workDuration?: Duration | null;
+	startWorkTime?: TimeOnly | null;
+	endWorkTime?: TimeOnly | null;
+	officeLocation?: string | null;
 }
 export function createTestParserFromDiscriminatorValue(parseNode: ParseNode | undefined) {
 	if (!parseNode) throw new Error("parseNode cannot be undefined");

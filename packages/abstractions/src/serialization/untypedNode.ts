@@ -9,6 +9,8 @@
 import type { Parsable } from "./parsable";
 import type { ParseNode } from "./parseNode";
 import type { SerializationWriter } from "./serializationWriter";
+import type { ParsableFactory } from "./parsableFactory";
+import type { DeserializeIntoModelFunction } from "./serializationFunctionTypes";
 
 /** Defines the base interface for defining an untyped node. */
 export interface UntypedNode extends Parsable {
@@ -25,7 +27,7 @@ export interface UntypedNode extends Parsable {
 /**
  * Factory to create an UntypedNode from a string during deserialization.
  */
-export const createUntypedNodeFromDiscriminatorValue = (_parseNode: ParseNode | undefined): ((_instance?: Parsable) => Record<string, (_node: ParseNode) => void>) => {
+export const createUntypedNodeFromDiscriminatorValue: ParsableFactory<UntypedNode> = (_parseNode: ParseNode | undefined): ((_instance?: Parsable) => Record<string, (_node: ParseNode) => void>) => {
 	return deserializeIntoUntypedNode;
 };
 
@@ -42,7 +44,7 @@ export const isUntypedNode = (node: unknown): node is UntypedNode => {
 /**
  * The deserialization implementation for UntypedNode.
  */
-export const deserializeIntoUntypedNode = (untypedNode: Partial<UntypedNode> | undefined = {}): Record<string, (node: ParseNode) => void> => {
+export const deserializeIntoUntypedNode: DeserializeIntoModelFunction<UntypedNode> = (untypedNode: Partial<UntypedNode> | undefined = {}): Record<string, (node: ParseNode) => void> => {
 	return {
 		value: (_n) => {
 			untypedNode.value = null;

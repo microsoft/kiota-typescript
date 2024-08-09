@@ -82,6 +82,40 @@ describe("JsonParseNode", () => {
 		assert.equal(result.testComplexString, "Błonie");
 	});
 
+	it("serializes null values in json body", async () => {
+		const inputObject: TestParser = {
+			testCollection: null,
+			testString: null,
+			testBoolean: null,
+			testComplexString: null,
+			testObject: null,
+			additionalData: {
+				extraData: null,
+			},
+			id: null,
+			testDate: null,
+			testNumber: null,
+			testGuid: null,
+		};
+		const writer = new JsonSerializationWriter();
+		writer.writeObjectValue("", inputObject, serializeTestParser);
+		const serializedContent = writer.getSerializedContent();
+		const decoder = new TextDecoder();
+		const contentAsStr = decoder.decode(serializedContent);
+
+		const result = JSON.parse(contentAsStr);
+
+		assert.isNull(result.testCollection);
+		assert.isNull(result.testString);
+		assert.isNull(result.testComplexString);
+		assert.isNull(result.testObject);
+		assert.isNull(result.extraData);
+		assert.isNull(result.id);
+		assert.isNull(result.testDate);
+		assert.isNull(result.testNumber);
+		assert.isNull(result.testGuid);
+	});
+
 	it("skip undefined objects from json body", async () => {
 		const inputObject: TestParser = {
 			testCollection: undefined,

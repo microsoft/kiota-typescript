@@ -30,11 +30,11 @@ export class MultipartSerializationWriter implements SerializationWriter {
 	public onBeforeObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onStartObjectSerialization: ((value: Parsable, writer: SerializationWriter) => void) | undefined;
-	public writeStringValue = (key?: string, value?: string): void => {
+	public writeStringValue = (key?: string, value?: string | null): void => {
 		if (key) {
 			this.writeRawStringValue(key);
 		}
-		if (value) {
+		if (value !== undefined) {
 			if (key) {
 				this.writeRawStringValue(": ");
 			}
@@ -42,37 +42,39 @@ export class MultipartSerializationWriter implements SerializationWriter {
 		}
 		this.writeRawStringValue("\r\n");
 	};
-	private writeRawStringValue = (value?: string): void => {
-		if (value) {
-			this.writeByteArrayValue(undefined, new TextEncoder().encode(value).buffer);
+	private writeRawStringValue = (value?: string | null): void => {
+		if (value !== undefined) {
+			const isNullValue = value === null;
+
+			this.writeByteArrayValue(undefined, new TextEncoder().encode(isNullValue ? "null" : value).buffer);
 		}
 	};
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public writeBooleanValue = (key?: string, value?: boolean): void => {
+	public writeBooleanValue = (key?: string, value?: boolean | null): void => {
 		throw new Error(`serialization of boolean values is not supported with multipart`);
 	};
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public writeNumberValue = (key?: string, value?: number): void => {
+	public writeNumberValue = (key?: string, value?: number | null): void => {
 		throw new Error(`serialization of number values is not supported with multipart`);
 	};
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public writeGuidValue = (key?: string, value?: Guid): void => {
+	public writeGuidValue = (key?: string, value?: Guid | null): void => {
 		throw new Error(`serialization of guid values is not supported with multipart`);
 	};
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public writeDateValue = (key?: string, value?: Date): void => {
+	public writeDateValue = (key?: string, value?: Date | null): void => {
 		throw new Error(`serialization of date values is not supported with multipart`);
 	};
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public writeDateOnlyValue = (key?: string, value?: DateOnly): void => {
+	public writeDateOnlyValue = (key?: string, value?: DateOnly | null): void => {
 		throw new Error(`serialization of date only values is not supported with multipart`);
 	};
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public writeTimeOnlyValue = (key?: string, value?: TimeOnly): void => {
+	public writeTimeOnlyValue = (key?: string, value?: TimeOnly | null): void => {
 		throw new Error(`serialization of time only values is not supported with multipart`);
 	};
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public writeDurationValue = (key?: string, value?: Duration): void => {
+	public writeDurationValue = (key?: string, value?: Duration | null): void => {
 		throw new Error(`serialization of duration values is not supported with multipart`);
 	};
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -83,7 +85,7 @@ export class MultipartSerializationWriter implements SerializationWriter {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_key?: string,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		_values?: T[],
+		_values?: T[] | null,
 	): void => {
 		throw new Error(`serialization of collections is not supported with multipart`);
 	};
@@ -91,7 +93,7 @@ export class MultipartSerializationWriter implements SerializationWriter {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_key?: string,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		_values?: T[],
+		_values?: T[] | null,
 	): void => {
 		throw new Error(`serialization of collections is not supported with multipart`);
 	};
@@ -114,7 +116,7 @@ export class MultipartSerializationWriter implements SerializationWriter {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		key?: string | undefined,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		...values: (T | undefined)[]
+		...values: (T | null | undefined)[]
 	): void => {
 		throw new Error(`serialization of enum values is not supported with multipart`);
 	};

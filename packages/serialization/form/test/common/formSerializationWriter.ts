@@ -26,6 +26,8 @@ describe("FormSerializationWriter", () => {
 			month: 9,
 			day: 4,
 		});
+		testEntity.officeLocation = null;
+		testEntity.endWorkTime = null;
 		testEntity.additionalData = {};
 		testEntity.additionalData["mobilePhone"] = null;
 		testEntity.additionalData["accountEnabled"] = false;
@@ -41,12 +43,14 @@ describe("FormSerializationWriter", () => {
 			"birthday=2017-09-04", // Serializes dates
 			"workDuration=PT1H", // Serializes timespans
 			"startWorkTime=08%3A00%3A00.0000000", //Serializes times
-			"mobilePhone=null", // Serializes null values
+			"mobilePhone=null", // Serializes null values in additionalData
 			"accountEnabled=false",
 			"jobTitle=Author",
 			"createdDateTime=1970-01-01T00%3A00%3A00.000Z",
 			"deviceNames=device1",
 			"deviceNames=device2", // Serializes collections
+			"officeLocation=null", // Serializes null values
+			"endWorkTime=null", // Serializes null values
 		];
 		const arr = form.split("&");
 		let count = 0;
