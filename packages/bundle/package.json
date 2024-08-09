@@ -1,6 +1,6 @@
 {
 	"name": "@microsoft/kiota-bundle",
-	"version": "1.0.0-preview.1",
+	"version": "1.0.0-preview.2",
 	"description": "Kiota Bundle package providing default implementations for client setup for kiota generated libraries in TypeScript and JavaScript",
 	"main": "dist/es/src/index.js",
 	"module": "dist/es/src/index.js",
@@ -29,15 +29,13 @@
 		"url": "https://github.com/microsoft/kiota-typescript/issues"
 	},
 	"homepage": "https://github.com/microsoft/kiota#readme",
-	"devDependencies": {
-	},
 	"dependencies": {
-    "@microsoft/kiota-abstractions": "*",
-    "@microsoft/kiota-http-fetchlibrary": "*",
-    "@microsoft/kiota-serialization-form": "*",
-    "@microsoft/kiota-serialization-json": "*",
-    "@microsoft/kiota-serialization-text": "*",
-    "@microsoft/kiota-serialization-multipart": "*"
+		"@microsoft/kiota-abstractions": "*",
+		"@microsoft/kiota-http-fetchlibrary": "*",
+		"@microsoft/kiota-serialization-form": "*",
+		"@microsoft/kiota-serialization-json": "*",
+		"@microsoft/kiota-serialization-multipart": "*",
+		"@microsoft/kiota-serialization-text": "*"
 	},
 	"publishConfig": {
 		"access": "public"

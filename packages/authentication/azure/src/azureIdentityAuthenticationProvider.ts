@@ -18,8 +18,10 @@ export class AzureIdentityAuthenticationProvider extends BaseBearerTokenAuthenti
 	 *@param scopes The scopes to use for authentication.
 	 *@param options The options to use for authentication.
 	 *@param allowedHosts The allowed hosts to use for authentication.
+	 *@param observabilityOptions The observability options to use for authentication.
+	 *@param isCaeEnabled A flag to determine if Continuous Access Evaluation is enabled
 	 */
-	public constructor(credentials: TokenCredential, scopes: string[] = ["https://graph.microsoft.com/.default"], options?: GetTokenOptions, allowedHosts: Set<string> = new Set<string>(["graph.microsoft.com", "graph.microsoft.us", "dod-graph.microsoft.us", "graph.microsoft.de", "microsoftgraph.chinacloudapi.cn", "canary.graph.microsoft.com"]), observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()) {
-		super(new AzureIdentityAccessTokenProvider(credentials, scopes, options, allowedHosts, observabilityOptions));
+	public constructor(credentials: TokenCredential, scopes: string[] = ["https://graph.microsoft.com/.default"], options?: GetTokenOptions, allowedHosts: Set<string> = new Set<string>(["graph.microsoft.com", "graph.microsoft.us", "dod-graph.microsoft.us", "graph.microsoft.de", "microsoftgraph.chinacloudapi.cn", "canary.graph.microsoft.com"]), observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl(), isCaeEnabled = true) {
+		super(new AzureIdentityAccessTokenProvider(credentials, scopes, options, allowedHosts, observabilityOptions, isCaeEnabled));
 	}
 }
