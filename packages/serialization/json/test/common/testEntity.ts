@@ -7,8 +7,6 @@
 
 import type { BackedModel, BackingStore, Parsable, ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
 import { Guid } from "guid-typescript";
-import { write } from "node:fs";
-import test from "node:test";
 
 const fakeBackingStore: BackingStore = {} as BackingStore;
 
