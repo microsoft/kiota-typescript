@@ -54,11 +54,11 @@ export interface InferenceClassificationRequestBuilderGetQueryParameters {
     /**
      * Expand related entities
      */
-    expand?: string[] | null;
+    expand?: string[];
     /**
      * Select properties to be returned
      */
-    select?: string[] | null;
+    select?: string[];
 }
 /**
  * Uri template for the request builder.

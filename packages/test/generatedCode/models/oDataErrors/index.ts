@@ -89,7 +89,7 @@ export interface ErrorDetails extends AdditionalDataHolder, Parsable {
     /**
      * Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
      */
-    additionalData?: Record<string, unknown> | null;
+    additionalData?: Record<string, unknown>;
     /**
      * The code property
      */
@@ -110,13 +110,13 @@ export interface InnerError extends AdditionalDataHolder, Parsable {
     /**
      * Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
      */
-    additionalData?: Record<string, unknown> | null;
+    additionalData?: Record<string, unknown>;
 }
 export interface MainError extends AdditionalDataHolder, Parsable {
     /**
      * Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
      */
-    additionalData?: Record<string, unknown> | null;
+    additionalData?: Record<string, unknown>;
     /**
      * The code property
      */
@@ -142,7 +142,7 @@ export interface ODataError extends AdditionalDataHolder, ApiError, Parsable {
     /**
      * Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
      */
-    additionalData?: Record<string, unknown> | null;
+    additionalData?: Record<string, unknown>;
     /**
      * The error property
      */

@@ -31,11 +31,11 @@ export interface CountRequestBuilderGetQueryParameters {
     /**
      * Filter items by property values
      */
-    filter?: string | null;
+    filter?: string;
     /**
      * Search items by search phrases
      */
-    search?: string | null;
+    search?: string;
 }
 /**
  * Uri template for the request builder.
