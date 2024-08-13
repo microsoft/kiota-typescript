@@ -194,7 +194,11 @@ export const apiClientProxifier = <T extends object>(requestAdapter: RequestAdap
 						if (navigationCandidate.pathParametersMappings && navigationCandidate.pathParametersMappings.length > 0) {
 							for (let i = 0; i < argArray.length; i++) {
 								const element = argArray[i];
-								downWardPathParameters[navigationCandidate.pathParametersMappings[i]] = element;
+								if (element) {
+									downWardPathParameters[navigationCandidate.pathParametersMappings[i]] = element;
+								} else {
+									throw new Error(`path parameter ${navigationCandidate.pathParametersMappings[i]} cannot be undefined`);
+								}
 							}
 						}
 						return apiClientProxifier(requestAdapter, downWardPathParameters, navigationCandidate.navigationMetadata, navigationCandidate.requestsMetadata);
