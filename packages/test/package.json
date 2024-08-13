@@ -1,23 +1,23 @@
 {
-  "name": "test-kiota-typescript-libraries",
-  "description": "Sample Project",
-  "version": "0.0.1-preview.7",
-  "main": "index.js",
-  "private": true,
-  "scripts": {
-    "test:integrated": "vitest run"
-  },
-  "dependencies": {
-    "@azure/identity": "^4.0.1",
-    "@microsoft/kiota-abstractions": "*",
-    "@microsoft/kiota-authentication-azure": "*",
-    "@microsoft/kiota-http-fetchlibrary": "*",
-    "@microsoft/kiota-serialization-form": "*",
-    "@microsoft/kiota-serialization-json": "*",
-    "@microsoft/kiota-serialization-text": "*",
-    "@microsoft/kiota-serialization-multipart": "*"
-  },
-  "files": [
-    "lib/"
-  ]
+	"name": "test-kiota-typescript-libraries",
+	"description": "Sample Project",
+	"version": "0.0.1-preview.8",
+	"main": "index.js",
+	"private": true,
+	"scripts": {
+		"test:integrated": "vitest run"
+	},
+	"dependencies": {
+		"@azure/identity": "^4.0.1",
+		"@microsoft/kiota-abstractions": "*",
+		"@microsoft/kiota-authentication-azure": "*",
+		"@microsoft/kiota-http-fetchlibrary": "*",
+		"@microsoft/kiota-serialization-form": "*",
+		"@microsoft/kiota-serialization-json": "*",
+		"@microsoft/kiota-serialization-multipart": "*",
+		"@microsoft/kiota-serialization-text": "*"
+	},
+	"files": [
+		"lib/"
+	]
 }

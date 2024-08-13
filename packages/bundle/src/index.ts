@@ -5,9 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-/**
- * Defines a serializable model object.
- */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface Parsable {}
+/* eslint-disable @typescript-eslint/triple-slash-reference*/
+
+export * from "./defaultRequestAdapter";

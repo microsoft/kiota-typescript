@@ -23,7 +23,7 @@ export function isLocalhostUrl(urlString: string): boolean {
 	try {
 		const url = new URL(urlString);
 		return localhostStrings.has(url.hostname);
-	} catch (e) {
+	} catch {
 		return false;
 	}
 }

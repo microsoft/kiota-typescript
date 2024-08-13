@@ -1,6 +1,6 @@
 {
 	"name": "@microsoft/kiota-abstractions",
-	"version": "1.0.0-preview.57",
+	"version": "1.0.0-preview.59",
 	"description": "Core abstractions for kiota generated libraries in TypeScript and JavaScript",
 	"main": "dist/es/src/index.js",
 	"module": "dist/es/src/index.js",
@@ -30,7 +30,6 @@
 	},
 	"homepage": "https://github.com/microsoft/kiota#readme",
 	"devDependencies": {
-		"@types/node": "^20.11.15",
 		"@types/uuid": "^10.0.0"
 	},
 	"dependencies": {

@@ -2,19 +2,20 @@
   "name": "kiota-typescript",
   "private": true,
   "devDependencies": {
-    "@microsoft/eslint-config-msgraph": "^2.0.0",
-    "@types/node": "^20.11.15",
+    "@microsoft/eslint-config-msgraph": "^4.1.1",
+    "@tony.ganchev/eslint-plugin-header": "^3.1.2",
+    "@types/node": "^22.0.0",
     "@types/sinon": "^17.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.0.0-alpha.54",
+    "@typescript-eslint/parser": "^8.0.0-alpha.54",
     "@vitest/browser": "^2.0.1",
     "@vitest/coverage-v8": "^2.0.1",
     "@vitest/ui": "^2.0.1",
-    "eslint": "^8.56.0",
+    "eslint": "^9.7.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-header": "^3.1.1",
-    "eslint-plugin-jsdoc": "^46.10.1",
+    "eslint-plugin-jsdoc": "^50.0.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-prettier": "^5.1.3",
-    "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-simple-import-sort": "^12.0.0",
     "husky": "^9.0.11",
     "lerna": "^8.0.2",
@@ -29,6 +30,7 @@
   "workspaces": [
     "packages/test/",
     "packages/abstractions",
+    "packages/bundle",
     "packages/http/*",
     "packages/serialization/*",
     "packages/authentication/*"
@@ -46,9 +48,9 @@
     "prettier:check": "npm run prettier:base -- --check \"packages/**/*.{ts,tsx}\"",
     "prettier:write": "npm run prettier:base -- --write \"packages/**/*.{ts,tsx}\"",
     "lint": "npm run lint:eslint",
-    "lint:eslint": "eslint -c .eslintrc.js --quiet \"packages/*/src/**/*.ts\"",
+    "lint:eslint": "eslint --quiet \"packages/*/src/**/*.ts\"",
     "lint:eslint:fix": "npm run lint:eslint -- --fix",
-    "lint:eslint:loud": "eslint -c .eslintrc.js \"packages/*/src/**/*.ts\"",
+    "lint:eslint:loud": "eslint \"packages/*/src/**/*.ts\"",
     "prepare": "husky"
   }
 }
