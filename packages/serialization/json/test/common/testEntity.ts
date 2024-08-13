@@ -11,17 +11,17 @@ import { Guid } from "guid-typescript";
 const fakeBackingStore: BackingStore = {} as BackingStore;
 
 export interface TestParser {
-	testCollection?: string[] | undefined;
-	testString?: string | undefined;
-	testBoolean?: boolean | undefined;
-	testComplexString?: string | undefined;
-	testObject?: Record<string, unknown> | undefined;
+	testCollection?: string[] | null | undefined;
+	testString?: string | null | undefined;
+	testBoolean?: boolean | null | undefined;
+	testComplexString?: string | null | undefined;
+	testObject?: Record<string, unknown> | null | undefined;
 	additionalData?: Record<string, unknown>;
-	testDate?: Date | undefined;
+	testDate?: Date | null | undefined;
 	foos?: FooResponse[] | undefined;
-	id?: string | undefined;
-	testNumber?: number | undefined;
-	testGuid?: Guid | undefined;
+	id?: string | null | undefined;
+	testNumber?: number | null | undefined;
+	testGuid?: Guid | null | undefined;
 }
 export interface TestBackedModel extends TestParser, BackedModel {
 	backingStoreEnabled?: boolean | undefined;

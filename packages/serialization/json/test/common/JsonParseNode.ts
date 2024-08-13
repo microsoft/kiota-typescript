@@ -70,7 +70,19 @@ describe("JsonParseNode", () => {
 		assert.equal(enumValueResult, TestEnumObject.A);
 	});
 
-	it("Test a null collection of object values", async () => {
+	it("Test an undefined collection of object values", async () => {
+		const result = new JsonParseNode({
+			foos: [
+				{
+					id: "b089d1f1-e527-4b8a-ba96-094922af6e40",
+					bars: undefined,
+				},
+			],
+		}).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
+		assert.isUndefined(result.foos![0].bars);
+	});
+
+	it("Test null collection of object values", async () => {
 		const result = new JsonParseNode({
 			foos: [
 				{
@@ -79,7 +91,7 @@ describe("JsonParseNode", () => {
 				},
 			],
 		}).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
-		assert.equal(result.foos![0].bars, undefined);
+		assert.isUndefined(result.foos![0].bars);
 	});
 
 	it("Test collection of object values", async () => {
