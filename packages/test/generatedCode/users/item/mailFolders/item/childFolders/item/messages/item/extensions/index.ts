@@ -62,36 +62,40 @@ export interface ExtensionsRequestBuilderGetQueryParameters {
     /**
      * Include count of items
      */
-    count?: boolean;
+    count?: boolean | null;
     /**
      * Expand related entities
      */
-    expand?: string[];
+    expand?: string[] | null;
     /**
      * Filter items by property values
      */
-    filter?: string;
+    filter?: string | null;
     /**
      * Order items by property values
      */
-    orderby?: string[];
+    orderby?: string[] | null;
+    /**
+     * Search items by search phrases
+     */
+    search?: string | null;
     /**
      * Select properties to be returned
      */
-    select?: string[];
+    select?: string[] | null;
     /**
      * Skip the first n items
      */
-    skip?: number;
+    skip?: number | null;
     /**
      * Show only the first n items
      */
-    top?: number;
+    top?: number | null;
 }
 /**
  * Uri template for the request builder.
  */
-export const ExtensionsRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/childFolders/{mailFolder%2Did1}/messages/{message%2Did}/extensions{?%24count,%24expand,%24filter,%24orderby,%24select,%24skip,%24top}";
+export const ExtensionsRequestBuilderUriTemplate = "{+baseurl}/users/{user%2Did}/mailFolders/{mailFolder%2Did}/childFolders/{mailFolder%2Did1}/messages/{message%2Did}/extensions{?%24count,%24expand,%24filter,%24orderby,%24search,%24select,%24skip,%24top}";
 /**
  * Mapper for query parameters from symbol name to serialization name represented as a constant.
  */
@@ -100,6 +104,7 @@ const ExtensionsRequestBuilderGetQueryParametersMapper: Record<string, string> =
     "expand": "%24expand",
     "filter": "%24filter",
     "orderby": "%24orderby",
+    "search": "%24search",
     "select": "%24select",
     "skip": "%24skip",
     "top": "%24top",

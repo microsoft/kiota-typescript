@@ -79,11 +79,11 @@ export interface MessageItemRequestBuilderGetQueryParameters {
     /**
      * Expand related entities
      */
-    expand?: string[];
+    expand?: string[] | null;
     /**
      * Select properties to be returned
      */
-    select?: string[];
+    select?: string[] | null;
 }
 /**
  * Uri template for the request builder.

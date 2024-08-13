@@ -62,35 +62,35 @@ export interface MessagesRequestBuilderGetQueryParameters {
     /**
      * Include count of items
      */
-    count?: boolean;
+    count?: boolean | null;
     /**
      * Expand related entities
      */
-    expand?: string[];
+    expand?: string[] | null;
     /**
      * Filter items by property values
      */
-    filter?: string;
+    filter?: string | null;
     /**
      * Order items by property values
      */
-    orderby?: string[];
+    orderby?: string[] | null;
     /**
      * Search items by search phrases
      */
-    search?: string;
+    search?: string | null;
     /**
      * Select properties to be returned
      */
-    select?: string[];
+    select?: string[] | null;
     /**
      * Skip the first n items
      */
-    skip?: number;
+    skip?: number | null;
     /**
      * Show only the first n items
      */
-    top?: number;
+    top?: number | null;
 }
 /**
  * Uri template for the request builder.
