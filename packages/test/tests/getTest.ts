@@ -10,6 +10,11 @@ import { proxyClient, userId } from "./testClient";
 import { assert, describe, it } from "vitest";
 
 describe("TestGet", () => {
+	it("should validate empty params in indexer", async () => {
+		assert.throws(() => proxyClient.users.byUserId("").messages.byMessageId("").toGetRequestInformation(), "path parameter user%2Did cannot be undefined");
+		assert.throws(() => proxyClient.users.byUserId("").messages.byMessageId("").toGetRequestInformation(), "path parameter user%2Did cannot be undefined");
+		assert.throws(() => proxyClient.users.byUserId("sample").messages.byMessageId("").toGetRequestInformation(), "path parameter message%2Did cannot be undefined");
+	});
 	it("should return a test", async () => {
 		const messages = await proxyClient.users.byUserId(userId).messages.get();
 		assert.isDefined(messages?.value);
