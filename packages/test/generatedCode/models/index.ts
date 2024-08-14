@@ -1249,340 +1249,392 @@ export type Sensitivity = (typeof SensitivityObject)[keyof typeof SensitivityObj
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeAttachment(writer: SerializationWriter, attachment: Partial<Attachment> | undefined = {}) : void {
-    serializeEntity(writer, attachment)
-    writer.writeStringValue("contentType", attachment.contentType);
-    writer.writeBooleanValue("isInline", attachment.isInline);
-    writer.writeDateValue("lastModifiedDateTime", attachment.lastModifiedDateTime);
-    writer.writeStringValue("name", attachment.name);
-    writer.writeNumberValue("size", attachment.size);
+export function serializeAttachment(writer: SerializationWriter, attachment: Partial<Attachment> | undefined | null = {}) : void {
+    if (attachment) {
+        serializeEntity(writer, attachment)
+        writer.writeStringValue("contentType", attachment.contentType);
+        writer.writeBooleanValue("isInline", attachment.isInline);
+        writer.writeDateValue("lastModifiedDateTime", attachment.lastModifiedDateTime);
+        writer.writeStringValue("name", attachment.name);
+        writer.writeNumberValue("size", attachment.size);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeAttachmentCollectionResponse(writer: SerializationWriter, attachmentCollectionResponse: Partial<AttachmentCollectionResponse> | undefined = {}) : void {
-    writer.writeStringValue("@odata.nextLink", attachmentCollectionResponse.odataNextLink);
-    writer.writeCollectionOfObjectValues<Attachment>("value", attachmentCollectionResponse.value, serializeAttachment);
-    writer.writeAdditionalData(attachmentCollectionResponse.additionalData);
+export function serializeAttachmentCollectionResponse(writer: SerializationWriter, attachmentCollectionResponse: Partial<AttachmentCollectionResponse> | undefined | null = {}) : void {
+    if (attachmentCollectionResponse) {
+        writer.writeStringValue("@odata.nextLink", attachmentCollectionResponse.odataNextLink);
+        writer.writeCollectionOfObjectValues<Attachment>("value", attachmentCollectionResponse.value, serializeAttachment);
+        writer.writeAdditionalData(attachmentCollectionResponse.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeDateTimeTimeZone(writer: SerializationWriter, dateTimeTimeZone: Partial<DateTimeTimeZone> | undefined = {}) : void {
-    writer.writeStringValue("dateTime", dateTimeTimeZone.dateTime);
-    writer.writeStringValue("timeZone", dateTimeTimeZone.timeZone);
-    writer.writeAdditionalData(dateTimeTimeZone.additionalData);
+export function serializeDateTimeTimeZone(writer: SerializationWriter, dateTimeTimeZone: Partial<DateTimeTimeZone> | undefined | null = {}) : void {
+    if (dateTimeTimeZone) {
+        writer.writeStringValue("dateTime", dateTimeTimeZone.dateTime);
+        writer.writeStringValue("timeZone", dateTimeTimeZone.timeZone);
+        writer.writeAdditionalData(dateTimeTimeZone.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeEmailAddress(writer: SerializationWriter, emailAddress: Partial<EmailAddress> | undefined = {}) : void {
-    writer.writeStringValue("address", emailAddress.address);
-    writer.writeStringValue("name", emailAddress.name);
-    writer.writeAdditionalData(emailAddress.additionalData);
+export function serializeEmailAddress(writer: SerializationWriter, emailAddress: Partial<EmailAddress> | undefined | null = {}) : void {
+    if (emailAddress) {
+        writer.writeStringValue("address", emailAddress.address);
+        writer.writeStringValue("name", emailAddress.name);
+        writer.writeAdditionalData(emailAddress.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeEntity(writer: SerializationWriter, entity: Partial<Entity> | undefined = {}) : void {
-    writer.writeStringValue("id", entity.id);
-    writer.writeAdditionalData(entity.additionalData);
+export function serializeEntity(writer: SerializationWriter, entity: Partial<Entity> | undefined | null = {}) : void {
+    if (entity) {
+        writer.writeStringValue("id", entity.id);
+        writer.writeAdditionalData(entity.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeExtension(writer: SerializationWriter, extension: Partial<Extension> | undefined = {}) : void {
-    serializeEntity(writer, extension)
+export function serializeExtension(writer: SerializationWriter, extension: Partial<Extension> | undefined | null = {}) : void {
+    if (extension) {
+        serializeEntity(writer, extension)
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeExtensionCollectionResponse(writer: SerializationWriter, extensionCollectionResponse: Partial<ExtensionCollectionResponse> | undefined = {}) : void {
-    writer.writeStringValue("@odata.nextLink", extensionCollectionResponse.odataNextLink);
-    writer.writeCollectionOfObjectValues<Extension>("value", extensionCollectionResponse.value, serializeExtension);
-    writer.writeAdditionalData(extensionCollectionResponse.additionalData);
+export function serializeExtensionCollectionResponse(writer: SerializationWriter, extensionCollectionResponse: Partial<ExtensionCollectionResponse> | undefined | null = {}) : void {
+    if (extensionCollectionResponse) {
+        writer.writeStringValue("@odata.nextLink", extensionCollectionResponse.odataNextLink);
+        writer.writeCollectionOfObjectValues<Extension>("value", extensionCollectionResponse.value, serializeExtension);
+        writer.writeAdditionalData(extensionCollectionResponse.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeFollowupFlag(writer: SerializationWriter, followupFlag: Partial<FollowupFlag> | undefined = {}) : void {
-    writer.writeObjectValue<DateTimeTimeZone>("completedDateTime", followupFlag.completedDateTime, serializeDateTimeTimeZone);
-    writer.writeObjectValue<DateTimeTimeZone>("dueDateTime", followupFlag.dueDateTime, serializeDateTimeTimeZone);
-    writer.writeEnumValue<FollowupFlagStatus>("flagStatus", followupFlag.flagStatus);
-    writer.writeObjectValue<DateTimeTimeZone>("startDateTime", followupFlag.startDateTime, serializeDateTimeTimeZone);
-    writer.writeAdditionalData(followupFlag.additionalData);
+export function serializeFollowupFlag(writer: SerializationWriter, followupFlag: Partial<FollowupFlag> | undefined | null = {}) : void {
+    if (followupFlag) {
+        writer.writeObjectValue<DateTimeTimeZone>("completedDateTime", followupFlag.completedDateTime, serializeDateTimeTimeZone);
+        writer.writeObjectValue<DateTimeTimeZone>("dueDateTime", followupFlag.dueDateTime, serializeDateTimeTimeZone);
+        writer.writeEnumValue<FollowupFlagStatus>("flagStatus", followupFlag.flagStatus);
+        writer.writeObjectValue<DateTimeTimeZone>("startDateTime", followupFlag.startDateTime, serializeDateTimeTimeZone);
+        writer.writeAdditionalData(followupFlag.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeInferenceClassification(writer: SerializationWriter, inferenceClassification: Partial<InferenceClassification> | undefined = {}) : void {
-    serializeEntity(writer, inferenceClassification)
-    writer.writeCollectionOfObjectValues<InferenceClassificationOverride>("overrides", inferenceClassification.overrides, serializeInferenceClassificationOverride);
+export function serializeInferenceClassification(writer: SerializationWriter, inferenceClassification: Partial<InferenceClassification> | undefined | null = {}) : void {
+    if (inferenceClassification) {
+        serializeEntity(writer, inferenceClassification)
+        writer.writeCollectionOfObjectValues<InferenceClassificationOverride>("overrides", inferenceClassification.overrides, serializeInferenceClassificationOverride);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeInferenceClassificationOverride(writer: SerializationWriter, inferenceClassificationOverride: Partial<InferenceClassificationOverride> | undefined = {}) : void {
-    serializeEntity(writer, inferenceClassificationOverride)
-    writer.writeEnumValue<InferenceClassificationType>("classifyAs", inferenceClassificationOverride.classifyAs);
-    writer.writeObjectValue<EmailAddress>("senderEmailAddress", inferenceClassificationOverride.senderEmailAddress, serializeEmailAddress);
+export function serializeInferenceClassificationOverride(writer: SerializationWriter, inferenceClassificationOverride: Partial<InferenceClassificationOverride> | undefined | null = {}) : void {
+    if (inferenceClassificationOverride) {
+        serializeEntity(writer, inferenceClassificationOverride)
+        writer.writeEnumValue<InferenceClassificationType>("classifyAs", inferenceClassificationOverride.classifyAs);
+        writer.writeObjectValue<EmailAddress>("senderEmailAddress", inferenceClassificationOverride.senderEmailAddress, serializeEmailAddress);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeInferenceClassificationOverrideCollectionResponse(writer: SerializationWriter, inferenceClassificationOverrideCollectionResponse: Partial<InferenceClassificationOverrideCollectionResponse> | undefined = {}) : void {
-    writer.writeStringValue("@odata.nextLink", inferenceClassificationOverrideCollectionResponse.odataNextLink);
-    writer.writeCollectionOfObjectValues<InferenceClassificationOverride>("value", inferenceClassificationOverrideCollectionResponse.value, serializeInferenceClassificationOverride);
-    writer.writeAdditionalData(inferenceClassificationOverrideCollectionResponse.additionalData);
+export function serializeInferenceClassificationOverrideCollectionResponse(writer: SerializationWriter, inferenceClassificationOverrideCollectionResponse: Partial<InferenceClassificationOverrideCollectionResponse> | undefined | null = {}) : void {
+    if (inferenceClassificationOverrideCollectionResponse) {
+        writer.writeStringValue("@odata.nextLink", inferenceClassificationOverrideCollectionResponse.odataNextLink);
+        writer.writeCollectionOfObjectValues<InferenceClassificationOverride>("value", inferenceClassificationOverrideCollectionResponse.value, serializeInferenceClassificationOverride);
+        writer.writeAdditionalData(inferenceClassificationOverrideCollectionResponse.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeInternetMessageHeader(writer: SerializationWriter, internetMessageHeader: Partial<InternetMessageHeader> | undefined = {}) : void {
-    writer.writeStringValue("name", internetMessageHeader.name);
-    writer.writeStringValue("value", internetMessageHeader.value);
-    writer.writeAdditionalData(internetMessageHeader.additionalData);
+export function serializeInternetMessageHeader(writer: SerializationWriter, internetMessageHeader: Partial<InternetMessageHeader> | undefined | null = {}) : void {
+    if (internetMessageHeader) {
+        writer.writeStringValue("name", internetMessageHeader.name);
+        writer.writeStringValue("value", internetMessageHeader.value);
+        writer.writeAdditionalData(internetMessageHeader.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeItemBody(writer: SerializationWriter, itemBody: Partial<ItemBody> | undefined = {}) : void {
-    writer.writeStringValue("content", itemBody.content);
-    writer.writeEnumValue<BodyType>("contentType", itemBody.contentType);
-    writer.writeAdditionalData(itemBody.additionalData);
+export function serializeItemBody(writer: SerializationWriter, itemBody: Partial<ItemBody> | undefined | null = {}) : void {
+    if (itemBody) {
+        writer.writeStringValue("content", itemBody.content);
+        writer.writeEnumValue<BodyType>("contentType", itemBody.contentType);
+        writer.writeAdditionalData(itemBody.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeMailFolder(writer: SerializationWriter, mailFolder: Partial<MailFolder> | undefined = {}) : void {
-    serializeEntity(writer, mailFolder)
-    writer.writeNumberValue("childFolderCount", mailFolder.childFolderCount);
-    writer.writeCollectionOfObjectValues<MailFolder>("childFolders", mailFolder.childFolders, serializeMailFolder);
-    writer.writeStringValue("displayName", mailFolder.displayName);
-    writer.writeBooleanValue("isHidden", mailFolder.isHidden);
-    writer.writeCollectionOfObjectValues<MessageRule>("messageRules", mailFolder.messageRules, serializeMessageRule);
-    writer.writeCollectionOfObjectValues<Message>("messages", mailFolder.messages, serializeMessage);
-    writer.writeCollectionOfObjectValues<MultiValueLegacyExtendedProperty>("multiValueExtendedProperties", mailFolder.multiValueExtendedProperties, serializeMultiValueLegacyExtendedProperty);
-    writer.writeStringValue("parentFolderId", mailFolder.parentFolderId);
-    writer.writeCollectionOfObjectValues<SingleValueLegacyExtendedProperty>("singleValueExtendedProperties", mailFolder.singleValueExtendedProperties, serializeSingleValueLegacyExtendedProperty);
-    writer.writeNumberValue("totalItemCount", mailFolder.totalItemCount);
-    writer.writeNumberValue("unreadItemCount", mailFolder.unreadItemCount);
+export function serializeMailFolder(writer: SerializationWriter, mailFolder: Partial<MailFolder> | undefined | null = {}) : void {
+    if (mailFolder) {
+        serializeEntity(writer, mailFolder)
+        writer.writeNumberValue("childFolderCount", mailFolder.childFolderCount);
+        writer.writeCollectionOfObjectValues<MailFolder>("childFolders", mailFolder.childFolders, serializeMailFolder);
+        writer.writeStringValue("displayName", mailFolder.displayName);
+        writer.writeBooleanValue("isHidden", mailFolder.isHidden);
+        writer.writeCollectionOfObjectValues<MessageRule>("messageRules", mailFolder.messageRules, serializeMessageRule);
+        writer.writeCollectionOfObjectValues<Message>("messages", mailFolder.messages, serializeMessage);
+        writer.writeCollectionOfObjectValues<MultiValueLegacyExtendedProperty>("multiValueExtendedProperties", mailFolder.multiValueExtendedProperties, serializeMultiValueLegacyExtendedProperty);
+        writer.writeStringValue("parentFolderId", mailFolder.parentFolderId);
+        writer.writeCollectionOfObjectValues<SingleValueLegacyExtendedProperty>("singleValueExtendedProperties", mailFolder.singleValueExtendedProperties, serializeSingleValueLegacyExtendedProperty);
+        writer.writeNumberValue("totalItemCount", mailFolder.totalItemCount);
+        writer.writeNumberValue("unreadItemCount", mailFolder.unreadItemCount);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeMailFolderCollectionResponse(writer: SerializationWriter, mailFolderCollectionResponse: Partial<MailFolderCollectionResponse> | undefined = {}) : void {
-    writer.writeStringValue("@odata.nextLink", mailFolderCollectionResponse.odataNextLink);
-    writer.writeCollectionOfObjectValues<MailFolder>("value", mailFolderCollectionResponse.value, serializeMailFolder);
-    writer.writeAdditionalData(mailFolderCollectionResponse.additionalData);
+export function serializeMailFolderCollectionResponse(writer: SerializationWriter, mailFolderCollectionResponse: Partial<MailFolderCollectionResponse> | undefined | null = {}) : void {
+    if (mailFolderCollectionResponse) {
+        writer.writeStringValue("@odata.nextLink", mailFolderCollectionResponse.odataNextLink);
+        writer.writeCollectionOfObjectValues<MailFolder>("value", mailFolderCollectionResponse.value, serializeMailFolder);
+        writer.writeAdditionalData(mailFolderCollectionResponse.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeMessage(writer: SerializationWriter, message: Partial<Message> | undefined = {}) : void {
-    serializeOutlookItem(writer, message)
-    writer.writeCollectionOfObjectValues<Attachment>("attachments", message.attachments, serializeAttachment);
-    writer.writeCollectionOfObjectValues<Recipient>("bccRecipients", message.bccRecipients, serializeRecipient);
-    writer.writeObjectValue<ItemBody>("body", message.body, serializeItemBody);
-    writer.writeStringValue("bodyPreview", message.bodyPreview);
-    writer.writeCollectionOfObjectValues<Recipient>("ccRecipients", message.ccRecipients, serializeRecipient);
-    writer.writeStringValue("conversationId", message.conversationId);
-    writer.writeStringValue("conversationIndex", message.conversationIndex);
-    writer.writeCollectionOfObjectValues<Extension>("extensions", message.extensions, serializeExtension);
-    writer.writeObjectValue<FollowupFlag>("flag", message.flag, serializeFollowupFlag);
-    writer.writeObjectValue<Recipient>("from", message.from, serializeRecipient);
-    writer.writeBooleanValue("hasAttachments", message.hasAttachments);
-    writer.writeEnumValue<Importance>("importance", message.importance);
-    writer.writeEnumValue<InferenceClassificationType>("inferenceClassification", message.inferenceClassification);
-    writer.writeCollectionOfObjectValues<InternetMessageHeader>("internetMessageHeaders", message.internetMessageHeaders, serializeInternetMessageHeader);
-    writer.writeStringValue("internetMessageId", message.internetMessageId);
-    writer.writeBooleanValue("isDeliveryReceiptRequested", message.isDeliveryReceiptRequested);
-    writer.writeBooleanValue("isDraft", message.isDraft);
-    writer.writeBooleanValue("isRead", message.isRead);
-    writer.writeBooleanValue("isReadReceiptRequested", message.isReadReceiptRequested);
-    writer.writeCollectionOfObjectValues<MultiValueLegacyExtendedProperty>("multiValueExtendedProperties", message.multiValueExtendedProperties, serializeMultiValueLegacyExtendedProperty);
-    writer.writeStringValue("parentFolderId", message.parentFolderId);
-    writer.writeDateValue("receivedDateTime", message.receivedDateTime);
-    writer.writeCollectionOfObjectValues<Recipient>("replyTo", message.replyTo, serializeRecipient);
-    writer.writeObjectValue<Recipient>("sender", message.sender, serializeRecipient);
-    writer.writeDateValue("sentDateTime", message.sentDateTime);
-    writer.writeCollectionOfObjectValues<SingleValueLegacyExtendedProperty>("singleValueExtendedProperties", message.singleValueExtendedProperties, serializeSingleValueLegacyExtendedProperty);
-    writer.writeStringValue("subject", message.subject);
-    writer.writeCollectionOfObjectValues<Recipient>("toRecipients", message.toRecipients, serializeRecipient);
-    writer.writeObjectValue<ItemBody>("uniqueBody", message.uniqueBody, serializeItemBody);
-    writer.writeStringValue("webLink", message.webLink);
+export function serializeMessage(writer: SerializationWriter, message: Partial<Message> | undefined | null = {}) : void {
+    if (message) {
+        serializeOutlookItem(writer, message)
+        writer.writeCollectionOfObjectValues<Attachment>("attachments", message.attachments, serializeAttachment);
+        writer.writeCollectionOfObjectValues<Recipient>("bccRecipients", message.bccRecipients, serializeRecipient);
+        writer.writeObjectValue<ItemBody>("body", message.body, serializeItemBody);
+        writer.writeStringValue("bodyPreview", message.bodyPreview);
+        writer.writeCollectionOfObjectValues<Recipient>("ccRecipients", message.ccRecipients, serializeRecipient);
+        writer.writeStringValue("conversationId", message.conversationId);
+        writer.writeStringValue("conversationIndex", message.conversationIndex);
+        writer.writeCollectionOfObjectValues<Extension>("extensions", message.extensions, serializeExtension);
+        writer.writeObjectValue<FollowupFlag>("flag", message.flag, serializeFollowupFlag);
+        writer.writeObjectValue<Recipient>("from", message.from, serializeRecipient);
+        writer.writeBooleanValue("hasAttachments", message.hasAttachments);
+        writer.writeEnumValue<Importance>("importance", message.importance);
+        writer.writeEnumValue<InferenceClassificationType>("inferenceClassification", message.inferenceClassification);
+        writer.writeCollectionOfObjectValues<InternetMessageHeader>("internetMessageHeaders", message.internetMessageHeaders, serializeInternetMessageHeader);
+        writer.writeStringValue("internetMessageId", message.internetMessageId);
+        writer.writeBooleanValue("isDeliveryReceiptRequested", message.isDeliveryReceiptRequested);
+        writer.writeBooleanValue("isDraft", message.isDraft);
+        writer.writeBooleanValue("isRead", message.isRead);
+        writer.writeBooleanValue("isReadReceiptRequested", message.isReadReceiptRequested);
+        writer.writeCollectionOfObjectValues<MultiValueLegacyExtendedProperty>("multiValueExtendedProperties", message.multiValueExtendedProperties, serializeMultiValueLegacyExtendedProperty);
+        writer.writeStringValue("parentFolderId", message.parentFolderId);
+        writer.writeDateValue("receivedDateTime", message.receivedDateTime);
+        writer.writeCollectionOfObjectValues<Recipient>("replyTo", message.replyTo, serializeRecipient);
+        writer.writeObjectValue<Recipient>("sender", message.sender, serializeRecipient);
+        writer.writeDateValue("sentDateTime", message.sentDateTime);
+        writer.writeCollectionOfObjectValues<SingleValueLegacyExtendedProperty>("singleValueExtendedProperties", message.singleValueExtendedProperties, serializeSingleValueLegacyExtendedProperty);
+        writer.writeStringValue("subject", message.subject);
+        writer.writeCollectionOfObjectValues<Recipient>("toRecipients", message.toRecipients, serializeRecipient);
+        writer.writeObjectValue<ItemBody>("uniqueBody", message.uniqueBody, serializeItemBody);
+        writer.writeStringValue("webLink", message.webLink);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeMessageCollectionResponse(writer: SerializationWriter, messageCollectionResponse: Partial<MessageCollectionResponse> | undefined = {}) : void {
-    writer.writeStringValue("@odata.nextLink", messageCollectionResponse.odataNextLink);
-    writer.writeCollectionOfObjectValues<Message>("value", messageCollectionResponse.value, serializeMessage);
-    writer.writeAdditionalData(messageCollectionResponse.additionalData);
+export function serializeMessageCollectionResponse(writer: SerializationWriter, messageCollectionResponse: Partial<MessageCollectionResponse> | undefined | null = {}) : void {
+    if (messageCollectionResponse) {
+        writer.writeStringValue("@odata.nextLink", messageCollectionResponse.odataNextLink);
+        writer.writeCollectionOfObjectValues<Message>("value", messageCollectionResponse.value, serializeMessage);
+        writer.writeAdditionalData(messageCollectionResponse.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeMessageRule(writer: SerializationWriter, messageRule: Partial<MessageRule> | undefined = {}) : void {
-    serializeEntity(writer, messageRule)
-    writer.writeObjectValue<MessageRuleActions>("actions", messageRule.actions, serializeMessageRuleActions);
-    writer.writeObjectValue<MessageRulePredicates>("conditions", messageRule.conditions, serializeMessageRulePredicates);
-    writer.writeStringValue("displayName", messageRule.displayName);
-    writer.writeObjectValue<MessageRulePredicates>("exceptions", messageRule.exceptions, serializeMessageRulePredicates);
-    writer.writeBooleanValue("hasError", messageRule.hasError);
-    writer.writeBooleanValue("isEnabled", messageRule.isEnabled);
-    writer.writeBooleanValue("isReadOnly", messageRule.isReadOnly);
-    writer.writeNumberValue("sequence", messageRule.sequence);
+export function serializeMessageRule(writer: SerializationWriter, messageRule: Partial<MessageRule> | undefined | null = {}) : void {
+    if (messageRule) {
+        serializeEntity(writer, messageRule)
+        writer.writeObjectValue<MessageRuleActions>("actions", messageRule.actions, serializeMessageRuleActions);
+        writer.writeObjectValue<MessageRulePredicates>("conditions", messageRule.conditions, serializeMessageRulePredicates);
+        writer.writeStringValue("displayName", messageRule.displayName);
+        writer.writeObjectValue<MessageRulePredicates>("exceptions", messageRule.exceptions, serializeMessageRulePredicates);
+        writer.writeBooleanValue("hasError", messageRule.hasError);
+        writer.writeBooleanValue("isEnabled", messageRule.isEnabled);
+        writer.writeBooleanValue("isReadOnly", messageRule.isReadOnly);
+        writer.writeNumberValue("sequence", messageRule.sequence);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeMessageRuleActions(writer: SerializationWriter, messageRuleActions: Partial<MessageRuleActions> | undefined = {}) : void {
-    writer.writeCollectionOfPrimitiveValues<string>("assignCategories", messageRuleActions.assignCategories);
-    writer.writeStringValue("copyToFolder", messageRuleActions.copyToFolder);
-    writer.writeBooleanValue("delete", messageRuleActions.delete);
-    writer.writeCollectionOfObjectValues<Recipient>("forwardAsAttachmentTo", messageRuleActions.forwardAsAttachmentTo, serializeRecipient);
-    writer.writeCollectionOfObjectValues<Recipient>("forwardTo", messageRuleActions.forwardTo, serializeRecipient);
-    writer.writeBooleanValue("markAsRead", messageRuleActions.markAsRead);
-    writer.writeEnumValue<Importance>("markImportance", messageRuleActions.markImportance);
-    writer.writeStringValue("moveToFolder", messageRuleActions.moveToFolder);
-    writer.writeBooleanValue("permanentDelete", messageRuleActions.permanentDelete);
-    writer.writeCollectionOfObjectValues<Recipient>("redirectTo", messageRuleActions.redirectTo, serializeRecipient);
-    writer.writeBooleanValue("stopProcessingRules", messageRuleActions.stopProcessingRules);
-    writer.writeAdditionalData(messageRuleActions.additionalData);
+export function serializeMessageRuleActions(writer: SerializationWriter, messageRuleActions: Partial<MessageRuleActions> | undefined | null = {}) : void {
+    if (messageRuleActions) {
+        writer.writeCollectionOfPrimitiveValues<string>("assignCategories", messageRuleActions.assignCategories);
+        writer.writeStringValue("copyToFolder", messageRuleActions.copyToFolder);
+        writer.writeBooleanValue("delete", messageRuleActions.delete);
+        writer.writeCollectionOfObjectValues<Recipient>("forwardAsAttachmentTo", messageRuleActions.forwardAsAttachmentTo, serializeRecipient);
+        writer.writeCollectionOfObjectValues<Recipient>("forwardTo", messageRuleActions.forwardTo, serializeRecipient);
+        writer.writeBooleanValue("markAsRead", messageRuleActions.markAsRead);
+        writer.writeEnumValue<Importance>("markImportance", messageRuleActions.markImportance);
+        writer.writeStringValue("moveToFolder", messageRuleActions.moveToFolder);
+        writer.writeBooleanValue("permanentDelete", messageRuleActions.permanentDelete);
+        writer.writeCollectionOfObjectValues<Recipient>("redirectTo", messageRuleActions.redirectTo, serializeRecipient);
+        writer.writeBooleanValue("stopProcessingRules", messageRuleActions.stopProcessingRules);
+        writer.writeAdditionalData(messageRuleActions.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeMessageRuleCollectionResponse(writer: SerializationWriter, messageRuleCollectionResponse: Partial<MessageRuleCollectionResponse> | undefined = {}) : void {
-    writer.writeStringValue("@odata.nextLink", messageRuleCollectionResponse.odataNextLink);
-    writer.writeCollectionOfObjectValues<MessageRule>("value", messageRuleCollectionResponse.value, serializeMessageRule);
-    writer.writeAdditionalData(messageRuleCollectionResponse.additionalData);
+export function serializeMessageRuleCollectionResponse(writer: SerializationWriter, messageRuleCollectionResponse: Partial<MessageRuleCollectionResponse> | undefined | null = {}) : void {
+    if (messageRuleCollectionResponse) {
+        writer.writeStringValue("@odata.nextLink", messageRuleCollectionResponse.odataNextLink);
+        writer.writeCollectionOfObjectValues<MessageRule>("value", messageRuleCollectionResponse.value, serializeMessageRule);
+        writer.writeAdditionalData(messageRuleCollectionResponse.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeMessageRulePredicates(writer: SerializationWriter, messageRulePredicates: Partial<MessageRulePredicates> | undefined = {}) : void {
-    writer.writeCollectionOfPrimitiveValues<string>("bodyContains", messageRulePredicates.bodyContains);
-    writer.writeCollectionOfPrimitiveValues<string>("bodyOrSubjectContains", messageRulePredicates.bodyOrSubjectContains);
-    writer.writeCollectionOfPrimitiveValues<string>("categories", messageRulePredicates.categories);
-    writer.writeCollectionOfObjectValues<Recipient>("fromAddresses", messageRulePredicates.fromAddresses, serializeRecipient);
-    writer.writeBooleanValue("hasAttachments", messageRulePredicates.hasAttachments);
-    writer.writeCollectionOfPrimitiveValues<string>("headerContains", messageRulePredicates.headerContains);
-    writer.writeEnumValue<Importance>("importance", messageRulePredicates.importance);
-    writer.writeBooleanValue("isApprovalRequest", messageRulePredicates.isApprovalRequest);
-    writer.writeBooleanValue("isAutomaticForward", messageRulePredicates.isAutomaticForward);
-    writer.writeBooleanValue("isAutomaticReply", messageRulePredicates.isAutomaticReply);
-    writer.writeBooleanValue("isEncrypted", messageRulePredicates.isEncrypted);
-    writer.writeBooleanValue("isMeetingRequest", messageRulePredicates.isMeetingRequest);
-    writer.writeBooleanValue("isMeetingResponse", messageRulePredicates.isMeetingResponse);
-    writer.writeBooleanValue("isNonDeliveryReport", messageRulePredicates.isNonDeliveryReport);
-    writer.writeBooleanValue("isPermissionControlled", messageRulePredicates.isPermissionControlled);
-    writer.writeBooleanValue("isReadReceipt", messageRulePredicates.isReadReceipt);
-    writer.writeBooleanValue("isSigned", messageRulePredicates.isSigned);
-    writer.writeBooleanValue("isVoicemail", messageRulePredicates.isVoicemail);
-    writer.writeEnumValue<MessageActionFlag>("messageActionFlag", messageRulePredicates.messageActionFlag);
-    writer.writeBooleanValue("notSentToMe", messageRulePredicates.notSentToMe);
-    writer.writeCollectionOfPrimitiveValues<string>("recipientContains", messageRulePredicates.recipientContains);
-    writer.writeCollectionOfPrimitiveValues<string>("senderContains", messageRulePredicates.senderContains);
-    writer.writeEnumValue<Sensitivity>("sensitivity", messageRulePredicates.sensitivity);
-    writer.writeBooleanValue("sentCcMe", messageRulePredicates.sentCcMe);
-    writer.writeBooleanValue("sentOnlyToMe", messageRulePredicates.sentOnlyToMe);
-    writer.writeCollectionOfObjectValues<Recipient>("sentToAddresses", messageRulePredicates.sentToAddresses, serializeRecipient);
-    writer.writeBooleanValue("sentToMe", messageRulePredicates.sentToMe);
-    writer.writeBooleanValue("sentToOrCcMe", messageRulePredicates.sentToOrCcMe);
-    writer.writeCollectionOfPrimitiveValues<string>("subjectContains", messageRulePredicates.subjectContains);
-    writer.writeObjectValue<SizeRange>("withinSizeRange", messageRulePredicates.withinSizeRange, serializeSizeRange);
-    writer.writeAdditionalData(messageRulePredicates.additionalData);
+export function serializeMessageRulePredicates(writer: SerializationWriter, messageRulePredicates: Partial<MessageRulePredicates> | undefined | null = {}) : void {
+    if (messageRulePredicates) {
+        writer.writeCollectionOfPrimitiveValues<string>("bodyContains", messageRulePredicates.bodyContains);
+        writer.writeCollectionOfPrimitiveValues<string>("bodyOrSubjectContains", messageRulePredicates.bodyOrSubjectContains);
+        writer.writeCollectionOfPrimitiveValues<string>("categories", messageRulePredicates.categories);
+        writer.writeCollectionOfObjectValues<Recipient>("fromAddresses", messageRulePredicates.fromAddresses, serializeRecipient);
+        writer.writeBooleanValue("hasAttachments", messageRulePredicates.hasAttachments);
+        writer.writeCollectionOfPrimitiveValues<string>("headerContains", messageRulePredicates.headerContains);
+        writer.writeEnumValue<Importance>("importance", messageRulePredicates.importance);
+        writer.writeBooleanValue("isApprovalRequest", messageRulePredicates.isApprovalRequest);
+        writer.writeBooleanValue("isAutomaticForward", messageRulePredicates.isAutomaticForward);
+        writer.writeBooleanValue("isAutomaticReply", messageRulePredicates.isAutomaticReply);
+        writer.writeBooleanValue("isEncrypted", messageRulePredicates.isEncrypted);
+        writer.writeBooleanValue("isMeetingRequest", messageRulePredicates.isMeetingRequest);
+        writer.writeBooleanValue("isMeetingResponse", messageRulePredicates.isMeetingResponse);
+        writer.writeBooleanValue("isNonDeliveryReport", messageRulePredicates.isNonDeliveryReport);
+        writer.writeBooleanValue("isPermissionControlled", messageRulePredicates.isPermissionControlled);
+        writer.writeBooleanValue("isReadReceipt", messageRulePredicates.isReadReceipt);
+        writer.writeBooleanValue("isSigned", messageRulePredicates.isSigned);
+        writer.writeBooleanValue("isVoicemail", messageRulePredicates.isVoicemail);
+        writer.writeEnumValue<MessageActionFlag>("messageActionFlag", messageRulePredicates.messageActionFlag);
+        writer.writeBooleanValue("notSentToMe", messageRulePredicates.notSentToMe);
+        writer.writeCollectionOfPrimitiveValues<string>("recipientContains", messageRulePredicates.recipientContains);
+        writer.writeCollectionOfPrimitiveValues<string>("senderContains", messageRulePredicates.senderContains);
+        writer.writeEnumValue<Sensitivity>("sensitivity", messageRulePredicates.sensitivity);
+        writer.writeBooleanValue("sentCcMe", messageRulePredicates.sentCcMe);
+        writer.writeBooleanValue("sentOnlyToMe", messageRulePredicates.sentOnlyToMe);
+        writer.writeCollectionOfObjectValues<Recipient>("sentToAddresses", messageRulePredicates.sentToAddresses, serializeRecipient);
+        writer.writeBooleanValue("sentToMe", messageRulePredicates.sentToMe);
+        writer.writeBooleanValue("sentToOrCcMe", messageRulePredicates.sentToOrCcMe);
+        writer.writeCollectionOfPrimitiveValues<string>("subjectContains", messageRulePredicates.subjectContains);
+        writer.writeObjectValue<SizeRange>("withinSizeRange", messageRulePredicates.withinSizeRange, serializeSizeRange);
+        writer.writeAdditionalData(messageRulePredicates.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeMultiValueLegacyExtendedProperty(writer: SerializationWriter, multiValueLegacyExtendedProperty: Partial<MultiValueLegacyExtendedProperty> | undefined = {}) : void {
-    serializeEntity(writer, multiValueLegacyExtendedProperty)
-    writer.writeCollectionOfPrimitiveValues<string>("value", multiValueLegacyExtendedProperty.value);
+export function serializeMultiValueLegacyExtendedProperty(writer: SerializationWriter, multiValueLegacyExtendedProperty: Partial<MultiValueLegacyExtendedProperty> | undefined | null = {}) : void {
+    if (multiValueLegacyExtendedProperty) {
+        serializeEntity(writer, multiValueLegacyExtendedProperty)
+        writer.writeCollectionOfPrimitiveValues<string>("value", multiValueLegacyExtendedProperty.value);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeOutlookItem(writer: SerializationWriter, outlookItem: Partial<OutlookItem> | undefined = {}) : void {
-    serializeEntity(writer, outlookItem)
-    writer.writeCollectionOfPrimitiveValues<string>("categories", outlookItem.categories);
-    writer.writeStringValue("changeKey", outlookItem.changeKey);
-    writer.writeDateValue("createdDateTime", outlookItem.createdDateTime);
-    writer.writeDateValue("lastModifiedDateTime", outlookItem.lastModifiedDateTime);
+export function serializeOutlookItem(writer: SerializationWriter, outlookItem: Partial<OutlookItem> | undefined | null = {}) : void {
+    if (outlookItem) {
+        serializeEntity(writer, outlookItem)
+        writer.writeCollectionOfPrimitiveValues<string>("categories", outlookItem.categories);
+        writer.writeStringValue("changeKey", outlookItem.changeKey);
+        writer.writeDateValue("createdDateTime", outlookItem.createdDateTime);
+        writer.writeDateValue("lastModifiedDateTime", outlookItem.lastModifiedDateTime);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeRecipient(writer: SerializationWriter, recipient: Partial<Recipient> | undefined = {}) : void {
-    writer.writeObjectValue<EmailAddress>("emailAddress", recipient.emailAddress, serializeEmailAddress);
-    writer.writeAdditionalData(recipient.additionalData);
+export function serializeRecipient(writer: SerializationWriter, recipient: Partial<Recipient> | undefined | null = {}) : void {
+    if (recipient) {
+        writer.writeObjectValue<EmailAddress>("emailAddress", recipient.emailAddress, serializeEmailAddress);
+        writer.writeAdditionalData(recipient.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeSingleValueLegacyExtendedProperty(writer: SerializationWriter, singleValueLegacyExtendedProperty: Partial<SingleValueLegacyExtendedProperty> | undefined = {}) : void {
-    serializeEntity(writer, singleValueLegacyExtendedProperty)
-    writer.writeStringValue("value", singleValueLegacyExtendedProperty.value);
+export function serializeSingleValueLegacyExtendedProperty(writer: SerializationWriter, singleValueLegacyExtendedProperty: Partial<SingleValueLegacyExtendedProperty> | undefined | null = {}) : void {
+    if (singleValueLegacyExtendedProperty) {
+        serializeEntity(writer, singleValueLegacyExtendedProperty)
+        writer.writeStringValue("value", singleValueLegacyExtendedProperty.value);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeSizeRange(writer: SerializationWriter, sizeRange: Partial<SizeRange> | undefined = {}) : void {
-    writer.writeNumberValue("maximumSize", sizeRange.maximumSize);
-    writer.writeNumberValue("minimumSize", sizeRange.minimumSize);
-    writer.writeAdditionalData(sizeRange.additionalData);
+export function serializeSizeRange(writer: SerializationWriter, sizeRange: Partial<SizeRange> | undefined | null = {}) : void {
+    if (sizeRange) {
+        writer.writeNumberValue("maximumSize", sizeRange.maximumSize);
+        writer.writeNumberValue("minimumSize", sizeRange.minimumSize);
+        writer.writeAdditionalData(sizeRange.additionalData);
+    }
 }
 export interface SingleValueLegacyExtendedProperty extends Entity, Parsable {
     /**
