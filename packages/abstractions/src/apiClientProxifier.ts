@@ -195,9 +195,9 @@ export const apiClientProxifier = <T extends object>(requestAdapter: RequestAdap
 							for (let i = 0; i < argArray.length; i++) {
 								const element = argArray[i];
 								if (element === undefined || element === null || element === "") {
-									downWardPathParameters[navigationCandidate.pathParametersMappings[i]] = element;
-								} else {
 									throw new Error(`path parameter ${navigationCandidate.pathParametersMappings[i]} cannot be undefined`);
+								} else {
+									downWardPathParameters[navigationCandidate.pathParametersMappings[i]] = element;
 								}
 							}
 						}
