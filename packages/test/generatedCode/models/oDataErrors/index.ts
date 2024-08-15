@@ -153,41 +153,49 @@ export interface ODataError extends AdditionalDataHolder, ApiError, Parsable {
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeErrorDetails(writer: SerializationWriter, errorDetails: Partial<ErrorDetails> | undefined = {}) : void {
-    writer.writeStringValue("code", errorDetails.code);
-    writer.writeStringValue("message", errorDetails.message);
-    writer.writeStringValue("target", errorDetails.target);
-    writer.writeAdditionalData(errorDetails.additionalData);
+export function serializeErrorDetails(writer: SerializationWriter, errorDetails: Partial<ErrorDetails> | undefined | null = {}) : void {
+    if (errorDetails) {
+        writer.writeStringValue("code", errorDetails.code);
+        writer.writeStringValue("message", errorDetails.message);
+        writer.writeStringValue("target", errorDetails.target);
+        writer.writeAdditionalData(errorDetails.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeInnerError(writer: SerializationWriter, innerError: Partial<InnerError> | undefined = {}) : void {
-    writer.writeAdditionalData(innerError.additionalData);
+export function serializeInnerError(writer: SerializationWriter, innerError: Partial<InnerError> | undefined | null = {}) : void {
+    if (innerError) {
+        writer.writeAdditionalData(innerError.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeMainError(writer: SerializationWriter, mainError: Partial<MainError> | undefined = {}) : void {
-    writer.writeStringValue("code", mainError.code);
-    writer.writeCollectionOfObjectValues<ErrorDetails>("details", mainError.details, serializeErrorDetails);
-    writer.writeObjectValue<InnerError>("innerError", mainError.innerError, serializeInnerError);
-    writer.writeStringValue("message", mainError.message);
-    writer.writeStringValue("target", mainError.target);
-    writer.writeAdditionalData(mainError.additionalData);
+export function serializeMainError(writer: SerializationWriter, mainError: Partial<MainError> | undefined | null = {}) : void {
+    if (mainError) {
+        writer.writeStringValue("code", mainError.code);
+        writer.writeCollectionOfObjectValues<ErrorDetails>("details", mainError.details, serializeErrorDetails);
+        writer.writeObjectValue<InnerError>("innerError", mainError.innerError, serializeInnerError);
+        writer.writeStringValue("message", mainError.message);
+        writer.writeStringValue("target", mainError.target);
+        writer.writeAdditionalData(mainError.additionalData);
+    }
 }
 /**
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
 // @ts-ignore
-export function serializeODataError(writer: SerializationWriter, oDataError: Partial<ODataError> | undefined = {}) : void {
-    writer.writeObjectValue<MainError>("error", oDataError.errorEscaped, serializeMainError);
-    writer.writeAdditionalData(oDataError.additionalData);
+export function serializeODataError(writer: SerializationWriter, oDataError: Partial<ODataError> | undefined | null = {}) : void {
+    if (oDataError) {
+        writer.writeObjectValue<MainError>("error", oDataError.errorEscaped, serializeMainError);
+        writer.writeAdditionalData(oDataError.additionalData);
+    }
 }
 /* tslint:enable */
 /* eslint-enable */
