@@ -25,7 +25,7 @@
     "tsc-alias": "^1.8.10",
     "typescript": "^5.3.3",
     "vitest": "^2.0.1",
-    "webdriverio": "^8.33.1"
+    "webdriverio": "^9.0.1"
   },
   "workspaces": [
     "packages/test/",
