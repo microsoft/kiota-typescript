@@ -4,6 +4,6 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-export * from "./stringUtils";
+export * from "./enumUtils";
 export * from "./guidUtils";
 export * from "./inNodeEnv";
