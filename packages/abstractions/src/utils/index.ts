@@ -5,5 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 export * from "./stringUtils";
+export * from "./enumUtils";
 export * from "./guidUtils";
 export * from "./inNodeEnv";

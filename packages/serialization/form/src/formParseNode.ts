@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { createBackedModelProxyHandler, DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, isBackingStoreEnabled, toFirstCharacterUpper } from "@microsoft/kiota-abstractions";
+import { createBackedModelProxyHandler, DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, isBackingStoreEnabled, getEnumValueFromStringValue } from "@microsoft/kiota-abstractions";
 
 export class FormParseNode implements ParseNode {
 	private readonly _fields: Record<string, string> = {};
@@ -104,15 +104,14 @@ export class FormParseNode implements ParseNode {
 		if (!rawValues) {
 			return [];
 		}
-		return rawValues.split(",").map((x) => type[toFirstCharacterUpper(x)] as T);
+		return rawValues.split(",").map((x) => getEnumValueFromStringValue(x, type) as T);
 	};
 	public getEnumValue = <T>(type: any): T | undefined => {
-		const values = this.getCollectionOfEnumValues(type);
-		if (values.length > 0) {
-			return values[0] as T;
-		} else {
+		const rawValue = this.getStringValue();
+		if (!rawValue) {
 			return undefined;
 		}
+		return getEnumValueFromStringValue(rawValue, type as Record<string, T>) as T;
 	};
 	private assignFieldValues = <T extends Parsable>(model: T, parsableFactory: ParsableFactory<T>): void => {
 		const fields = parsableFactory(this)(model);

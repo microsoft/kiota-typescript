@@ -5,8 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { DateOnly, Duration, TimeOnly, UntypedNode, createBackedModelProxyHandler, createUntypedArray, createUntypedBoolean, createUntypedNodeFromDiscriminatorValue, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString, inNodeEnv, isBackingStoreEnabled, isUntypedNode, parseGuidString, toFirstCharacterUpper, type Parsable, type ParsableFactory, type ParseNode } from "@microsoft/kiota-abstractions";
-
+import { DateOnly, Duration, TimeOnly, UntypedNode, createBackedModelProxyHandler, createUntypedArray, createUntypedBoolean, createUntypedNodeFromDiscriminatorValue, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString, inNodeEnv, isBackingStoreEnabled, isUntypedNode, parseGuidString, getEnumValueFromStringValue, type Parsable, type ParsableFactory, type ParseNode } from "@microsoft/kiota-abstractions";
 export class JsonParseNode implements ParseNode {
 	constructor(private readonly _jsonNode: unknown) {}
 	public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
@@ -125,11 +124,12 @@ export class JsonParseNode implements ParseNode {
 		}
 		return [];
 	};
+
 	public getEnumValue = <T>(type: unknown): T | undefined => {
 		const rawValue = this.getStringValue();
 		if (!rawValue) {
 			return undefined;
 		}
-		return (type as Record<string, T>)[toFirstCharacterUpper(rawValue)];
+		return getEnumValueFromStringValue(rawValue, type as Record<string, T>) as T;
 	};
 }

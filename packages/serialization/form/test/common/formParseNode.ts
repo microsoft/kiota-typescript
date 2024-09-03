@@ -55,4 +55,21 @@ describe("FormParseNode", () => {
 		const imaginaryNode = parseNode.getChildNode("imaginaryNode");
 		assert.isUndefined(imaginaryNode);
 	});
+	it("Test enum values with special or reserved characters", async () => {
+		type Test_status = (typeof Test_statusObject)[keyof typeof Test_statusObject];
+		const Test_statusObject = {
+			IN_PROGRESS: "IN_PROGRESS",
+			INPROGRESS: "IN PROGRESS",
+			NEW_ESCAPED: "NEW",
+		} as const;
+
+		const enumValueResult = new FormParseNode("NEW").getEnumValue(Test_statusObject) as Test_status;
+		assert.equal(enumValueResult, Test_statusObject.NEW_ESCAPED);
+
+		const enumValueResult2 = new FormParseNode("IN_PROGRESS").getEnumValue(Test_statusObject) as Test_status;
+		assert.equal(enumValueResult2, Test_statusObject.IN_PROGRESS);
+
+		const enumValueResult3 = new FormParseNode("IN PROGRESS").getEnumValue(Test_statusObject) as Test_status;
+		assert.equal(enumValueResult3, Test_statusObject.INPROGRESS);
+	});
 });

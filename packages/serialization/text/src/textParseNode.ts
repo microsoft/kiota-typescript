@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, toFirstCharacterUpper, inNodeEnv } from "@microsoft/kiota-abstractions";
+import { DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, toFirstCharacterUpper, inNodeEnv, getEnumValueFromStringValue } from "@microsoft/kiota-abstractions";
 
 export class TextParseNode implements ParseNode {
 	private static noStructuredDataMessage = "text does not support structured data";
@@ -64,6 +64,10 @@ export class TextParseNode implements ParseNode {
 		throw new Error(TextParseNode.noStructuredDataMessage);
 	};
 	public getEnumValue = <T>(type: any): T | undefined => {
-		return type[toFirstCharacterUpper(this.text)] as T;
+		const rawValue = this.getStringValue();
+		if (!rawValue) {
+			return undefined;
+		}
+		return getEnumValueFromStringValue(rawValue, type as Record<string, T>) as T;
 	};
 }
