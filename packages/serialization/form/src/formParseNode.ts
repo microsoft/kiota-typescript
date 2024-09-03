@@ -111,7 +111,7 @@ export class FormParseNode implements ParseNode {
 		if (!rawValue) {
 			return undefined;
 		}
-		return getEnumValueFromStringValue(rawValue, type as Record<string, T>) as T;
+		return getEnumValueFromStringValue(rawValue, type as Record<PropertyKey, PropertyKey>) as T;
 	};
 	private assignFieldValues = <T extends Parsable>(model: T, parsableFactory: ParsableFactory<T>): void => {
 		const fields = parsableFactory(this)(model);

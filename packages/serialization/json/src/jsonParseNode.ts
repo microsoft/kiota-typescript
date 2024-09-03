@@ -130,6 +130,6 @@ export class JsonParseNode implements ParseNode {
 		if (!rawValue) {
 			return undefined;
 		}
-		return getEnumValueFromStringValue(rawValue, type as Record<string, T>) as T;
+		return getEnumValueFromStringValue(rawValue, type as Record<PropertyKey, PropertyKey>) as T;
 	};
 }
