@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, toFirstCharacterUpper, inNodeEnv, getEnumValueFromStringValue } from "@microsoft/kiota-abstractions";
+import { DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, inNodeEnv, getEnumValueFromStringValue } from "@microsoft/kiota-abstractions";
 
 export class TextParseNode implements ParseNode {
 	private static noStructuredDataMessage = "text does not support structured data";
