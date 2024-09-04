@@ -1,0 +1,43 @@
+{
+	"name": "@microsoft/kiota-bundle",
+	"version": "1.0.0-preview.5",
+	"description": "Kiota Bundle package providing default implementations for client setup for kiota generated libraries in TypeScript and JavaScript",
+	"main": "dist/es/src/index.js",
+	"module": "dist/es/src/index.js",
+	"types": "dist/es/src/index.d.ts",
+	"type": "module",
+	"scripts": {
+		"build": "npm run build:esm",
+		"build:esm": "tsc && tsc-alias",
+		"lint": "eslint . --ext .ts",
+		"lint:fix": "eslint . --ext .ts --fix",
+		"clean": "rimraf ./dist",
+		"test:browser": "vitest run --browser.name=chrome --browser.headless --browser.provider=webdriverio",
+		"test:node": "vitest --run",
+		"test": "npm run test:node && npm run test:browser"
+	},
+	"repository": "git://github.com/microsoft/kiota-typescript.git",
+	"keywords": [
+		"kiota",
+		"openAPI",
+		"Microsoft",
+		"Graph"
+	],
+	"author": "Microsoft",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/microsoft/kiota-typescript/issues"
+	},
+	"homepage": "https://github.com/microsoft/kiota#readme",
+	"dependencies": {
+		"@microsoft/kiota-abstractions": "*",
+		"@microsoft/kiota-http-fetchlibrary": "*",
+		"@microsoft/kiota-serialization-form": "*",
+		"@microsoft/kiota-serialization-json": "*",
+		"@microsoft/kiota-serialization-multipart": "*",
+		"@microsoft/kiota-serialization-text": "*"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

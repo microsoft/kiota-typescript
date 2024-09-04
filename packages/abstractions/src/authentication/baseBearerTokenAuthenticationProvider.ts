@@ -25,7 +25,7 @@ export class BaseBearerTokenAuthenticationProvider implements AuthenticationProv
 		if (additionalAuthenticationContext?.claims && request.headers.has(BaseBearerTokenAuthenticationProvider.authorizationHeaderKey)) {
 			request.headers.delete(BaseBearerTokenAuthenticationProvider.authorizationHeaderKey);
 		}
-		if (!request.headers || !request.headers.has(BaseBearerTokenAuthenticationProvider.authorizationHeaderKey)) {
+		if (!request.headers?.has(BaseBearerTokenAuthenticationProvider.authorizationHeaderKey)) {
 			const token = await this.accessTokenProvider.getAuthorizationToken(request.URL, additionalAuthenticationContext);
 			if (!request.headers) {
 				request.headers = new Headers();

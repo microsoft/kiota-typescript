@@ -1,0 +1,11 @@
+.eslint**
+.prettier**
+*.log
+*.tgz
+**/test/**/*
+docs/
+node_modules/
+rollup.config.js
+src/
+tsconfig.**.json
+vite.config.mts

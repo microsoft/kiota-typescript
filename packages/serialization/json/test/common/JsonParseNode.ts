@@ -70,7 +70,37 @@ describe("JsonParseNode", () => {
 		assert.equal(enumValueResult, TestEnumObject.A);
 	});
 
-	it("Test a null collection of object values", async () => {
+	it("Test enum values with special or reserved characters", async () => {
+		type Test_status = (typeof Test_statusObject)[keyof typeof Test_statusObject];
+		const Test_statusObject = {
+			IN_PROGRESS: "IN_PROGRESS",
+			INPROGRESS: "IN PROGRESS",
+			NEW_ESCAPED: "NEW",
+		} as const;
+
+		const enumValueResult = new JsonParseNode("NEW").getEnumValue(Test_statusObject) as Test_status;
+		assert.equal(enumValueResult, Test_statusObject.NEW_ESCAPED);
+
+		const enumValueResult2 = new JsonParseNode("IN_PROGRESS").getEnumValue(Test_statusObject) as Test_status;
+		assert.equal(enumValueResult2, Test_statusObject.IN_PROGRESS);
+
+		const enumValueResult3 = new JsonParseNode("IN PROGRESS").getEnumValue(Test_statusObject) as Test_status;
+		assert.equal(enumValueResult3, Test_statusObject.INPROGRESS);
+	});
+
+	it("Test an undefined collection of object values", async () => {
+		const result = new JsonParseNode({
+			foos: [
+				{
+					id: "b089d1f1-e527-4b8a-ba96-094922af6e40",
+					bars: undefined,
+				},
+			],
+		}).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
+		assert.isUndefined(result.foos![0].bars);
+	});
+
+	it("Test null collection of object values", async () => {
 		const result = new JsonParseNode({
 			foos: [
 				{
@@ -79,7 +109,7 @@ describe("JsonParseNode", () => {
 				},
 			],
 		}).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
-		assert.equal(result.foos![0].bars, undefined);
+		assert.isUndefined(result.foos![0].bars);
 	});
 
 	it("Test collection of object values", async () => {
