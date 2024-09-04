@@ -118,7 +118,7 @@ export function serializePet(writer: SerializationWriter, pet: Partial<Pet> | un
 /**
  * Creates a new instance of the appropriate class based on discriminator value
  * @param parseNode The parse node to use to read the discriminator value and create the object
- * @returns {Cat | Dog | number | string}
+ * @returns {Cat | Dog}
  */
 export function createPetGetResponse_dataFromDiscriminatorValue(parseNode: ParseNode | undefined): (instance?: Parsable) => Record<string, (node: ParseNode) => void> {
 	return deserializeIntoPetGetResponse_data;
@@ -138,7 +138,7 @@ export function createPetGetResponseFromDiscriminatorValue(parseNode: ParseNode 
 export function deserializeIntoPetGetResponse(petGetResponse: Partial<PetGetResponse> | undefined = {}): Record<string, (node: ParseNode) => void> {
 	return {
 		data: (n) => {
-			petGetResponse.data = n.getNumberValue() ?? n.getStringValue() ?? n.getObjectValue<Cat | Dog | number | string>(createPetGetResponse_dataFromDiscriminatorValue);
+			petGetResponse.data = n.getNumberValue() ?? n.getStringValue() ?? n.getObjectValue<Cat | Dog>(createPetGetResponse_dataFromDiscriminatorValue);
 		},
 		request_id: (n) => {
 			petGetResponse.request_id = n.getStringValue();
@@ -149,7 +149,7 @@ export function deserializeIntoPetGetResponse(petGetResponse: Partial<PetGetResp
  * The deserialization information for the current model
  * @returns {Record<string, (node: ParseNode) => void>}
  */
-export function deserializeIntoPetGetResponse_data(petGetResponse_data: Partial<Cat | Dog | number | string> | undefined = {}): Record<string, (node: ParseNode) => void> {
+export function deserializeIntoPetGetResponse_data(petGetResponse_data: Partial<Cat | Dog> | undefined = {}): Record<string, (node: ParseNode) => void> {
 	return {
 		...deserializeIntoCat(petGetResponse_data as Cat),
 		...deserializeIntoDog(petGetResponse_data as Dog),
@@ -192,15 +192,15 @@ export interface PetRequestBuilder extends BaseRequestBuilder<PetRequestBuilder>
  * @param writer Serialization writer to use to serialize this model
  */
 export function serializePetGetResponse(writer: SerializationWriter, petGetResponse: Partial<PetGetResponse> | undefined = {}): void {
-	switch (typeof petGetResponse.data) {
-		case "number":
+	switch (true) {
+		case typeof petGetResponse.data === "number":
 			writer.writeNumberValue("data", petGetResponse.data);
 			break;
-		case "string":
+		case typeof petGetResponse.data === "string":
 			writer.writeStringValue("data", petGetResponse.data);
 			break;
 		default:
-			writer.writeObjectValue<Cat | Dog | number | string>("data", petGetResponse.data, serializePetGetResponse_data);
+			writer.writeObjectValue<Cat | Dog>("data", petGetResponse.data, serializePetGetResponse_data);
 			break;
 	}
 	writer.writeStringValue("request_id", petGetResponse.request_id);
@@ -210,7 +210,7 @@ export function serializePetGetResponse(writer: SerializationWriter, petGetRespo
  * Serializes information the current object
  * @param writer Serialization writer to use to serialize this model
  */
-export function serializePetGetResponse_data(writer: SerializationWriter, petGetResponse_data: Partial<Cat | Dog | number | string> | undefined = {}): void {
+export function serializePetGetResponse_data(writer: SerializationWriter, petGetResponse_data: Partial<Cat | Dog> | undefined = {}): void {
 	serializeCat(writer, petGetResponse_data as Cat);
 	serializeDog(writer, petGetResponse_data as Dog);
 }
