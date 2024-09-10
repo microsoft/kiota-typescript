@@ -177,7 +177,7 @@ export class RetryHandler implements Middleware {
             if(delay){
               span.setAttribute("http.request.resend_delay", delay);
             }
-						span.setAttribute("http.status_code", response.status);
+						span.setAttribute("http.response.status_code", response.status);
 						return this.executeWithRetry(url, fetchRequestInit, retryAttempts, currentOptions, requestOptions);
 					} finally {
 						span.end();

@@ -463,7 +463,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 					if (responseContentType) {
 						spanForAttributes.setAttribute("http.response_content_type", responseContentType);
 					}
-					spanForAttributes.setAttribute("http.status_code", response.status);
+					spanForAttributes.setAttribute("http.response.status_code", response.status);
 					// getting the http.flavor (protocol version) is impossible with fetch API
 				}
 				return response;
