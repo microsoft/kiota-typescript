@@ -96,6 +96,30 @@ describe("RequestInformation", () => {
 		assert.equal(requestInformation.URL, "http://localhost/me?datasets=1,2");
 	});
 
+	it.each([
+		{ someNumber: -1, expected: "http://localhost/-1" },
+		{ someNumber: 0, expected: "http://localhost/0" },
+		{ someNumber: 1, expected: "http://localhost/1" },
+		{ someNumber: NaN, expected: "http://localhost/NaN" },
+	])("Sets number $someNumber in path parameters", () => {
+		const requestInformation = new RequestInformation();
+		requestInformation.pathParameters["baseurl"] = baseUrl;
+		requestInformation.pathParameters["someNumber"] = 0;
+		requestInformation.urlTemplate = "http://localhost/{someNumber}";
+		assert.equal(requestInformation.URL, "http://localhost/0");
+	});
+
+	it.each([
+		{ someBoolean: true, expected: "http://localhost/true" },
+		{ someBoolean: false, expected: "http://localhost/false" },
+	])("Sets false in path parameters", () => {
+		const requestInformation = new RequestInformation();
+		requestInformation.pathParameters["baseurl"] = baseUrl;
+		requestInformation.pathParameters["someBoolean"] = false;
+		requestInformation.urlTemplate = "http://localhost/{someBoolean}";
+		assert.equal(requestInformation.URL, "http://localhost/false");
+	});
+
 	it("Sets enum value in path parameters", () => {
 		const requestInformation = new RequestInformation();
 		requestInformation.pathParameters["baseurl"] = baseUrl;
