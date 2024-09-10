@@ -19,6 +19,20 @@ export class CompressionHandler implements Middleware {
 	next: Middleware | undefined;
 
 	/**
+	 * @private
+	 * @static
+	 * A member holding the name of content range header
+	 */
+	private static CONTENT_RANGE_HEADER = "Content-Range";
+
+	/**
+	 * @private
+	 * @static
+	 * A member holding the name of content encoding header
+	 */
+	private static CONTENT_ENCODING_HEADER = "Content-Encoding";
+
+	/**
 	 * @public
 	 * @constructor
 	 * Creates a new instance of the CompressionHandler class
@@ -58,7 +72,7 @@ export class CompressionHandler implements Middleware {
 			return this.next?.execute(url, requestInit, requestOptions) ?? Promise.reject(new Error("Response is undefined"));
 		}
 
-		span?.setAttribute("http.request_body_compressed", true);
+		span?.setAttribute("http.request.body.compressed", true);
 
 		const unCompressedBody = await this.readBodyAsBytes(requestInit.body);
 		const unCompressedBodySize = unCompressedBody.length;
@@ -68,20 +82,20 @@ export class CompressionHandler implements Middleware {
 
 		// add Content-Encoding to request header
 		requestInit.headers = new Headers(requestInit.headers);
-		requestInit.headers.set("Content-Encoding", "gzip");
+		requestInit.headers.set(CompressionHandler.CONTENT_ENCODING_HEADER, "gzip");
 		requestInit.body = compressedBody.body;
 
-		span?.setAttribute("http.request_content_length", compressedBody.size);
+		span?.setAttribute("http.request.body.size", compressedBody.size);
 
 		// execute the next middleware and check if the response code is 415
 		try {
 			const response = await this.next?.execute(url, requestInit, requestOptions);
 			if (response?.status === 415) {
 				// remove the Content-Encoding header
-				requestInit.headers.delete("Content-Encoding");
+				requestInit.headers.delete(CompressionHandler.CONTENT_ENCODING_HEADER);
 				requestInit.body = unCompressedBody.buffer;
-				span?.setAttribute("http.request_body_compressed", false);
-				span?.setAttribute("http.request_content_length", unCompressedBodySize);
+				span?.setAttribute("http.request.body.compressed", false);
+				span?.setAttribute("http.request.body.size", unCompressedBodySize);
 
 				return this.next?.execute(url, requestInit, requestOptions) ?? Promise.reject(new Error("Response is undefined"));
 			}
@@ -95,12 +109,12 @@ export class CompressionHandler implements Middleware {
 			return false;
 		}
 		if (header instanceof Headers) {
-			const contentRange = header.get("Content-Range");
+			const contentRange = header.get(CompressionHandler.CONTENT_RANGE_HEADER);
 			if (contentRange) {
 				return contentRange.toLowerCase().includes("bytes");
 			}
 		} else if (typeof header === "object") {
-			const contentRange = (header as Record<string, string>)["Content-Range"];
+			const contentRange = (header as Record<string, string>)[CompressionHandler.CONTENT_RANGE_HEADER];
 			if (contentRange) {
 				return contentRange.toLowerCase().includes("bytes");
 			}
@@ -113,9 +127,9 @@ export class CompressionHandler implements Middleware {
 			return false;
 		}
 		if (header instanceof Headers) {
-			return header.has("Content-Encoding");
+			return header.has(CompressionHandler.CONTENT_ENCODING_HEADER);
 		} else if (typeof header === "object") {
-			return "Content-Encoding" in header;
+			return CompressionHandler.CONTENT_ENCODING_HEADER in header;
 		}
 		return false;
 	}
@@ -139,29 +153,37 @@ export class CompressionHandler implements Middleware {
 		throw new Error("Unsupported body type");
 	}
 
+	private compressReqBody(reqBody: Uint8Array): Promise<{ body: ArrayBuffer; size: number }> {
+		return new Promise((resolve, reject) => {
+			const buffer = new ArrayBuffer(reqBody.length);
+			const gzipWriter = new CompressionStream("gzip");
+			const writer = gzipWriter.writable.getWriter();
 
-  private  compressReqBody(reqBody: Uint8Array): Promise<{ body: ReadableStream<Uint8Array>, size: number }> {
-      return new Promise((resolve, reject) => {
-          const buffer = new ArrayBuffer(reqBody.length);
-          const gzipWriter = new CompressionStream('gzip');
-          const writer = gzipWriter.writable.getWriter();
+			writer
+				.write(reqBody)
+				.then(() => {
+					writer
+						.close()
+						.then(() => {
+							const compressedStream = gzipWriter.readable;
+							const reader = compressedStream.getReader();
+							let size = 0;
 
-          writer.write(reqBody).then(() => {
-              writer.close().then(() => {
-                  const compressedStream = gzipWriter.readable;
-                  const reader = compressedStream.getReader();
-                  let size = 0;
-
-                  reader.read().then(function process({ done, value }) {
-                      if (done) {
-                          resolve({ body: new Response(buffer).body!, size });
-                          return;
-                      }
-                      size += value.length;
-                      reader.read().then(process);
-                  }).catch(reject);
-              }).catch(reject);
-          }).catch(reject);
-      });
-  }
+							reader
+								.read()
+								.then(function process({ done, value }) {
+									if (done) {
+										resolve({ body: buffer, size });
+										return;
+									}
+									size += value.length;
+									reader.read().then(process);
+								})
+								.catch(reject);
+						})
+						.catch(reject);
+				})
+				.catch(reject);
+		});
+	}
 }
