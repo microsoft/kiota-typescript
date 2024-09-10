@@ -463,7 +463,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 					if (responseContentType) {
 						spanForAttributes.setAttribute("http.response_content_type", responseContentType);
 					}
-					spanForAttributes.setAttribute("http.status_code", response.status);
+					spanForAttributes.setAttribute("http.response.status_code", response.status);
 					// getting the http.flavor (protocol version) is impossible with fetch API
 				}
 				return response;
@@ -479,7 +479,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				const responseClaims = this.getClaimsFromResponse(response, claims);
 				if (responseClaims) {
 					span.addEvent(FetchRequestAdapter.authenticateChallengedEventKey);
-					spanForAttributes.setAttribute("http.retry_count", 1);
+					spanForAttributes.setAttribute("http.request.resend_count", 1);
 					await this.purgeResponseBody(response);
 					return await this.getHttpResponseMessage(requestInfo, spanForAttributes, responseClaims);
 				}
