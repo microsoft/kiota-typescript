@@ -39,7 +39,7 @@ export class ApiKeyAuthenticationProvider implements AuthenticationProvider {
 	public authenticateRequest(
 		request: RequestInformation,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		additionalAuthenticationContext?: Record<string, unknown> | undefined,
+		additionalAuthenticationContext?: Record<string, unknown>,
 	): Promise<void> {
 		const url = request.URL;
 		if (!url || !this.validator.isUrlHostValid(url)) {
