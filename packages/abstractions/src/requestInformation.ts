@@ -68,7 +68,7 @@ export class RequestInformation implements RequestInformationSetContent {
 				}
 			}
 			for (const key in this.pathParameters) {
-				if (this.pathParameters[key]) {
+				if (this.pathParameters[key] !== null && this.pathParameters[key] !== undefined) {
 					data[key] = this.normalizeValue(this.pathParameters[key]);
 				}
 			}
