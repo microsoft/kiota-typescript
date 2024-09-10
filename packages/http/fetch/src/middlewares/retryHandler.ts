@@ -165,18 +165,18 @@ export class RetryHandler implements Middleware {
 		if (retryAttempts < currentOptions.maxRetries && this.isRetry(response) && this.isBuffered(fetchRequestInit) && currentOptions.shouldRetry(currentOptions.delay, retryAttempts, url, fetchRequestInit as RequestInit, response)) {
 			++retryAttempts;
 			setRequestHeader(fetchRequestInit, RetryHandler.RETRY_ATTEMPT_HEADER, retryAttempts.toString());
-      let delay = null;
+			let delay = null;
 			if (response) {
-        delay = this.getDelay(response, retryAttempts, currentOptions.delay);
+				delay = this.getDelay(response, retryAttempts, currentOptions.delay);
 				await this.sleep(delay);
 			}
 			if (tracerName) {
 				return await trace.getTracer(tracerName).startActiveSpan(`retryHandler - attempt ${retryAttempts}`, (span) => {
 					try {
-            span.setAttribute("http.request.resend_count", retryAttempts);
-            if(delay){
-              span.setAttribute("http.request.resend_delay", delay);
-            }
+						span.setAttribute("http.request.resend_count", retryAttempts);
+						if (delay) {
+							span.setAttribute("http.request.resend_delay", delay);
+						}
 						span.setAttribute("http.response.status_code", response.status);
 						return this.executeWithRetry(url, fetchRequestInit, retryAttempts, currentOptions, requestOptions);
 					} finally {
