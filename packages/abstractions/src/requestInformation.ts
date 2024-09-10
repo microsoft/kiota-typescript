@@ -127,7 +127,7 @@ export class RequestInformation implements RequestInformationSetContent {
 	 * @param requestAdapter The adapter service to get the serialization writer from.
 	 * @typeParam T the model type.
 	 */
-	public setContentFromParsable = <T extends Parsable>(requestAdapter?: RequestAdapter | undefined, contentType?: string | undefined, value?: T[] | T, modelSerializerFunction?: ModelSerializerFunction<T>): void => {
+	public setContentFromParsable = <T extends Parsable>(requestAdapter?: RequestAdapter, contentType?: string, value?: T[] | T, modelSerializerFunction?: ModelSerializerFunction<T>): void => {
 		trace.getTracer(RequestInformation.tracerKey).startActiveSpan("setContentFromParsable", (span) => {
 			try {
 				const writer = this.getSerializationWriter(requestAdapter, contentType, value);
@@ -156,13 +156,13 @@ export class RequestInformation implements RequestInformationSetContent {
 			}
 		});
 	};
-	private readonly setContentAndContentType = (writer: SerializationWriter, contentType?: string | undefined) => {
+	private readonly setContentAndContentType = (writer: SerializationWriter, contentType?: string) => {
 		if (contentType) {
 			this.headers.tryAdd(RequestInformation.contentTypeHeader, contentType);
 		}
 		this.content = writer.getSerializedContent();
 	};
-	private readonly getSerializationWriter = <T>(requestAdapter?: RequestAdapter | undefined, contentType?: string | undefined, ...values: T[]): SerializationWriter => {
+	private readonly getSerializationWriter = <T>(requestAdapter?: RequestAdapter, contentType?: string, ...values: T[]): SerializationWriter => {
 		if (!requestAdapter) throw new Error("httpCore cannot be undefined");
 		if (!contentType) throw new Error("contentType cannot be undefined");
 		if (!values || values.length === 0) {
@@ -283,5 +283,5 @@ export class RequestInformation implements RequestInformationSetContent {
 export interface RequestInformationSetContent {
 	setStreamContent(value: ArrayBuffer, contentType?: string): void;
 	setContentFromScalar<T extends PrimitiveTypesForDeserializationType>(requestAdapter: RequestAdapter | undefined, contentType: string | undefined, value: T[] | T): void;
-	setContentFromParsable<T extends Parsable>(requestAdapter?: RequestAdapter | undefined, contentType?: string | undefined, value?: T[] | T, modelSerializerFunction?: ModelSerializerFunction<T>): void;
+	setContentFromParsable<T extends Parsable>(requestAdapter?: RequestAdapter, contentType?: string, value?: T[] | T, modelSerializerFunction?: ModelSerializerFunction<T>): void;
 }
