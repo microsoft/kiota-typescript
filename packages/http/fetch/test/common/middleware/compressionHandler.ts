@@ -52,6 +52,9 @@ describe("CompressionHandler", () => {
 		const options = new CompressionHandlerOptions({ enableCompression: true });
 		compressionHandler = new CompressionHandler(options);
 
+		compressionHandler.next = nextMiddleware;
+		nextMiddleware.setResponses([new Response("ok", { status: 200 })]);
+
 		const requestInit = { headers: new Headers(), body: "test" };
 		await compressionHandler.execute("http://example.com", requestInit);
 
@@ -64,8 +67,6 @@ describe("CompressionHandler", () => {
 
 		compressionHandler.next = nextMiddleware;
 		nextMiddleware.setResponses([new Response("nope", { status: 415 }), new Response("ok", { status: 200 })]);
-
-		//(nextMiddleware.execute as any).mockResolvedValueOnce(new Response(null, { status: 415 }));
 
 		const requestInit = { headers: new Headers(), body: "test" };
 		const response = await compressionHandler.execute("http://example.com", requestInit);

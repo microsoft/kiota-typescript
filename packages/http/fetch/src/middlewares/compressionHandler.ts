@@ -88,20 +88,18 @@ export class CompressionHandler implements Middleware {
 		span?.setAttribute("http.request.body.size", compressedBody.size);
 
 		// execute the next middleware and check if the response code is 415
-		try {
-			const response = await this.next?.execute(url, requestInit, requestOptions);
-			if (response?.status === 415) {
-				// remove the Content-Encoding header
-				requestInit.headers.delete(CompressionHandler.CONTENT_ENCODING_HEADER);
-				requestInit.body = unCompressedBody.buffer;
-				span?.setAttribute("http.request.body.compressed", false);
-				span?.setAttribute("http.request.body.size", unCompressedBodySize);
 
-				return this.next?.execute(url, requestInit, requestOptions) ?? Promise.reject(new Error("Response is undefined"));
-			}
-		} catch (error) {
+		const response = await this.next?.execute(url, requestInit, requestOptions);
+		if (response?.status === 415) {
+			// remove the Content-Encoding header
+			requestInit.headers.delete(CompressionHandler.CONTENT_ENCODING_HEADER);
+			requestInit.body = unCompressedBody.buffer;
+			span?.setAttribute("http.request.body.compressed", false);
+			span?.setAttribute("http.request.body.size", unCompressedBodySize);
+
 			return this.next?.execute(url, requestInit, requestOptions) ?? Promise.reject(new Error("Response is undefined"));
 		}
+		return response != null ? Promise.resolve(response) : Promise.reject(new Error("Response is undefined"));
 	}
 
 	private contentRangeBytesIsPresent(header: HeadersInit | undefined): boolean {
