@@ -479,7 +479,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				const responseClaims = this.getClaimsFromResponse(response, claims);
 				if (responseClaims) {
 					span.addEvent(FetchRequestAdapter.authenticateChallengedEventKey);
-					spanForAttributes.setAttribute("http.retry_count", 1);
+					spanForAttributes.setAttribute("http.request.resend_count", 1);
 					await this.purgeResponseBody(response);
 					return await this.getHttpResponseMessage(requestInfo, spanForAttributes, responseClaims);
 				}
