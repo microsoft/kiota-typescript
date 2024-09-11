@@ -15,47 +15,56 @@
     "packages/abstractions": {
       "name": "@microsoft/kiota-abstractions",
       "path": "packages/abstractions",
-      "release-type": "node"
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
     },
     "packages/authentication/azure": {
       "name": "@microsoft/kiota-authentication-azure",
       "path": "packages/authentication/azure",
-      "release-type": "node"
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
     },
     "packages/authentication/spfx": {
       "name": "@microsoft/kiota-authentication-spfx",
       "path": "packages/authentication/spfx",
-      "release-type": "node"
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
     },
     "packages/bundle": {
       "name": "@microsoft/kiota-bundle",
       "path": "packages/bundle",
-      "release-type": "node"
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
     },
     "packages/http/fetch": {
       "name": "@microsoft/kiota-http-fetchlibrary",
       "path": "packages/http/fetch",
-      "release-type": "node"
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
     },
     "packages/serialization/form": {
       "name": "@microsoft/kiota-serialization-form",
       "path": "packages/serialization/form",
-      "release-type": "node"
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
     },
     "packages/serialization/json": {
       "name": "@microsoft/kiota-serialization-json",
       "path": "packages/serialization/json",
-      "release-type": "node"
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
     },
     "packages/serialization/multipart": {
       "name": "@microsoft/kiota-serialization-multipart",
       "path": "packages/serialization/multipart",
-      "release-type": "node"
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
     },
     "packages/serialization/text": {
       "name": "@microsoft/kiota-serialization-text",
       "path": "packages/serialization/text",
-      "release-type": "node"
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
     }
   },
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
