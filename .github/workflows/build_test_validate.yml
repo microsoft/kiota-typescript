@@ -22,9 +22,6 @@ jobs:
           uses: actions/setup-node@v4
           with:
             node-version: ${{ matrix.node-version }}
-        - run: .\scripts\updateVersion.ps1
-          shell: pwsh
-          working-directory: ./
         - run: npm ci
         - run: npm run build
         - run: npm run lint:eslint:loud
@@ -51,7 +48,7 @@ jobs:
         - run: npm run test
 
     publish-npm:
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'auto dependabot')}}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'chore(main)') && contains(github.event.head_commit.message, 'release')}}
         needs: build
         environment:
           name: production_feed

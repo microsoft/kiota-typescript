@@ -1,0 +1,59 @@
+{
+  "exclude-paths": [
+    ".git",
+    ".idea",
+    ".github",
+    ".vscode"
+  ],
+  "include-component-in-tag": true,
+  "include-v-in-tag": true,
+  "separate-pull-requests": false,
+  "packages": {
+    "packages/abstractions": {
+      "name": "@microsoft/kiota-abstractions",
+      "path": "packages/abstractions",
+      "release-type": "node"
+    },
+    "packages/authentication/azure": {
+      "name": "@microsoft/kiota-authentication-azure",
+      "path": "packages/authentication/azure",
+      "release-type": "node"
+    },
+    "packages/authentication/spfx": {
+      "name": "@microsoft/kiota-authentication-spfx",
+      "path": "packages/authentication/spfx",
+      "release-type": "node"
+    },
+    "packages/bundle": {
+      "name": "@microsoft/kiota-bundle",
+      "path": "packages/bundle",
+      "release-type": "node"
+    },
+    "packages/http/fetch": {
+      "name": "@microsoft/kiota-http-fetchlibrary",
+      "path": "packages/http/fetch",
+      "release-type": "node"
+    },
+    "packages/serialization/form": {
+      "name": "@microsoft/kiota-serialization-form",
+      "path": "packages/serialization/form",
+      "release-type": "node"
+    },
+    "packages/serialization/json": {
+      "name": "@microsoft/kiota-serialization-json",
+      "path": "packages/serialization/json",
+      "release-type": "node"
+    },
+    "packages/serialization/multipart": {
+      "name": "@microsoft/kiota-serialization-multipart",
+      "path": "packages/serialization/multipart",
+      "release-type": "node"
+    },
+    "packages/serialization/text": {
+      "name": "@microsoft/kiota-serialization-text",
+      "path": "packages/serialization/text",
+      "release-type": "node"
+    }
+  },
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
+}
