@@ -8,6 +8,9 @@
   "include-component-in-tag": true,
   "include-v-in-tag": true,
   "separate-pull-requests": false,
+  "bump-minor-pre-major": true,
+  "bump-patch-for-minor-pre-major": true,
+  "versioning": "always-bump-minor",
   "packages": {
     "packages/abstractions": {
       "name": "@microsoft/kiota-abstractions",
