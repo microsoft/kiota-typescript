@@ -5,6 +5,7 @@ import { CompressionHandler } from "../../../src/middlewares/compressionHandler"
 const defaultOptions = new CompressionHandlerOptions();
 
 import { assert, describe, it, expect, beforeEach, vi } from "vitest";
+import { inNodeEnv } from "@microsoft/kiota-abstractions";
 
 describe("CompressionHandler", () => {
 	let compressionHandler: CompressionHandler;
@@ -32,7 +33,7 @@ describe("CompressionHandler", () => {
 		expect(() => new CompressionHandler(null as any)).toThrow("handlerOptions cannot be undefined");
 	});
 
-	it("should not compress if ShouldCompress is false", async () => {
+	it("should not compress if enableCompression is false", async () => {
 		const options = new CompressionHandlerOptions({ enableCompression: false });
 		compressionHandler = new CompressionHandler(options);
 
@@ -48,30 +49,104 @@ describe("CompressionHandler", () => {
 		expect(response).toBeInstanceOf(Response);
 	});
 
-	it("should compress the request body if ShouldCompress is true", async () => {
+	it("should compress the request body if enableCompression is true", async () => {
+		const url = "https://example.com";
 		const options = new CompressionHandlerOptions({ enableCompression: true });
 		compressionHandler = new CompressionHandler(options);
 
+		const requestBody = "test";
 		compressionHandler.next = nextMiddleware;
 		nextMiddleware.setResponses([new Response("ok", { status: 200 })]);
 
-		const requestInit = { headers: new Headers(), body: "test" };
-		await compressionHandler.execute("http://example.com", requestInit);
+		const requestInit = { headers: {}, body: requestBody };
+		await compressionHandler.execute(url, requestInit);
 
-		expect(requestInit.headers.get("Content-Encoding")).toBe("gzip");
+		expect((requestInit.headers as Record<string, string>)["Content-Encoding"]).toBe("gzip");
+		const compressedBody = requestInit.body as unknown as ArrayBuffer;
+		const decompressedBody = inNodeEnv() ? await decompressUsingZlib(compressedBody) : await decompressUsingDecompressionStream(compressedBody);
+		expect(decompressedBody).toBe(requestBody);
 	});
 
 	it("should handle 415 response and retry without compression", async () => {
+		const url = "https://example.com";
 		const options = new CompressionHandlerOptions({ enableCompression: true });
 		compressionHandler = new CompressionHandler(options);
 
 		compressionHandler.next = nextMiddleware;
 		nextMiddleware.setResponses([new Response("nope", { status: 415 }), new Response("ok", { status: 200 })]);
 
-		const requestInit = { headers: new Headers(), body: "test" };
-		const response = await compressionHandler.execute("http://example.com", requestInit);
+		const requestInit = { headers: {}, body: "test" };
+		const response = await compressionHandler.execute(url, requestInit);
 
-		expect(requestInit.headers.has("Content-Encoding")).toBe(false);
+		expect((requestInit.headers as Record<string, string>)["Content-Encoding"]).toBeUndefined();
 		expect(response).toBeInstanceOf(Response);
 	});
 });
+
+// helper function to decompress ArrayBuffer using zlib
+async function decompressUsingZlib(arrayBuffer: ArrayBuffer): Promise<string> {
+	return new Promise(async (resolve, reject) => {
+		// @ts-ignore
+		const zlib = await import("zlib");
+		// Convert the ArrayBuffer to a Node.js Buffer
+		const buffer = Buffer.from(arrayBuffer);
+		console.log(buffer);
+
+		// Decompress the buffer
+		zlib.gunzip(buffer, (err, decompressedBuffer) => {
+			if (err) {
+				console.error(err);
+				return reject(err);
+			}
+			// Convert the decompressed Buffer to a string and resolve the promise
+			console.log("decompressed " + decompressedBuffer.toString());
+			resolve(decompressedBuffer.toString("utf-8"));
+		});
+	});
+}
+
+// helper function to convert ArrayBuffer to string using DecompressionStream
+async function decompressUsingDecompressionStream(compressedArrayBuffer: ArrayBuffer): Promise<string> {
+	const decompressionStream = new DecompressionStream("gzip");
+
+	const compressedStream = new ReadableStream<Uint8Array>({
+		start(controller) {
+			// Convert ArrayBuffer to Uint8Array
+			const uint8Array = new Uint8Array(compressedArrayBuffer);
+
+			// Enqueue the Uint8Array into the stream
+			controller.enqueue(uint8Array);
+
+			// Close the stream after pushing all the data
+			controller.close();
+		},
+	});
+
+	if (!compressedStream) {
+		throw new Error("Unable to create readable stream from ArrayBuffer");
+	}
+
+	const decompressedStream = compressedStream.pipeThrough(decompressionStream);
+
+	const reader = decompressedStream.getReader();
+	const decompressedChunks: Uint8Array[] = [];
+	let totalLength = 0;
+
+	let result = await reader.read();
+	while (!result.done) {
+		const chunk = result.value;
+		decompressedChunks.push(chunk);
+		totalLength += chunk.length;
+		result = await reader.read();
+	}
+
+	const decompressedArray = new Uint8Array(totalLength);
+	let offset = 0;
+	for (const chunk of decompressedChunks) {
+		decompressedArray.set(chunk, offset);
+		offset += chunk.length;
+	}
+
+	const textDecoder = new TextDecoder();
+	return textDecoder.decode(decompressedArray);
+}
