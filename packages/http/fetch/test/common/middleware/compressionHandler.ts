@@ -75,10 +75,30 @@ describe("CompressionHandler", () => {
 		compressionHandler.next = nextMiddleware;
 		nextMiddleware.setResponses([new Response("nope", { status: 415 }), new Response("ok", { status: 200 })]);
 
-		const requestInit = { headers: {}, body: "test" };
+		const requestInit = { headers: [], body: "test" };
 		const response = await compressionHandler.execute(url, requestInit);
 
 		expect((requestInit.headers as Record<string, string>)["Content-Encoding"]).toBeUndefined();
+		expect(response).toBeInstanceOf(Response);
+	});
+
+	it("original headers were maintained in request", async () => {
+		const url = "https://example.com";
+		const options = new CompressionHandlerOptions({ enableCompression: true });
+		compressionHandler = new CompressionHandler(options);
+
+		compressionHandler.next = nextMiddleware;
+		nextMiddleware.setResponses([new Response("ok", { status: 200 })]);
+
+		const requestInit = {
+			headers: {
+				test: "test",
+			},
+			body: "test",
+		};
+		const response = await compressionHandler.execute(url, requestInit);
+		expect((requestInit.headers as Record<string, string>)["Content-Encoding"]).toBe("gzip");
+		expect((nextMiddleware.requests[0].headers as Record<string, string>)["test"]).toBe("test");
 		expect(response).toBeInstanceOf(Response);
 	});
 });

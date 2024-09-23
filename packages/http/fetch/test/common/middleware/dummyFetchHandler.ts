@@ -59,6 +59,7 @@ export class DummyFetchHandler implements Middleware {
 	public async execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		const response = this.responses.shift();
 		this.urls.push(url);
+		this.requests.push(requestInit);
 		if (!response) {
 			throw new Error("No response was found for the request");
 		}
@@ -66,4 +67,6 @@ export class DummyFetchHandler implements Middleware {
 	}
 
 	public urls: string[] = [];
+
+	public requests: RequestInit[] = [];
 }

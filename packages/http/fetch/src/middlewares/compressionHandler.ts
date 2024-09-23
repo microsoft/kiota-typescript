@@ -12,6 +12,7 @@ import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import type { Middleware } from "./middleware";
 import { CompressionHandlerOptions, CompressionHandlerOptionsKey } from "./options/compressionHandlerOptions";
 import type { FetchHeadersInit, FetchRequestInit } from "../utils/fetchDefinitions";
+import { deleteRequestHeader, getRequestHeader, setRequestHeader } from "../utils/headersUtil";
 
 /**
  * Compress the url content.
@@ -82,17 +83,7 @@ export class CompressionHandler implements Middleware {
 		const compressedBody = await this.compressRequestBody(unCompressedBody);
 
 		// add Content-Encoding to request header
-		const headers: Record<string, string> = {};
-		// check if the requestInit.headers is an instance of Record<string, string>
-		if (requestInit.headers instanceof Headers) {
-			requestInit.headers.forEach((value, key) => {
-				headers[key] = value;
-			});
-		} else {
-			Object.assign(headers, requestInit.headers);
-		}
-		headers[CompressionHandler.CONTENT_ENCODING_HEADER] = "gzip";
-		requestInit.headers = headers;
+		setRequestHeader(requestInit, CompressionHandler.CONTENT_ENCODING_HEADER, "gzip");
 		requestInit.body = compressedBody.compressedBody;
 
 		span?.setAttribute("http.request.body.size", compressedBody.size);
@@ -101,8 +92,7 @@ export class CompressionHandler implements Middleware {
 		const response = await this.next?.execute(url, requestInit as RequestInit, requestOptions);
 		if (response?.status === 415) {
 			// remove the Content-Encoding header
-			const headers = requestInit.headers as Record<string, string>;
-			delete headers[CompressionHandler.CONTENT_ENCODING_HEADER];
+			deleteRequestHeader(requestInit, CompressionHandler.CONTENT_ENCODING_HEADER);
 			requestInit.body = unCompressedBody;
 			span?.setAttribute("http.request.body.compressed", false);
 			span?.setAttribute("http.request.body.size", unCompressedBodySize);
@@ -116,30 +106,15 @@ export class CompressionHandler implements Middleware {
 		if (!header) {
 			return false;
 		}
-		if (header instanceof Headers) {
-			const contentRange = header.get(CompressionHandler.CONTENT_RANGE_HEADER);
-			if (contentRange) {
-				return contentRange.toLowerCase().includes("bytes");
-			}
-		} else if (typeof header === "object") {
-			const contentRange = (header as Record<string, string>)[CompressionHandler.CONTENT_RANGE_HEADER];
-			if (contentRange) {
-				return contentRange.toLowerCase().includes("bytes");
-			}
-		}
-		return false;
+		const contentRange = getRequestHeader(header, CompressionHandler.CONTENT_RANGE_HEADER);
+		return contentRange !== undefined && contentRange.toLowerCase().includes("bytes");
 	}
 
 	private contentEncodingIsPresent(header: FetchHeadersInit | undefined): boolean {
 		if (!header) {
 			return false;
 		}
-		if (header instanceof Headers) {
-			return header.has(CompressionHandler.CONTENT_ENCODING_HEADER);
-		} else if (typeof header === "object") {
-			return CompressionHandler.CONTENT_ENCODING_HEADER in header;
-		}
-		return false;
+		return getRequestHeader(header, CompressionHandler.CONTENT_ENCODING_HEADER) !== undefined;
 	}
 
 	private getRequestBodySize(body: any): number {
