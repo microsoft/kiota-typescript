@@ -7,68 +7,68 @@ on:
   pull_request:
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        environment:
-          name: build_test
-        env:
-          TENANT_ID: ${{ secrets.TENANT_ID }}
-        strategy:
-          matrix:
-            node-version: [18.x, 20.x]
-        steps:
-        - uses: actions/checkout@v4
-        - name: Use Node.js ${{ matrix.node-version }}
-          uses: actions/setup-node@v4
-          with:
-            node-version: ${{ matrix.node-version }}
-        - run: npm ci
-        - run: npm run build
-        - run: npm run lint:eslint:loud
-        - run: npm run prettier:check
-        - name: Archive dist folders # archive dist folders to verify if they are transpiled correctly and available for publishing
-          uses: actions/upload-artifact@v4
-          with:
-            name: dist folders ${{ matrix.node-version }}
-            path: |
-              packages/abstractions/dist
-              packages/serialization/form/dist
-              packages/serialization/json/dist
-              packages/serialization/multipart/dist
-              packages/serialization/text/dist
-              packages/http/fetch/dist
-              packages/authentication/azure/dist
-        - run: npm run test:integrated
-          if: ${{env.TENANT_ID != '' }}
-          env:
-              TENANT_ID:  ${{secrets.tenant_id}}
-              CLIENT_ID: ${{secrets.client_id}}
-              CLIENT_SECRET: ${{secrets.client_secret}}
-              USER_ID: ${{secrets.user_id}}
-        - run: npm run test
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: build_test
+    env:
+      TENANT_ID: ${{ secrets.TENANT_ID }}
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+    - run: npm run build
+    - run: npm run lint:eslint:loud
+    - run: npm run prettier:check
+    - name: Archive dist folders # archive dist folders to verify if they are transpiled correctly and available for publishing
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist folders ${{ matrix.node-version }}
+        path: |
+          packages/abstractions/dist
+          packages/serialization/form/dist
+          packages/serialization/json/dist
+          packages/serialization/multipart/dist
+          packages/serialization/text/dist
+          packages/http/fetch/dist
+          packages/authentication/azure/dist
+    - run: npm run test:integrated
+      if: ${{env.TENANT_ID != '' }}
+      env:
+          TENANT_ID:  ${{secrets.tenant_id}}
+          CLIENT_ID: ${{secrets.client_id}}
+          CLIENT_SECRET: ${{secrets.client_secret}}
+          USER_ID: ${{secrets.user_id}}
+    - run: npm run test
 
-    publish-npm:
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'chore: release main')}}
-        needs: build
-        environment:
-          name: production_feed
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v4
-          - uses: actions/setup-node@v4
-            with:
-              node-version: 20
-              registry-url: https://registry.npmjs.org/
-          - run: |
-              git config --global user.name '${GITHUB_ACTOR}'
-              git config --global user.email '${GITHUB_ACTOR}@users.noreply.github.com'
-            env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                GITHUB_ACTOR: ${{ secrets.GIT_USERNAME }}
-          - run: npm ci
-          - run: npm run build
-          - run: npx lerna publish from-package --yes
-            env:
-              NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+  publish-npm:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'release main') }}
+    needs: build
+    environment:
+      name: production_feed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+      - run: |
+          git config --global user.name '${GITHUB_ACTOR}'
+          git config --global user.email '${GITHUB_ACTOR}@users.noreply.github.com'
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_ACTOR: ${{ secrets.GIT_USERNAME }}
+      - run: npm ci
+      - run: npm run build
+      - run: npx lerna publish from-package --yes
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
 
