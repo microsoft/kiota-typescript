@@ -1,4 +1,4 @@
-import { defineWorkspace, configDefaults } from 'vitest/config';
+import { defineWorkspace } from 'vitest/config';
 
 const workspace = defineWorkspace([
   'packages/abstractions',
