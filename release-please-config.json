@@ -1,68 +1,59 @@
 {
-  "exclude-paths": [
-    ".git",
-    ".idea",
-    ".github",
-    ".vscode"
-  ],
+  "exclude-paths": [".git", ".idea", ".github", ".vscode"],
   "include-component-in-tag": true,
-  "include-v-in-tag": true,
+  "include-v-in-tag": false,
+  "tag-separator": "@",
   "separate-pull-requests": false,
   "bump-minor-pre-major": true,
   "bump-patch-for-minor-pre-major": true,
-  "versioning": "always-bump-minor",
+  "versioning": "prerelease",
   "packages": {
     "packages/abstractions": {
-      "name": "@microsoft/kiota-abstractions",
-      "path": "packages/abstractions",
+      "component": "@microsoft/kiota-abstractions",
       "release-type": "node",
       "changelog-path": "CHANGELOG.md"
     },
     "packages/authentication/azure": {
-      "name": "@microsoft/kiota-authentication-azure",
-      "path": "packages/authentication/azure",
+      "component": "@microsoft/kiota-authentication-azure",
       "release-type": "node",
       "changelog-path": "CHANGELOG.md"
     },
     "packages/authentication/spfx": {
-      "name": "@microsoft/kiota-authentication-spfx",
-      "path": "packages/authentication/spfx",
+      "component": "@microsoft/kiota-authentication-spfx",
       "release-type": "node",
       "changelog-path": "CHANGELOG.md"
     },
     "packages/bundle": {
-      "name": "@microsoft/kiota-bundle",
-      "path": "packages/bundle",
+      "component": "@microsoft/kiota-bundle",
       "release-type": "node",
       "changelog-path": "CHANGELOG.md"
     },
     "packages/http/fetch": {
-      "name": "@microsoft/kiota-http-fetchlibrary",
-      "path": "packages/http/fetch",
+      "component": "@microsoft/kiota-http-fetchlibrary",
       "release-type": "node",
       "changelog-path": "CHANGELOG.md"
     },
     "packages/serialization/form": {
-      "name": "@microsoft/kiota-serialization-form",
-      "path": "packages/serialization/form",
+      "component": "@microsoft/kiota-serialization-form",
       "release-type": "node",
       "changelog-path": "CHANGELOG.md"
     },
     "packages/serialization/json": {
-      "name": "@microsoft/kiota-serialization-json",
-      "path": "packages/serialization/json",
+      "component": "@microsoft/kiota-serialization-json",
       "release-type": "node",
       "changelog-path": "CHANGELOG.md"
     },
     "packages/serialization/multipart": {
-      "name": "@microsoft/kiota-serialization-multipart",
-      "path": "packages/serialization/multipart",
+      "component": "@microsoft/kiota-serialization-multipart",
       "release-type": "node",
       "changelog-path": "CHANGELOG.md"
     },
     "packages/serialization/text": {
-      "name": "@microsoft/kiota-serialization-text",
-      "path": "packages/serialization/text",
+      "component": "@microsoft/kiota-serialization-text",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
+    },
+    ".": {
       "release-type": "node",
       "changelog-path": "CHANGELOG.md"
     }
