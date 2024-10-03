@@ -7,6 +7,5 @@
   "packages/serialization/form": "1.0.0-preview.54",
   "packages/serialization/json": "1.0.0-preview.66",
   "packages/serialization/multipart": "1.0.0-preview.44",
-  "packages/serialization/text": "1.0.0-preview.63",
-  ".": "0.0.0"
+  "packages/serialization/text": "1.0.0-preview.63"
 }

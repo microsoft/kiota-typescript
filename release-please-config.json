@@ -52,10 +52,6 @@
       "component": "@microsoft/kiota-serialization-text",
       "release-type": "node",
       "changelog-path": "CHANGELOG.md"
-    },
-    ".": {
-      "release-type": "node",
-      "changelog-path": "CHANGELOG.md"
     }
   },
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
