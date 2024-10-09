@@ -44,6 +44,22 @@ export const setRequestHeader = (options: FetchRequestInit | undefined, key: str
 
 /**
  * @constant
+ * To delete the header key to the given request
+ * @param {FetchOptions|undefined} options - The request options object
+ * @param {string} key - The header key string
+ * @returns Nothing
+ */
+export const deleteRequestHeader = (options: FetchRequestInit | undefined, key: string): void => {
+	if (options) {
+		if (!options.headers) {
+			options.headers = {};
+		}
+		delete options.headers[key];
+	}
+};
+
+/**
+ * @constant
  * To append the header value to the given request
  * @param {FetchOptions|undefined} options - The request options object
  * @param {string} key - The header key string
