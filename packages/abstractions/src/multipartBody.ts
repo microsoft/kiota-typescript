@@ -113,11 +113,12 @@ export function serializeMultipartBody(writer: SerializationWriter, multipartBod
 	const boundary = multipartBody.getBoundary();
 	let first = true;
 	for (const partName in parts) {
-		if (first) {
-			first = false;
-		} else {
-			writer.writeStringValue(undefined, "\r\n");
-		}
+		if (Object.prototype.hasOwnProperty.call(parts, partName)) { // Added guard
+            if (first) {
+                first = false;
+            } else {
+                writer.writeStringValue(undefined, "\r\n");
+            }
 		writer.writeStringValue(undefined, "--" + boundary);
 		writer.writeStringValue(undefined, "\r\n");
 		const part = parts[partName];
