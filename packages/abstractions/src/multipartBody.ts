@@ -97,7 +97,6 @@ interface MultipartEntry {
   serializationCallback?: ModelSerializerFunction<Parsable>;
 }
 
-
 export function serializeMultipartBody(
   writer: SerializationWriter,
   multipartBody: Partial<MultipartBody> = new MultipartBody(),
