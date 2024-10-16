@@ -12,6 +12,8 @@ export interface Middleware {
 	next: Middleware | undefined;
 
 	/**
+   * @public
+   * @async
 	 * Main method of the middleware.
 	 * @param requestInit The Fetch RequestInit object.
 	 * @param url The URL of the request.
