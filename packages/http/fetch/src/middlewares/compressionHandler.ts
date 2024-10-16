@@ -90,7 +90,10 @@ export class CompressionHandler implements Middleware {
 
 		// execute the next middleware and check if the response code is 415
 		let response = await this.next?.execute(url, requestInit as RequestInit, requestOptions);
-		if (response !== undefined && response !== null && response.status === 415) {
+		if (!response) {
+			throw new Error("Response is undefined");
+		}
+		if (response.status === 415) {
 			// remove the Content-Encoding header
 			deleteRequestHeader(requestInit, CompressionHandler.CONTENT_ENCODING_HEADER);
 			requestInit.body = unCompressedBody;
