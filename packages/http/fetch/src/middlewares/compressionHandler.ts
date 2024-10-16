@@ -25,14 +25,14 @@ export class CompressionHandler implements Middleware {
 	 * @static
 	 * A member holding the name of content range header
 	 */
-	private static CONTENT_RANGE_HEADER = "Content-Range";
+	private static readonly CONTENT_RANGE_HEADER = "Content-Range";
 
 	/**
 	 * @private
 	 * @static
 	 * A member holding the name of content encoding header
 	 */
-	private static CONTENT_ENCODING_HEADER = "Content-Encoding";
+	private static readonly CONTENT_ENCODING_HEADER = "Content-Encoding";
 
 	/**
 	 * @public
@@ -52,7 +52,7 @@ export class CompressionHandler implements Middleware {
 	 */
 	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption> | undefined): Promise<Response> {
 		let currentOptions = this.handlerOptions;
-		if (requestOptions && requestOptions[CompressionHandlerOptionsKey]) {
+		if (requestOptions?.[CompressionHandlerOptionsKey]) {
 			currentOptions = requestOptions[CompressionHandlerOptionsKey] as CompressionHandlerOptions;
 		}
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
@@ -110,7 +110,7 @@ export class CompressionHandler implements Middleware {
 			return false;
 		}
 		const contentRange = getRequestHeader(header, CompressionHandler.CONTENT_RANGE_HEADER);
-		return contentRange !== undefined && contentRange.toLowerCase().includes("bytes");
+		return contentRange?.toLowerCase().includes("bytes") ?? false;
 	}
 
 	private contentEncodingIsPresent(header: FetchHeadersInit | undefined): boolean {
@@ -120,7 +120,7 @@ export class CompressionHandler implements Middleware {
 		return getRequestHeader(header, CompressionHandler.CONTENT_ENCODING_HEADER) !== undefined;
 	}
 
-	private getRequestBodySize(body: any): number {
+	private getRequestBodySize(body: unknown): number {
 		if (!body) {
 			return 0;
 		}
@@ -142,7 +142,7 @@ export class CompressionHandler implements Middleware {
 		throw new Error("Unsupported body type");
 	}
 
-	private async readBodyAsBytes(body: BodyInit | null | undefined): Promise<{ stream: ReadableStream<Uint8Array>; size: number }> {
+	private readBodyAsBytes(body: unknown): { stream: ReadableStream<Uint8Array>; size: number } {
 		if (!body) {
 			return { stream: new ReadableStream<Uint8Array>(), size: 0 };
 		}
@@ -171,13 +171,13 @@ export class CompressionHandler implements Middleware {
 		throw new Error("Unsupported body type");
 	}
 
-	private async compressRequestBody(body: any): Promise<{
+	private async compressRequestBody(body: unknown): Promise<{
 		compressedBody: ArrayBuffer | Buffer;
 		size: number;
 	}> {
 		if (!inNodeEnv()) {
 			// in browser
-			const compressionData = await this.readBodyAsBytes(body);
+			const compressionData = this.readBodyAsBytes(body);
 			const compressedBody = await this.compressUsingCompressionStream(compressionData.stream);
 			return {
 				compressedBody: compressedBody.body,
@@ -193,11 +193,11 @@ export class CompressionHandler implements Middleware {
 		}
 	}
 
-	private compressUsingZlib(body: any): Promise<Buffer> {
-		return new Promise(async (resolve, reject) => {
-			// @ts-ignore
-			const zlib = await import("zlib");
-			zlib.gzip(body, (err, compressed) => {
+	private async compressUsingZlib(body: unknown): Promise<Buffer> {
+		// @ts-ignore
+		const zlib = await import("zlib");
+		return new Promise((resolve, reject) => {
+			zlib.gzip(body as string | ArrayBuffer | NodeJS.ArrayBufferView, (err, compressed) => {
 				if (err) {
 					reject(err);
 				} else {
@@ -207,35 +207,33 @@ export class CompressionHandler implements Middleware {
 		});
 	}
 
-	private compressUsingCompressionStream(uint8ArrayStream: ReadableStream<Uint8Array>): Promise<{ body: ArrayBuffer; size: number }> {
-		return new Promise(async (resolve, reject) => {
-			const compressionStream = new CompressionStream("gzip");
+	private async compressUsingCompressionStream(uint8ArrayStream: ReadableStream<Uint8Array>): Promise<{ body: ArrayBuffer; size: number }> {
+		const compressionStream = new CompressionStream("gzip");
 
-			const compressedStream = uint8ArrayStream.pipeThrough(compressionStream);
+		const compressedStream = uint8ArrayStream.pipeThrough<Uint8Array>(compressionStream);
 
-			const reader = compressedStream.getReader();
-			const compressedChunks: Uint8Array[] = [];
-			let totalLength = 0;
+		const reader = compressedStream.getReader();
+		const compressedChunks: Uint8Array[] = [];
+		let totalLength = 0;
 
-			let result = await reader.read();
-			while (!result.done) {
-				const chunk = result.value;
-				compressedChunks.push(chunk);
-				totalLength += chunk.length;
-				result = await reader.read();
-			}
+		let result = await reader.read();
+		while (!result.done) {
+			const chunk = result.value;
+			compressedChunks.push(chunk);
+			totalLength += chunk.length;
+			result = await reader.read();
+		}
 
-			const compressedArray = new Uint8Array(totalLength);
-			let offset = 0;
-			for (const chunk of compressedChunks) {
-				compressedArray.set(chunk, offset);
-				offset += chunk.length;
-			}
+		const compressedArray = new Uint8Array(totalLength);
+		let offset = 0;
+		for (const chunk of compressedChunks) {
+			compressedArray.set(chunk, offset);
+			offset += chunk.length;
+		}
 
-			resolve({
-				body: compressedArray.buffer,
-				size: compressedArray.length,
-			});
-		});
+		return {
+			body: compressedArray.buffer,
+			size: compressedArray.length,
+		};
 	}
 }
