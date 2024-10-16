@@ -27,7 +27,7 @@ export class CustomFetchHandler implements Middleware {
 	constructor(private readonly customFetch: (input: string, init: RequestInit) => Promise<Response>) {}
 
 	/**
-   * @inheritdoc
+	 * @inheritdoc
 	 */
 	public async execute(url: string, requestInit: RequestInit): Promise<Response> {
 		return await this.customFetch(url, requestInit);
