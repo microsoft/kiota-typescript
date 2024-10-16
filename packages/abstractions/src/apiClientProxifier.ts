@@ -131,7 +131,7 @@ export const apiClientProxifier = <T extends object>(requestAdapter: RequestAdap
 					if (metadata) {
 						switch (name) {
 							case "get":
-								return (requestConfiguration?: RequestConfiguration<object> | undefined) => {
+								return (requestConfiguration?: RequestConfiguration<object>) => {
 									const requestInfo = toRequestInformation(metadata.uriTemplate, pathParameters, metadata, requestAdapter, HttpMethod.GET, undefined, undefined, requestConfiguration);
 									return send(requestAdapter, requestInfo, metadata);
 								};

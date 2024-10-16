@@ -38,7 +38,7 @@ export interface BackingStore {
 	 * @param subscriptionId The subscription Id to use.
 	 * @return The subscription Id to use when removing the subscription
 	 */
-	subscribe(callback: () => { key: string; previousValue: unknown; newValue: unknown }, subscriptionId?: string | undefined): string;
+	subscribe(callback: () => { key: string; previousValue: unknown; newValue: unknown }, subscriptionId?: string): string;
 	/**
 	 * Removes a subscription from the store based on its subscription id.
 	 * @param subscriptionId The Id of the subscription to remove.

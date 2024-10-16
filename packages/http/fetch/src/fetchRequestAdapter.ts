@@ -162,7 +162,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		const telemetryPathValue = urlTemplate.replace(/\{\?[^}]+\}/gi, "");
 		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan(`${methodName} - ${telemetryPathValue}`, async (span) => {
 			try {
-				span.setAttribute("http.uri_template", urlTemplate);
+				span.setAttribute("url.uri_template", urlTemplate);
 				return await callback(span);
 			} finally {
 				span.end();
@@ -457,14 +457,14 @@ export class FetchRequestAdapter implements RequestAdapter {
 				if (response) {
 					const responseContentLength = response.headers.get("Content-Length");
 					if (responseContentLength) {
-						spanForAttributes.setAttribute("http.response_content_length", parseInt(responseContentLength, 10));
+						spanForAttributes.setAttribute("http.response.body.size", parseInt(responseContentLength, 10));
 					}
 					const responseContentType = response.headers.get("Content-Type");
 					if (responseContentType) {
-						spanForAttributes.setAttribute("http.response_content_type", responseContentType);
+						spanForAttributes.setAttribute("http.response.header.content-type", responseContentType);
 					}
 					spanForAttributes.setAttribute("http.response.status_code", response.status);
-					// getting the http.flavor (protocol version) is impossible with fetch API
+					// getting the network.protocol.version (protocol version) is impossible with fetch API
 				}
 				return response;
 			} finally {
@@ -514,24 +514,24 @@ export class FetchRequestAdapter implements RequestAdapter {
 			try {
 				const method = requestInfo.httpMethod?.toString();
 				const uri = requestInfo.URL;
-				spanForAttributes.setAttribute("http.method", method ?? "");
+				spanForAttributes.setAttribute("http.request.method", method ?? "");
 				const uriContainsScheme = uri.indexOf("://") > -1;
 				const schemeSplatUri = uri.split("://");
 				if (uriContainsScheme) {
-					spanForAttributes.setAttribute("http.scheme", schemeSplatUri[0]);
+					spanForAttributes.setAttribute("server.address", schemeSplatUri[0]);
 				}
 				const uriWithoutScheme = uriContainsScheme ? schemeSplatUri[1] : uri;
-				spanForAttributes.setAttribute("http.host", uriWithoutScheme.split("/")[0]);
+				spanForAttributes.setAttribute("url.scheme", uriWithoutScheme.split("/")[0]);
 				if (this.observabilityOptions.includeEUIIAttributes) {
-					spanForAttributes.setAttribute("http.uri", decodeURIComponent(uri));
+					spanForAttributes.setAttribute("url.full", decodeURIComponent(uri));
 				}
 				const requestContentLength = requestInfo.headers.tryGetValue("Content-Length");
 				if (requestContentLength) {
-					spanForAttributes.setAttribute("http.request_content_length", parseInt(requestContentLength[0], 10));
+					spanForAttributes.setAttribute("http.response.body.size", parseInt(requestContentLength[0], 10));
 				}
 				const requestContentType = requestInfo.headers.tryGetValue("Content-Type");
 				if (requestContentType) {
-					spanForAttributes.setAttribute("http.request_content_type", requestContentType);
+					spanForAttributes.setAttribute("http.request.header.content-type", requestContentType);
 				}
 				const headers: Record<string, string> | undefined = {};
 				requestInfo.headers?.forEach((_, key) => {

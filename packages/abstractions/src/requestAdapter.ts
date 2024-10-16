@@ -86,7 +86,7 @@ export interface RequestAdapter {
 	 * Enables the backing store proxies for the SerializationWriters and ParseNodes in use.
 	 * @param backingStoreFactory the backing store factory to use.
 	 */
-	enableBackingStore(backingStoreFactory?: BackingStoreFactory | undefined): void;
+	enableBackingStore(backingStoreFactory?: BackingStoreFactory): void;
 	/** The base url for every request. */
 	baseUrl: string;
 	/**

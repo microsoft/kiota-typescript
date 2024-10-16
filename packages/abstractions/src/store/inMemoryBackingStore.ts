@@ -62,7 +62,7 @@ export class InMemoryBackingStore implements BackingStore {
 		}
 		return keys;
 	}
-	public subscribe(callback: subscriptionCallback, subscriptionId?: string | undefined): string {
+	public subscribe(callback: subscriptionCallback, subscriptionId?: string): string {
 		if (!callback) {
 			throw new Error("callback cannot be undefined");
 		}
