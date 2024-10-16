@@ -5,13 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { assert } from "chai";
+import { assert, describe, it } from "vitest";
 
 import { CustomFetchHandler, HeadersInspectionHandler, MiddlewareFactory, ParametersNameDecodingHandler, RedirectHandler, RetryHandler, UserAgentHandler } from "../../src";
 
 describe("node - MiddlewareFactory", () => {
 	it("Should return the default pipeline", () => {
-		const defaultMiddleWareArray = MiddlewareFactory.getDefaultMiddlewareChain();
+		const defaultMiddleWareArray = MiddlewareFactory.getDefaultMiddlewares();
 		assert.equal(defaultMiddleWareArray.length, 6);
 
 		assert.isTrue(defaultMiddleWareArray[0] instanceof RetryHandler);

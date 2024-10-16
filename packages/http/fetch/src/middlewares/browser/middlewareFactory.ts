@@ -5,13 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-/**
- * @module MiddlewareFactory
- */
-
 import { CustomFetchHandler } from "../customFetchHandler";
 import { HeadersInspectionHandler } from "../headersInspectionHandler";
-import type { Middleware } from "../middleware";
+import { Middleware } from "../middleware";
 import { ParametersNameDecodingHandler } from "../parametersNameDecodingHandler";
 import { RetryHandler } from "../retryHandler";
 import { UserAgentHandler } from "../userAgentHandler";
@@ -27,10 +23,8 @@ export class MiddlewareFactory {
 	 * Returns the default middleware chain an array with the  middleware handlers
 	 * @returns an array of the middleware handlers of the default middleware chain
 	 */
-	public static getDefaultMiddlewareChain(customFetch: (request: string, init: RequestInit) => Promise<Response> = fetch as any): Middleware[] {
+	public static getDefaultMiddlewares(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args) as any): Middleware[] {
 		// Browsers handles redirection automatically and do not require the redirectionHandler
-
-		const middlewareArray: Middleware[] = [new RetryHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new HeadersInspectionHandler(), new CustomFetchHandler(customFetch)];
-		return middlewareArray;
+		return [new RetryHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new HeadersInspectionHandler(), new CustomFetchHandler(customFetch)];
 	}
 }

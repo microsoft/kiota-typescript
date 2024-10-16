@@ -1,6 +1,6 @@
 {
 	"name": "@microsoft/kiota-http-fetchlibrary",
-	"version": "1.0.0-preview.41",
+	"version": "1.0.0-preview.67",
 	"description": "Kiota request adapter implementation with fetch",
 	"keywords": [
 		"Kiota",
@@ -18,30 +18,24 @@
 	},
 	"license": "MIT",
 	"author": "Microsoft",
-	"main": "dist/cjs/src/index.js",
-	"browser": {
-		"./dist/es/src/index.js": "./dist/es/src/browser/index.js",
-		"./dist/es/src/middlewares/middlewareFactory.js": "./dist/es/src/middlewares/browser/middlewareFactory.js"
-	},
-	"types": "dist/cjs/src/index.d.ts",
+	"main": "dist/es/src/index.js",
+	"module": "dist/es/src/index.js",
+	"types": "dist/es/src/index.d.ts",
+	"type": "module",
 	"scripts": {
-		"build": "npm run build:cjs && npm run build:esm",
-		"build:cjs": "tsc -b tsconfig.cjs.json",
-		"build:esm": "tsc -b tsconfig.es.json",
-		"build:test": "tsc -b tsconfig.cjs.test.json && tsc -b tsconfig.es.test.json",
-		"clean": "rm -r ./dist",
-		"karma": "npm run rollup && karma  start --single-run --browsers ChromeHeadless karma.conf.js",
+		"build": "npm run build:esm",
+		"build:esm": "tsc && tsc-alias",
+		"clean": "rimraf ./dist",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
-		"rollup": "rollup -c",
-		"test": "npm run build && npm run build:test && npm run test:cjs && npm run karma",
-		"test:cjs": "mocha 'dist/cjs/test/common/**/*.js' && mocha  'dist/cjs/test/node/**/*.js'"
+		"test:browser": "vitest run --browser.name=chrome --browser.headless --browser.provider=webdriverio",
+		"test:node": "vitest --run",
+		"test": "npm run test:node && npm run test:browser"
 	},
 	"dependencies": {
-		"@microsoft/kiota-abstractions": "^1.0.0-preview.42",
+		"@microsoft/kiota-abstractions": "*",
 		"@opentelemetry/api": "^1.7.0",
 		"guid-typescript": "^1.0.9",
-		"node-fetch": "^2.7.0",
 		"tslib": "^2.6.2"
 	},
 	"publishConfig": {

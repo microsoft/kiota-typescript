@@ -31,13 +31,12 @@ To achieve the isomorphism, the library is set up in the following ways:
 
 Often times the library will have code which is different for the browser and node environments. 
 Examples:
-- Browsers use a global `fetch` defined in the `DOM` while node relies on an external library such as `node-fetch` or `undici`.
 - `ReadableStream` are different interfaces in node and browser.
 
 To manage such differences, separate files are maintained when the code can be different for node or browser. 
 
 For example: 
-- The  `DefaultFetchHandler` uses `node-fetch` for node and the `dom` fetch for browser. 
+- Browser environment doesn't require a `RedirectHandler` middleware while the `Node.js` environment does.
 - Map this difference as follows: 
 
 ```json
@@ -129,7 +128,7 @@ export type FetchRequestInit = Omit<RequestInit, "body" | "headers" | "redirect"
 	/**
 	 * Request's body
 	 * Expected type in case of dom - ReadableStream | XMLHttpRequestBodyInit|null
-	 * Expected type in case of node-fetch - | Blob | Buffer | URLSearchParams | NodeJS.ReadableStream | string|null
+	 * Expected type in case of node.js - | Blob | Buffer | URLSearchParams | NodeJS.ReadableStream | string|null
 	 */
 	body?: unknown;
 }

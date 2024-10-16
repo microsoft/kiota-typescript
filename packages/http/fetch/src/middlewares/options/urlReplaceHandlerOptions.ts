@@ -1,8 +1,17 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import type { RequestOption } from "@microsoft/kiota-abstractions";
+
 /**
  * Key for the url replace handler options.
  */
 export const UrlReplaceHandlerOptionsKey = "UrlReplaceHandlerOptionsKey";
+
 /**
  * Options for the url replace handler.
  */
@@ -43,6 +52,7 @@ export class UrlReplaceHandlerOptions implements RequestOption {
 		return this._urlReplacements;
 	}
 }
+
 /**
  * Parameters for the UrlReplaceHandlerOptions class constructor
  */

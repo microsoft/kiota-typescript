@@ -1,0 +1,60 @@
+{
+    "compilerOptions": {
+        "importHelpers": true,
+        "noEmitOnError": true,
+        "moduleResolution": "Node",
+        "strict": true,
+        "skipLibCheck": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "forceConsistentCasingInFileNames": true,
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "composite": true,
+        "module": "ES6",
+        "target": "ES2017",
+        "lib": [
+            "dom",
+            "es5",
+            "es6",
+            "DOM.Iterable"
+        ],
+        "outDir": "dist/es",
+    },
+    "references": [
+        {
+            "path": "./abstractions/tsconfig.json"
+        },
+        {
+            "path": "./serialization/form/tsconfig.json"
+        },
+        {
+            "path": "./serialization/json/tsconfig.json"
+        },
+        {
+            "path": "./serialization/text/tsconfig.json"
+        },
+        {
+            "path": "./http/fetch/tsconfig.json"
+        },
+        {
+            "path": "./authentication/azure/tsconfig.json"
+        },
+        {
+            "path": "./authentication/spfx/tsconfig.json"
+        }
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "tests",
+        "./test/**/*.ts"
+    ],
+    "tsc-alias": {
+      "resolveFullPaths": true,
+      "verbose": false
+    }
+}

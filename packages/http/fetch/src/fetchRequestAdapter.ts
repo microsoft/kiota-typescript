@@ -1,4 +1,11 @@
-import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, BackingStoreFactorySingleton, type DateOnly, DefaultApiError, type Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, type ErrorMappings, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type PrimitiveTypesForDeserialization, type PrimitiveTypesForDeserializationType,type RequestAdapter, type RequestInformation, type ResponseHandler, type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, BackingStoreFactorySingleton, type DateOnly, DefaultApiError, type Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, type ErrorMappings, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type PrimitiveTypesForDeserialization, type PrimitiveTypesForDeserializationType, type RequestAdapter, type RequestInformation, type ResponseHandler, type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
 import { type Span, SpanStatusCode, trace } from "@opentelemetry/api";
 
 import { HttpClient } from "./httpClient";
@@ -60,17 +67,17 @@ export class FetchRequestAdapter implements RequestAdapter {
 		return responseHandlerOption?.responseHandler;
 	};
 	private static readonly responseTypeAttributeKey = "com.microsoft.kiota.response.type";
-	public sendCollectionOfPrimitiveAsync = <ResponseType extends Exclude<PrimitiveTypesForDeserializationType, ArrayBuffer>>(requestInfo: RequestInformation, responseType: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">, errorMappings: ErrorMappings | undefined): Promise<ResponseType[] | undefined> => {
+	public sendCollectionOfPrimitive = <ResponseType extends Exclude<PrimitiveTypesForDeserializationType, ArrayBuffer>>(requestInfo: RequestInformation, responseType: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">, errorMappings: ErrorMappings | undefined): Promise<ResponseType[] | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
-		return this.startTracingSpan(requestInfo, "sendCollectionOfPrimitiveAsync", async (span) => {
+		return this.startTracingSpan(requestInfo, "sendCollectionOfPrimitive", async (span) => {
 			try {
 				const response = await this.getHttpResponseMessage(requestInfo, span);
 				const responseHandler = this.getResponseHandler(requestInfo);
 				if (responseHandler) {
 					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
-					return await responseHandler.handleResponseAsync(response, errorMappings);
+					return await responseHandler.handleResponse(response, errorMappings);
 				} else {
 					try {
 						await this.throwIfFailedResponse(response, errorMappings, span);
@@ -116,17 +123,17 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		});
 	};
-	public sendCollectionAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, deserialization: ParsableFactory<ModelType>, errorMappings: ErrorMappings | undefined): Promise<ModelType[] | undefined> => {
+	public sendCollection = <ModelType extends Parsable>(requestInfo: RequestInformation, deserialization: ParsableFactory<ModelType>, errorMappings: ErrorMappings | undefined): Promise<ModelType[] | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
-		return this.startTracingSpan(requestInfo, "sendCollectionAsync", async (span) => {
+		return this.startTracingSpan(requestInfo, "sendCollection", async (span) => {
 			try {
 				const response = await this.getHttpResponseMessage(requestInfo, span);
 				const responseHandler = this.getResponseHandler(requestInfo);
 				if (responseHandler) {
 					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
-					return await responseHandler.handleResponseAsync(response, errorMappings);
+					return await responseHandler.handleResponse(response, errorMappings);
 				} else {
 					try {
 						await this.throwIfFailedResponse(response, errorMappings, span);
@@ -155,7 +162,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		const telemetryPathValue = urlTemplate.replace(/\{\?[^}]+\}/gi, "");
 		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan(`${methodName} - ${telemetryPathValue}`, async (span) => {
 			try {
-				span.setAttribute("http.uri_template", urlTemplate);
+				span.setAttribute("url.uri_template", urlTemplate);
 				return await callback(span);
 			} finally {
 				span.end();
@@ -163,17 +170,17 @@ export class FetchRequestAdapter implements RequestAdapter {
 		});
 	};
 	public static readonly eventResponseHandlerInvokedKey = "com.microsoft.kiota.response_handler_invoked";
-	public sendAsync = <ModelType extends Parsable>(requestInfo: RequestInformation, deserializer: ParsableFactory<ModelType>, errorMappings: ErrorMappings | undefined): Promise<ModelType | undefined> => {
+	public send = <ModelType extends Parsable>(requestInfo: RequestInformation, deserializer: ParsableFactory<ModelType>, errorMappings: ErrorMappings | undefined): Promise<ModelType | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
-		return this.startTracingSpan(requestInfo, "sendAsync", async (span) => {
+		return this.startTracingSpan(requestInfo, "send", async (span) => {
 			try {
 				const response = await this.getHttpResponseMessage(requestInfo, span);
 				const responseHandler = this.getResponseHandler(requestInfo);
 				if (responseHandler) {
 					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
-					return await responseHandler.handleResponseAsync(response, errorMappings);
+					return await responseHandler.handleResponse(response, errorMappings);
 				} else {
 					try {
 						await this.throwIfFailedResponse(response, errorMappings, span);
@@ -197,17 +204,17 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		}) as Promise<ModelType>;
 	};
-	public sendPrimitiveAsync = <ResponseType extends PrimitiveTypesForDeserializationType>(requestInfo: RequestInformation, responseType: PrimitiveTypesForDeserialization, errorMappings: ErrorMappings | undefined): Promise<ResponseType | undefined> => {
+	public sendPrimitive = <ResponseType extends PrimitiveTypesForDeserializationType>(requestInfo: RequestInformation, responseType: PrimitiveTypesForDeserialization, errorMappings: ErrorMappings | undefined): Promise<ResponseType | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
-		return this.startTracingSpan(requestInfo, "sendPrimitiveAsync", async (span) => {
+		return this.startTracingSpan(requestInfo, "sendPrimitive", async (span) => {
 			try {
 				const response = await this.getHttpResponseMessage(requestInfo, span);
 				const responseHandler = this.getResponseHandler(requestInfo);
 				if (responseHandler) {
 					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
-					return await responseHandler.handleResponseAsync(response, errorMappings);
+					return await responseHandler.handleResponse(response, errorMappings);
 				} else {
 					try {
 						await this.throwIfFailedResponse(response, errorMappings, span);
@@ -259,22 +266,90 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		}) as Promise<ResponseType | undefined>;
 	};
-	public sendNoResponseContentAsync = (requestInfo: RequestInformation, errorMappings: ErrorMappings | undefined): Promise<void> => {
+	public sendNoResponseContent = (requestInfo: RequestInformation, errorMappings: ErrorMappings | undefined): Promise<void> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
-		return this.startTracingSpan(requestInfo, "sendNoResponseContentAsync", async (span) => {
+		return this.startTracingSpan(requestInfo, "sendNoResponseContent", async (span) => {
 			try {
 				const response = await this.getHttpResponseMessage(requestInfo, span);
 				const responseHandler = this.getResponseHandler(requestInfo);
 				if (responseHandler) {
 					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
-					return await responseHandler.handleResponseAsync(response, errorMappings);
+					return await responseHandler.handleResponse(response, errorMappings);
 				}
 				try {
 					await this.throwIfFailedResponse(response, errorMappings, span);
 				} finally {
 					await this.purgeResponseBody(response);
+				}
+			} finally {
+				span.end();
+			}
+		});
+	};
+	public sendEnum = <EnumObject extends Record<string, unknown>>(requestInfo: RequestInformation, enumObject: EnumObject, errorMappings: ErrorMappings | undefined): Promise<EnumObject[keyof EnumObject] | undefined> => {
+		if (!requestInfo) {
+			throw new Error("requestInfo cannot be null");
+		}
+		return this.startTracingSpan(requestInfo, "sendEnum", async (span) => {
+			try {
+				const response = await this.getHttpResponseMessage(requestInfo, span);
+				const responseHandler = this.getResponseHandler(requestInfo);
+				if (responseHandler) {
+					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
+					return await responseHandler.handleResponse(response, errorMappings);
+				} else {
+					try {
+						await this.throwIfFailedResponse(response, errorMappings, span);
+						if (this.shouldReturnUndefined(response)) return undefined;
+						const rootNode = await this.getRootParseNode(response);
+						return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getEnumValue", (deserializeSpan) => {
+							try {
+								span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "enum");
+								const result = rootNode.getEnumValue(enumObject);
+								return result as unknown as EnumObject[keyof EnumObject];
+							} finally {
+								deserializeSpan.end();
+							}
+						});
+					} finally {
+						await this.purgeResponseBody(response);
+					}
+				}
+			} finally {
+				span.end();
+			}
+		}) as Promise<EnumObject[keyof EnumObject]>;
+	};
+	public sendCollectionOfEnum = <EnumObject extends Record<string, unknown>>(requestInfo: RequestInformation, enumObject: EnumObject, errorMappings: ErrorMappings | undefined): Promise<EnumObject[keyof EnumObject][] | undefined> => {
+		if (!requestInfo) {
+			throw new Error("requestInfo cannot be null");
+		}
+		return this.startTracingSpan(requestInfo, "sendCollectionOfEnum", async (span) => {
+			try {
+				const response = await this.getHttpResponseMessage(requestInfo, span);
+				const responseHandler = this.getResponseHandler(requestInfo);
+				if (responseHandler) {
+					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
+					return await responseHandler.handleResponse(response, errorMappings);
+				} else {
+					try {
+						await this.throwIfFailedResponse(response, errorMappings, span);
+						if (this.shouldReturnUndefined(response)) return undefined;
+						const rootNode = await this.getRootParseNode(response);
+						return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getCollectionOfEnumValues", (deserializeSpan) => {
+							try {
+								const result = rootNode.getCollectionOfEnumValues(enumObject);
+								span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "enum[]");
+								return result as unknown as EnumObject[keyof EnumObject][];
+							} finally {
+								deserializeSpan.end();
+							}
+						});
+					} finally {
+						await this.purgeResponseBody(response);
+					}
 				}
 			} finally {
 				span.end();
@@ -328,7 +403,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				response.headers.forEach((value, key) => {
 					responseHeaders[key] = value.split(",");
 				});
-				const factory = errorMappings ? errorMappings[statusCode] ?? (statusCode >= 400 && statusCode < 500 ? errorMappings._4XX : undefined) ?? (statusCode >= 500 && statusCode < 600 ? errorMappings._5XX : undefined) ?? errorMappings.XXX : undefined;
+				const factory = errorMappings ? (errorMappings[statusCode] ?? (statusCode >= 400 && statusCode < 500 ? errorMappings._4XX : undefined) ?? (statusCode >= 500 && statusCode < 600 ? errorMappings._5XX : undefined) ?? errorMappings.XXX) : undefined;
 				if (!factory) {
 					spanForAttributes.setAttribute(FetchRequestAdapter.errorMappingFoundAttributeName, false);
 					const error = new DefaultApiError("the server returned an unexpected status code and no error class is registered for this code " + statusCode);
@@ -382,14 +457,14 @@ export class FetchRequestAdapter implements RequestAdapter {
 				if (response) {
 					const responseContentLength = response.headers.get("Content-Length");
 					if (responseContentLength) {
-						spanForAttributes.setAttribute("http.response_content_length", parseInt(responseContentLength));
+						spanForAttributes.setAttribute("http.response.body.size", parseInt(responseContentLength));
 					}
 					const responseContentType = response.headers.get("Content-Type");
 					if (responseContentType) {
-						spanForAttributes.setAttribute("http.response_content_type", responseContentType);
+						spanForAttributes.setAttribute("http.response.header.content-type", responseContentType);
 					}
-					spanForAttributes.setAttribute("http.status_code", response.status);
-					// getting the http.flavor (protocol version) is impossible with fetch API
+					spanForAttributes.setAttribute("http.response.status_code", response.status);
+					// getting the network.protocol.version (protocol version) is impossible with fetch API
 				}
 				return response;
 			} finally {
@@ -404,7 +479,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				const responseClaims = this.getClaimsFromResponse(response, claims);
 				if (responseClaims) {
 					span.addEvent(FetchRequestAdapter.authenticateChallengedEventKey);
-					spanForAttributes.setAttribute("http.retry_count", 1);
+					spanForAttributes.setAttribute("http.request.resend_count", 1);
 					await this.purgeResponseBody(response);
 					return await this.getHttpResponseMessage(requestInfo, spanForAttributes, responseClaims);
 				}
@@ -439,24 +514,24 @@ export class FetchRequestAdapter implements RequestAdapter {
 			try {
 				const method = requestInfo.httpMethod?.toString();
 				const uri = requestInfo.URL;
-				spanForAttributes.setAttribute("http.method", method ?? "");
+				spanForAttributes.setAttribute("http.request.method", method ?? "");
 				const uriContainsScheme = uri.indexOf("://") > -1;
 				const schemeSplatUri = uri.split("://");
 				if (uriContainsScheme) {
-					spanForAttributes.setAttribute("http.scheme", schemeSplatUri[0]);
+					spanForAttributes.setAttribute("server.address", schemeSplatUri[0]);
 				}
 				const uriWithoutScheme = uriContainsScheme ? schemeSplatUri[1] : uri;
-				spanForAttributes.setAttribute("http.host", uriWithoutScheme.split("/")[0]);
+				spanForAttributes.setAttribute("url.scheme", uriWithoutScheme.split("/")[0]);
 				if (this.observabilityOptions.includeEUIIAttributes) {
-					spanForAttributes.setAttribute("http.uri", decodeURIComponent(uri));
+					spanForAttributes.setAttribute("url.full", decodeURIComponent(uri));
 				}
 				const requestContentLength = requestInfo.headers.tryGetValue("Content-Length");
 				if (requestContentLength) {
-					spanForAttributes.setAttribute("http.request_content_length", parseInt(requestContentLength[0]));
+					spanForAttributes.setAttribute("http.response.body.size", parseInt(requestContentLength[0]));
 				}
 				const requestContentType = requestInfo.headers.tryGetValue("Content-Type");
 				if (requestContentType) {
-					spanForAttributes.setAttribute("http.request_content_type", requestContentType);
+					spanForAttributes.setAttribute("http.request.header.content-type", requestContentType);
 				}
 				const headers: [string, string][] | undefined = requestInfo.headers ? Array.from(requestInfo.headers.keys()).map((key) => [key.toString().toLocaleLowerCase(), this.foldHeaderValue(requestInfo.headers.tryGetValue(key))]) : undefined;
 				const request = {
@@ -482,13 +557,13 @@ export class FetchRequestAdapter implements RequestAdapter {
 	/**
 	 * @inheritdoc
 	 */
-	public convertToNativeRequestAsync = async <T>(requestInfo: RequestInformation): Promise<T> => {
+	public convertToNativeRequest = async <T>(requestInfo: RequestInformation): Promise<T> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
 		await this.authenticationProvider.authenticateRequest(requestInfo, undefined);
 
-		return this.startTracingSpan(requestInfo, "convertToNativeRequestAsync", async (span) => {
+		return this.startTracingSpan(requestInfo, "convertToNativeRequest", async (span) => {
 			const request = await this.getRequestFromRequestInformation(requestInfo, span);
 			return request as any as T;
 		});

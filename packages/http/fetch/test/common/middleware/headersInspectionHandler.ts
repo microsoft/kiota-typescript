@@ -5,8 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { assert } from "chai";
-import { Response } from "node-fetch";
+import { assert, describe, it } from "vitest";
 
 import { HeadersInspectionHandler, HeadersInspectionOptions } from "../../../src";
 import { DummyFetchHandler } from "./dummyFetchHandler";
@@ -25,7 +24,7 @@ describe("HeadersInspectionHandler.ts", () => {
 	});
 	describe("gets request headers", () => {
 		it("Should return request headers", async () => {
-			const options = new HeadersInspectionOptions({inspectRequestHeaders: true});
+			const options = new HeadersInspectionOptions({ inspectRequestHeaders: true });
 			const handler = new HeadersInspectionHandler(options);
 			const dummyFetchHandler = new DummyFetchHandler();
 			dummyFetchHandler.setResponses([

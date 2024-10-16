@@ -1,25 +1,10 @@
 ## Testing for node and browser
+Testing is done using [vitest](https://vitest.dev). The configuration is set to run from the root folder([workspace mode](https://vitest.dev/guide/workspace.html)) as well as the root of every project folder in `packages`. Each project has been configured to allow running the tests in either the node or the browser environment. When you run the workspace test using the script command `test` from the root of the project folder, both node and browser environment tests are run in each of the project folders in `packages`.
 
 ### Testing for node
 
-- Tests targeting the node environment are in `/test/node` and `/test/common` folder and use `mocha` and `chai` JS libraries.
-- Test formats:
-    - script to test `CommonJS` modules: `npm run test:cjs`
-    - script to test `ES` modules:  `npm run test:es`
-- Examples of node environment specific tests: Test `DefaultFetchHandler` using `node-fetch` library.
- 
+All the tests in the project's `test/*` folder can be run in a node environment using the script command `test:node`. Any browser related code will fail this test run.
 
 ### Testing for browser
 
-
-- Tests targeting the node environment are in `/test/browser` and `/test/common` folder and use `mocha` and `chai` JS libraries.
-- To test for browsers, the tests and the source code are bundled using `rollup` and the bundled file is tested using `karma`.
-- Test formats:
-    - script to test: `npm run karma`.
-- Examples of node environment specific tests: Test `DefaultFetchHandler` using dom - `fetch`.
-
----
-**NOTE**
-
-The bundled file considers the `package.json browser spec` during the rollup process. The entry point of the source code for the tests will be `src/browser/index.js` and the `package.json browser spec` file mapping should work.   
----
+All the tests in the project's `test/*` folder can be run in a browser environment using the script command `test:browser`. Any node related code will fail this test run.

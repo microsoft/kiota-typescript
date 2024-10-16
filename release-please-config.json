@@ -1,0 +1,60 @@
+{
+  "exclude-paths": [".git", ".idea", ".github", ".vscode"],
+  "include-component-in-tag": true,
+  "include-v-in-tag": false,
+  "tag-separator": "@",
+  "separate-pull-requests": false,
+  "bump-minor-pre-major": true,
+  "bump-patch-for-minor-pre-major": true,
+  "skip-github-release": true,
+  "versioning": "prerelease",
+  "last-release-sha": "f13c350c40b76f7dff25e71e6ceeeb0066aa02be",
+  "packages": {
+    "packages/abstractions": {
+      "component": "@microsoft/kiota-abstractions",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "packages/authentication/azure": {
+      "component": "@microsoft/kiota-authentication-azure",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "packages/authentication/spfx": {
+      "component": "@microsoft/kiota-authentication-spfx",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "packages/bundle": {
+      "component": "@microsoft/kiota-bundle",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "packages/http/fetch": {
+      "component": "@microsoft/kiota-http-fetchlibrary",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "packages/serialization/form": {
+      "component": "@microsoft/kiota-serialization-form",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "packages/serialization/json": {
+      "component": "@microsoft/kiota-serialization-json",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "packages/serialization/multipart": {
+      "component": "@microsoft/kiota-serialization-multipart",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "packages/serialization/text": {
+      "component": "@microsoft/kiota-serialization-text",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
+    }
+  },
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
+}

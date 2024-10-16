@@ -177,7 +177,7 @@ export class RedirectHandler implements Middleware {
 				return trace.getTracer(tracerName).startActiveSpan(`redirectHandler - redirect ${redirectCount}`, (span) => {
 					try {
 						span.setAttribute("com.microsoft.kiota.handler.redirect.count", redirectCount);
-						span.setAttribute("http.status_code", response.status);
+						span.setAttribute("http.response.status_code", response.status);
 						return this.executeWithRedirect(url, fetchRequestInit, redirectCount, currentOptions, requestOptions);
 					} finally {
 						span.end();
