@@ -24,7 +24,7 @@ export class CustomFetchHandler implements Middleware {
 	 */
 	next: Middleware | undefined;
 
-	constructor(private customFetch: (input: string, init: RequestInit) => Promise<Response>) {}
+	constructor(private readonly customFetch: (input: string, init: RequestInit) => Promise<Response>) {}
 
 	/**
 	 * @public
