@@ -119,37 +119,38 @@ export function serializeMultipartBody(writer: SerializationWriter, multipartBod
             } else {
                 writer.writeStringValue(undefined, "\r\n");
             }
-		writer.writeStringValue(undefined, "--" + boundary);
-		writer.writeStringValue(undefined, "\r\n");
-		const part = parts[partName];
-		writer.writeStringValue("Content-Type", part.contentType);
-		writer.writeStringValue(undefined, "\r\n");
-		writer.writeStringValue("Content-Disposition", 'form-data; name="' + part.originalName + '"');
-		writer.writeStringValue(undefined, "\r\n");
-		writer.writeStringValue(undefined, "\r\n");
-		if (typeof part.content === "string") {
-			writer.writeStringValue(undefined, part.content);
-		} else if (part.content instanceof ArrayBuffer) {
-			writer.writeByteArrayValue(undefined, new Uint8Array(part.content));
-		} else if (part.content instanceof Uint8Array) {
-			writer.writeByteArrayValue(undefined, part.content);
-		} else if (part.serializationCallback) {
-			if (!multipartBody.requestAdapter) {
-				throw new Error("requestAdapter cannot be undefined");
+			writer.writeStringValue(undefined, "--" + boundary);
+			writer.writeStringValue(undefined, "\r\n");
+			const part = parts[partName];
+			writer.writeStringValue("Content-Type", part.contentType);
+			writer.writeStringValue(undefined, "\r\n");
+			writer.writeStringValue("Content-Disposition", 'form-data; name="' + part.originalName + '"');
+			writer.writeStringValue(undefined, "\r\n");
+			writer.writeStringValue(undefined, "\r\n");
+			if (typeof part.content === "string") {
+				writer.writeStringValue(undefined, part.content);
+			} else if (part.content instanceof ArrayBuffer) {
+				writer.writeByteArrayValue(undefined, new Uint8Array(part.content));
+			} else if (part.content instanceof Uint8Array) {
+				writer.writeByteArrayValue(undefined, part.content);
+			} else if (part.serializationCallback) {
+				if (!multipartBody.requestAdapter) {
+					throw new Error("requestAdapter cannot be undefined");
+				}
+				const serializationWriterFactory = multipartBody.requestAdapter.getSerializationWriterFactory();
+				if (!serializationWriterFactory) {
+					throw new Error("serializationWriterFactory cannot be undefined");
+				}
+				const partSerializationWriter = serializationWriterFactory.getSerializationWriter(part.contentType);
+				if (!partSerializationWriter) {
+					throw new Error("no serialization writer factory for content type: " + part.contentType);
+				}
+				partSerializationWriter.writeObjectValue(undefined, part.content as Parsable, part.serializationCallback);
+				const partContent = partSerializationWriter.getSerializedContent();
+				writer.writeByteArrayValue(undefined, new Uint8Array(partContent));
+			} else {
+				throw new Error("unsupported content type for multipart body: " + typeof part.content);
 			}
-			const serializationWriterFactory = multipartBody.requestAdapter.getSerializationWriterFactory();
-			if (!serializationWriterFactory) {
-				throw new Error("serializationWriterFactory cannot be undefined");
-			}
-			const partSerializationWriter = serializationWriterFactory.getSerializationWriter(part.contentType);
-			if (!partSerializationWriter) {
-				throw new Error("no serialization writer factory for content type: " + part.contentType);
-			}
-			partSerializationWriter.writeObjectValue(undefined, part.content as Parsable, part.serializationCallback);
-			const partContent = partSerializationWriter.getSerializedContent();
-			writer.writeByteArrayValue(undefined, new Uint8Array(partContent));
-		} else {
-			throw new Error("unsupported content type for multipart body: " + typeof part.content);
 		}
 	}
 	writer.writeStringValue(undefined, "\r\n");
