@@ -9,7 +9,7 @@ import type { RequestOption } from "@microsoft/kiota-abstractions";
 
 import { CustomFetchHandler } from "./middlewares/customFetchHandler";
 import type { Middleware } from "./middlewares/middleware";
-import { MiddlewareFactory } from "./middlewares/middlewareFactory";
+import { MiddlewareFactory } from "./";
 
 export class HttpClient {
 	private middleware: Middleware | undefined;
@@ -24,17 +24,20 @@ export class HttpClient {
 	 * @param {(request: string, init?: RequestInit) => Promise < Response >} custom fetch function - a Fetch API implementation
 	 *
 	 */
-	public constructor(private customFetch?: (request: string, init: RequestInit) => Promise<Response>, ...middlewares: Middleware[]) {
-		// Use default middleware chain if middlewares and custom fetch function are  undefined
-		if (!middlewares.length || !middlewares[0]) {
-			this.setMiddleware(...MiddlewareFactory.getDefaultMiddlewareChain(customFetch));
-		} else {
-			if (this.customFetch) {
-				this.setMiddleware(...middlewares, new CustomFetchHandler(customFetch! as any));
-			} else {
-				this.setMiddleware(...middlewares);
-			}
+	public constructor(
+		private customFetch?: (request: string, init: RequestInit) => Promise<Response>,
+		...middlewares: Middleware[]
+	) {
+		// If no middlewares are provided, use the default ones
+		middlewares = middlewares?.length && middlewares[0] ? middlewares : MiddlewareFactory.getDefaultMiddlewares(customFetch);
+
+		// If a custom fetch function is provided, add a CustomFetchHandler to the end of the middleware chain
+		if (this.customFetch) {
+			middlewares.push(new CustomFetchHandler(customFetch as any));
 		}
+
+		// Set the middleware chain
+		this.setMiddleware(...middlewares);
 	}
 
 	/**
@@ -45,12 +48,10 @@ export class HttpClient {
 	 * @returns Nothing
 	 */
 	private setMiddleware(...middleware: Middleware[]): void {
-        middleware.forEach((element, index) => {
-			if (index < middleware.length - 1) {
-				element.next = middleware[index + 1];
-			}
-		});
-        this.middleware = middleware[0];
+		for (let i = 0; i < middleware.length - 1; i++) {
+			middleware[i].next = middleware[i + 1];
+		}
+		this.middleware = middleware[0];
 	}
 
 	/**
@@ -60,14 +61,12 @@ export class HttpClient {
 	 * @returns the promise resolving the response.
 	 */
 	public async executeFetch(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
-		if (this.customFetch && !this.middleware) {
+		if (this.middleware) {
+			return await this.middleware.execute(url, requestInit, requestOptions);
+		} else if (this.customFetch) {
 			return this.customFetch(url, requestInit);
 		}
 
-		if (this.middleware) {
-			return await this.middleware.execute(url, requestInit, requestOptions);
-		} else {
-			throw new Error("Please provide middlewares or a custom fetch function to execute the request");
-		}
+		throw new Error("Please provide middlewares or a custom fetch function to execute the request");
 	}
 }

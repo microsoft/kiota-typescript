@@ -1,50 +1,52 @@
 {
-  "name": "@microsoft/kiota-authentication-spfx",
-  "version": "1.0.0-preview.32",
-  "description": "Authentication provider for using Kiota in SPFx solutions",
-  "main": "dist/cjs/src/index.js",
-  "module": "dist/es/src/index.js",
-  "types": "dist/cjs/src/index.d.ts",
-  "scripts": {
-    "build": "npm run build:cjs && npm run build:esm",
-    "build:cjs": "tsc -b tsconfig.cjs.json",
-    "build:esm": "tsc -b tsconfig.es.json",
-    "test": "npm run build && mocha  'dist/cjs/test/**/*.js'",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
-    "clean": "rm -r ./dist"
-  },
-  "repository": "git://github.com/microsoft/kiota-typescript.git",
-  "keywords": [
-    "Kiota",
-    "OpenApi",
-    "Azure",
-    "Authentication",
-    "OAuth",
-    "SPFx",
-    "AzureAD",
-    "Graph",
-    "SharePoint"
-  ],
-  "author": "Microsoft",
-  "contributors": [
-    {
-      "name": "Luis Mañez",
-      "url": "https://github.com/luismanez"
-    }
-  ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/microsoft/kiota-typescript/issues"
-  },
-  "homepage": "https://github.com/microsoft/kiota-typescript#readme",
-  "dependencies": {
-    "@microsoft/kiota-abstractions": "^1.0.0-preview.42",
-    "@microsoft/sp-http": "^1.15.2",
-    "@opentelemetry/api": "^1.7.0",
-    "tslib": "^2.6.2"
-  },
-  "publishConfig": {
-    "access": "public"
-  }
+	"name": "@microsoft/kiota-authentication-spfx",
+	"version": "1.0.0-preview.57",
+	"description": "Authentication provider for using Kiota in SPFx solutions",
+	"main": "dist/es/src/index.js",
+	"module": "dist/es/src/index.js",
+	"types": "dist/es/src/index.d.ts",
+	"type": "module",
+	"scripts": {
+		"build": "npm run build:esm",
+		"build:esm": "tsc && tsc-alias",
+		"test:browser": "vitest run --browser.name=chrome --browser.headless --browser.provider=webdriverio",
+		"test:node": "vitest --run",
+		"test": "npm run test:node && npm run test:browser",
+		"lint": "eslint . --ext .ts",
+		"lint:fix": "eslint . --ext .ts --fix",
+		"clean": "rimraf ./dist"
+	},
+	"repository": "git://github.com/microsoft/kiota-typescript.git",
+	"keywords": [
+		"Kiota",
+		"OpenApi",
+		"Azure",
+		"Authentication",
+		"OAuth",
+		"SPFx",
+		"AzureAD",
+		"Graph",
+		"SharePoint"
+	],
+	"author": "Microsoft",
+	"contributors": [
+		{
+			"name": "Luis Mañez",
+			"url": "https://github.com/luismanez"
+		}
+	],
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/microsoft/kiota-typescript/issues"
+	},
+	"homepage": "https://github.com/microsoft/kiota-typescript#readme",
+	"dependencies": {
+		"@microsoft/kiota-abstractions": "*",
+		"@microsoft/sp-http": "^1.15.2",
+		"@opentelemetry/api": "^1.7.0",
+		"tslib": "^2.6.2"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
 }

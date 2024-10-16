@@ -1,100 +1,96 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import { Guid } from "guid-typescript";
-
 import type { RequestAdapter } from "./requestAdapter";
-import type {
-  ModelSerializerFunction,
-  Parsable,
-  ParseNode,
-  SerializationWriter,
-} from "./serialization";
+import type { ModelSerializerFunction, Parsable, ParseNode, SerializationWriter } from "./serialization";
+
 /**
  * Defines an interface for a multipart body for request or response.
  */
 export class MultipartBody implements Parsable {
-  private readonly _boundary: string;
-  private readonly _parts: Record<string, MultipartEntry> = {};
-  public requestAdapter?: RequestAdapter;
-  /**
-   * Instantiates a new MultipartBody.
-   */
-  public constructor() {
-    this._boundary = Guid.create().toString().replace(/-/g, "");
-  }
-  /**
-   * Adds or replaces a part with the given name, content type and content.
-   * @param partName the name of the part to add or replace.
-   * @param partContentType the content type of the part to add or replace.
-   * @param content the content of the part to add or replace.
-   * @param serializationCallback the serialization callback to use when serializing the part.
-   */
-  public addOrReplacePart<T>(
-    partName: string,
-    partContentType: string,
-    content: T,
-    serializationCallback?: ModelSerializerFunction<Parsable>,
-  ): void {
-    if (!partName) throw new Error("partName cannot be undefined");
-    if (!partContentType) {
-      throw new Error("partContentType cannot be undefined");
-    }
-    if (!content) throw new Error("content cannot be undefined");
-    const normalizePartName = this.normalizePartName(partName);
-    this._parts[normalizePartName] = {
-      contentType: partContentType,
-      content,
-      originalName: partName,
-      serializationCallback,
-    };
-  }
-  /**
-   * Gets the content of the part with the given name.
-   * @param partName the name of the part to get the content for.
-   * @returns the content of the part with the given name.
-   */
-  public getPartValue<T>(partName: string): T | undefined {
-    if (!partName) throw new Error("partName cannot be undefined");
-    const normalizePartName = this.normalizePartName(partName);
-    const candidate = this._parts[normalizePartName];
-    if (!candidate) return undefined;
-    return candidate.content as T;
-  }
-  /**
-   * Removes the part with the given name.
-   * @param partName the name of the part to remove.
-   * @returns true if the part was removed, false if it did not exist.
-   */
-  public removePart(partName: string): boolean {
-    if (!partName) throw new Error("partName cannot be undefined");
-    const normalizePartName = this.normalizePartName(partName);
-    if (!this._parts[normalizePartName]) return false;
-    delete this._parts[normalizePartName];
-    return true;
-  }
-  /**
-   * Gets the boundary used to separate each part.
-   * @returns the boundary value.
-   */
-  public getBoundary(): string {
-    return this._boundary;
-  }
+	private readonly _boundary: string;
+	private readonly _parts: Record<string, MultipartEntry> = {};
+	public requestAdapter?: RequestAdapter;
+	/**
+	 * Instantiates a new MultipartBody.
+	 */
+	public constructor() {
+		this._boundary = Guid.create().toString().replace(/-/g, "");
+	}
+	/**
+	 * Adds or replaces a part with the given name, content type and content.
+	 * @param partName the name of the part to add or replace.
+	 * @param partContentType the content type of the part to add or replace.
+	 * @param content the content of the part to add or replace.
+	 * @param serializationCallback the serialization callback to use when serializing the part.
+	 */
+	public addOrReplacePart<T>(partName: string, partContentType: string, content: T, serializationCallback?: ModelSerializerFunction<Parsable>): void {
+		if (!partName) throw new Error("partName cannot be undefined");
+		if (!partContentType) {
+			throw new Error("partContentType cannot be undefined");
+		}
+		if (!content) throw new Error("content cannot be undefined");
+		const normalizePartName = this.normalizePartName(partName);
+		this._parts[normalizePartName] = {
+			contentType: partContentType,
+			content,
+			originalName: partName,
+			serializationCallback,
+		};
+	}
+	/**
+	 * Gets the content of the part with the given name.
+	 * @param partName the name of the part to get the content for.
+	 * @returns the content of the part with the given name.
+	 */
+	public getPartValue<T>(partName: string): T | undefined {
+		if (!partName) throw new Error("partName cannot be undefined");
+		const normalizePartName = this.normalizePartName(partName);
+		const candidate = this._parts[normalizePartName];
+		if (!candidate) return undefined;
+		return candidate.content as T;
+	}
+	/**
+	 * Removes the part with the given name.
+	 * @param partName the name of the part to remove.
+	 * @returns true if the part was removed, false if it did not exist.
+	 */
+	public removePart(partName: string): boolean {
+		if (!partName) throw new Error("partName cannot be undefined");
+		const normalizePartName = this.normalizePartName(partName);
+		if (!this._parts[normalizePartName]) return false;
+		delete this._parts[normalizePartName];
+		return true;
+	}
+	/**
+	 * Gets the boundary used to separate each part.
+	 * @returns the boundary value.
+	 */
+	public getBoundary(): string {
+		return this._boundary;
+	}
 
-  private normalizePartName(original: string): string {
-    return original.toLocaleLowerCase();
-  }
-  /**
-   * Lists all the parts in the multipart body.
-   * WARNING: meant for internal use only
-   * @returns the list of parts in the multipart body.
-   */
-  public listParts(): Record<string, MultipartEntry> {
-    return this._parts;
-  }
+	private normalizePartName(original: string): string {
+		return original.toLocaleLowerCase();
+	}
+	/**
+	 * Lists all the parts in the multipart body.
+	 * WARNING: meant for internal use only
+	 * @returns the list of parts in the multipart body.
+	 */
+	public listParts(): Record<string, MultipartEntry> {
+		return this._parts;
+	}
 }
 interface MultipartEntry {
-  contentType: string;
-  content: any;
-  originalName: string;
-  serializationCallback?: ModelSerializerFunction<Parsable>;
+	contentType: string;
+	content: any;
+	originalName: string;
+	serializationCallback?: ModelSerializerFunction<Parsable>;
 }
 
 export function serializeMultipartBody(
@@ -177,15 +173,13 @@ export function serializeMultipartBody(
   writer.writeStringValue(undefined, "\r\n");
 }
 
-export function deserializeIntoMultipartBody(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _: Partial<MultipartBody> | undefined = new MultipartBody(),
-): Record<string, (node: ParseNode) => void> {
-  throw new Error("Not implemented");
-}
-export function createMessageFromDiscriminatorValue(
-  parseNode: ParseNode | undefined,
-) {
-  if (!parseNode) throw new Error("parseNode cannot be undefined");
-  return deserializeIntoMultipartBody;
-}
+export const deserializeIntoMultipartBody = (
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	_: Partial<MultipartBody> | undefined = new MultipartBody(),
+): Record<string, (node: ParseNode) => void> => {
+	throw new Error("Not implemented");
+};
+export const createMessageFromDiscriminatorValue = (parseNode: ParseNode | undefined) => {
+	if (!parseNode) throw new Error("parseNode cannot be undefined");
+	return deserializeIntoMultipartBody;
+};

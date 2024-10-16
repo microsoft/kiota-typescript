@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import type { RequestOption } from "@microsoft/kiota-abstractions";
 
 import type { Middleware } from "../../../src/middlewares/middleware";
@@ -11,7 +18,10 @@ if (typeof Response !== "object") {
 }
 
 export class TestCallBackMiddleware implements Middleware {
-	constructor(private callback: (url: string) => void, nextMiddleware: Middleware = new DummyFetchHandler()) {
+	constructor(
+		private callback: (url: string) => void,
+		nextMiddleware: Middleware = new DummyFetchHandler(),
+	) {
 		this.next = nextMiddleware;
 	}
 	next: Middleware;
