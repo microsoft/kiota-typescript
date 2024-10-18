@@ -457,7 +457,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				if (response) {
 					const responseContentLength = response.headers.get("Content-Length");
 					if (responseContentLength) {
-						spanForAttributes.setAttribute("http.response.body.size", parseInt(responseContentLength));
+						spanForAttributes.setAttribute("http.response.body.size", parseInt(responseContentLength, 10));
 					}
 					const responseContentType = response.headers.get("Content-Type");
 					if (responseContentType) {
@@ -527,13 +527,16 @@ export class FetchRequestAdapter implements RequestAdapter {
 				}
 				const requestContentLength = requestInfo.headers.tryGetValue("Content-Length");
 				if (requestContentLength) {
-					spanForAttributes.setAttribute("http.response.body.size", parseInt(requestContentLength[0]));
+					spanForAttributes.setAttribute("http.response.body.size", parseInt(requestContentLength[0], 10));
 				}
 				const requestContentType = requestInfo.headers.tryGetValue("Content-Type");
 				if (requestContentType) {
 					spanForAttributes.setAttribute("http.request.header.content-type", requestContentType);
 				}
-				const headers: [string, string][] | undefined = requestInfo.headers ? Array.from(requestInfo.headers.keys()).map((key) => [key.toString().toLocaleLowerCase(), this.foldHeaderValue(requestInfo.headers.tryGetValue(key))]) : undefined;
+				const headers: Record<string, string> | undefined = {};
+				requestInfo.headers?.forEach((_, key) => {
+					headers[key.toString().toLocaleLowerCase()] = this.foldHeaderValue(requestInfo.headers.tryGetValue(key));
+				});
 				const request = {
 					method,
 					headers,
