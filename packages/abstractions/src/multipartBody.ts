@@ -114,7 +114,6 @@ export function serializeMultipartBody(writer: SerializationWriter, multipartBod
 	let first = true;
 	for (const partName in parts) {
 		if (Object.prototype.hasOwnProperty.call(parts, partName)) {
-			// Added guard
 			if (first) {
 				first = false;
 			} else {

@@ -30,7 +30,7 @@ export class MultipartSerializationWriter implements SerializationWriter {
 	public onBeforeObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onStartObjectSerialization: ((value: Parsable, writer: SerializationWriter) => void) | undefined;
-	public writeStringValue = (key?: string, value?: string): void => {
+	public writeStringValue = (key?: string, value?: string | null): void => {
 		if (key) {
 			this.writeRawStringValue(key);
 		}
@@ -47,7 +47,7 @@ export class MultipartSerializationWriter implements SerializationWriter {
 		}
 	};
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public writeBooleanValue = (key?: string, value?: boolean): void => {
+	public writeBooleanValue = (key?: string, value?: boolean | null): void => {
 		throw new Error(`serialization of boolean values is not supported with multipart`);
 	};
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
