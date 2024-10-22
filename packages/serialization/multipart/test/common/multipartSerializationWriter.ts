@@ -55,16 +55,16 @@ describe("MultipartSerializationWriter", () => {
 		const mpBody = new MultipartBody();
 		mpBody.addOrReplacePart("testPart", "text/plain", "test content");
 		mpBody.requestAdapter = {
-		  getSerializationWriterFactory: () => new JsonSerializationWriterFactory(),
+			getSerializationWriterFactory: () => new JsonSerializationWriterFactory(),
 		} as RequestAdapter;
-		
+
 		multipartSerializationWriter.writeObjectValue(undefined, mpBody, serializeMultipartBody);
 		const multipartContent = multipartSerializationWriter.getSerializedContent();
 		const result = new TextDecoder().decode(multipartContent);
-		
+
 		const expectedString = `--${mpBody.getBoundary()}\r\nContent-Type: text/plain\r\nContent-Disposition: form-data; name="testPart"\r\n\r\ntest content\r\n--${mpBody.getBoundary()}--\r\n`;
 		assert.equal(result, expectedString);
-	  });
+	});
 	it("writes a structured object", () => {
 		const testEntity = {} as TestEntity;
 		testEntity.id = "48d31887-5fad-4d73-a9f5-3c356e68a038";
