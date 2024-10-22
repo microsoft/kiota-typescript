@@ -10,6 +10,7 @@ import type { ErrorMappings, PrimitiveTypesForDeserialization, PrimitiveTypesFor
 import type { RequestConfiguration } from "./requestConfiguration";
 import { RequestInformation, type RequestInformationSetContent } from "./requestInformation";
 import type { ModelSerializerFunction, Parsable, ParsableFactory } from "./serialization";
+import { MultipartBody } from "./multipartBody";
 const sanitizeMethodName = (methodName: string): string => {
 	if (methodName.startsWith("to")) {
 		return methodName.substring(2).replace("RequestInformation", "").toLowerCase();
@@ -216,7 +217,7 @@ export interface RequestMetadata {
 	errorMappings?: ErrorMappings;
 	adapterMethodName?: SendMethods;
 	responseBodyFactory?: ParsableFactory<Parsable> | PrimitiveTypesForDeserialization;
-	requestBodySerializer?: ModelSerializerFunction<Parsable> | PrimitiveTypesForDeserialization;
+	requestBodySerializer?: ModelSerializerFunction<Parsable> | ModelSerializerFunction<MultipartBody> | PrimitiveTypesForDeserialization;
 	requestInformationContentSetMethod?: keyof RequestInformationSetContent;
 	queryParametersMapper?: Record<string, string>;
 	uriTemplate: string;
