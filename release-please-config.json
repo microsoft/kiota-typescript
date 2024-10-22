@@ -8,7 +8,6 @@
   "bump-patch-for-minor-pre-major": true,
   "skip-github-release": true,
   "versioning": "prerelease",
-  "last-release-sha": "f13c350c40b76f7dff25e71e6ceeeb0066aa02be",
   "packages": {
     "packages/abstractions": {
       "component": "@microsoft/kiota-abstractions",
