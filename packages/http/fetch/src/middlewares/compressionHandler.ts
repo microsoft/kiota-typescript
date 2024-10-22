@@ -196,7 +196,7 @@ export class CompressionHandler implements Middleware {
 	private async compressUsingZlib(body: unknown): Promise<Buffer> {
 		// @ts-ignore
 		const zlib = await import("zlib");
-		return new Promise((resolve, reject) => {
+		return await new Promise((resolve, reject) => {
 			zlib.gzip(body as string | ArrayBuffer | NodeJS.ArrayBufferView, (err, compressed) => {
 				if (err) {
 					reject(err);
