@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-preview.69](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-authentication-azure@1.0.0-preview.63...@microsoft/kiota-authentication-azure@1.0.0-preview.69) (2024-10-22)
+
+
+### Miscellaneous Chores
+
+* **@microsoft/kiota-authentication-azure:** Synchronize microsoft-kiota versions
+
 ## [1.0.0-preview.63](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-authentication-azure@1.0.0-preview.62...@microsoft/kiota-authentication-azure@1.0.0-preview.63) (2024-10-03)
 
 

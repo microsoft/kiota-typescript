@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-preview.69](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-multipart@1.0.0-preview.46...@microsoft/kiota-serialization-multipart@1.0.0-preview.69) (2024-10-22)
+
+
+### Miscellaneous Chores
+
+* **@microsoft/kiota-serialization-multipart:** Synchronize microsoft-kiota versions
+
 ## [1.0.0-preview.46](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-multipart@1.0.0-preview.45...@microsoft/kiota-serialization-multipart@1.0.0-preview.46) (2024-10-03)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-preview.69](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-form@1.0.0-preview.56...@microsoft/kiota-serialization-form@1.0.0-preview.69) (2024-10-22)
+
+
+### Miscellaneous Chores
+
+* **@microsoft/kiota-serialization-form:** Synchronize microsoft-kiota versions
+
 ## [1.0.0-preview.56](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-form@1.0.0-preview.55...@microsoft/kiota-serialization-form@1.0.0-preview.56) (2024-10-03)
 
 
