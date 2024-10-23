@@ -7,7 +7,6 @@
   "separate-pull-requests": false,
   "bump-minor-pre-major": true,
   "bump-patch-for-minor-pre-major": true,
-  "skip-github-release": true,
   "versioning": "prerelease",
   "packages": {
     "packages/abstractions": {
