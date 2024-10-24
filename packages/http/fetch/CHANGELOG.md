@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-preview.70](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.69...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.70) (2024-10-24)
+
+
+### Features
+
+* request body compression ([#1358](https://github.com/microsoft/kiota-typescript/issues/1358)) ([40440fb](https://github.com/microsoft/kiota-typescript/commit/40440fbd89edb2f59046c3bd38b5d1f0c80b40ae))
+
 ## [1.0.0-preview.69](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.67...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.69) (2024-10-22)
 
 

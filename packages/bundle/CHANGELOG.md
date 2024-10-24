@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-preview.70](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-bundle@1.0.0-preview.69...@microsoft/kiota-bundle@1.0.0-preview.70) (2024-10-24)
+
+
+### Miscellaneous Chores
+
+* **@microsoft/kiota-bundle:** Synchronize microsoft-kiota versions
+
 ## [1.0.0-preview.69](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-bundle@1.0.0-preview.11...@microsoft/kiota-bundle@1.0.0-preview.69) (2024-10-22)
 
 
