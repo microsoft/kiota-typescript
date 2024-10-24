@@ -156,7 +156,7 @@ export const serializeMultipartBody = (writer: SerializationWriter, multipartBod
 	writer.writeStringValue(undefined, "\r\n");
 	writer.writeStringValue(undefined, "--" + boundary + "--");
 	writer.writeStringValue(undefined, "\r\n");
-}
+};
 
 export const deserializeIntoMultipartBody = (
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
