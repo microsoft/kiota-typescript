@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-preview.70](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-authentication-spfx@1.0.0-preview.69...@microsoft/kiota-authentication-spfx@1.0.0-preview.70) (2024-10-24)
+
+
+### Miscellaneous Chores
+
+* **@microsoft/kiota-authentication-spfx:** Synchronize microsoft-kiota versions
+
 ## [1.0.0-preview.69](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-authentication-spfx@1.0.0-preview.57...@microsoft/kiota-authentication-spfx@1.0.0-preview.69) (2024-10-22)
 
 
