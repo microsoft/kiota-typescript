@@ -93,7 +93,7 @@ interface MultipartEntry {
 	serializationCallback?: ModelSerializerFunction<Parsable>;
 }
 
-export const serializeMultipartBody = (writer: SerializationWriter, multipartBody: Partial<MultipartBody> | undefined | null = new MultipartBody()): void => {
+export const serializeMultipartBody = (writer: SerializationWriter, multipartBody: Partial<MultipartBody> = new MultipartBody()): void => {
 	if (!writer) {
 		throw new Error("writer cannot be undefined");
 	}
@@ -117,13 +117,16 @@ export const serializeMultipartBody = (writer: SerializationWriter, multipartBod
 			if (first) {
 				first = false;
 			} else {
-				writer.writeStringValue(undefined, "");
+				writer.writeStringValue(undefined, "\r\n");
 			}
 			writer.writeStringValue(undefined, "--" + boundary);
+			writer.writeStringValue(undefined, "\r\n");
 			const part = parts[partName];
 			writer.writeStringValue("Content-Type", part.contentType);
+			writer.writeStringValue(undefined, "\r\n");
 			writer.writeStringValue("Content-Disposition", 'form-data; name="' + part.originalName + '"');
-			writer.writeStringValue(undefined, "");
+			writer.writeStringValue(undefined, "\r\n");
+			writer.writeStringValue(undefined, "\r\n");
 			if (typeof part.content === "string") {
 				writer.writeStringValue(undefined, part.content);
 			} else if (part.content instanceof ArrayBuffer) {
@@ -150,8 +153,9 @@ export const serializeMultipartBody = (writer: SerializationWriter, multipartBod
 			}
 		}
 	}
-	writer.writeStringValue(undefined, "");
+	writer.writeStringValue(undefined, "\r\n");
 	writer.writeStringValue(undefined, "--" + boundary + "--");
+	writer.writeStringValue(undefined, "\r\n");
 };
 
 export const deserializeIntoMultipartBody = (

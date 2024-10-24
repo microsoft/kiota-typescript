@@ -34,19 +34,16 @@ export class MultipartSerializationWriter implements SerializationWriter {
 		if (key) {
 			this.writeRawStringValue(key);
 		}
-		if (value !== undefined) {
+		if (value) {
 			if (key) {
 				this.writeRawStringValue(": ");
 			}
 			this.writeRawStringValue(value);
 		}
-		this.writeRawStringValue("\r\n");
 	};
 	private writeRawStringValue = (value?: string | null): void => {
-		if (value !== undefined) {
-			const isNullValue = value === null;
-
-			this.writeByteArrayValue(undefined, new TextEncoder().encode(isNullValue ? "null" : value).buffer);
+		if (value) {
+			this.writeByteArrayValue(undefined, new TextEncoder().encode(value).buffer);
 		}
 	};
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
