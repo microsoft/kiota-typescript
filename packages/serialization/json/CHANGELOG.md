@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.0-preview.71](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-json@1.0.0-preview.70...@microsoft/kiota-serialization-json@1.0.0-preview.71) (2024-10-28)
+
+
+### Bug Fixes
+
+* set version in package files to be updated by release please ([d33ddef](https://github.com/microsoft/kiota-typescript/commit/d33ddefccd5f8b1f0bcdcea3f8cf72a22bfb73e2))
+* set version in package files to be updated by release please ([4da42b6](https://github.com/microsoft/kiota-typescript/commit/4da42b616bd5b87f3cc90d7d540c972744e2edee))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.70 to ^1.0.0-preview.71
+
 ## [1.0.0-preview.70](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-json@1.0.0-preview.69...@microsoft/kiota-serialization-json@1.0.0-preview.70) (2024-10-24)
 
 
