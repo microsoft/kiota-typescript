@@ -30,12 +30,12 @@
 	},
 	"homepage": "https://github.com/microsoft/kiota#readme",
 	"dependencies": {
-		"@microsoft/kiota-abstractions": "*",
-		"@microsoft/kiota-http-fetchlibrary": "*",
-		"@microsoft/kiota-serialization-form": "*",
-		"@microsoft/kiota-serialization-json": "*",
-		"@microsoft/kiota-serialization-multipart": "*",
-		"@microsoft/kiota-serialization-text": "*"
+		"@microsoft/kiota-abstractions": "^1.0.0-preview.70",
+		"@microsoft/kiota-http-fetchlibrary": "^1.0.0-preview.70",
+		"@microsoft/kiota-serialization-form": "^1.0.0-preview.70",
+		"@microsoft/kiota-serialization-json": "^1.0.0-preview.70",
+		"@microsoft/kiota-serialization-multipart": "^1.0.0-preview.70",
+		"@microsoft/kiota-serialization-text": "^1.0.0-preview.70"
 	},
 	"publishConfig": {
 		"access": "public"
