@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-preview.71](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.70...@microsoft/kiota-abstractions@1.0.0-preview.71) (2024-10-28)
+
+
+### Miscellaneous Chores
+
+* **@microsoft/kiota-abstractions:** Synchronize microsoft-kiota versions
+
 ## [1.0.0-preview.70](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.69...@microsoft/kiota-abstractions@1.0.0-preview.70) (2024-10-24)
 
 
