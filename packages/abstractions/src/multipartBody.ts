@@ -93,7 +93,7 @@ interface MultipartEntry {
 	serializationCallback?: ModelSerializerFunction<Parsable>;
 }
 
-export const serializeMultipartBody = (writer: SerializationWriter, multipartBody: Partial<MultipartBody> = new MultipartBody()): void => {
+export const serializeMultipartBody = (writer: SerializationWriter, multipartBody: Partial<MultipartBody> | undefined | null = new MultipartBody()): void => {
 	if (!writer) {
 		throw new Error("writer cannot be undefined");
 	}
