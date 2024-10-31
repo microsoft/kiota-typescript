@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0-preview.72](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.71...@microsoft/kiota-abstractions@1.0.0-preview.72) (2024-10-31)
+
+
+### Bug Fixes
+
+* resolve regression in serializeMultipartBody signature. ([6434567](https://github.com/microsoft/kiota-typescript/commit/64345679775a523869f015db7e305567877b98dc))
+* resolve regression in serializeMultipartBody signature. ([507eff6](https://github.com/microsoft/kiota-typescript/commit/507eff696b0762d880438d2029baeca005263411))
+
 ## [1.0.0-preview.71](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.70...@microsoft/kiota-abstractions@1.0.0-preview.71) (2024-10-28)
 
 
