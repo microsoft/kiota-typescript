@@ -17,10 +17,9 @@ import { UrlReplaceHandlerOptions, UrlReplaceHandlerOptionsKey } from "./options
  */
 export class UrlReplaceHandler implements Middleware {
 	/**
-	 * @public
-	 * @constructor
+	 *
 	 * Creates a new instance of the UrlReplaceHandler class
-	 * @param {UrlReplaceHandlerOptions} handlerOptions The options for the url replace handler.
+	 * @param handlerOptions The options for the url replace handler.
 	 * @returns An instance of the UrlReplaceHandler class
 	 */
 	public constructor(private readonly handlerOptions: UrlReplaceHandlerOptions = new UrlReplaceHandlerOptions()) {
@@ -32,9 +31,9 @@ export class UrlReplaceHandler implements Middleware {
 	/**
 	 * @inheritdoc
 	 */
-	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption> | undefined): Promise<Response> {
+	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		let currentOptions = this.handlerOptions;
-		if (requestOptions && requestOptions[UrlReplaceHandlerOptionsKey]) {
+		if (requestOptions?.[UrlReplaceHandlerOptionsKey]) {
 			currentOptions = requestOptions[UrlReplaceHandlerOptionsKey] as UrlReplaceHandlerOptions;
 		}
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
@@ -50,7 +49,7 @@ export class UrlReplaceHandler implements Middleware {
 		}
 		return this.replaceTokensInUrl(currentOptions, url, requestInit, requestOptions);
 	}
-	private replaceTokensInUrl(options: UrlReplaceHandlerOptions, url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption> | undefined): Promise<Response> {
+	private replaceTokensInUrl(options: UrlReplaceHandlerOptions, url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		if (options.enabled) {
 			Object.keys(options.urlReplacements).forEach((replacementKey) => {
 				url = url.replace(replacementKey, options.urlReplacements[replacementKey]);

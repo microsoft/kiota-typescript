@@ -5,8 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-/** Maintains a list of valid hosts and allows authentication providers to
- * check whether a host is valid before authenticating a request */
+/**
+ * Maintains a list of valid hosts and allows authentication providers to
+ * check whether a host is valid before authenticating a request
+ */
 export class AllowedHostsValidator {
 	private allowedHosts: Set<string>;
 	/**
@@ -35,6 +37,7 @@ export class AllowedHostsValidator {
 	/**
 	 * Checks whether the provided host is valid.
 	 * @param url The url to check.
+	 * @returns True if the host is valid, false otherwise.
 	 */
 	public isUrlHostValid(url: string): boolean {
 		if (!url) return false;

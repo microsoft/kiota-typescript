@@ -7,13 +7,13 @@
 
 import { DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, inNodeEnv, getEnumValueFromStringValue } from "@microsoft/kiota-abstractions";
 
+/**
+ * This class represents a text parse node.
+ */
 export class TextParseNode implements ParseNode {
-	private static noStructuredDataMessage = "text does not support structured data";
-	/**
-	 *
-	 */
+	private static readonly noStructuredDataMessage = "text does not support structured data";
 	constructor(private readonly text: string) {
-		if (this.text && this.text.length > 1 && this.text.charAt(0) === '"' && this.text.charAt(this.text.length - 1) === '"') {
+		if (this.text && this.text.length > 1 && this.text.startsWith('"') && this.text.endsWith('"')) {
 			this.text = this.text.substring(1, this.text.length - 2);
 		}
 	}
@@ -59,7 +59,6 @@ export class TextParseNode implements ParseNode {
 		throw new Error(TextParseNode.noStructuredDataMessage);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public getCollectionOfEnumValues = <T>(type: any): T[] => {
 		throw new Error(TextParseNode.noStructuredDataMessage);
 	};

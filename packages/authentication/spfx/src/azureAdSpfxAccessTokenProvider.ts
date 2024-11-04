@@ -15,11 +15,11 @@ export class AzureAdSpfxAccessTokenProvider implements AccessTokenProvider {
 	private readonly allowedHostsValidator: AllowedHostsValidator;
 
 	/**
-	 *@constructor
 	 *@param tokenProvider The tokenProvider provided by the SharePoint framework
 	 *@param applicationIdUri The application ID URI of the Azure AD App that we want to Authenticate
 	 *@param allowedHosts The allowed hosts to use for authentication.
 	 *@param useCachedToken Allows the developer to specify if cached tokens should be returned.
+	 *@param observabilityOptions The observability options to use for authentication.
 	 */
 	public constructor(
 		private readonly tokenProvider: AadTokenProvider,
@@ -52,9 +52,9 @@ export class AzureAdSpfxAccessTokenProvider implements AccessTokenProvider {
 			}
 		});
 	};
-	private getAuthorizationTokenInternal = async (
+	private readonly getAuthorizationTokenInternal = async (
 		url?: string,
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 		additionalAuthenticationContext?: Record<string, unknown>,
 		span?: Span,
 	): Promise<string> => {

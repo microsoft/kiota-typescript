@@ -18,10 +18,9 @@ import { ParametersNameDecodingHandlerOptions, ParametersNameDecodingHandlerOpti
 
 export class ParametersNameDecodingHandler implements Middleware {
 	/**
-	 * @public
-	 * @constructor
+	 *
 	 * To create an instance of ParametersNameDecodingHandler
-	 * @param {ParametersNameDecodingHandlerOptions} [options = new ParametersNameDecodingHandlerOptions()] - The parameters name decoding handler options value
+	 * @param [options] - The parameters name decoding handler options value
 	 */
 	public constructor(private readonly options: ParametersNameDecodingHandlerOptions = new ParametersNameDecodingHandlerOptions()) {
 		if (!options) {
@@ -31,17 +30,15 @@ export class ParametersNameDecodingHandler implements Middleware {
 	/** @inheritdoc */
 	next: Middleware | undefined;
 	/**
-	 * @public
-	 * @async
 	 * To execute the current middleware
-	 * @param {string} url - The url to be fetched
-	 * @param {FetchRequestInit} requestInit - The request init object
-	 * @param {Record<string, RequestOption>} [requestOptions] - The request options
+	 * @param url - The url to be fetched
+	 * @param requestInit - The request init object
+	 * @param requestOptions - The request options
 	 * @returns A Promise that resolves to nothing
 	 */
 	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		let currentOptions = this.options;
-		if (requestOptions && requestOptions[ParametersNameDecodingHandlerOptionsKey]) {
+		if (requestOptions?.[ParametersNameDecodingHandlerOptionsKey]) {
 			currentOptions = requestOptions[ParametersNameDecodingHandlerOptionsKey] as ParametersNameDecodingHandlerOptions;
 		}
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
@@ -59,7 +56,7 @@ export class ParametersNameDecodingHandler implements Middleware {
 	}
 	private decodeParameters(url: string, requestInit: RequestInit, currentOptions: ParametersNameDecodingHandlerOptions, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		let updatedUrl = url;
-		if (currentOptions && currentOptions.enable && url.indexOf("%") > -1 && currentOptions.charactersToDecode && currentOptions.charactersToDecode.length > 0) {
+		if (currentOptions && currentOptions.enable && url.includes("%") && currentOptions.charactersToDecode && currentOptions.charactersToDecode.length > 0) {
 			currentOptions.charactersToDecode.forEach((character) => {
 				updatedUrl = updatedUrl.replace(new RegExp(`%${character.charCodeAt(0).toString(16)}`, "gi"), character);
 			});

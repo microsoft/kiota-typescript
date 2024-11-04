@@ -11,6 +11,11 @@ import { formatSegment } from "./dateOnly";
 export class TimeOnly implements TimeOnlyInterface {
 	/**
 	 * Creates a new TimeOnly from the given parameters.
+	 * @param root0 The hours, minutes, seconds, and milliseconds
+	 * @param root0.hours The hours
+	 * @param root0.minutes The minutes
+	 * @param root0.seconds The seconds
+	 * @param root0.picoseconds The milliseconds
 	 * @returns The new TimeOnly
 	 * @throws An error if the milliseconds are invalid
 	 * @throws An error if the seconds are invalid
@@ -103,29 +108,21 @@ interface TimeOnlyInterface {
 	/**
 	 * The hours
 	 * @default 0
-	 * @minimum 0
-	 * @maximum 23
 	 */
 	hours: number;
 	/**
 	 * The minutes
 	 * @default 0
-	 * @minimum 0
-	 * @maximum 59
 	 */
 	minutes: number;
 	/**
 	 * The seconds
 	 * @default 0
-	 * @minimum 0
-	 * @maximum 59
 	 */
 	seconds: number;
 	/**
 	 * The milliseconds
 	 * @default 0
-	 * @minimum 0
-	 * @maximum 9999999
 	 */
 	picoseconds: number;
 }

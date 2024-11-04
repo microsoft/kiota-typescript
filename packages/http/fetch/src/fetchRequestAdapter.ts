@@ -54,14 +54,14 @@ export class FetchRequestAdapter implements RequestAdapter {
 			this.observabilityOptions = new ObservabilityOptionsImpl(observabilityOptions);
 		}
 	}
-	private getResponseContentType = (response: Response): string | undefined => {
+	private readonly getResponseContentType = (response: Response): string | undefined => {
 		const header = response.headers.get("content-type")?.toLowerCase();
 		if (!header) return undefined;
 		const segments = header.split(";");
 		if (segments.length === 0) return undefined;
 		else return segments[0];
 	};
-	private getResponseHandler = (response: RequestInformation): ResponseHandler | undefined => {
+	private readonly getResponseHandler = (response: RequestInformation): ResponseHandler | undefined => {
 		const options = response.getRequestOptions();
 		const responseHandlerOption = options[ResponseHandlerOptionKey] as ResponseHandlerOption;
 		return responseHandlerOption?.responseHandler;
@@ -157,7 +157,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		});
 	};
-	private startTracingSpan = <T>(requestInfo: RequestInformation, methodName: string, callback: (arg0: Span) => Promise<T>): Promise<T> => {
+	private readonly startTracingSpan = <T>(requestInfo: RequestInformation, methodName: string, callback: (arg0: Span) => Promise<T>): Promise<T> => {
 		const urlTemplate = decodeURIComponent(requestInfo.urlTemplate ?? "");
 		const telemetryPathValue = urlTemplate.replace(/\{\?[^}]+\}/gi, "");
 		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan(`${methodName} - ${telemetryPathValue}`, async (span) => {
@@ -221,7 +221,6 @@ export class FetchRequestAdapter implements RequestAdapter {
 						if (this.shouldReturnUndefined(response)) return undefined;
 						switch (responseType) {
 							case "ArrayBuffer":
-								// eslint-disable-next-line no-case-declarations
 								if (!response.body) {
 									return undefined;
 								}
@@ -264,7 +263,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 			} finally {
 				span.end();
 			}
-		}) as Promise<ResponseType | undefined>;
+		});
 	};
 	public sendNoResponseContent = (requestInfo: RequestInformation, errorMappings: ErrorMappings | undefined): Promise<void> => {
 		if (!requestInfo) {
@@ -308,7 +307,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 							try {
 								span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "enum");
 								const result = rootNode.getEnumValue(enumObject);
-								return result as unknown as EnumObject[keyof EnumObject];
+								return result as EnumObject[keyof EnumObject];
 							} finally {
 								deserializeSpan.end();
 							}
@@ -356,7 +355,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		});
 	};
-	public enableBackingStore = (backingStoreFactory?: BackingStoreFactory | undefined): void => {
+	public enableBackingStore = (backingStoreFactory?: BackingStoreFactory): void => {
 		this.parseNodeFactory = enableBackingStoreForParseNodeFactory(this.parseNodeFactory);
 		this.serializationWriterFactory = enableBackingStoreForSerializationWriterFactory(this.serializationWriterFactory);
 		if (!this.serializationWriterFactory || !this.parseNodeFactory) throw new Error("unable to enable backing store");
@@ -364,7 +363,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 			BackingStoreFactorySingleton.instance = backingStoreFactory;
 		}
 	};
-	private getRootParseNode = (response: Response): Promise<ParseNode> => {
+	private readonly getRootParseNode = (response: Response): Promise<ParseNode> => {
 		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getRootParseNode", async (span) => {
 			try {
 				const payload = await response.arrayBuffer();
@@ -377,18 +376,21 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		});
 	};
-	private shouldReturnUndefined = (response: Response): boolean => {
+	private readonly shouldReturnUndefined = (response: Response): boolean => {
 		return response.status === 204 || !response.body;
 	};
-	/** purges the response body if it hasn't been read to release the connection to the server */
-	private purgeResponseBody = async (response: Response): Promise<void> => {
+	/**
+	 * purges the response body if it hasn't been read to release the connection to the server
+	 * @param response the response to purge
+	 */
+	private readonly purgeResponseBody = async (response: Response): Promise<void> => {
 		if (!response.bodyUsed && response.body) {
 			await response.arrayBuffer();
 		}
 	};
 	public static readonly errorMappingFoundAttributeName = "com.microsoft.kiota.error.mapping_found";
 	public static readonly errorBodyFoundAttributeName = "com.microsoft.kiota.error.body_found";
-	private throwIfFailedResponse = (response: Response, errorMappings: ErrorMappings | undefined, spanForAttributes: Span): Promise<void> => {
+	private readonly throwIfFailedResponse = (response: Response, errorMappings: ErrorMappings | undefined, spanForAttributes: Span): Promise<void> => {
 		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("throwIfFailedResponse", async (span) => {
 			try {
 				if (response.ok) return;
@@ -415,17 +417,17 @@ export class FetchRequestAdapter implements RequestAdapter {
 				spanForAttributes.setAttribute(FetchRequestAdapter.errorMappingFoundAttributeName, true);
 
 				const rootNode = await this.getRootParseNode(response);
-				let error = trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getObjectValue", (deserializeSpan) => {
+				let deserializedError = trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getObjectValue", (deserializeSpan) => {
 					try {
 						return rootNode.getObjectValue(factory);
 					} finally {
 						deserializeSpan.end();
 					}
 				});
-				spanForAttributes.setAttribute(FetchRequestAdapter.errorBodyFoundAttributeName, !!error);
+				spanForAttributes.setAttribute(FetchRequestAdapter.errorBodyFoundAttributeName, !!deserializedError);
 
-				if (!error) error = new DefaultApiError("unexpected error type" + typeof error) as unknown as Parsable;
-				const errorObject = error as ApiError;
+				if (!deserializedError) deserializedError = new DefaultApiError("unexpected error type" + typeof deserializedError) as unknown as Parsable;
+				const errorObject = deserializedError as ApiError;
 				errorObject.responseStatusCode = statusCode;
 				errorObject.responseHeaders = responseHeaders;
 				spanForAttributes.recordException(errorObject);
@@ -435,7 +437,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		});
 	};
-	private getHttpResponseMessage = (requestInfo: RequestInformation, spanForAttributes: Span, claims?: string): Promise<Response> => {
+	private readonly getHttpResponseMessage = (requestInfo: RequestInformation, spanForAttributes: Span, claims?: string): Promise<Response> => {
 		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getHttpResponseMessage", async (span) => {
 			try {
 				if (!requestInfo) {
@@ -444,7 +446,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				this.setBaseUrlForRequestInformation(requestInfo);
 				const additionalContext = {} as Record<string, unknown>;
 				if (claims) {
-					additionalContext["claims"] = claims;
+					additionalContext.claims = claims;
 				}
 				await this.authenticationProvider.authenticateRequest(requestInfo, additionalContext);
 				const request = await this.getRequestFromRequestInformation(requestInfo, spanForAttributes);
@@ -473,7 +475,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		});
 	};
 	public static readonly authenticateChallengedEventKey = "com.microsoft.kiota.authenticate_challenge_received";
-	private retryCAEResponseIfRequired = async (requestInfo: RequestInformation, response: Response, spanForAttributes: Span, claims?: string) => {
+	private readonly retryCAEResponseIfRequired = async (requestInfo: RequestInformation, response: Response, spanForAttributes: Span, claims?: string) => {
 		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("retryCAEResponseIfRequired", async (span) => {
 			try {
 				const responseClaims = this.getClaimsFromResponse(response, claims);
@@ -489,7 +491,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		});
 	};
-	private getClaimsFromResponse = (response: Response, claims?: string) => {
+	private readonly getClaimsFromResponse = (response: Response, claims?: string) => {
 		if (response.status === 401 && !claims) {
 			// avoid infinite loop, we only retry once
 			// no need to check for the content since it's an array and it doesn't need to be rewound
@@ -506,16 +508,17 @@ export class FetchRequestAdapter implements RequestAdapter {
 		}
 		return undefined;
 	};
-	private setBaseUrlForRequestInformation = (requestInfo: RequestInformation): void => {
-		requestInfo.pathParameters["baseurl"] = this.baseUrl;
+	private readonly setBaseUrlForRequestInformation = (requestInfo: RequestInformation): void => {
+		requestInfo.pathParameters.baseurl = this.baseUrl;
 	};
-	private getRequestFromRequestInformation = (requestInfo: RequestInformation, spanForAttributes: Span): Promise<RequestInit> => {
+	private readonly getRequestFromRequestInformation = (requestInfo: RequestInformation, spanForAttributes: Span): Promise<RequestInit> => {
+		// eslint-disable-next-line @typescript-eslint/require-await
 		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getRequestFromRequestInformation", async (span) => {
 			try {
 				const method = requestInfo.httpMethod?.toString();
 				const uri = requestInfo.URL;
 				spanForAttributes.setAttribute("http.request.method", method ?? "");
-				const uriContainsScheme = uri.indexOf("://") > -1;
+				const uriContainsScheme = uri.includes("://");
 				const schemeSplatUri = uri.split("://");
 				if (uriContainsScheme) {
 					spanForAttributes.setAttribute("server.address", schemeSplatUri[0]);
@@ -548,7 +551,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 			}
 		});
 	};
-	private foldHeaderValue = (value: string[] | null): string => {
+	private readonly foldHeaderValue = (value: string[] | null): string => {
 		if (!value || value.length < 1) {
 			return "";
 		} else if (value.length === 1) {

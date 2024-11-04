@@ -13,8 +13,8 @@ import type { AuthenticationProvider } from "./authenticationProvider";
 export class BaseBearerTokenAuthenticationProvider implements AuthenticationProvider {
 	private static readonly authorizationHeaderKey = "Authorization";
 	/**
-	 *
-	 * @param accessTokenProvider
+	 * The constructor for the BaseBearerTokenAuthenticationProvider
+	 * @param accessTokenProvider The AccessTokenProvider instance that this provider will use to authenticate requests.
 	 */
 	public constructor(public readonly accessTokenProvider: AccessTokenProvider) {}
 

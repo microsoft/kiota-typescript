@@ -13,7 +13,6 @@ import { validateProtocol } from "./validateProtocol";
 export class ApiKeyAuthenticationProvider implements AuthenticationProvider {
 	private readonly validator: AllowedHostsValidator;
 	/**
-	 * @constructor Creates an instance of ApiKeyAuthenticationProvider
 	 * @param apiKey The API Key to use for authentication
 	 * @param parameterName The name of the parameter to use for authentication
 	 * @param location The location of the parameter to use for authentication

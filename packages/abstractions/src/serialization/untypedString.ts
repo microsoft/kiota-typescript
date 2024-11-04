@@ -17,7 +17,7 @@ export interface UntypedString extends UntypedNode {
 /**
  * Type guard to assert that an object instance is an UntypedString.
  * @param node The object to check.
- * @return boolean indicating if the node is an UntypedString.
+ * @returns boolean indicating if the node is an UntypedString.
  */
 export function isUntypedString(node: UntypedNode): node is UntypedString {
 	const proposedNode = node as UntypedString;
@@ -27,7 +27,7 @@ export function isUntypedString(node: UntypedNode): node is UntypedString {
 /**
  * Factory to create an UntypedString from a string.
  * @param value The string value to create from.
- * @return The created UntypedString.
+ * @returns The created UntypedString.
  */
 export function createUntypedString(value: string): UntypedString {
 	return {

@@ -11,6 +11,10 @@
 export class DateOnly implements DateOnlyInterface {
 	/**
 	 * Creates a new DateOnly from the given string.
+	 * @param root0 The year, month, and day
+	 * @param root0.year The year
+	 * @param root0.month The month
+	 * @param root0.day The day
 	 * @returns The new DateOnly
 	 * @throws An error if the year is invalid
 	 * @throws An error if the month is invalid
@@ -78,24 +82,25 @@ interface DateOnlyInterface {
 	/**
 	 * The year
 	 * @default 0
-	 * @minium 0
 	 */
 	year: number;
 	/**
 	 * The month
 	 * @default 1
-	 * @minium 1
-	 * @maximum 12
 	 */
 	month: number;
 	/**
 	 * The day
 	 * @default 1
-	 * @minium 1
-	 * @maximum 31
 	 */
 	day: number;
 }
+/**
+ * Formats a segment of a date to a string
+ * @param segment The segment to format
+ * @param digits The number of digits to pad
+ * @returns The formatted segment
+ */
 export function formatSegment(segment: number, digits = 2): string {
 	return segment.toString().padStart(digits, "0");
 }

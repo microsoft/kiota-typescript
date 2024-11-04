@@ -10,7 +10,7 @@ import type { BackingStore } from "./backingStore";
 export interface BackingStoreFactory {
 	/**
 	 * Creates a new instance of the backing store.
-	 * @return a new instance of the backing store.
+	 * @returns a new instance of the backing store.
 	 */
 	createBackingStore(): BackingStore;
 }

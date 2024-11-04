@@ -45,8 +45,10 @@ export class RequestInformation implements RequestInformationSetContent {
 	public pathParameters: Record<string, unknown> = createRecordWithCaseInsensitiveKeys<unknown>();
 	/** The URL template for the request */
 	public urlTemplate?: string;
-	/** Gets the URL of the request  */
-	// eslint-disable-next-line @typescript-eslint/naming-convention
+	/**
+	 * Gets the URL of the request
+	 * @returns the url string
+	 */
 	public get URL(): string {
 		const rawUrl = this.pathParameters[RequestInformation.raw_url_key] as string;
 		if (this.uri) {
@@ -92,24 +94,36 @@ export class RequestInformation implements RequestInformationSetContent {
 	/** The Request Headers. */
 	public headers: Headers = new Headers();
 	private _requestOptions: Record<string, RequestOption> = createRecordWithCaseInsensitiveKeys<RequestOption>();
-	/** Gets the request options for the request. */
+	/**
+	 * Gets the request options for the request.
+	 * @returns the request options.
+	 */
 	public getRequestOptions() {
 		return this._requestOptions;
 	}
-	/** Adds the headers for the request. */
+	/**
+	 * Adds the headers for the request.
+	 * @param source The source collection to add the headers to
+	 */
 	public addRequestHeaders(source: Record<string, string | string[]> | undefined) {
 		if (source) {
 			this.headers.addAllRaw(source);
 		}
 	}
-	/** Adds the request options for the request. */
+	/**
+	 * Adds the request options for the request.
+	 * @param options the options to add.
+	 */
 	public addRequestOptions(options: RequestOption[] | undefined) {
 		if (!options || options.length === 0) return;
 		options.forEach((option) => {
 			this._requestOptions[option.getKey()] = option;
 		});
 	}
-	/** Removes the request options for the request. */
+	/**
+	 * Removes the request options for the request.
+	 * @param options the options to remove.
+	 */
 	public removeRequestOptions(...options: RequestOption[]) {
 		if (!options || options.length === 0) return;
 		options.forEach((option) => {
@@ -122,10 +136,10 @@ export class RequestInformation implements RequestInformationSetContent {
 	private static readonly requestTypeKey = "com.microsoft.kiota.request.type";
 	/**
 	 * Sets the request body from a model with the specified content type.
-	 * @param value the models.
-	 * @param contentType the content type.
 	 * @param requestAdapter The adapter service to get the serialization writer from.
-	 * @typeParam T the model type.
+	 * @param contentType the content type.
+	 * @param value the models.
+	 * @param modelSerializerFunction the serialization function for the model type.
 	 */
 	public setContentFromParsable = <T extends Parsable>(requestAdapter?: RequestAdapter, contentType?: string, value?: T[] | T, modelSerializerFunction?: ModelSerializerFunction<T>): void => {
 		trace.getTracer(RequestInformation.tracerKey).startActiveSpan("setContentFromParsable", (span) => {
@@ -140,12 +154,7 @@ export class RequestInformation implements RequestInformationSetContent {
 
 				if (Array.isArray(value)) {
 					span.setAttribute(RequestInformation.requestTypeKey, "object[]");
-					writer.writeCollectionOfObjectValues(
-						undefined,
-						value,
-						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-						modelSerializerFunction,
-					);
+					writer.writeCollectionOfObjectValues(undefined, value, modelSerializerFunction);
 				} else {
 					span.setAttribute(RequestInformation.requestTypeKey, "object");
 					writer.writeObjectValue(undefined, value, modelSerializerFunction);
@@ -172,10 +181,9 @@ export class RequestInformation implements RequestInformationSetContent {
 	};
 	/**
 	 * Sets the request body from a model with the specified content type.
-	 * @param value the scalar values to serialize.
-	 * @param contentType the content type.
 	 * @param requestAdapter The adapter service to get the serialization writer from.
-	 * @typeParam T the model type.
+	 * @param contentType the content type.
+	 * @param value the scalar values to serialize.
 	 */
 	public setContentFromScalar = <T extends PrimitiveTypesForDeserializationType>(requestAdapter: RequestAdapter | undefined, contentType: string | undefined, value: T[] | T): void => {
 		trace.getTracer(RequestInformation.tracerKey).startActiveSpan("setContentFromScalar", (span) => {

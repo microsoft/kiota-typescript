@@ -13,24 +13,22 @@ import type { Middleware } from "./middleware";
 import { HeadersInspectionOptions, HeadersInspectionOptionsKey } from "./options/headersInspectionOptions";
 
 /**
- * @class
- * @implements Middleware
+ * Middleware
  * Inspects the headers of the request and response
  */
 export class HeadersInspectionHandler implements Middleware {
 	/**
-	 * @constructor
-	 * @public
+	 *
 	 * Creates new instance of HeadersInspectionHandler
-	 * @param {HeadersInspectionOptions} _options The options for inspecting the headers
+	 * @param _options The options for inspecting the headers
 	 */
 	public constructor(private readonly _options: HeadersInspectionOptions = new HeadersInspectionOptions()) {}
 	/**
-	 * @private
+	 *
 	 * The next middleware in the middleware chain
 	 */
 	next: Middleware | undefined;
-	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption> | undefined): Promise<Response> {
+	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		let currentOptions = this._options;
 		if (requestOptions?.[HeadersInspectionOptionsKey]) {
 			currentOptions = requestOptions[HeadersInspectionOptionsKey] as HeadersInspectionOptions;

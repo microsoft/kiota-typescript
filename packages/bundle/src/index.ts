@@ -5,6 +5,4 @@
  * -------------------------------------------------------------------------------------------
  */
 
-/* eslint-disable @typescript-eslint/triple-slash-reference*/
-
 export * from "./defaultRequestAdapter";

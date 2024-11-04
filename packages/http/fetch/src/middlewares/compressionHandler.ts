@@ -21,24 +21,18 @@ export class CompressionHandler implements Middleware {
 	next: Middleware | undefined;
 
 	/**
-	 * @private
-	 * @static
 	 * A member holding the name of content range header
 	 */
 	private static readonly CONTENT_RANGE_HEADER = "Content-Range";
 
 	/**
-	 * @private
-	 * @static
 	 * A member holding the name of content encoding header
 	 */
 	private static readonly CONTENT_ENCODING_HEADER = "Content-Encoding";
 
 	/**
-	 * @public
-	 * @constructor
 	 * Creates a new instance of the CompressionHandler class
-	 * @param {CompressionHandlerOptions} handlerOptions The options for the compression handler.
+	 * @param handlerOptions The options for the compression handler.
 	 * @returns An instance of the CompressionHandler class
 	 */
 	public constructor(private readonly handlerOptions: CompressionHandlerOptions = new CompressionHandlerOptions()) {
@@ -50,7 +44,7 @@ export class CompressionHandler implements Middleware {
 	/**
 	 * @inheritdoc
 	 */
-	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption> | undefined): Promise<Response> {
+	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		let currentOptions = this.handlerOptions;
 		if (requestOptions?.[CompressionHandlerOptionsKey]) {
 			currentOptions = requestOptions[CompressionHandlerOptionsKey] as CompressionHandlerOptions;
@@ -194,6 +188,7 @@ export class CompressionHandler implements Middleware {
 	}
 
 	private async compressUsingZlib(body: unknown): Promise<Buffer> {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		const zlib = await import("zlib");
 		return await new Promise((resolve, reject) => {

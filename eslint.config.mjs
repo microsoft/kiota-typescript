@@ -34,9 +34,9 @@ export default [{
     "plugin:@typescript-eslint/stylistic-type-checked",
     "prettier",
     "@microsoft/eslint-config-msgraph/core",
+    "plugin:jsdoc/recommended-typescript-error"
 ), {
     plugins: {
-        jsdoc,
         "prefer-arrow": preferArrow,
         "@typescript-eslint": typescriptEslint,
         header,
@@ -57,12 +57,12 @@ export default [{
                 "packages/abstractions/tsconfig.json",
                 "packages/bundle/tsconfig.json",
                 "packages/authentication/azure/tsconfig.json",
-                "packages/authentication/azure/tsconfig.json",
+                "packages/authentication/spfx/tsconfig.json",
                 "packages/http/fetch/tsconfig.json",
                 "packages/serialization/form/tsconfig.json",
                 "packages/serialization/json/tsconfig.json",
+                "packages/serialization/text/tsconfig.json",
                 "packages/serialization/multipart/tsconfig.json",
-                "packages/authentication/azure/tsconfig.json",
                 "packages/test/tsconfig.json",
             ],
         },

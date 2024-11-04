@@ -5,7 +5,7 @@ export default defineConfig({
     exclude: [...configDefaults.exclude, "**/*/{testEntity,index,untypedTestEntiy,unionOfObjectsAndPrimitives,testUtils}.ts"],
     include: [...configDefaults.include, "test/**/*.ts"],
     coverage: {
-      reporter: ["html"],
+      reporter: ["html", "cobertura"],
     },
   },
 });

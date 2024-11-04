@@ -14,18 +14,15 @@ import type { RequestOption } from "@microsoft/kiota-abstractions";
 export const ParametersNameDecodingHandlerOptionsKey = "RetryHandlerOptionKey";
 
 /**
- * @interface
  * Signature to define the ParametersNameDecodingHandlerOptions constructor parameters
  */
 export interface ParametersNameDecodingHandlerOptionsParams {
 	/**
-	 * @member
 	 * Whether to decode the specified characters in the request query parameters names
-	 * * @default true
+	 * @default true
 	 */
 	enable?: boolean;
 	/**
-	 * @member
 	 * The characters to decode
 	 * @default [".", "-", "~", "$"]
 	 */
@@ -35,13 +32,13 @@ export interface ParametersNameDecodingHandlerOptionsParams {
 /** The ParametersNameDecodingOptions request class */
 export class ParametersNameDecodingHandlerOptions implements RequestOption {
 	/**
-	 * @public
+	 *
 	 * Whether to decode the specified characters in the request query parameters names
 	 */
 	public enable: boolean;
 
 	/**
-	 * @public
+	 *
 	 * The characters to decode
 	 * @default [".", "-", "~", "$"]
 	 */
@@ -52,10 +49,9 @@ export class ParametersNameDecodingHandlerOptions implements RequestOption {
 	}
 
 	/**
-	 * @public
-	 * @constructor
+	 *
 	 * To create an instance of ParametersNameDecodingHandlerOptions
-	 * @param {ParametersNameDecodingHandlerOptionsParams} [options = {}] - The optional parameters
+	 * @param [options] - The optional parameters
 	 * @returns An instance of ParametersNameDecodingHandlerOptions
 	 * @example ParametersNameDecodingHandlerOptions({ enable: true, charactersToDecode: [".", "-", "~", "$"] });
 	 */

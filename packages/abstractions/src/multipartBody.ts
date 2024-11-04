@@ -158,10 +158,7 @@ export const serializeMultipartBody = (writer: SerializationWriter, multipartBod
 	writer.writeStringValue(undefined, "\r\n");
 };
 
-export const deserializeIntoMultipartBody = (
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_: Partial<MultipartBody> | undefined = new MultipartBody(),
-): Record<string, (node: ParseNode) => void> => {
+export const deserializeIntoMultipartBody = (_: Partial<MultipartBody> | undefined = new MultipartBody()): Record<string, (node: ParseNode) => void> => {
 	throw new Error("Not implemented");
 };
 export const createMessageFromDiscriminatorValue = (parseNode: ParseNode | undefined) => {

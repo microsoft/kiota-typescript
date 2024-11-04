@@ -17,7 +17,7 @@ export interface UntypedObject extends UntypedNode {
 /**
  * Type guard to assert that an object instance is an UntypedObject.
  * @param node The object to check.
- * @return boolean indicating if the node is an UntypedObject.
+ * @returns boolean indicating if the node is an UntypedObject.
  */
 export const isUntypedObject = (node: UntypedNode): node is UntypedObject => {
 	const proposedNode = node as UntypedObject;
@@ -27,7 +27,7 @@ export const isUntypedObject = (node: UntypedNode): node is UntypedObject => {
 /**
  * Factory to create an UntypedObject from a Record<string, UntypedNode>.
  * @param value The Record<string, UntypedNode> value to create from.
- * @return The created UntypedObject.
+ * @returns The created UntypedObject.
  */
 export const createUntypedObject = (value: Record<string, UntypedNode>): UntypedObject => {
 	return {

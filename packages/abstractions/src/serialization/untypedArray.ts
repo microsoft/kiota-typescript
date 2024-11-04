@@ -17,7 +17,7 @@ export interface UntypedArray extends UntypedNode {
 /**
  * Type guard to assert that an UntypedNode instance is an UntypedArray.
  * @param node The UntypedNode to check.
- * @return boolean indicating if the node is an UntypedArray.
+ * @returns boolean indicating if the node is an UntypedArray.
  */
 export const isUntypedArray = (node: UntypedNode): node is UntypedArray => {
 	const proposedNode = node as UntypedArray;
@@ -27,7 +27,7 @@ export const isUntypedArray = (node: UntypedNode): node is UntypedArray => {
 /**
  * Factory to create an UntypedArray from an array of UntypedNodes.
  * @param value The value to create from.
- * @return The created UntypedArray.
+ * @returns The created UntypedArray.
  */
 export const createUntypedArray = (value: UntypedNode[]): UntypedArray => {
 	return {

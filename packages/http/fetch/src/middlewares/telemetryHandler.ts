@@ -11,12 +11,12 @@ import type { TelemetryHandlerOptions } from "./options/telemetryHandlerOptions"
 
 export const TelemetryHandlerOptionsKey = "TelemetryHandlerOptionsKey";
 export class TelemetryHandler implements Middleware {
-	constructor(private telemetryHandlerOptions: TelemetryHandlerOptions) {}
+	constructor(private readonly telemetryHandlerOptions: TelemetryHandlerOptions) {}
 	next: Middleware | undefined;
 	execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
-		if (this.telemetryHandlerOptions && this.telemetryHandlerOptions.telemetryConfigurator) {
+		if (this.telemetryHandlerOptions?.telemetryConfigurator) {
 			this.telemetryHandlerOptions.telemetryConfigurator(url, requestInit, requestOptions, this.telemetryHandlerOptions.telemetryInformation);
-		} else if (requestOptions && requestOptions[TelemetryHandlerOptionsKey]) {
+		} else if (requestOptions?.[TelemetryHandlerOptionsKey]) {
 			(requestOptions[TelemetryHandlerOptionsKey] as TelemetryHandlerOptions).telemetryConfigurator(url, requestInit, requestOptions);
 		}
 		if (!this.next) {

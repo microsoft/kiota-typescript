@@ -32,7 +32,7 @@ export function serializeToJsonAsString<T extends Parsable>(value: T, serializat
 
 /**
  * Serializes a collection of parsable objects into a buffer
- * @param value the value to serialize
+ * @param values the value to serialize
  * @param serializationFunction the serialization function for the model type
  * @returns a string representing the serialized value
  */
@@ -42,7 +42,7 @@ export function serializeCollectionToJson<T extends Parsable>(values: T[], seria
 
 /**
  * Serializes a collection of parsable objects into a string representation
- * @param value the value to serialize
+ * @param values the value to serialize
  * @param serializationFunction the serialization function for the model type
  * @returns a string representing the serialized value
  */

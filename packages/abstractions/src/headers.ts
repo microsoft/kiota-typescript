@@ -8,7 +8,6 @@ import { createRecordWithCaseInsensitiveKeys } from "./recordWithCaseInsensitive
 
 /**
  * A collection class for HTTP headers. The keys are case-insensitive.
- * @extends Map
  * @example
  * ```typescript
  * const headers = new Headers();
@@ -67,6 +66,7 @@ export class Headers extends Map<string, Set<string>> {
 	/**
 	 * Checks if a header exists.
 	 * @param key The name of the header to check for.
+	 * @returns whether or not a header with the given name/key exists.
 	 */
 	public has(key: string): boolean {
 		return !!key && !!this.headers[key];
@@ -248,6 +248,7 @@ export class Headers extends Map<string, Set<string>> {
 
 	/**
 	 * check if the headers collection is empty
+	 * @returns a boolean indicating if the headers collection is empty
 	 */
 	public isEmpty(): boolean {
 		return Object.keys(this.headers).length === 0;

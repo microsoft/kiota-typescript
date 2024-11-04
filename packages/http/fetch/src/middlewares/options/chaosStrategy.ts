@@ -11,7 +11,6 @@
 
 /**
  * Strategy used for Testing Handler
- * @enum
  */
 export enum ChaosStrategy {
 	MANUAL,

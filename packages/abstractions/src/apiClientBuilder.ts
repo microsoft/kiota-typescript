@@ -28,7 +28,7 @@ export function registerDefaultDeserializer(type: new () => ParseNodeFactory): v
 /**
  * Enables the backing store on default serialization writers and the given serialization writer.
  * @param original The serialization writer to enable the backing store on.
- * @return A new serialization writer with the backing store enabled.
+ * @returns A new serialization writer with the backing store enabled.
  */
 export function enableBackingStoreForSerializationWriterFactory(original: SerializationWriterFactory): SerializationWriterFactory {
 	if (!original) throw new Error("Original must be specified");
@@ -45,7 +45,7 @@ export function enableBackingStoreForSerializationWriterFactory(original: Serial
 /**
  * Enables the backing store on default parse node factories and the given parse node factory.
  * @param original The parse node factory to enable the backing store on.
- * @return A new parse node factory with the backing store enabled.
+ * @returns A new parse node factory with the backing store enabled.
  */
 export function enableBackingStoreForParseNodeFactory(original: ParseNodeFactory): ParseNodeFactory {
 	if (!original) throw new Error("Original must be specified");
@@ -58,6 +58,10 @@ export function enableBackingStoreForParseNodeFactory(original: ParseNodeFactory
 	enableBackingStoreForParseNodeRegistry(ParseNodeFactoryRegistry.defaultInstance);
 	return result;
 }
+/**
+ * Enables the backing store on the given parse node factory registry.
+ * @param registry The parse node factory registry to enable the backing store on.
+ */
 function enableBackingStoreForParseNodeRegistry(registry: ParseNodeFactoryRegistry): void {
 	for (const [k, v] of registry.contentTypeAssociatedFactories) {
 		if (!(v instanceof BackingStoreParseNodeFactory || v instanceof ParseNodeFactoryRegistry)) {
@@ -65,6 +69,10 @@ function enableBackingStoreForParseNodeRegistry(registry: ParseNodeFactoryRegist
 		}
 	}
 }
+/**
+ * Enables the backing store on the given serialization factory registry.
+ * @param registry The serialization factory registry to enable the backing store on.
+ */
 function enableBackingStoreForSerializationRegistry(registry: SerializationWriterFactoryRegistry): void {
 	for (const [k, v] of registry.contentTypeAssociatedFactories) {
 		if (!(v instanceof BackingStoreSerializationWriterProxyFactory || v instanceof SerializationWriterFactoryRegistry)) {

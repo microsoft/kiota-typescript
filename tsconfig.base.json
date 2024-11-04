@@ -26,25 +26,25 @@
     },
     "references": [
         {
-            "path": "./abstractions/tsconfig.json"
+            "path": "./packages/abstractions/tsconfig.json"
         },
         {
-            "path": "./serialization/form/tsconfig.json"
+            "path": "./packages/serialization/form/tsconfig.json"
         },
         {
-            "path": "./serialization/json/tsconfig.json"
+            "path": "./packages/serialization/json/tsconfig.json"
         },
         {
-            "path": "./serialization/text/tsconfig.json"
+            "path": "./packages/serialization/text/tsconfig.json"
         },
         {
-            "path": "./http/fetch/tsconfig.json"
+            "path": "./packages/http/fetch/tsconfig.json"
         },
         {
-            "path": "./authentication/azure/tsconfig.json"
+            "path": "./packages/authentication/azure/tsconfig.json"
         },
         {
-            "path": "./authentication/spfx/tsconfig.json"
+            "path": "./packages/authentication/spfx/tsconfig.json"
         }
     ],
     "exclude": [

@@ -71,13 +71,13 @@ export interface SerializationWriter {
 	/**
 	 * Writes the specified collection of primitive values to the stream with an optional given key.
 	 * @param key the key to write the value with.
-	 * @param value the value to write to the stream.
+	 * @param values the value to write to the stream.
 	 */
 	writeCollectionOfPrimitiveValues<T>(key?: string, values?: T[] | null): void;
 	/**
 	 * Writes the specified collection of object values to the stream with an optional given key.
 	 * @param key the key to write the value with.
-	 * @param value the value to write to the stream.
+	 * @param values the value to write to the stream.
 	 */
 	writeCollectionOfObjectValues<T extends Parsable>(key?: string, values?: T[] | null, serializerMethod?: ModelSerializerFunction<T>): void;
 	/**
@@ -100,7 +100,7 @@ export interface SerializationWriter {
 	writeNullValue(key?: string): void;
 	/**
 	 * Gets the value of the serialized content.
-	 * @return the value of the serialized content.
+	 * @returns the value of the serialized content.
 	 */
 	getSerializedContent(): ArrayBuffer;
 	/**
@@ -110,17 +110,17 @@ export interface SerializationWriter {
 	writeAdditionalData(value: Record<string, unknown> | undefined): void;
 	/**
 	 * Gets the callback called before the object gets serialized.
-	 * @return the callback called before the object gets serialized.
+	 * @returns the callback called before the object gets serialized.
 	 */
 	onBeforeObjectSerialization: ((value: Parsable) => void) | undefined;
 	/**
 	 * Gets the callback called after the object gets serialized.
-	 * @return the callback called after the object gets serialized.
+	 * @returns the callback called after the object gets serialized.
 	 */
 	onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
 	/**
 	 * Gets the callback called right after the serialization process starts.
-	 * @return the callback called right after the serialization process starts.
+	 * @returns the callback called right after the serialization process starts.
 	 */
 	onStartObjectSerialization: ((value: Parsable, writer: SerializationWriter) => void) | undefined;
 }

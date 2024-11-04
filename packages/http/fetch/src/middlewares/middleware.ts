@@ -12,12 +12,11 @@ export interface Middleware {
 	next: Middleware | undefined;
 
 	/**
-	 * @public
-	 * @async
 	 * Main method of the middleware.
+	 * @param url The url for the request
 	 * @param requestInit The Fetch RequestInit object.
-	 * @param url The URL of the request.
-	 * @return A promise that resolves to the response object.
+	 * @param requestOptions The request options.
+	 * @returns A promise that resolves to the response object.
 	 */
 	execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response>;
 }
