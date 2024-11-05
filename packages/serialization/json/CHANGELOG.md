@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.73](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-json@1.0.0-preview.72...@microsoft/kiota-serialization-json@1.0.0-preview.73) (2024-11-05)
+
+
+### Bug Fixes
+
+* fix Eslint configuration to parse all files. ([9a58d21](https://github.com/microsoft/kiota-typescript/commit/9a58d21e783830af6b54ae1d40e1cf6ee6dd5a1d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.72 to ^1.0.0-preview.73
+
 ## [1.0.0-preview.72](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-json@1.0.0-preview.71...@microsoft/kiota-serialization-json@1.0.0-preview.72) (2024-10-31)
 
 
