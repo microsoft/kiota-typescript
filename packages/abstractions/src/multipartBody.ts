@@ -5,8 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 import type { RequestAdapter } from "./requestAdapter";
-import type { ModelSerializerFunction, Parsable, ParseNode, SerializationWriter
-} from "./serialization";
+import type { ModelSerializerFunction, Parsable, ParseNode, SerializationWriter } from "./serialization";
 import { createGuid } from "./utils/guidUtils";
 
 /**
@@ -16,12 +15,14 @@ export class MultipartBody implements Parsable {
 	private readonly _boundary: string;
 	private readonly _parts: Record<string, MultipartEntry> = {};
 	public requestAdapter?: RequestAdapter;
+
 	/**
 	 * Instantiates a new MultipartBody.
 	 */
 	public constructor() {
 		this._boundary = createGuid().replace(/-/g, "");
 	}
+
 	/**
 	 * Adds or replaces a part with the given name, content type and content.
 	 * @param partName the name of the part to add or replace.
@@ -43,6 +44,7 @@ export class MultipartBody implements Parsable {
 			serializationCallback,
 		};
 	}
+
 	/**
 	 * Gets the content of the part with the given name.
 	 * @param partName the name of the part to get the content for.
@@ -55,6 +57,7 @@ export class MultipartBody implements Parsable {
 		if (!candidate) return undefined;
 		return candidate.content as T;
 	}
+
 	/**
 	 * Removes the part with the given name.
 	 * @param partName the name of the part to remove.
@@ -67,6 +70,7 @@ export class MultipartBody implements Parsable {
 		delete this._parts[normalizePartName];
 		return true;
 	}
+
 	/**
 	 * Gets the boundary used to separate each part.
 	 * @returns the boundary value.
@@ -78,6 +82,7 @@ export class MultipartBody implements Parsable {
 	private normalizePartName(original: string): string {
 		return original.toLocaleLowerCase();
 	}
+
 	/**
 	 * Lists all the parts in the multipart body.
 	 * WARNING: meant for internal use only
@@ -87,6 +92,7 @@ export class MultipartBody implements Parsable {
 		return this._parts;
 	}
 }
+
 interface MultipartEntry {
 	contentType: string;
 	content: any;

@@ -6,23 +6,11 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import {
-  type DateOnly,
-  type Duration,
-  type Guid,
-  MultipartBody,
-  type Parsable,
-  type SerializationWriter,
-  type ModelSerializerFunction,
-  type TimeOnly } from "@microsoft/kiota-abstractions";
+import { type DateOnly, type Duration, type Guid, MultipartBody, type Parsable, type SerializationWriter, type ModelSerializerFunction, type TimeOnly } from "@microsoft/kiota-abstractions";
 
 /** Serialization writer for multipart/form-data */
 export class MultipartSerializationWriter implements SerializationWriter {
-	public writeByteArrayValue(
-		key?: string,
-
-		value?: ArrayBuffer,
-	): void {
+	public writeByteArrayValue(key?: string, value?: ArrayBuffer): void {
 		if (!value) {
 			throw new Error("value cannot be undefined");
 		}
@@ -32,6 +20,7 @@ export class MultipartSerializationWriter implements SerializationWriter {
 		pipe.set(new Uint8Array(previousValue), 0);
 		pipe.set(new Uint8Array(value), previousValue.byteLength);
 	}
+
 	private writer: ArrayBuffer = new ArrayBuffer(0);
 	public onBeforeObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
@@ -84,18 +73,10 @@ export class MultipartSerializationWriter implements SerializationWriter {
 	public writeNullValue = (key?: string): void => {
 		throw new Error(`serialization of null values is not supported with multipart`);
 	};
-	public writeCollectionOfPrimitiveValues = <T>(
-		_key?: string,
-
-		_values?: T[] | null,
-	): void => {
+	public writeCollectionOfPrimitiveValues = <T>(_key?: string, _values?: T[] | null): void => {
 		throw new Error(`serialization of collections is not supported with multipart`);
 	};
-	public writeCollectionOfObjectValues = <T extends Parsable>(
-		_key?: string,
-
-		_values?: T[] | null,
-	): void => {
+	public writeCollectionOfObjectValues = <T extends Parsable>(_key?: string, _values?: T[] | null): void => {
 		throw new Error(`serialization of collections is not supported with multipart`);
 	};
 	public writeObjectValue = <T extends Parsable>(key: string | undefined, value: T | undefined, serializerMethod: ModelSerializerFunction<T>): void => {

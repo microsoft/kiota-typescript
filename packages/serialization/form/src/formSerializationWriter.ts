@@ -6,15 +6,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import {
-  DateOnly,
-  Duration,
-  type ModelSerializerFunction,
-  type Parsable,
-  type SerializationWriter,
-  type Guid,
-  TimeOnly
-} from "@microsoft/kiota-abstractions";
+import { DateOnly, Duration, type ModelSerializerFunction, type Parsable, type SerializationWriter, type Guid, TimeOnly } from "@microsoft/kiota-abstractions";
 
 export class FormSerializationWriter implements SerializationWriter {
 	public writeByteArrayValue(
@@ -25,6 +17,7 @@ export class FormSerializationWriter implements SerializationWriter {
 	): void {
 		throw new Error("serialization of byt arrays is not supported with URI encoding");
 	}
+
 	private readonly writer: string[] = [];
 	private static readonly propertySeparator = `&`;
 	private depth = -1;
@@ -96,11 +89,7 @@ export class FormSerializationWriter implements SerializationWriter {
 			});
 		}
 	};
-	public writeCollectionOfObjectValues = <T extends Parsable>(
-		_key?: string,
-
-		_values?: T[] | null,
-	): void => {
+	public writeCollectionOfObjectValues = <T extends Parsable>(_key?: string, _values?: T[] | null): void => {
 		throw new Error(`serialization of collections is not supported with URI encoding`);
 	};
 	public writeObjectValue = <T extends Parsable>(key: string | undefined, value: T | null | undefined, serializerMethod: ModelSerializerFunction<T>): void => {

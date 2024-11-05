@@ -6,23 +6,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import {
-  DateOnly,
-  Duration,
-  type Guid,
-  isUntypedNode,
-  type ModelSerializerFunction,
-  type Parsable,
-  type SerializationWriter,
-  TimeOnly,
-  type UntypedNode,
-  isUntypedBoolean,
-  isUntypedString,
-  isUntypedNull,
-  isUntypedNumber,
-  isUntypedObject,
-  isUntypedArray,
-inNodeEnv} from "@microsoft/kiota-abstractions";
+import { DateOnly, Duration, type Guid, isUntypedNode, type ModelSerializerFunction, type Parsable, type SerializationWriter, TimeOnly, type UntypedNode, isUntypedBoolean, isUntypedString, isUntypedNull, isUntypedNumber, isUntypedObject, isUntypedArray, inNodeEnv } from "@microsoft/kiota-abstractions";
 
 export class JsonSerializationWriter implements SerializationWriter {
 	public writeByteArrayValue(key?: string, value?: ArrayBuffer): void {
@@ -32,6 +16,7 @@ export class JsonSerializationWriter implements SerializationWriter {
 		const b64 = inNodeEnv() ? Buffer.from(value).toString("base64") : btoa(new TextDecoder().decode(value));
 		this.writeStringValue(key, b64);
 	}
+
 	private readonly writer: string[] = [];
 	private static readonly propertySeparator = `,`;
 	private readonly shouldWriteValueOrNull = <T>(key?: string, value?: T | null): boolean => {
