@@ -8,7 +8,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { DateOnly, Duration, Guid, Parsable, ParsableFactory, ParseNode, ParseNodeFactory, TimeOnly } from "@microsoft/kiota-abstractions";
 
-
 export class MockParseNodeFactory implements ParseNodeFactory {
 	parseNodeValue: ParseNode;
 	/**

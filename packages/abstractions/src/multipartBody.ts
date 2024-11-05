@@ -5,8 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 import type { RequestAdapter } from "./requestAdapter";
-import type { ModelSerializerFunction, Parsable, ParseNode, SerializationWriter
-} from "./serialization";
+import type { ModelSerializerFunction, Parsable, ParseNode, SerializationWriter } from "./serialization";
 import { createGuid } from "./utils/guidUtils";
 
 /**
