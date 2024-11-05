@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.0.0-preview.73](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-bundle@1.0.0-preview.72...@microsoft/kiota-bundle@1.0.0-preview.73) (2024-11-05)
+
+
+### Bug Fixes
+
+* fix Eslint configuration to parse all files. ([9a58d21](https://github.com/microsoft/kiota-typescript/commit/9a58d21e783830af6b54ae1d40e1cf6ee6dd5a1d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.72 to ^1.0.0-preview.73
+    * @microsoft/kiota-http-fetchlibrary bumped from ^1.0.0-preview.72 to ^1.0.0-preview.73
+    * @microsoft/kiota-serialization-form bumped from ^1.0.0-preview.72 to ^1.0.0-preview.73
+    * @microsoft/kiota-serialization-json bumped from ^1.0.0-preview.72 to ^1.0.0-preview.73
+    * @microsoft/kiota-serialization-multipart bumped from ^1.0.0-preview.72 to ^1.0.0-preview.73
+    * @microsoft/kiota-serialization-text bumped from ^1.0.0-preview.72 to ^1.0.0-preview.73
+
 ## [1.0.0-preview.72](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-bundle@1.0.0-preview.71...@microsoft/kiota-bundle@1.0.0-preview.72) (2024-10-31)
 
 
