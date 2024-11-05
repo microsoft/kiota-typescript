@@ -18,18 +18,16 @@ import type { Middleware } from "./middleware";
 import { RedirectHandlerOptionKey, RedirectHandlerOptions } from "./options/redirectHandlerOptions";
 
 /**
- * @class
+ *
  * Class
- * @implements Middleware
+ * Middleware
  * Class representing RedirectHandler
  */
 export class RedirectHandler implements Middleware {
 	/**
-	 * @private
-	 * @static
 	 * A member holding the array of redirect status codes
 	 */
-	private static REDIRECT_STATUS_CODES: Set<number> = new Set([
+	private static readonly REDIRECT_STATUS_CODES = new Set<number>([
 		301, // Moved Permanently
 		302, // Found
 		303, // See Other
@@ -38,53 +36,44 @@ export class RedirectHandler implements Middleware {
 	]);
 
 	/**
-	 * @private
-	 * @static
 	 * A member holding SeeOther status code
 	 */
-	private static STATUS_CODE_SEE_OTHER = 303;
+	private static readonly STATUS_CODE_SEE_OTHER = 303;
 
 	/**
-	 * @private
-	 * @static
 	 * A member holding the name of the location header
 	 */
-	private static LOCATION_HEADER = "Location";
+	private static readonly LOCATION_HEADER = "Location";
 
 	/**
-	 * @private
-	 * @static
 	 * A member representing the authorization header name
 	 */
-	private static AUTHORIZATION_HEADER = "Authorization";
+	private static readonly AUTHORIZATION_HEADER = "Authorization";
 
 	/**
-	 * @private
-	 * @static
 	 * A member holding the manual redirect value
 	 */
-	private static MANUAL_REDIRECT = "manual";
+	private static readonly MANUAL_REDIRECT = "manual";
 
 	/** Next middleware to be executed*/
 	next: Middleware | undefined;
 	/**
 	 *
-	 * @public
-	 * @constructor
+	 *
 	 * To create an instance of RedirectHandler
-	 * @param {RedirectHandlerOptions} [options = new RedirectHandlerOptions()] - The redirect handler options instance
+	 * @param [options] - The redirect handler options instance
 	 * @returns An instance of RedirectHandler
 	 */
-	public constructor(private options: RedirectHandlerOptions = new RedirectHandlerOptions()) {
+	public constructor(private readonly options: RedirectHandlerOptions = new RedirectHandlerOptions()) {
 		if (!options) {
 			throw new Error("The options parameter is required.");
 		}
 	}
 
 	/**
-	 * @private
+	 *
 	 * To check whether the response has the redirect status code or not
-	 * @param {Response} response - The response object
+	 * @param response - The response object
 	 * @returns A boolean representing whether the response contains the redirect status code or not
 	 */
 	private isRedirect(response: FetchResponse): boolean {
@@ -92,9 +81,9 @@ export class RedirectHandler implements Middleware {
 	}
 
 	/**
-	 * @private
+	 *
 	 * To check whether the response has location header or not
-	 * @param {Response} response - The response object
+	 * @param response - The response object
 	 * @returns A boolean representing the whether the response has location header or not
 	 */
 	private hasLocationHeader(response: FetchResponse): boolean {
@@ -102,9 +91,9 @@ export class RedirectHandler implements Middleware {
 	}
 
 	/**
-	 * @private
+	 *
 	 * To get the redirect url from location header in response object
-	 * @param {Response} response - The response object
+	 * @param response - The response object
 	 * @returns A redirect url from location header
 	 */
 	private getLocationHeader(response: FetchResponse): string | null {
@@ -112,20 +101,20 @@ export class RedirectHandler implements Middleware {
 	}
 
 	/**
-	 * @private
+	 *
 	 * To check whether the given url is a relative url or not
-	 * @param {string} url - The url string value
+	 * @param url - The url string value
 	 * @returns A boolean representing whether the given url is a relative url or not
 	 */
 	private isRelativeURL(url: string): boolean {
-		return url.indexOf("://") === -1;
+		return !url.includes("://");
 	}
 
 	/**
-	 * @private
+	 *
 	 * To check whether the authorization header in the request should be dropped for consequent redirected requests
-	 * @param {string} requestUrl - The request url value
-	 * @param {string} redirectUrl - The redirect url value
+	 * @param requestUrl - The request url value
+	 * @param redirectUrl - The redirect url value
 	 * @returns A boolean representing whether the authorization header in the request should be dropped for consequent redirected requests
 	 */
 	private shouldDropAuthorizationHeader(requestUrl: string, redirectUrl: string): boolean {
@@ -144,14 +133,13 @@ export class RedirectHandler implements Middleware {
 	}
 
 	/**
-	 * @private
-	 * @async
 	 * To execute the next middleware and to handle in case of redirect response returned by the server
-	 * @param {Context} context - The context object
-	 * @param {number} redirectCount - The redirect count value
-	 * @param {Record<string, RequestOption>} [requestOptions = {}] - The request options
-	 * @param {RedirectHandlerOptions} currentOptions - The redirect handler options instance
-	 * @param {string} tracerName - The name to use for the tracer
+	 * @param url - The url string value
+	 * @param fetchRequestInit - The Fetch RequestInit object
+	 * @param redirectCount - The redirect count value
+	 * @param currentOptions - The redirect handler options instance
+	 * @param requestOptions - The request options
+	 * @param tracerName - The name to use for the tracer
 	 * @returns A promise that resolves to nothing
 	 */
 	private async executeWithRedirect(url: string, fetchRequestInit: FetchRequestInit, redirectCount: number, currentOptions: RedirectHandlerOptions, requestOptions?: Record<string, RequestOption>, tracerName?: string): Promise<FetchResponse> {
@@ -162,7 +150,7 @@ export class RedirectHandler implements Middleware {
 		if (redirectCount < currentOptions.maxRedirects && this.isRedirect(response) && this.hasLocationHeader(response) && currentOptions.shouldRedirect(response)) {
 			++redirectCount;
 			if (response.status === RedirectHandler.STATUS_CODE_SEE_OTHER) {
-				fetchRequestInit["method"] = HttpMethod.GET;
+				fetchRequestInit.method = HttpMethod.GET;
 				delete fetchRequestInit.body;
 			} else {
 				const redirectUrl = this.getLocationHeader(response);
@@ -191,16 +179,16 @@ export class RedirectHandler implements Middleware {
 	}
 
 	/**
-	 * @public
-	 * @async
-	 * To execute the current middleware
-	 * @param {Context} context - The context object of the request
-	 * @returns A Promise that resolves to nothing
+	 * Executes the request and returns a promise resolving the response.
+	 * @param url - The url for the request
+	 * @param requestInit - The Fetch RequestInit object.
+	 * @param requestOptions - The request options.
+	 * @returns A Promise that resolves to the response.
 	 */
 	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		const redirectCount = 0;
 		let currentOptions = this.options;
-		if (requestOptions && requestOptions[RedirectHandlerOptionKey]) {
+		if (requestOptions?.[RedirectHandlerOptionKey]) {
 			currentOptions = requestOptions[RedirectHandlerOptionKey] as RedirectHandlerOptions;
 		}
 		(requestInit as FetchRequestInit).redirect = RedirectHandler.MANUAL_REDIRECT;

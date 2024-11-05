@@ -12,7 +12,7 @@
 import type { RequestOption } from "@microsoft/kiota-abstractions";
 
 /**
- * @type
+ *
  * A type declaration for shouldRetry callback
  */
 export type ShouldRedirect = (response: Response) => boolean;
@@ -25,48 +25,43 @@ export interface RedirectHandlerOptionsParams {
 }
 
 /**
- * @class
- * @implements MiddlewareOptions
+ * MiddlewareOptions
  * A class representing RedirectHandlerOptions
  */
 export class RedirectHandlerOptions implements RequestOption {
 	/**
-	 * @private
-	 * @static
 	 * A member holding default max redirects value
 	 */
-	private static DEFAULT_MAX_REDIRECTS = 5;
+	private static readonly DEFAULT_MAX_REDIRECTS = 5;
 
 	/**
-	 * @private
-	 * @static
 	 * A member holding maximum max redirects value
 	 */
-	private static MAX_MAX_REDIRECTS = 20;
+	private static readonly MAX_MAX_REDIRECTS = 20;
 
 	/**
-	 * @private
+	 *
 	 * A member holding default shouldRedirect callback
+	 * @returns true
 	 */
-	private static defaultShouldRetry: ShouldRedirect = () => true;
+	private static readonly defaultShouldRetry: ShouldRedirect = () => true;
 
 	/**
-	 * @public
+	 *
 	 * A member holding the max redirects value
 	 */
 	public maxRedirects: number;
 
 	/**
-	 * @public
+	 *
 	 * A member holding the should redirect callback
 	 */
 	public shouldRedirect: ShouldRedirect;
 
 	/**
-	 * @public
-	 * @constructor
+	 *
 	 * To create an instance of RedirectHandlerOptions
-	 * @param {RedirectHandlerOptionsParams} [options = {}] - The redirect handler options instance
+	 * @param [options] - The redirect handler options instance
 	 * @returns An instance of RedirectHandlerOptions
 	 * @throws Error if maxRedirects is more than 20 or less than 0
 	 * @example	const options = new RedirectHandlerOptions({ maxRedirects: 5 });

@@ -27,6 +27,7 @@ export class JsonParseNodeFactory implements ParseNodeFactory {
 	private convertArrayBufferToJson(content: ArrayBuffer) {
 		const decoder = new TextDecoder();
 		const contentAsStr = decoder.decode(content);
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return JSON.parse(contentAsStr);
 	}
 }

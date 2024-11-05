@@ -14,18 +14,13 @@ import { MiddlewareFactory } from "./";
 export class HttpClient {
 	private middleware: Middleware | undefined;
 	/**
-	 * @public
-	 * @constructor
-	 * Creates an instance of a HttpClient which contains the middlewares and fetch implementation for request execution.
-	 * @param {...Middleware} middleware - The first middleware of the middleware chain or a sequence of all the Middleware handlers
-	 * If middlewares param is undefined, the httpClient instance will use the default array of middlewares.
-	 * Set middlewares to `null` if you do not wish to use middlewares.
-	 * If custom fetch is undefined, the httpClient instance uses the `DefaultFetchHandler`
-	 * @param {(request: string, init?: RequestInit) => Promise < Response >} custom fetch function - a Fetch API implementation
 	 *
+	 * Creates an instance of a HttpClient which contains the middlewares and fetch implementation for request execution.
+	 * @param customFetch - custom fetch function - a Fetch API implementation
+	 * @param middlewares - an array of Middleware handlers
 	 */
 	public constructor(
-		private customFetch?: (request: string, init: RequestInit) => Promise<Response>,
+		private readonly customFetch?: (request: string, init: RequestInit) => Promise<Response>,
 		...middlewares: Middleware[]
 	) {
 		// If no middlewares are provided, use the default ones
@@ -33,6 +28,7 @@ export class HttpClient {
 
 		// If a custom fetch function is provided, add a CustomFetchHandler to the end of the middleware chain
 		if (this.customFetch) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 			middlewares.push(new CustomFetchHandler(customFetch as any));
 		}
 
@@ -41,11 +37,9 @@ export class HttpClient {
 	}
 
 	/**
-	 * @private
 	 * Processes the middleware parameter passed to set this.middleware property
 	 * The calling function should validate if middleware is not undefined or not empty.
-	 * @param {...Middleware} middleware - The middleware passed
-	 * @returns Nothing
+	 * @param middleware - The middleware passed
 	 */
 	private setMiddleware(...middleware: Middleware[]): void {
 		for (let i = 0; i < middleware.length - 1; i++) {
@@ -57,7 +51,8 @@ export class HttpClient {
 	/**
 	 * Executes a request and returns a promise resolving the response.
 	 * @param url the request url.
-	 * @param options request options.
+	 * @param requestInit the RequestInit object.
+	 * @param requestOptions the request options.
 	 * @returns the promise resolving the response.
 	 */
 	public async executeFetch(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {

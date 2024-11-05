@@ -11,7 +11,7 @@
 export interface BackingStore {
 	/**
 	 * Gets a value from the backing store based on its key. Returns null if the value hasn't changed and "ReturnOnlyChangedValues" is true.
-	 * @return The value from the backing store.
+	 * @returns The value from the backing store.
 	 * @param key The key to lookup the backing store with.
 	 */
 	get<T>(key: string): T | undefined;
@@ -24,19 +24,19 @@ export interface BackingStore {
 	set<T>(key: string, value: T): void;
 	/**
 	 * Enumerates all the values stored in the backing store. Values will be filtered if "ReturnOnlyChangedValues" is true.
-	 * @return The values available in the backing store.
+	 * @returns The values available in the backing store.
 	 */
 	enumerate(): { key: string; value: unknown }[];
 	/**
 	 * Enumerates the keys for all values that changed to null.
-	 * @return The keys for the values that changed to null.
+	 * @returns The keys for the values that changed to null.
 	 */
 	enumerateKeysForValuesChangedToNull(): string[];
 	/**
 	 * Creates a subscription to any data change happening.
 	 * @param callback Callback to be invoked on data changes where the first parameter is the data key, the second the previous value and the third the new value.
 	 * @param subscriptionId The subscription Id to use.
-	 * @return The subscription Id to use when removing the subscription
+	 * @returns The subscription Id to use when removing the subscription
 	 */
 	subscribe(callback: () => { key: string; previousValue: unknown; newValue: unknown }, subscriptionId?: string): string;
 	/**

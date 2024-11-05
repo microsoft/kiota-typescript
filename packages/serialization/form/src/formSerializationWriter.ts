@@ -12,14 +12,14 @@ import type { Guid } from "guid-typescript";
 export class FormSerializationWriter implements SerializationWriter {
 	public writeByteArrayValue(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		key?: string | undefined,
+		key?: string,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		value?: ArrayBuffer | null | undefined,
+		value?: ArrayBuffer | null,
 	): void {
 		throw new Error("serialization of byt arrays is not supported with URI encoding");
 	}
 	private readonly writer: string[] = [];
-	private static propertySeparator = `&`;
+	private static readonly propertySeparator = `&`;
 	private depth = -1;
 	public onBeforeObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
@@ -34,10 +34,10 @@ export class FormSerializationWriter implements SerializationWriter {
 			this.writer.push(FormSerializationWriter.propertySeparator);
 		}
 	};
-	private writePropertyName = (key: string): void => {
+	private readonly writePropertyName = (key: string): void => {
 		this.writer.push(encodeURIComponent(key));
 	};
-	private shouldWriteValueOrNull = <T>(key?: string, value?: T | null): boolean => {
+	private readonly shouldWriteValueOrNull = <T>(key?: string, value?: T | null): boolean => {
 		if (value === null) {
 			this.writeNullValue(key);
 			return false;
@@ -90,9 +90,8 @@ export class FormSerializationWriter implements SerializationWriter {
 		}
 	};
 	public writeCollectionOfObjectValues = <T extends Parsable>(
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_key?: string,
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 		_values?: T[] | null,
 	): void => {
 		throw new Error(`serialization of collections is not supported with URI encoding`);
@@ -115,14 +114,15 @@ export class FormSerializationWriter implements SerializationWriter {
 			serializerMethod(this, value);
 			this.onAfterObjectSerialization && this.onAfterObjectSerialization(value);
 			if (this.writer.length > 0 && this.writer[this.writer.length - 1] === FormSerializationWriter.propertySeparator) {
-				//removing the last separator
+				// removing the last separator
 				this.writer.pop();
 			}
 			key && this.writer.push(FormSerializationWriter.propertySeparator);
 		}
 	};
-	public writeEnumValue = <T>(key?: string | undefined, ...values: (T | null | undefined)[]): void => {
+	public writeEnumValue = <T>(key?: string, ...values: (T | null | undefined)[]): void => {
 		if (values.length > 0) {
+			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 			const rawValues = values.filter((x) => x !== undefined).map((x) => `${x}`);
 			if (rawValues.length > 0) {
 				this.writeStringValue(
@@ -136,7 +136,7 @@ export class FormSerializationWriter implements SerializationWriter {
 		return this.convertStringToArrayBuffer(this.writer.join(``));
 	};
 
-	private convertStringToArrayBuffer = (str: string): ArrayBuffer => {
+	private readonly convertStringToArrayBuffer = (str: string): ArrayBuffer => {
 		const encoder = new TextEncoder();
 		const encodedString = encoder.encode(str);
 		return encodedString.buffer;
@@ -145,12 +145,14 @@ export class FormSerializationWriter implements SerializationWriter {
 	public writeAdditionalData = (additionalData: Record<string, unknown> | undefined): void => {
 		// Do not use !value here, because value can be `false`.
 		if (additionalData === undefined) return;
+		// eslint-disable-next-line guard-for-in
 		for (const key in additionalData) {
 			this.writeAnyValue(key, additionalData[key]);
 		}
 	};
 
-	private writeAnyValue = (key?: string | undefined, value?: unknown | null | undefined): void => {
+	// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+	private readonly writeAnyValue = (key?: string, value?: unknown | null): void => {
 		if (value === null) {
 			return this.writeNullValue(key);
 		}
@@ -172,6 +174,7 @@ export class FormSerializationWriter implements SerializationWriter {
 			} else if (valueType === "number") {
 				this.writeNumberValue(key, value as any as number);
 			} else {
+				// eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
 				throw new Error(`encountered unknown ${value} value type during serialization ${valueType} for key ${key}`);
 			}
 		}

@@ -20,16 +20,14 @@ import type { ChaosHandlerOptions } from "./options/chaosHandlerOptions";
 import { ChaosStrategy } from "./options/chaosStrategy";
 
 /**
- * @class
+ *
  * Class
- * @implements Middleware
+ * Middleware
  * Class representing RedirectHandler
  */
 export class ChaosHandler implements Middleware {
 	/**
 	 * A member holding options to customize the handler behavior
-	 *
-	 * @private
 	 */
 	options: ChaosHandlerOptions = {
 		chaosStrategy: ChaosStrategy.RANDOM,
@@ -39,19 +37,16 @@ export class ChaosHandler implements Middleware {
 
 	/**
 	 * container for the manual map that has been written by the client
-	 *
-	 * @private
 	 */
-	private manualMap: Map<string, Map<string, number>>;
+	private readonly manualMap: Map<string, Map<string, number>>;
 
 	/** @inheritdoc */
 	next: Middleware | undefined;
 
 	/**
-	 * @public
-	 * @constructor
+	 *
 	 * To create an instance of ChaosHandler
-	 * @param {ChaosHandlerOptions} [options = new ChaosHandlerOptions()] - The chaos handler options instance
+	 * @param [options] - The chaos handler options instance
 	 * @param manualMap - The Map passed by user containing url-statusCode info
 	 */
 	public constructor(options?: Partial<ChaosHandlerOptions>, manualMap?: Map<string, Map<string, number>>) {
@@ -62,25 +57,24 @@ export class ChaosHandler implements Middleware {
 		}
 
 		this.options = chaosOptions;
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		this.manualMap = manualMap ?? new Map();
 	}
 
 	/**
 	 * Fetches a random status code for the RANDOM mode from the predefined array
-	 * @private
-	 * @param {string} requestMethod - the API method for the request
+	 * @param requestMethod - the API method for the request
 	 * @returns a random status code from a given set of status codes
 	 */
 	private generateRandomStatusCode(requestMethod: HttpMethod): number {
-		const statusCodeArray: number[] = methodStatusCode[requestMethod] as number[];
+		const statusCodeArray: number[] = methodStatusCode[requestMethod];
 		return statusCodeArray[Math.floor(Math.random() * statusCodeArray.length)];
 	}
 
 	/**
 	 * Strips out the host url and returns the relative url only
-	 * @private
-	 * @param {ChaosHandlerOptions} chaosHandlerOptions - The ChaosHandlerOptions object
-	 * @param {string} urlMethod - the complete URL
+	 * @param chaosHandlerOptions - The ChaosHandlerOptions object
+	 * @param urlMethod - the complete URL
 	 * @returns the string as relative URL
 	 */
 	private getRelativeURL(chaosHandlerOptions: ChaosHandlerOptions, urlMethod: string): string {
@@ -94,10 +88,10 @@ export class ChaosHandler implements Middleware {
 
 	/**
 	 * Gets a status code from the options or a randomly generated status code
-	 * @param {ChaosHandlerOptions} chaosHandlerOptions - The ChaosHandlerOptions object
-	 * @param {string} requestURL - the URL for the request
-	 * @param {HttpMethod} requestMethod - the API method for the request
-	 * @returns {number} generated statusCode
+	 * @param chaosHandlerOptions - The ChaosHandlerOptions object
+	 * @param requestURL - the URL for the request
+	 * @param requestMethod - the API method for the request
+	 * @returns generated statusCode
 	 */
 	private getStatusCode(chaosHandlerOptions: ChaosHandlerOptions, requestURL: string, requestMethod: HttpMethod): number {
 		if (chaosHandlerOptions.chaosStrategy === ChaosStrategy.MANUAL) {
@@ -136,14 +130,13 @@ export class ChaosHandler implements Middleware {
 
 	/**
 	 * Generates a respondy for the chaoe response
-	 * @private
-	 * @param {ChaosHandlerOptions} chaosHandlerOptions - The ChaosHandlerOptions object
-	 * @param {string} requestID - request id
-	 * @param {string} requestDate - date of the request
-	 *  * @returns response body
+	 * @param chaosHandlerOptions - The ChaosHandlerOptions object
+	 * @param statusCode - the status code for the response
+	 * @returns the response body
 	 */
 	private createResponseBody(chaosHandlerOptions: ChaosHandlerOptions, statusCode: number) {
 		if (chaosHandlerOptions.responseBody) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 			return chaosHandlerOptions.responseBody;
 		}
 		let body: any;
@@ -160,14 +153,15 @@ export class ChaosHandler implements Middleware {
 		} else {
 			body = {};
 		}
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return body;
 	}
 
 	/**
 	 * Composes a new chaotic response code with the configured parameters
-	 * @param {string} url
-	 * @param {FetchRequestInit} fetchRequestInit
-	 * @returns {Response}
+	 * @param url The url of the request
+	 * @param fetchRequestInit The fetch request init object
+	 * @returns a response object with the configured parameters
 	 */
 	private createChaosResponse(url: string, fetchRequestInit: FetchRequestInit): any {
 		if (fetchRequestInit.method === undefined) {
@@ -176,6 +170,7 @@ export class ChaosHandler implements Middleware {
 
 		const requestMethod = fetchRequestInit.method as HttpMethod;
 		const statusCode = this.getStatusCode(this.options, url, requestMethod);
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		const responseBody = this.createResponseBody(this.options, statusCode);
 		const stringBody = typeof responseBody === "string" ? responseBody : JSON.stringify(responseBody);
 
@@ -188,7 +183,7 @@ export class ChaosHandler implements Middleware {
 		};
 	}
 
-	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption> | undefined): Promise<Response> {
+	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
 		if (obsOptions) {
 			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("chaosHandler - execute", (span) => {
@@ -203,7 +198,7 @@ export class ChaosHandler implements Middleware {
 		return this.runChaos(url, requestInit, requestOptions);
 	}
 	public static readonly chaosHandlerTriggeredEventKey = "com.microsoft.kiota.chaos_handler_triggered";
-	private runChaos(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption> | undefined, span?: Span): Promise<Response> {
+	private runChaos(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>, span?: Span): Promise<Response> {
 		if (Math.floor(Math.random() * 100) < this.options.chaosPercentage) {
 			span?.addEvent(ChaosHandler.chaosHandlerTriggeredEventKey);
 			return Promise.resolve(this.createChaosResponse(url, requestInit as FetchRequestInit));

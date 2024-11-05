@@ -5,7 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Parsable } from "./parsable";
 import type { ParseNode } from "./parseNode";
 import type { SerializationWriter } from "./serializationWriter";
@@ -26,6 +25,8 @@ export interface UntypedNode extends Parsable {
 
 /**
  * Factory to create an UntypedNode from a string during deserialization.
+ * @param _parseNode The ParseNode to deserialize.
+ * @returns A function that can deserialize an UntypedNode.
  */
 export const createUntypedNodeFromDiscriminatorValue: ParsableFactory<UntypedNode> = (_parseNode: ParseNode | undefined): ((_instance?: Parsable) => Record<string, (_node: ParseNode) => void>) => {
 	return deserializeIntoUntypedNode;
@@ -34,7 +35,7 @@ export const createUntypedNodeFromDiscriminatorValue: ParsableFactory<UntypedNod
 /**
  * Type guard to assert that an object instance is an UntypedNode.
  * @param node The object to check.
- * @return boolean indicating if the node is an UntypedNode.
+ * @returns boolean indicating if the node is an UntypedNode.
  */
 export const isUntypedNode = (node: unknown): node is UntypedNode => {
 	const potentialNode = node as UntypedNode;
@@ -43,6 +44,8 @@ export const isUntypedNode = (node: unknown): node is UntypedNode => {
 
 /**
  * The deserialization implementation for UntypedNode.
+ * @param untypedNode - The UntypedNode to deserialize.
+ * @returns A function that can deserialize a ParseNode into the provided UntypedNode.
  */
 export const deserializeIntoUntypedNode: DeserializeIntoModelFunction<UntypedNode> = (untypedNode: Partial<UntypedNode> | undefined = {}): Record<string, (node: ParseNode) => void> => {
 	return {
@@ -57,6 +60,8 @@ export const deserializeIntoUntypedNode: DeserializeIntoModelFunction<UntypedNod
 
 /**
  * The serialization implementation for UntypedNode.
+ * @param _writer - The serialization writer to use.
+ * @param _errorDetails - The error details to include in the serialization.
  */
 export const serializeUntypedNode = (_writer: SerializationWriter, _errorDetails: Partial<UntypedNode> | undefined = {}): void => {
 	return;

@@ -11,29 +11,21 @@ import { libraryVersion } from "./version";
 export const UserAgentHandlerOptionsKey = "UserAgentHandlerOptionKey";
 
 /**
- * @interface
- * Signature to define the user agent handler options
- * @property {boolean} [enable = true] - Whether to add the user agent header to the request
- * @property {string} [productName = "kiota-typescript"] - The product name to be added to the user agent header
- * @property {string} [productVersion = "1.0.0-preview.12"] - The product version to be added to the user agent header
  *
  * Represents the options for the UserAgentHandler.
  */
 export interface UserAgentHandlerOptionsParams {
 	/**
-	 * @member
 	 * @default true
 	 * Specifies whether to add the user agent header to the request
 	 */
 	enable?: boolean;
 	/**
-	 * @member
 	 * @default "kiota-typescript"
 	 * The product name to be added to the user agent header
 	 */
 	productName?: string;
 	/**
-	 * @member
 	 * @default "1.0.0-preview.12"
 	 * The product version to be added to the user agent header
 	 */
@@ -45,20 +37,17 @@ export interface UserAgentHandlerOptionsParams {
  */
 export class UserAgentHandlerOptions implements RequestOption {
 	/**
-	 * @member
 	 * Specifies whether to add the user agent header to the request
 	 */
 	public enable: boolean;
 
 	/**
-	 * @member
 	 * @default "kiota-typescript"
 	 * The product name to be added to the user agent header
 	 */
 	public productName: string;
 
 	/**
-	 * @member
 	 * The product version to be added to the user agent header
 	 */
 	public productVersion: string;
@@ -68,10 +57,9 @@ export class UserAgentHandlerOptions implements RequestOption {
 	}
 
 	/**
-	 * @public
-	 * @constructor
+	 *
 	 * To create an instance of UserAgentHandlerOptions
-	 * @param {UserAgentHandlerOptionsParams} [options = {}] - The options for the UserAgentHandler
+	 * @param [options] - The options for the UserAgentHandler
 	 * @example	const options = new UserAgentHandlerOptions({ enable: false });
 	 */
 	public constructor(options: Partial<UserAgentHandlerOptionsParams> = {}) {

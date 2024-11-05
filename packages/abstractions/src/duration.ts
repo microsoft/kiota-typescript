@@ -12,6 +12,15 @@ import { parse as parseDuration, serialize as serializeDuration } from "tinydura
 export class Duration implements DurationInterface {
 	/**
 	 * Creates a new Duration value from the given parameters.
+	 * @param root0 The years, months, weeks, days, hours, minutes, seconds, and negative flag
+	 * @param root0.years The years
+	 * @param root0.months The months
+	 * @param root0.weeks The weeks
+	 * @param root0.days The days
+	 * @param root0.hours The hours
+	 * @param root0.minutes The minutes
+	 * @param root0.seconds The seconds
+	 * @param root0.negative The negative flag
 	 * @returns The new Duration
 	 * @throws An error if years is invalid
 	 * @throws An error if months is invalid

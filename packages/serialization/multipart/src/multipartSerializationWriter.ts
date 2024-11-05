@@ -12,10 +12,9 @@ import type { Guid } from "guid-typescript";
 /** Serialization writer for multipart/form-data */
 export class MultipartSerializationWriter implements SerializationWriter {
 	public writeByteArrayValue(
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		key?: string | undefined,
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		value?: ArrayBuffer | undefined,
+		key?: string,
+
+		value?: ArrayBuffer,
 	): void {
 		if (!value) {
 			throw new Error("value cannot be undefined");
@@ -41,7 +40,7 @@ export class MultipartSerializationWriter implements SerializationWriter {
 			this.writeRawStringValue(value);
 		}
 	};
-	private writeRawStringValue = (value?: string | null): void => {
+	private readonly writeRawStringValue = (value?: string | null): void => {
 		if (value) {
 			this.writeByteArrayValue(undefined, new TextEncoder().encode(value).buffer);
 		}
@@ -79,17 +78,15 @@ export class MultipartSerializationWriter implements SerializationWriter {
 		throw new Error(`serialization of null values is not supported with multipart`);
 	};
 	public writeCollectionOfPrimitiveValues = <T>(
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_key?: string,
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 		_values?: T[] | null,
 	): void => {
 		throw new Error(`serialization of collections is not supported with multipart`);
 	};
 	public writeCollectionOfObjectValues = <T extends Parsable>(
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_key?: string,
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 		_values?: T[] | null,
 	): void => {
 		throw new Error(`serialization of collections is not supported with multipart`);
@@ -111,7 +108,7 @@ export class MultipartSerializationWriter implements SerializationWriter {
 	};
 	public writeEnumValue = <T>(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		key?: string | undefined,
+		key?: string,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		...values: (T | null | undefined)[]
 	): void => {

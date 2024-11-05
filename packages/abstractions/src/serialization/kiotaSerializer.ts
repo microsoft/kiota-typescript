@@ -38,7 +38,7 @@ export function serializeToString<T extends Parsable>(contentType: string, value
 /**
  * Serializes a collection of parsable objects into a buffer
  * @param contentType the content type to serialize to
- * @param value the value to serialize
+ * @param values the value to serialize
  * @param serializationFunction the serialization function for the model type
  * @returns a string representing the serialized value
  */
@@ -51,7 +51,7 @@ export function serializeCollection<T extends Parsable>(contentType: string, val
 /**
  * Serializes a collection of parsable objects into a string representation
  * @param contentType the content type to serialize to
- * @param value the value to serialize
+ * @param values the value to serialize
  * @param serializationFunction the serialization function for the model type
  * @returns a string representing the serialized value
  */
@@ -60,6 +60,13 @@ export function serializeCollectionToString<T extends Parsable>(contentType: str
 	return getStringValueFromBuffer(buffer);
 }
 
+/**
+ * Gets a serialization writer for a given content type
+ * @param contentType the content type to serialize to
+ * @param value the value to serialize
+ * @param serializationFunction the serialization function for the model type
+ * @returns the serialization writer for the given content type
+ */
 function getSerializationWriter(contentType: string, value: unknown, serializationFunction: unknown): SerializationWriter {
 	if (!contentType) {
 		throw new Error("content type cannot be undefined or empty");
@@ -73,6 +80,11 @@ function getSerializationWriter(contentType: string, value: unknown, serializati
 	return SerializationWriterFactoryRegistry.defaultInstance.getSerializationWriter(contentType);
 }
 
+/**
+ * Gets a string value from a buffer
+ * @param buffer the buffer to get a string from
+ * @returns the string representation of the buffer
+ */
 function getStringValueFromBuffer(buffer: ArrayBuffer): string {
 	const decoder = new TextDecoder();
 	return decoder.decode(buffer);
@@ -92,6 +104,13 @@ export function deserialize<T extends Parsable>(contentType: string, bufferOrStr
 	const reader = getParseNode(contentType, bufferOrString, factory);
 	return reader.getObjectValue(factory);
 }
+/**
+ * Deserializes a buffer into a parsable object
+ * @param contentType the content type to serialize to
+ * @param buffer the value to deserialize
+ * @param factory the factory for the model type
+ * @returns the deserialized parsable object
+ */
 function getParseNode(contentType: string, buffer: ArrayBuffer, factory: unknown): ParseNode {
 	if (!contentType) {
 		throw new Error("content type cannot be undefined or empty");
@@ -119,6 +138,11 @@ export function deserializeCollection<T extends Parsable>(contentType: string, b
 	return reader.getCollectionOfObjectValues(factory);
 }
 
+/**
+ * Deserializes a buffer into a a collection of parsable object
+ * @param value the string to get a buffer from
+ * @returns the ArrayBuffer representation of the string
+ */
 function getBufferFromString(value: string): ArrayBuffer {
 	const encoder = new TextEncoder();
 	return encoder.encode(value).buffer;

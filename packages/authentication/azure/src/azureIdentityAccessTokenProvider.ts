@@ -14,7 +14,6 @@ import { type ObservabilityOptions, ObservabilityOptionsImpl } from "./observabi
 /** Access token provider that leverages the Azure Identity library to retrieve an access token. */
 export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
 	/**
-	 *@constructor
 	 *@param credentials The tokenCredential implementation to use for authentication.
 	 *@param scopes The scopes to use for authentication.
 	 *@param options The options to use for authentication.
@@ -55,7 +54,7 @@ export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
 			}
 		});
 	};
-	private getAuthorizationTokenInternal = async (url?: string, additionalAuthenticationContext?: Record<string, unknown>, span?: Span): Promise<string> => {
+	private readonly getAuthorizationTokenInternal = async (url?: string, additionalAuthenticationContext?: Record<string, unknown>, span?: Span): Promise<string> => {
 		if (!url || !this.allowedHostsValidator.isUrlHostValid(url)) {
 			span?.setAttribute("com.microsoft.kiota.authentication.is_url_valid", false);
 			return "";
@@ -63,7 +62,7 @@ export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
 		validateProtocol(url);
 		span?.setAttribute("com.microsoft.kiota.authentication.is_url_valid", true);
 		let decodedClaims = "";
-		if (additionalAuthenticationContext && additionalAuthenticationContext[AzureIdentityAccessTokenProvider.claimsKey]) {
+		if (additionalAuthenticationContext?.[AzureIdentityAccessTokenProvider.claimsKey]) {
 			const rawClaims = additionalAuthenticationContext[AzureIdentityAccessTokenProvider.claimsKey] as string;
 			decodedClaims = inNodeEnv() ? Buffer.from(rawClaims, "base64").toString() : atob(rawClaims);
 		}
@@ -81,7 +80,7 @@ export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
 		const result = await this.credentials.getToken(this.scopes, localOptions);
 		return result?.token ?? "";
 	};
-	private getSchemeAndHostFromUrl = (url: string): string[] => {
+	private readonly getSchemeAndHostFromUrl = (url: string): string[] => {
 		const urlParts = url.split("://");
 		if (urlParts.length === 0) {
 			// relative url
@@ -96,13 +95,13 @@ export class AzureIdentityAccessTokenProvider implements AccessTokenProvider {
 			throw new Error("invalid url");
 		}
 	};
-	private getSchemeFromLocation = (): string => {
+	private readonly getSchemeFromLocation = (): string => {
 		if (!inNodeEnv()) {
 			return window.location.protocol.replace(":", "");
 		}
 		return "";
 	};
-	private getHostFromLocation = (): string => {
+	private readonly getHostFromLocation = (): string => {
 		if (!inNodeEnv()) {
 			return window.location.host;
 		}

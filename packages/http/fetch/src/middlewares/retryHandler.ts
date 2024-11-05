@@ -19,50 +19,42 @@ import { type Middleware } from "./middleware";
 import { RetryHandlerOptionKey, RetryHandlerOptions } from "./options/retryHandlerOptions";
 
 /**
- * @class
- * @implements Middleware
+ * Middleware
  * Class for RetryHandler
  */
 export class RetryHandler implements Middleware {
 	/**
-	 * @private
-	 * @static
 	 * A list of status codes that needs to be retried
 	 */
-	private static RETRY_STATUS_CODES: Set<number> = new Set([
+	private static readonly RETRY_STATUS_CODES = new Set<number>([
 		429, // Too many requests
 		503, // Service unavailable
 		504, // Gateway timeout
 	]);
 
 	/**
-	 * @private
-	 * @static
 	 * A member holding the name of retry attempt header
 	 */
-	private static RETRY_ATTEMPT_HEADER = "Retry-Attempt";
+	private static readonly RETRY_ATTEMPT_HEADER = "Retry-Attempt";
 
 	/**
-	 * @private
-	 * @static
 	 * A member holding the name of retry after header
 	 */
-	private static RETRY_AFTER_HEADER = "Retry-After";
+	private static readonly RETRY_AFTER_HEADER = "Retry-After";
 
 	/**
-	 * @private
+	 *
 	 * The next middleware in the middleware chain
 	 */
 	next: Middleware | undefined;
 
 	/**
-	 * @public
-	 * @constructor
+	 *
 	 * To create an instance of RetryHandler
-	 * @param {RetryHandlerOptions} [options = new RetryHandlerOptions()] - The retry handler options value
+	 * @param [options] - The retry handler options value
 	 * @returns An instance of RetryHandler
 	 */
-	public constructor(private options: RetryHandlerOptions = new RetryHandlerOptions()) {
+	public constructor(private readonly options: RetryHandlerOptions = new RetryHandlerOptions()) {
 		if (!options) {
 			throw new Error("The options parameter is required.");
 		}
@@ -70,9 +62,9 @@ export class RetryHandler implements Middleware {
 
 	/**
 	 *
-	 * @private
+	 *
 	 * To check whether the response has the retry status code
-	 * @param {Response} response - The response object
+	 * @param response - The response object
 	 * @returns Whether the response has retry status code or not
 	 */
 	private isRetry(response: FetchResponse): boolean {
@@ -80,9 +72,9 @@ export class RetryHandler implements Middleware {
 	}
 
 	/**
-	 * @private
+	 *
 	 * To check whether the payload is buffered or not
-	 * @param {RequestInit} options - The options of a request
+	 * @param options - The options of a request
 	 * @returns Whether the payload is buffered or not
 	 */
 	private isBuffered(options: FetchRequestInit): boolean {
@@ -98,11 +90,11 @@ export class RetryHandler implements Middleware {
 	}
 
 	/**
-	 * @private
+	 *
 	 * To get the delay for a retry
-	 * @param {Response} response - The response object
-	 * @param {number} retryAttempts - The current attempt count
-	 * @param {number} delay - The delay value in seconds
+	 * @param response - The response object
+	 * @param retryAttempts - The current attempt count
+	 * @param delay - The delay value in seconds
 	 * @returns A delay for a retry
 	 */
 	private getDelay(response: FetchResponse, retryAttempts: number, delay: number): number {
@@ -125,9 +117,9 @@ export class RetryHandler implements Middleware {
 	}
 
 	/**
-	 * @private
+	 *
 	 * To get an exponential back off value
-	 * @param {number} attempts - The current attempt count
+	 * @param attempts - The current attempt count
 	 * @returns An exponential back off value
 	 */
 	private getExponentialBackOffTime(attempts: number): number {
@@ -135,11 +127,9 @@ export class RetryHandler implements Middleware {
 	}
 
 	/**
-	 * @private
-	 * @async
 	 * To add delay for the execution
-	 * @param {number} delaySeconds - The delay value in seconds
-	 * @returns Nothing
+	 * @param delaySeconds - The delay value in seconds
+	 * @returns A Promise that resolves to nothing
 	 */
 	private async sleep(delaySeconds: number): Promise<void> {
 		const delayMilliseconds = delaySeconds * 1000;
@@ -147,14 +137,13 @@ export class RetryHandler implements Middleware {
 	}
 
 	/**
-	 * @private
-	 * @async
 	 * To execute the middleware with retries
-	 * @param {Context} context - The context object
-	 * @param {number} retryAttempts - The current attempt count
-	 * @param {Record<string, RequestOption>} [requestOptions = {}] - The request options
-	 * @param {RetryHandlerOptions} currentOptions - The retry middleware options instance
-	 * @param {string} tracerName - The name to use for the tracer
+	 * @param url - The request url
+	 * @param fetchRequestInit - The request options
+	 * @param retryAttempts - The current attempt count
+	 * @param currentOptions - The current request options for the retry handler.
+	 * @param requestOptions - The retry middleware options instance
+	 * @param tracerName - The name to use for the tracer
 	 * @returns A Promise that resolves to nothing
 	 */
 	private async executeWithRetry(url: string, fetchRequestInit: FetchRequestInit, retryAttempts: number, currentOptions: RetryHandlerOptions, requestOptions?: Record<string, RequestOption>, tracerName?: string): Promise<FetchResponse> {
@@ -192,17 +181,17 @@ export class RetryHandler implements Middleware {
 	}
 
 	/**
-	 * @public
-	 * @async
 	 * To execute the current middleware
-	 * @param {Context} context - The context object of the request
+	 * @param url - The request url
+	 * @param requestInit - The request options
+	 * @param requestOptions - The request options
 	 * @returns A Promise that resolves to nothing
 	 */
 	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		const retryAttempts = 0;
 
 		let currentOptions = this.options;
-		if (requestOptions && requestOptions[RetryHandlerOptionKey]) {
+		if (requestOptions?.[RetryHandlerOptionKey]) {
 			currentOptions = requestOptions[RetryHandlerOptionKey] as RetryHandlerOptions;
 		}
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);

@@ -6,6 +6,11 @@
  */
 import { Guid } from "guid-typescript";
 
+/**
+ * Parses a string into a Guid object.
+ * @param source The source string.
+ * @returns The Guid object.
+ */
 export function parseGuidString(source?: string): Guid | undefined {
 	if (source && Guid.isGuid(source)) {
 		return Guid.parse(source);

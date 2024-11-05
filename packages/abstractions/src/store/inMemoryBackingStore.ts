@@ -46,7 +46,6 @@ export class InMemoryBackingStore implements BackingStore {
 	public enumerate(): storeEntry[] {
 		let filterableArray = [...this.store.entries()];
 		if (this.returnOnlyChangedValues) {
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			filterableArray = filterableArray.filter(([_, v]) => v.changed);
 		}
 		return filterableArray.map(([key, value]) => {

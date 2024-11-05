@@ -15,25 +15,23 @@ import type { TimeOnly } from "./timeOnly";
 export interface RequestAdapter {
 	/**
 	 * Gets the serialization writer factory currently in use for the HTTP core service.
-	 * @return the serialization writer factory currently in use for the HTTP core service.
+	 * @returns the serialization writer factory currently in use for the HTTP core service.
 	 */
 	getSerializationWriterFactory(): SerializationWriterFactory;
 	/**
 	 * Executes the HTTP request specified by the given RequestInformation and returns the deserialized response model.
 	 * @param requestInfo the request info to execute.
-	 * @param errorMappings the error factories mapping to use in case of a failed request.
 	 * @param type the class of the response model to deserialize the response into.
-	 * @typeParam ModelType the type of the response model to deserialize the response into.
-	 * @return a {@link Promise} with the deserialized response model.
+	 * @param errorMappings the error factories mapping to use in case of a failed request.
+	 * @returns a {@link Promise} with the deserialized response model.
 	 */
 	send<ModelType extends Parsable>(requestInfo: RequestInformation, type: ParsableFactory<ModelType>, errorMappings: ErrorMappings | undefined): Promise<ModelType | undefined>;
 	/**
 	 * Executes the HTTP request specified by the given RequestInformation and returns the deserialized response model collection.
 	 * @param requestInfo the request info to execute.
-	 * @param errorMappings the error factories mapping to use in case of a failed request.
 	 * @param type the class of the response model to deserialize the response into.
-	 * @typeParam ModelType the type of the response model to deserialize the response into.
-	 * @return a {@link Promise} with the deserialized response model collection.
+	 * @param errorMappings the error factories mapping to use in case of a failed request.
+	 * @returns a {@link Promise} with the deserialized response model collection.
 	 */
 	sendCollection<ModelType extends Parsable>(requestInfo: RequestInformation, type: ParsableFactory<ModelType>, errorMappings: ErrorMappings | undefined): Promise<ModelType[] | undefined>;
 	/**
@@ -41,45 +39,40 @@ export interface RequestAdapter {
 	 * @param requestInfo the request info to execute.
 	 * @param responseType the class of the response model to deserialize the response into.
 	 * @param errorMappings the error factories mapping to use in case of a failed request.
-	 * @param type the class of the response model to deserialize the response into.
-	 * @typeParam ResponseType the type of the response model to deserialize the response into.
-	 * @return a {@link Promise} with the deserialized response model collection.
+	 * @returns a {@link Promise} with the deserialized response model collection.
 	 */
 	sendCollectionOfPrimitive<ResponseType extends Exclude<PrimitiveTypesForDeserializationType, ArrayBuffer>>(requestInfo: RequestInformation, responseType: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">, errorMappings: ErrorMappings | undefined): Promise<ResponseType[] | undefined>;
 	/**
 	 * Executes the HTTP request specified by the given RequestInformation and returns the deserialized primitive response model.
 	 * @param requestInfo the request info to execute.
-	 * @param errorMappings the error factories mapping to use in case of a failed request.
 	 * @param responseType the class of the response model to deserialize the response into.
-	 * @typeParam ResponseType the type of the response model to deserialize the response into.
-	 * @return a {@link Promise} with the deserialized primitive response model.
+	 * @param errorMappings the error factories mapping to use in case of a failed request.
+	 * @returns a {@link Promise} with the deserialized primitive response model.
 	 */
 	sendPrimitive<ResponseType extends PrimitiveTypesForDeserializationType>(requestInfo: RequestInformation, responseType: PrimitiveTypesForDeserialization, errorMappings: ErrorMappings | undefined): Promise<ResponseType | undefined>;
 	/**
 	 * Executes the HTTP request specified by the given RequestInformation and returns the deserialized primitive response model.
 	 * @param requestInfo the request info to execute.
 	 * @param errorMappings the error factories mapping to use in case of a failed request.
-	 * @return a {@link Promise} of void.
+	 * @returns a {@link Promise} of void.
 	 */
 	sendNoResponseContent(requestInfo: RequestInformation, errorMappings: ErrorMappings | undefined): Promise<void>;
 	/**
 	 * Executes the HTTP request specified by the given RequestInformation and returns the deserialized enum response model.
-	 *
 	 * @template EnumObject - The type of the enum object. Must extend Record<string, unknown>.
-	 * @param {RequestInformation} requestInfo - The request info to execute.
-	 * @param {EnumObject} enumObject - The Enum object expected in the response.
-	 * @param {ErrorMappings | undefined} errorMappings - the error factories mapping to use in case of a failed request.
-	 * @returns {Promise<EnumObject[keyof EnumObject] | undefined>} - A promise that resolves to the response of the request, or undefined if an error occurred.
+	 * @param requestInfo - The request info to execute.
+	 * @param enumObject - The Enum object expected in the response.
+	 * @param errorMappings - the error factories mapping to use in case of a failed request.
+	 * @returns A promise that resolves to the response of the request, or undefined if an error occurred.
 	 */
 	sendEnum<EnumObject extends Record<string, unknown>>(requestInfo: RequestInformation, enumObject: EnumObject, errorMappings: ErrorMappings | undefined): Promise<EnumObject[keyof EnumObject] | undefined>;
 	/**
 	 * Executes the HTTP request specified by the given RequestInformation and returns the deserialized response model collection.
-	 *
 	 * @template EnumObject - The type of the enum objects. Must extend Record<string, unknown>.
-	 * @param {RequestInformation} requestInfo - The request info to execute.
-	 * @param {EnumObject} enumObject - The Enum object expected in the response.
-	 * @param {ErrorMappings | undefined} errorMappings - the error factories mapping to use in case of a failed request.
-	 * @returns {Promise<EnumObject[keyof EnumObject][] | undefined>} - with the deserialized response model collection.
+	 * @param requestInfo - The request info to execute.
+	 * @param enumObject - The Enum object expected in the response.
+	 * @param errorMappings - the error factories mapping to use in case of a failed request.
+	 * @returns a promise with the deserialized response model collection.
 	 */
 	sendCollectionOfEnum<EnumObject extends Record<string, unknown>>(requestInfo: RequestInformation, enumObject: EnumObject, errorMappings: ErrorMappings | undefined): Promise<EnumObject[keyof EnumObject][] | undefined>;
 	/**
@@ -92,8 +85,7 @@ export interface RequestAdapter {
 	/**
 	 * Converts the given RequestInformation into a native HTTP request used by the implementing adapter.
 	 * @param requestInfo the request info to convert.
-	 * @typeParam T the type of the native request.
-	 * @return a {@link Promise} with the native request.
+	 * @returns a {@link Promise} with the native request.
 	 */
 	convertToNativeRequest<T>(requestInfo: RequestInformation): Promise<T>;
 }

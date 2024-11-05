@@ -21,16 +21,14 @@ import { UserAgentHandlerOptions, UserAgentHandlerOptionsKey } from "./options/u
 const USER_AGENT_HEADER_KEY = "User-Agent";
 export class UserAgentHandler implements Middleware {
 	/**
-	 * @public
-	 * @constructor
 	 * To create an instance of UserAgentHandler
-	 * @param {UserAgentHandlerOption} [options = new UserAgentHandlerOption()] - The options for the middleware
+	 * @param _options - The options for the middleware
 	 */
 	public constructor(private readonly _options: UserAgentHandlerOptions = new UserAgentHandlerOptions()) {}
 	/** @inheritdoc */
 	next: Middleware | undefined;
 	/** @inheritdoc */
-	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption> | undefined): Promise<Response> {
+	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
 		if (obsOptions) {
 			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("userAgentHandler - execute", (span) => {
@@ -45,19 +43,19 @@ export class UserAgentHandler implements Middleware {
 			return this.addValue(url, requestInit, requestOptions);
 		}
 	}
-	private async addValue(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption> | undefined): Promise<Response> {
+	private async addValue(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		let currentOptions = this._options;
-		if (requestOptions && requestOptions[UserAgentHandlerOptionsKey]) {
+		if (requestOptions?.[UserAgentHandlerOptionsKey]) {
 			currentOptions = requestOptions[UserAgentHandlerOptionsKey] as UserAgentHandlerOptions;
 		}
 		if (currentOptions.enable) {
 			const additionalValue = `${currentOptions.productName}/${currentOptions.productVersion}`;
 			const currentValue = getRequestHeader(requestInit as FetchRequestInit, USER_AGENT_HEADER_KEY);
-			if (!currentValue || currentValue.indexOf(additionalValue) === -1) {
+			if (!currentValue?.includes(additionalValue)) {
 				appendRequestHeader(requestInit as FetchRequestInit, USER_AGENT_HEADER_KEY, additionalValue, " ");
 			}
 		}
-		const response = await this.next?.execute(url, requestInit as RequestInit, requestOptions);
+		const response = await this.next?.execute(url, requestInit, requestOptions);
 		if (!response) throw new Error("No response returned by the next middleware");
 		return response;
 	}

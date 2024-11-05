@@ -12,14 +12,13 @@
 import type { Middleware } from "./middleware";
 
 /**
- * @class
- * @implements Middleware
+ * Middleware
  * Class for FetchHandler
  */
 
 export class CustomFetchHandler implements Middleware {
 	/**
-	 * @private
+	 *
 	 * The next middleware in the middleware chain
 	 */
 	next: Middleware | undefined;

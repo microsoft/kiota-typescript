@@ -10,7 +10,7 @@ import { DateOnly, Duration, isUntypedNode, type ModelSerializerFunction, type P
 import type { Guid } from "guid-typescript";
 
 export class JsonSerializationWriter implements SerializationWriter {
-	public writeByteArrayValue(key?: string | undefined, value?: ArrayBuffer | undefined): void {
+	public writeByteArrayValue(key?: string, value?: ArrayBuffer): void {
 		if (!value) {
 			throw new Error("value cannot be undefined");
 		}
@@ -18,8 +18,8 @@ export class JsonSerializationWriter implements SerializationWriter {
 		this.writeStringValue(key, b64);
 	}
 	private readonly writer: string[] = [];
-	private static propertySeparator = `,`;
-	private shouldWriteValueOrNull = <T>(key?: string, value?: T | null): boolean => {
+	private static readonly propertySeparator = `,`;
+	private readonly shouldWriteValueOrNull = <T>(key?: string, value?: T | null): boolean => {
 		if (value === null) {
 			this.writeNullValue(key);
 			return false;
@@ -40,7 +40,7 @@ export class JsonSerializationWriter implements SerializationWriter {
 			key && this.writer.push(JsonSerializationWriter.propertySeparator);
 		}
 	};
-	private writePropertyName = (key: string): void => {
+	private readonly writePropertyName = (key: string): void => {
 		this.writer.push(`"${key}":`);
 	};
 	public writeBooleanValue = (key?: string, value?: boolean | null): void => {
@@ -72,6 +72,7 @@ export class JsonSerializationWriter implements SerializationWriter {
 
 		if (this.shouldWriteValueOrNull(key, value)) {
 			key && this.writePropertyName(key);
+			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 			this.writer.push(`"${value}"`);
 			key && this.writer.push(JsonSerializationWriter.propertySeparator);
 		}
@@ -114,7 +115,7 @@ export class JsonSerializationWriter implements SerializationWriter {
 				this.writer.push(JsonSerializationWriter.propertySeparator);
 			});
 			if (values.length > 0) {
-				//removing the last separator
+				// removing the last separator
 				this.writer.pop();
 			}
 			this.endArray();
@@ -209,8 +210,9 @@ export class JsonSerializationWriter implements SerializationWriter {
 		}
 	};
 
-	public writeEnumValue = <T>(key?: string | undefined, ...values: (T | undefined | null)[]): void => {
+	public writeEnumValue = <T>(key?: string, ...values: (T | undefined | null)[]): void => {
 		if (values.length > 0) {
+			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 			const rawValues = values.filter((x) => x !== undefined).map((x) => `${x}`);
 			if (rawValues.length > 0) {
 				this.writeStringValue(
@@ -240,13 +242,14 @@ export class JsonSerializationWriter implements SerializationWriter {
 		}
 	};
 
-	private readonly writeNonParsableObjectValue = (key?: string | undefined, value?: object | undefined) => {
+	private readonly writeNonParsableObjectValue = (key?: string, value?: object) => {
 		if (key) {
 			this.writePropertyName(key);
 		}
 		this.writer.push(JSON.stringify(value), JsonSerializationWriter.propertySeparator);
 	};
-	private readonly writeAnyValue = (key?: string | undefined, value?: unknown | null | undefined): void => {
+	// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+	private readonly writeAnyValue = (key?: string, value?: unknown | null): void => {
 		if (value === undefined) {
 			return;
 		}

@@ -17,7 +17,7 @@ export interface UntypedBoolean extends UntypedNode {
 /**
  * Type guard to assert that an UntypedNode instance is an UntypedBoolean.
  * @param node The UntypedNode to check.
- * @return boolean indicating if the node is an UntypedBoolean.
+ * @returns boolean indicating if the node is an UntypedBoolean.
  */
 export function isUntypedBoolean(node: UntypedNode): node is UntypedBoolean {
 	const proposedNode = node as UntypedBoolean;
@@ -27,7 +27,7 @@ export function isUntypedBoolean(node: UntypedNode): node is UntypedBoolean {
 /**
  * Factory to create an UntypedBoolean from a boolean.
  * @param value The boolean value to create from.
- * @return The created UntypedBoolean.
+ * @returns The created UntypedBoolean.
  */
 export function createUntypedBoolean(value: boolean): UntypedBoolean {
 	return {

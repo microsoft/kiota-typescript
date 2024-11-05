@@ -10,7 +10,8 @@ import { createBackedModelProxyHandler, DateOnly, Duration, type Parsable, type 
 export class FormParseNode implements ParseNode {
 	private readonly _fields: Record<string, string> = {};
 	/**
-	 *
+	 *  Creates a new instance of FormParseNode
+	 * @param _rawString the raw string to parse
 	 */
 	constructor(private readonly _rawString: string) {
 		if (!_rawString) {
@@ -29,7 +30,7 @@ export class FormParseNode implements ParseNode {
 				}
 			});
 	}
-	private normalizeKey = (key: string): string => decodeURIComponent(key).trim();
+	private readonly normalizeKey = (key: string): string => decodeURIComponent(key).trim();
 	public getByteArrayValue(): ArrayBuffer | undefined {
 		throw new Error("serialization of byt arrays is not supported with URI encoding");
 	}
@@ -104,6 +105,7 @@ export class FormParseNode implements ParseNode {
 		if (!rawValues) {
 			return [];
 		}
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		return rawValues.split(",").map((x) => getEnumValueFromStringValue(x, type) as T);
 	};
 	public getEnumValue = <T>(type: any): T | undefined => {
@@ -113,7 +115,7 @@ export class FormParseNode implements ParseNode {
 		}
 		return getEnumValueFromStringValue(rawValue, type as Record<PropertyKey, PropertyKey>) as T;
 	};
-	private assignFieldValues = <T extends Parsable>(model: T, parsableFactory: ParsableFactory<T>): void => {
+	private readonly assignFieldValues = <T extends Parsable>(model: T, parsableFactory: ParsableFactory<T>): void => {
 		const fields = parsableFactory(this)(model);
 		Object.entries(this._fields)
 			.filter((x) => !/^null$/i.test(x[1]))

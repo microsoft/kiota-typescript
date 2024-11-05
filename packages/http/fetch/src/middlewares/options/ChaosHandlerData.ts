@@ -8,7 +8,7 @@
 /**
  * Contains RequestMethod to corresponding array of possible status codes, used for Random mode
  */
-export const methodStatusCode: { [key: string]: number[] } = {
+export const methodStatusCode: Record<string, number[]> = {
 	GET: [429, 500, 502, 503, 504],
 	POST: [429, 500, 502, 503, 504, 507],
 	PUT: [429, 500, 502, 503, 504, 507],
@@ -19,7 +19,7 @@ export const methodStatusCode: { [key: string]: number[] } = {
 /**
  * Contains statusCode to statusMessage map
  */
-export const httpStatusCode: { [key: number]: string } = {
+export const httpStatusCode: Record<number, string> = {
 	100: "Continue",
 	101: "Switching Protocols",
 	102: "Processing",

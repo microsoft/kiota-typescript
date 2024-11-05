@@ -12,10 +12,9 @@ import type { FetchRequestInit } from "./fetchDefinitions";
  */
 
 /**
- * @constant
  * To get the request header from the request
- * @param {FetchOptions|undefined} options - The request options object
- * @param {string} key - The header key string
+ * @param options - The request options object
+ * @param key - The header key string
  * @returns A header value for the given key from the request
  */
 export const getRequestHeader = (options: FetchRequestInit | undefined, key: string): string | undefined => {
@@ -26,12 +25,10 @@ export const getRequestHeader = (options: FetchRequestInit | undefined, key: str
 };
 
 /**
- * @constant
  * To set the header value to the given request
- * @param {FetchOptions|undefined} options - The request options object
- * @param {string} key - The header key string
- * @param {string } value - The header value string
- * @returns Nothing
+ * @param options - The request options object
+ * @param key - The header key string
+ * @param value - The header value string
  */
 export const setRequestHeader = (options: FetchRequestInit | undefined, key: string, value: string): void => {
 	if (options) {
@@ -43,11 +40,9 @@ export const setRequestHeader = (options: FetchRequestInit | undefined, key: str
 };
 
 /**
- * @constant
  * To delete the header key to the given request
- * @param {FetchOptions|undefined} options - The request options object
- * @param {string} key - The header key string
- * @returns Nothing
+ * @param options - The request options object
+ * @param key - The header key string
  */
 export const deleteRequestHeader = (options: FetchRequestInit | undefined, key: string): void => {
 	if (options) {
@@ -59,13 +54,11 @@ export const deleteRequestHeader = (options: FetchRequestInit | undefined, key: 
 };
 
 /**
- * @constant
  * To append the header value to the given request
- * @param {FetchOptions|undefined} options - The request options object
- * @param {string} key - The header key string
- * @param {string } value - The header value string
- * @param {string} separator - The separator string
- * @returns Nothing
+ * @param options - The request options object
+ * @param key - The header key string
+ * @param value - The header value string
+ * @param separator - The separator string
  */
 export const appendRequestHeader = (options: FetchRequestInit | undefined, key: string, value: string, separator = ", "): void => {
 	if (options) {

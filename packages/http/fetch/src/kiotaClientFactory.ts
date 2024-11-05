@@ -9,17 +9,15 @@ import { Middleware, MiddlewareFactory } from ".";
 import { HttpClient } from "./httpClient";
 
 /**
- * @class
+ *
  * Class containing function(s) related to the middleware pipelines.
  */
 export class KiotaClientFactory {
 	/**
-	 * @public
-	 * @static
 	 * Returns an instance of HttpClient with the provided middlewares and custom fetch implementation both parameters are optional.
 	 * if not provided, the default fetch implementation and middlewares will be used.
-	 * @param {(request: string, init?: RequestInit) => Promise < Response >} customFetch - a Fetch API implementation
-	 * @param {Middleware[]} middlewares - an aray of Middleware handlers
+	 * @param customFetch - a Fetch API implementation
+	 * @param middlewares - an aray of Middleware handlers
 	 * If middlewares param is undefined, the httpClient instance will use the default array of middlewares.
 	 * Set middlewares to `null` if you do not wish to use middlewares.
 	 * If custom fetch is undefined, the httpClient instance uses the `DefaultFetchHandler`
@@ -45,6 +43,7 @@ export class KiotaClientFactory {
 	 * KiotaClientFactory.create();
 	 * ```
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	public static create(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args) as any, middlewares?: Middleware[]): HttpClient {
 		const middleware = middlewares || MiddlewareFactory.getDefaultMiddlewares(customFetch);
 		return new HttpClient(customFetch, ...middleware);

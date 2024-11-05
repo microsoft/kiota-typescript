@@ -1,3 +1,9 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 import type { RequestOption } from "@microsoft/kiota-abstractions";
 
 /** Holds the tracing, metrics and logging configuration for the request adapter */
@@ -28,6 +34,11 @@ export class ObservabilityOptionsImpl implements ObservabilityOptions, Observabi
 	}
 }
 
+/**
+ * Gets the observability options from the request options
+ * @param requestOptions The request options
+ * @returns The observability options
+ */
 export function getObservabilityOptionsFromRequest(requestOptions?: Record<string, RequestOption>): ObservabilityOptionsInternal | undefined {
 	if (requestOptions) {
 		const observabilityOptions = requestOptions[ObservabilityOptionKey];

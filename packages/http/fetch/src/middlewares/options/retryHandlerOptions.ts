@@ -14,77 +14,64 @@ import type { RequestOption } from "@microsoft/kiota-abstractions";
 import type { FetchResponse } from "../../utils/fetchDefinitions";
 
 /**
- * @type
+ *
  * A type declaration for shouldRetry callback
  */
 export type ShouldRetry = (delay: number, attempt: number, request: string, options: RequestInit | undefined, response: FetchResponse) => boolean;
 
 export const RetryHandlerOptionKey = "RetryHandlerOptionKey";
 /**
- * @interface
  * Signature to define the RetryHandlerOptions constructor parameters
  */
 export interface RetryHandlerOptionsParams {
 	/**
-	 * @member
 	 * The delay value in seconds
 	 * @default 3
 	 */
 	delay?: number;
 	/**
-	 * @member
 	 * The maxRetries value
 	 * @default 3
 	 */
 	maxRetries?: number;
 	/**
-	 * @member
 	 * The shouldRetry callback function
 	 */
 	shouldRetry?: ShouldRetry;
 }
 
 /**
- * @class
- * @implements RequestOption
+ * RequestOption
  * Options
  * Class for RetryHandlerOptions
  */
 
 export class RetryHandlerOptions implements RequestOption {
 	/**
-	 * @private
-	 * @static
 	 * A member holding default delay value in seconds
 	 */
-	private static DEFAULT_DELAY = 3;
+	private static readonly DEFAULT_DELAY = 3;
 
 	/**
-	 * @private
-	 * @static
 	 * A member holding default maxRetries value
 	 */
-	private static DEFAULT_MAX_RETRIES = 3;
+	private static readonly DEFAULT_MAX_RETRIES = 3;
 
 	/**
-	 * @private
-	 * @static
 	 * A member holding maximum delay value in seconds
 	 */
-	private static MAX_DELAY = 180;
+	private static readonly MAX_DELAY = 180;
 
 	/**
-	 * @private
-	 * @static
 	 * A member holding maximum maxRetries value
 	 */
-	private static MAX_MAX_RETRIES = 10;
+	private static readonly MAX_MAX_RETRIES = 10;
 
 	/**
-	 * @private
 	 * A member holding default shouldRetry callback
+	 * @returns true
 	 */
-	private static defaultShouldRetry: ShouldRetry = () => true;
+	private static readonly defaultShouldRetry: ShouldRetry = () => true;
 
 	/*
 	 * @public
@@ -93,22 +80,21 @@ export class RetryHandlerOptions implements RequestOption {
 	public delay: number;
 
 	/**
-	 * @public
+	 *
 	 * A member holding maxRetries value
 	 */
 	public maxRetries: number;
 
 	/**
-	 * @public
+	 *
 	 * A member holding shouldRetry callback
 	 */
 	public shouldRetry: ShouldRetry;
 
 	/**
-	 * @public
-	 * @constructor
+	 *
 	 * To create an instance of RetryHandlerOptions
-	 * @param {RetryHandlerOptionsParams} options - The RetryHandlerOptionsParams object
+	 * @param options - The RetryHandlerOptionsParams object
 	 * @returns An instance of RetryHandlerOptions
 	 * @example	const options = new RetryHandlerOptions({ maxRetries: 4 });
 	 */
@@ -131,10 +117,10 @@ export class RetryHandlerOptions implements RequestOption {
 	}
 
 	/**
-	 * @private
+	 *
 	 * Creates an error object with a message and name
-	 * @param {string} message - The error message
-	 * @param {string} name - The error name
+	 * @param message - The error message
+	 * @param name - The error name
 	 * @returns An error object
 	 */
 	private createError(message: string, name: string): Error {
@@ -144,7 +130,7 @@ export class RetryHandlerOptions implements RequestOption {
 	}
 
 	/**
-	 * @public
+	 *
 	 * To get the maximum delay
 	 * @returns A maximum delay
 	 */

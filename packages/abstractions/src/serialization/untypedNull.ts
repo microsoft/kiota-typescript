@@ -17,7 +17,7 @@ export interface UntypedNull extends UntypedNode {
 /**
  * Type guard to assert that an object instance is an UntypedNull.
  * @param node The object to check.
- * @return boolean indicating if the node is an UntypedNull.
+ * @returns boolean indicating if the node is an UntypedNull.
  */
 export function isUntypedNull(node: UntypedNode): node is UntypedNull {
 	return node.value === null;
@@ -25,7 +25,7 @@ export function isUntypedNull(node: UntypedNode): node is UntypedNull {
 
 /**
  * Factory to create an UntypedNull from a boolean.
- * @return The created UntypedNull.
+ * @returns The created UntypedNull.
  */
 export function createUntypedNull(): UntypedNull {
 	return {

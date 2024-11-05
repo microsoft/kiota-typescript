@@ -13,7 +13,6 @@ import { type ObservabilityOptions, ObservabilityOptionsImpl } from "./observabi
 
 export class AzureIdentityAuthenticationProvider extends BaseBearerTokenAuthenticationProvider {
 	/**
-	 *@constructor
 	 *@param credentials The tokenCredential implementation to use for authentication.
 	 *@param scopes The scopes to use for authentication.
 	 *@param options The options to use for authentication.

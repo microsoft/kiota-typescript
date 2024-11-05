@@ -17,7 +17,7 @@ export interface UntypedNumber extends UntypedNode {
 /**
  * Type guard to assert that an object instance is an UntypedNumber.
  * @param node The object to check.
- * @return boolean indicating if the node is an UntypedNumber.
+ * @returns boolean indicating if the node is an UntypedNumber.
  */
 export function isUntypedNumber(node: UntypedNode): node is UntypedNumber {
 	const proposedNode = node as UntypedNumber;
@@ -27,7 +27,7 @@ export function isUntypedNumber(node: UntypedNode): node is UntypedNumber {
 /**
  * Factory to create an UntypedNumber from a number.
  * @param value The number value to create from.
- * @return The created UntypedNumber.
+ * @returns The created UntypedNumber.
  */
 export function createUntypedNumber(value: number): UntypedNumber {
 	return {

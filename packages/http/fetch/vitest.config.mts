@@ -5,7 +5,7 @@ export default defineConfig({
     exclude: [...configDefaults.exclude, "**/*/{testUtils,dummyFetchHandler,testCallBackMiddleware,mockEntity,mockParseNodeFactory,index}.ts"],
     include: [...configDefaults.include, "test/**/*.ts"],
     coverage: {
-      reporter: ["html"],
+      reporter: ["html", "cobertura"],
     },
   },
 });

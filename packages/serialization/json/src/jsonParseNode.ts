@@ -72,7 +72,7 @@ export class JsonParseNode implements ParseNode {
 				value = createUntypedNumber(this._jsonNode as number) as unknown as T;
 			} else if (Array.isArray(this._jsonNode)) {
 				const nodes: UntypedNode[] = [];
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 				this._jsonNode.forEach((x) => {
 					nodes.push(new JsonParseNode(x).getObjectValue(createUntypedNodeFromDiscriminatorValue));
 				});
@@ -89,18 +89,18 @@ export class JsonParseNode implements ParseNode {
 			return value;
 		}
 		const enableBackingStore = isBackingStoreEnabled(parsableFactory(this)(temp));
-		const value: T = enableBackingStore ? new Proxy(temp, createBackedModelProxyHandler<T>()) : temp;
+		const objectValue: T = enableBackingStore ? new Proxy(temp, createBackedModelProxyHandler<T>()) : temp;
 		if (this.onBeforeAssignFieldValues) {
-			this.onBeforeAssignFieldValues(value);
+			this.onBeforeAssignFieldValues(objectValue);
 		}
-		this.assignFieldValues(value, parsableFactory);
+		this.assignFieldValues(objectValue, parsableFactory);
 		if (this.onAfterAssignFieldValues) {
-			this.onAfterAssignFieldValues(value);
+			this.onAfterAssignFieldValues(objectValue);
 		}
-		return value;
+		return objectValue;
 	};
 
-	private assignFieldValues = <T extends Parsable>(model: T, parsableFactory: ParsableFactory<T>): void => {
+	private readonly assignFieldValues = <T extends Parsable>(model: T, parsableFactory: ParsableFactory<T>): void => {
 		const fields = parsableFactory(this)(model);
 		if (!this._jsonNode) return;
 		Object.entries(this._jsonNode).forEach(([k, v]) => {

@@ -5,7 +5,7 @@ export default defineConfig({
     exclude: [...configDefaults.exclude, "**/mockAadTokenProvider.ts"],
     include: [...configDefaults.include, "test/**/*.ts"],
     coverage: {
-      reporter: ["html"],
+      reporter: ["html", "cobertura"],
     },
   },
 });
