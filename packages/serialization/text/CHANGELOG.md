@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.0-preview.74](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-text@1.0.0-preview.73...@microsoft/kiota-serialization-text@1.0.0-preview.74) (2024-11-07)
+
+
+### Bug Fixes
+
+* getting rid of unnecessary guid-typescript dependency ([ced60d1](https://github.com/microsoft/kiota-typescript/commit/ced60d1450d7fb8f774f02ffd2c24b44aa2f391a))
+* getting rid of unnecessary guid-typescript dependency ([706ce3c](https://github.com/microsoft/kiota-typescript/commit/706ce3caf2b617a1ae6e419e1b3b3c8a70ad5368))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.73 to ^1.0.0-preview.74
+
 ## [1.0.0-preview.73](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-text@1.0.0-preview.72...@microsoft/kiota-serialization-text@1.0.0-preview.73) (2024-11-05)
 
 
