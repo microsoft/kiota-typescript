@@ -36,7 +36,6 @@
 	"dependencies": {
 		"@microsoft/kiota-abstractions": "^1.0.0-preview.73",
 		"@opentelemetry/api": "^1.7.0",
-		"guid-typescript": "^1.0.9",
 		"tslib": "^2.6.2"
 	},
 	"publishConfig": {

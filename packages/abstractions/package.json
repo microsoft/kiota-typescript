@@ -36,7 +36,6 @@
 	"dependencies": {
 		"@opentelemetry/api": "^1.7.0",
 		"@std-uritemplate/std-uritemplate": "^1.0.1",
-		"guid-typescript": "^1.0.9",
 		"tinyduration": "^3.3.0",
 		"tslib": "^2.6.2",
 		"uuid": "^11.0.2"

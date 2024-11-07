@@ -18,7 +18,6 @@ import type { RequestConfiguration } from "./requestConfiguration";
 import type { RequestOption } from "./requestOption";
 import type { ModelSerializerFunction, Parsable, SerializationWriter } from "./serialization";
 import { TimeOnly } from "./timeOnly";
-import { Guid } from "guid-typescript";
 
 /** This class represents an abstract HTTP request. */
 export class RequestInformation implements RequestInformationSetContent {
@@ -241,7 +240,7 @@ export class RequestInformation implements RequestInformationSetContent {
 	};
 
 	private normalizeValue(value: unknown): unknown {
-		if (value instanceof Guid || value instanceof DateOnly || value instanceof TimeOnly) {
+		if (value instanceof DateOnly || value instanceof TimeOnly) {
 			return value.toString();
 		}
 		if (value instanceof Date) {
@@ -268,7 +267,7 @@ export class RequestInformation implements RequestInformationSetContent {
 				}
 			}
 			if (typeof v === "boolean" || typeof v === "number" || typeof v === "string" || Array.isArray(v)) this.queryParameters[key] = v;
-			else if (v instanceof Guid || v instanceof DateOnly || v instanceof TimeOnly) this.queryParameters[key] = v.toString();
+			else if (v instanceof DateOnly || v instanceof TimeOnly) this.queryParameters[key] = v.toString();
 			else if (v instanceof Date) this.queryParameters[key] = v.toISOString();
 			else if (v === undefined) this.queryParameters[key] = undefined;
 		});

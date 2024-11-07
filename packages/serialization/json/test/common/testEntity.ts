@@ -5,8 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import type { BackedModel, BackingStore, Parsable, ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
-import { Guid } from "guid-typescript";
+import type { BackedModel, BackingStore, Guid, Parsable, ParseNode, SerializationWriter } from "@microsoft/kiota-abstractions";
 
 const fakeBackingStore: BackingStore = {} as BackingStore;
 

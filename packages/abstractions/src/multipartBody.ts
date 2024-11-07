@@ -4,9 +4,9 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-import { Guid } from "guid-typescript";
 import type { RequestAdapter } from "./requestAdapter";
 import type { ModelSerializerFunction, Parsable, ParseNode, SerializationWriter } from "./serialization";
+import { createGuid } from "./utils/guidUtils";
 
 /**
  * Defines an interface for a multipart body for request or response.
@@ -19,7 +19,7 @@ export class MultipartBody implements Parsable {
 	 * Instantiates a new MultipartBody.
 	 */
 	public constructor() {
-		this._boundary = Guid.create().toString().replace(/-/g, "");
+		this._boundary = createGuid().replace(/-/g, "");
 	}
 	/**
 	 * Adds or replaces a part with the given name, content type and content.
