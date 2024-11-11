@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-preview.75](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.74...@microsoft/kiota-abstractions@1.0.0-preview.75) (2024-11-11)
+
+
+### Bug Fixes
+
+* removed export for guid part generation ([#1481](https://github.com/microsoft/kiota-typescript/issues/1481)) ([e13ebd7](https://github.com/microsoft/kiota-typescript/commit/e13ebd7d1650ac4bc13f4bf94fb23f10ae791e83))
+
 ## [1.0.0-preview.74](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.73...@microsoft/kiota-abstractions@1.0.0-preview.74) (2024-11-07)
 
 
