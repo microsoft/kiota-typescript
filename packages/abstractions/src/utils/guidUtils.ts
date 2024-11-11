@@ -31,7 +31,7 @@ export const createGuid = () => [gen(2), gen(1), gen(1), gen(1), gen(3)].join("-
  * @param count the number of 2 byte chunks to generate.
  * @returns a part of a GUID.
  */
-export const gen = (count: number) => {
+const gen = (count: number) => {
 	let out = "";
 	for (let i = 0; i < count; i++) {
 		// eslint-disable-next-line no-bitwise
