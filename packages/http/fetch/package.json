@@ -1,6 +1,6 @@
 {
 	"name": "@microsoft/kiota-http-fetchlibrary",
-	"version": "1.0.0-preview.74",
+	"version": "1.0.0-preview.75",
 	"description": "Kiota request adapter implementation with fetch",
 	"keywords": [
 		"Kiota",
@@ -34,7 +34,7 @@
 		"test": "npm run test:node && npm run test:browser"
 	},
 	"dependencies": {
-		"@microsoft/kiota-abstractions": "^1.0.0-preview.74",
+		"@microsoft/kiota-abstractions": "^1.0.0-preview.75",
 		"@opentelemetry/api": "^1.7.0",
 		"tslib": "^2.6.2"
 	},
