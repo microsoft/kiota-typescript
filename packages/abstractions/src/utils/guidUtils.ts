@@ -27,6 +27,12 @@ export const parseGuidString = (source?: string) => {
 export const createGuid = () => [gen(2), gen(1), gen(1), gen(1), gen(3)].join("-");
 
 /**
+ * Generates a empty GUID.
+ * @returns a empty GUID.
+ */
+export const createEmptyGuid = () => "00000000-0000-0000-0000-000000000000";
+
+/**
  * Generates a part of a GUID.
  * @param count the number of 2 byte chunks to generate.
  * @returns a part of a GUID.
