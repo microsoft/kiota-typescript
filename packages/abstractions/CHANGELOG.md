@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-preview.76](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.75...@microsoft/kiota-abstractions@1.0.0-preview.76) (2024-11-21)
+
+
+### Features
+
+* **abstractions:** create empty guid ([ebc1e39](https://github.com/microsoft/kiota-typescript/commit/ebc1e3999d2e9ff98a540c1b62dd314cf530bd9d))
+
 ## [1.0.0-preview.75](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.74...@microsoft/kiota-abstractions@1.0.0-preview.75) (2024-11-11)
 
 

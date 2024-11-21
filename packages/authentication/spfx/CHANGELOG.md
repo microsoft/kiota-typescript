@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.76](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-authentication-spfx@1.0.0-preview.75...@microsoft/kiota-authentication-spfx@1.0.0-preview.76) (2024-11-21)
+
+
+### Miscellaneous Chores
+
+* **@microsoft/kiota-authentication-spfx:** Synchronize microsoft-kiota versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.75 to ^1.0.0-preview.76
+
 ## [1.0.0-preview.75](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-authentication-spfx@1.0.0-preview.74...@microsoft/kiota-authentication-spfx@1.0.0-preview.75) (2024-11-11)
 
 
