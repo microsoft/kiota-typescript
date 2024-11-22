@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.0.0-preview.77](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-bundle@1.0.0-preview.76...@microsoft/kiota-bundle@1.0.0-preview.77) (2024-11-22)
+
+
+### Miscellaneous Chores
+
+* **@microsoft/kiota-bundle:** Synchronize microsoft-kiota versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.76 to ^1.0.0-preview.77
+    * @microsoft/kiota-http-fetchlibrary bumped from ^1.0.0-preview.76 to ^1.0.0-preview.77
+    * @microsoft/kiota-serialization-form bumped from ^1.0.0-preview.76 to ^1.0.0-preview.77
+    * @microsoft/kiota-serialization-json bumped from ^1.0.0-preview.76 to ^1.0.0-preview.77
+    * @microsoft/kiota-serialization-multipart bumped from ^1.0.0-preview.76 to ^1.0.0-preview.77
+    * @microsoft/kiota-serialization-text bumped from ^1.0.0-preview.76 to ^1.0.0-preview.77
+
 ## [1.0.0-preview.76](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-bundle@1.0.0-preview.75...@microsoft/kiota-bundle@1.0.0-preview.76) (2024-11-21)
 
 
