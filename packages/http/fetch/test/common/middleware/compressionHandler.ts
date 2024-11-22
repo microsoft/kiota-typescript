@@ -5,7 +5,6 @@ import { CompressionHandler } from "../../../src/middlewares/compressionHandler"
 const defaultOptions = new CompressionHandlerOptions();
 
 import { assert, describe, it, expect, beforeEach, vi } from "vitest";
-import { inNodeEnv } from "@microsoft/kiota-abstractions";
 
 describe("CompressionHandler", () => {
 	let compressionHandler: CompressionHandler;
@@ -63,7 +62,7 @@ describe("CompressionHandler", () => {
 
 		expect((requestInit.headers as Record<string, string>)["Content-Encoding"]).toBe("gzip");
 		const compressedBody = requestInit.body as unknown as ArrayBuffer;
-		const decompressedBody = inNodeEnv() ? await decompressUsingZlib(compressedBody) : await decompressUsingDecompressionStream(compressedBody);
+		const decompressedBody = await decompressUsingDecompressionStream(compressedBody);
 		expect(decompressedBody).toBe(requestBody);
 	});
 
@@ -102,28 +101,6 @@ describe("CompressionHandler", () => {
 		expect(response).toBeInstanceOf(Response);
 	});
 });
-
-// helper function to decompress ArrayBuffer using zlib
-async function decompressUsingZlib(arrayBuffer: ArrayBuffer): Promise<string> {
-	return new Promise(async (resolve, reject) => {
-		// @ts-ignore
-		const zlib = await import("zlib");
-		// Convert the ArrayBuffer to a Node.js Buffer
-		const buffer = Buffer.from(arrayBuffer);
-		console.log(buffer);
-
-		// Decompress the buffer
-		zlib.gunzip(buffer, (err, decompressedBuffer) => {
-			if (err) {
-				console.error(err);
-				return reject(err);
-			}
-			// Convert the decompressed Buffer to a string and resolve the promise
-			console.log("decompressed " + decompressedBuffer.toString());
-			resolve(decompressedBuffer.toString("utf-8"));
-		});
-	});
-}
 
 // helper function to convert ArrayBuffer to string using DecompressionStream
 async function decompressUsingDecompressionStream(compressedArrayBuffer: ArrayBuffer): Promise<string> {
