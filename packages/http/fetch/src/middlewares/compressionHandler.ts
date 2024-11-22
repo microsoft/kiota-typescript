@@ -169,37 +169,12 @@ export class CompressionHandler implements Middleware {
 		compressedBody: ArrayBuffer | Buffer;
 		size: number;
 	}> {
-		if (!inNodeEnv()) {
-			// in browser
-			const compressionData = this.readBodyAsBytes(body);
-			const compressedBody = await this.compressUsingCompressionStream(compressionData.stream);
-			return {
-				compressedBody: compressedBody.body,
-				size: compressedBody.size,
-			};
-		} else {
-			// In Node.js
-			const compressedBody = await this.compressUsingZlib(body);
-			return {
-				compressedBody,
-				size: compressedBody.length,
-			};
-		}
-	}
-
-	private async compressUsingZlib(body: unknown): Promise<Buffer> {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
-		const zlib = await import("zlib");
-		return await new Promise((resolve, reject) => {
-			zlib.gzip(body as string | ArrayBuffer | NodeJS.ArrayBufferView, (err, compressed) => {
-				if (err) {
-					reject(err);
-				} else {
-					resolve(compressed);
-				}
-			});
-		});
+		const compressionData = this.readBodyAsBytes(body);
+		const compressedBody = await this.compressUsingCompressionStream(compressionData.stream);
+		return {
+			compressedBody: compressedBody.body,
+			size: compressedBody.size,
+		};
 	}
 
 	private async compressUsingCompressionStream(uint8ArrayStream: ReadableStream<Uint8Array>): Promise<{ body: ArrayBuffer; size: number }> {
