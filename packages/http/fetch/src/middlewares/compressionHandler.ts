@@ -169,7 +169,6 @@ export class CompressionHandler implements Middleware {
 		compressedBody: ArrayBuffer | Buffer;
 		size: number;
 	}> {
-		// in browser
 		const compressionData = this.readBodyAsBytes(body);
 		const compressedBody = await this.compressUsingCompressionStream(compressionData.stream);
 		return {
