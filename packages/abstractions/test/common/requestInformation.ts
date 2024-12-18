@@ -25,8 +25,7 @@ interface GetQueryParameters {
 	endTime?: TimeOnly;
 	endDate?: DateOnly;
 	timeStamp?: Date;
-  time?: TimeOnly;
-  duration?: Duration;
+	duration?: Duration;
 }
 
 const getQueryParameterMapper: Record<string, string> = {
