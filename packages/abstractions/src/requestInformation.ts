@@ -240,7 +240,7 @@ export class RequestInformation implements RequestInformationSetContent {
 	};
 
 	private normalizeValue(value: unknown): unknown {
-		if (value instanceof DateOnly || value instanceof TimeOnly) {
+		if (value instanceof DateOnly || value instanceof TimeOnly || value instanceof Duration) {
 			return value.toString();
 		}
 		if (value instanceof Date) {
@@ -267,7 +267,7 @@ export class RequestInformation implements RequestInformationSetContent {
 				}
 			}
 			if (typeof v === "boolean" || typeof v === "number" || typeof v === "string" || Array.isArray(v)) this.queryParameters[key] = v;
-			else if (v instanceof DateOnly || v instanceof TimeOnly) this.queryParameters[key] = v.toString();
+			else if (v instanceof DateOnly || v instanceof TimeOnly || v instanceof Duration) this.queryParameters[key] = v.toString();
 			else if (v instanceof Date) this.queryParameters[key] = v.toISOString();
 			else if (v === undefined) this.queryParameters[key] = undefined;
 		});
