@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0-preview.78](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.77...@microsoft/kiota-abstractions@1.0.0-preview.78) (2024-12-19)
+
+
+### Bug Fixes
+
+* missing duration normalization ([d78a9cb](https://github.com/microsoft/kiota-typescript/commit/d78a9cb8602b07e96e430350ab4e84ec40681fe3))
+* update std-uritemplate to v2.0.0 ([cf12831](https://github.com/microsoft/kiota-typescript/commit/cf128314d044b995cb5707570b73c552119722b2))
+
 ## [1.0.0-preview.77](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.76...@microsoft/kiota-abstractions@1.0.0-preview.77) (2024-11-22)
 
 
