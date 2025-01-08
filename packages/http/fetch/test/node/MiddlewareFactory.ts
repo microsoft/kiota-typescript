@@ -7,13 +7,13 @@
 
 import { assert, describe, it } from "vitest";
 
-import { CustomFetchHandler, HeadersInspectionHandler, MiddlewareFactory, ParametersNameDecodingHandler, RedirectHandler, RetryHandler, UserAgentHandler } from "../../src";
+import { CustomFetchHandler, HeadersInspectionHandler, MiddlewareFactory, ParametersNameDecodingHandler, RedirectHandler, RetryHandler, UrlReplaceHandler, UserAgentHandler } from "../../src";
 import { CompressionHandler } from "../../src/middlewares/compressionHandler";
 
 describe("node - MiddlewareFactory", () => {
 	it("Should return the default pipeline", () => {
 		const defaultMiddleWareArray = MiddlewareFactory.getDefaultMiddlewares();
-		assert.equal(defaultMiddleWareArray.length, 7);
+		assert.equal(defaultMiddleWareArray.length, 8);
 
 		assert.isTrue(defaultMiddleWareArray[0] instanceof RetryHandler);
 		assert.isTrue(defaultMiddleWareArray[1] instanceof RedirectHandler);
@@ -21,6 +21,7 @@ describe("node - MiddlewareFactory", () => {
 		assert.isTrue(defaultMiddleWareArray[3] instanceof UserAgentHandler);
 		assert.isTrue(defaultMiddleWareArray[4] instanceof CompressionHandler);
 		assert.isTrue(defaultMiddleWareArray[5] instanceof HeadersInspectionHandler);
-		assert.isTrue(defaultMiddleWareArray[6] instanceof CustomFetchHandler);
+		assert.isTrue(defaultMiddleWareArray[6] instanceof UrlReplaceHandler);
+		assert.isTrue(defaultMiddleWareArray[7] instanceof CustomFetchHandler);
 	});
 });
