@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.79](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.78...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.79) (2025-01-09)
+
+
+### Features
+
+* adds url replacement as a default ([#1540](https://github.com/microsoft/kiota-typescript/issues/1540)) ([acca423](https://github.com/microsoft/kiota-typescript/commit/acca4232303781509c47c48fd6edf94c3a857ad5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.78 to ^1.0.0-preview.79
+
 ## [1.0.0-preview.78](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.77...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.78) (2024-12-19)
 
 
