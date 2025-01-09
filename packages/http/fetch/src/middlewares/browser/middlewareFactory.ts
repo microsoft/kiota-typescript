@@ -12,6 +12,7 @@ import { ParametersNameDecodingHandler } from "../parametersNameDecodingHandler"
 import { RetryHandler } from "../retryHandler";
 import { UserAgentHandler } from "../userAgentHandler";
 import { CompressionHandler } from "../compressionHandler";
+import { UrlReplaceHandler } from "../urlReplaceHandler";
 
 /**
  *
@@ -26,6 +27,6 @@ export class MiddlewareFactory {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	public static getDefaultMiddlewares(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args) as any): Middleware[] {
 		// Browsers handles redirection automatically and do not require the redirectionHandler
-		return [new RetryHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new CompressionHandler(), new HeadersInspectionHandler(), new CustomFetchHandler(customFetch)];
+		return [new RetryHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new CompressionHandler(), new HeadersInspectionHandler(), new UrlReplaceHandler(), new CustomFetchHandler(customFetch)];
 	}
 }

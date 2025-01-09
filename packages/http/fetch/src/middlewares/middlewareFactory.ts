@@ -13,6 +13,7 @@ import { RedirectHandler } from "./redirectHandler";
 import { RetryHandler } from "./retryHandler";
 import { UserAgentHandler } from "./userAgentHandler";
 import { CompressionHandler } from "./compressionHandler";
+import { UrlReplaceHandler } from "./urlReplaceHandler";
 
 /**
  *
@@ -26,6 +27,6 @@ export class MiddlewareFactory {
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	public static getDefaultMiddlewares(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args) as any): Middleware[] {
-		return [new RetryHandler(), new RedirectHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new CompressionHandler(), new HeadersInspectionHandler(), new CustomFetchHandler(customFetch)];
+		return [new RetryHandler(), new RedirectHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new CompressionHandler(), new HeadersInspectionHandler(), new UrlReplaceHandler(), new CustomFetchHandler(customFetch)];
 	}
 }
