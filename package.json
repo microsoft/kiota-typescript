@@ -13,7 +13,7 @@
     "@vitest/coverage-istanbul": "^2.1.4",
     "@vitest/ui": "^2.0.1",
     "eslint": "^9.7.0",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-jsdoc": "^50.1.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-prettier": "^5.1.3",
