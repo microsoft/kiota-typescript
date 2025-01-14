@@ -27,6 +27,17 @@ export class MiddlewareFactory {
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	public static getDefaultMiddlewares(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args) as any): Middleware[] {
-		return [new RetryHandler(), new RedirectHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new CompressionHandler(), new HeadersInspectionHandler(), new UrlReplaceHandler(), new CustomFetchHandler(customFetch)];
+		return [new RetryHandler(), new RedirectHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new HeadersInspectionHandler(), new UrlReplaceHandler(), new CustomFetchHandler(customFetch)];
+	}
+	/**
+	 * @param customFetch - The custom fetch implementation
+	 * Returns the default middleware chain + performance middleware
+	 * @returns an array of the middleware handlers of the default + performance middleware chain
+	 */
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+	public static getPerformanceMiddlewares(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args) as any): Middleware[] {
+		const middlewares = MiddlewareFactory.getDefaultMiddlewares(customFetch);
+		middlewares.splice(middlewares.length - 3, 0, new CompressionHandler()); // insert CompressionHandler before HeadersInspectionHandler
+		return middlewares;
 	}
 }

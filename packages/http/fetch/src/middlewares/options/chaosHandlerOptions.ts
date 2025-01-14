@@ -19,7 +19,7 @@ export const ChaosHandlerOptionsKey = "ChaosHandlerOptionsKey";
  */
 export interface ChaosHandlerOptions {
 	/**
-	 * Speficies the base url path for the destination server, used when relative paths are preffered to strip out paths
+	 * Specifies the base url path for the destination server, used when relative paths are preferred to strip out paths
 	 */
 	baseUrl?: string;
 	/**
