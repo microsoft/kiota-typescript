@@ -208,4 +208,49 @@ describe("FetchRequestAdapter.ts", () => {
 			}
 		});
 	});
+	describe("returns null on 3XX responses without location header", () => {
+		it("should not throw API error when 3XX response with no Location header", async () => {
+			const mockHttpClient = new HttpClient();
+			mockHttpClient.executeFetch = async (url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>) => {
+				const response = new Response(null, {
+					status: 304,
+				} as ResponseInit);
+				response.headers.set("Content-Type", "application/json");
+				return Promise.resolve(response);
+			};
+			const mockFactory = new MockParseNodeFactory(new MockParseNode({}));
+			const requestAdapter = new FetchRequestAdapter(new AnonymousAuthenticationProvider(), mockFactory, undefined, mockHttpClient);
+			const requestInformation = new RequestInformation();
+			requestInformation.URL = "https://www.example.com";
+			requestInformation.httpMethod = HttpMethod.GET;
+			try {
+				const result = await requestAdapter.send(requestInformation, createMockEntityFromDiscriminatorValue, undefined);
+				assert.isUndefined(result);
+			} catch (error) {
+				assert.fail("Should not throw an error");
+			}
+		});
+		it("should throw API error when 3XX response with a Location header", async () => {
+			const mockHttpClient = new HttpClient();
+			mockHttpClient.executeFetch = async (url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>) => {
+				const response = new Response(null, {
+					status: 304,
+				} as ResponseInit);
+				response.headers.set("Content-Type", "application/json");
+				response.headers.set("Location", "xxx");
+				return Promise.resolve(response);
+			};
+			const mockFactory = new MockParseNodeFactory(new MockParseNode({}));
+			const requestAdapter = new FetchRequestAdapter(new AnonymousAuthenticationProvider(), mockFactory, undefined, mockHttpClient);
+			const requestInformation = new RequestInformation();
+			requestInformation.URL = "https://www.example.com";
+			requestInformation.httpMethod = HttpMethod.GET;
+			try {
+				await requestAdapter.sendNoResponseContent(requestInformation, undefined);
+				assert.fail("Should have thrown an error");
+			} catch (error) {
+				assert.equal(error.responseStatusCode, 304);
+			}
+		});
+	});
 });
