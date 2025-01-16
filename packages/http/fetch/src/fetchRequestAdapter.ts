@@ -390,10 +390,11 @@ export class FetchRequestAdapter implements RequestAdapter {
 	};
 	public static readonly errorMappingFoundAttributeName = "com.microsoft.kiota.error.mapping_found";
 	public static readonly errorBodyFoundAttributeName = "com.microsoft.kiota.error.body_found";
+	private static readonly locationHeaderName = "Location";
 	private readonly throwIfFailedResponse = (response: Response, errorMappings: ErrorMappings | undefined, spanForAttributes: Span): Promise<void> => {
 		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("throwIfFailedResponse", async (span) => {
 			try {
-				if (response.ok) return;
+				if (response.ok || (response.status >= 300 && response.status < 400 && !response.headers.has(FetchRequestAdapter.locationHeaderName))) return;
 
 				spanForAttributes.setStatus({
 					code: SpanStatusCode.ERROR,
