@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.0.0-preview.80](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.79...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.80) (2025-01-21)
+
+
+### Features
+
+* disable default compression ([72e7011](https://github.com/microsoft/kiota-typescript/commit/72e7011067e19dde7290770bf64093f0b3fb1902))
+* disable default compression ([8ed62c2](https://github.com/microsoft/kiota-typescript/commit/8ed62c219dcc586f32494669910cd62f87f5cd47))
+
+
+### Bug Fixes
+
+* handle 3XX responses ([5145d6a](https://github.com/microsoft/kiota-typescript/commit/5145d6abcb91557639c1129bcd12bb70f2bee2ea))
+* handles 3xx responses with no header ([856de64](https://github.com/microsoft/kiota-typescript/commit/856de6473ddd5c2dfd522c94341d943410a32ea9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.79 to ^1.0.0-preview.80
+
 ## [1.0.0-preview.79](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.78...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.79) (2025-01-09)
 
 
