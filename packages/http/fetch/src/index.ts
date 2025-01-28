@@ -11,6 +11,7 @@
 export * from "./fetchRequestAdapter";
 export * from "./httpClient";
 export * from "./middlewares/middleware";
+export * from "./middlewares/authorizationHandler";
 export * from "./middlewares/chaosHandler";
 export * from "./middlewares/customFetchHandler";
 export * from "./middlewares/compressionHandler";
