@@ -131,6 +131,9 @@ export class FormSerializationWriter implements SerializationWriter {
 			}
 		}
 	};
+	// placeholder for the method
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	public writeCollectionOfEnumValue = <T>(_key?: string, _values?: (T | null | undefined)[]): void => {};
 	public getSerializedContent = (): ArrayBuffer => {
 		return this.convertStringToArrayBuffer(this.writer.join(``));
 	};
