@@ -132,14 +132,13 @@ export class FormSerializationWriter implements SerializationWriter {
 		}
 	};
 	public writeCollectionOfEnumValue = <T>(key?: string, values?: (T | null | undefined)[]): void => {
-		if (values && values.length > 0) {
+		if (key && values && values.length > 0) {
 			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 			const rawValues = values.filter((x) => x !== undefined).map((x) => `${x}`);
 			if (rawValues.length > 0) {
-				this.writeStringValue(
-					key,
-					rawValues.reduce((x, y) => `"${x}", "${y}"`),
-				);
+				rawValues.forEach((val) => {
+					this.writeStringValue(key, val);
+				});
 			}
 		}
 	};

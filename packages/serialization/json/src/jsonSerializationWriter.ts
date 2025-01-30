@@ -222,16 +222,18 @@ export class JsonSerializationWriter implements SerializationWriter {
 		}
 	};
 
-	public writeCollectionOfEnumValue = <T>(key?: string, values: (T | undefined | null)[]): void => {
-		if (values.length > 0) {
+	public writeCollectionOfEnumValue = <T>(key?: string, values?: (T | undefined | null)[]): void => {
+		if (values && values.length > 0) {
 			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 			const rawValues = values.filter((x) => x !== undefined).map((x) => `${x}`);
+
 			if (rawValues.length > 0) {
-				this.writeStringValue(
-					key,
-					rawValues.reduce((x, y) => `"${x}", "${y}"`),
-				);
+				return;
 			}
+
+			key && this.writePropertyName(key);
+			this.writer.push(JSON.stringify(rawValues));
+			key && this.writer.push(JsonSerializationWriter.propertySeparator);
 		}
 	};
 

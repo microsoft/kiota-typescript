@@ -35,6 +35,8 @@ describe("JsonParseNode", () => {
 				},
 			},
 			testDate,
+			status: "succeeded",
+			nextStatuses: ["succeeded", "failed"],
 		};
 		const expectedObject: TestParser = {
 			testCollection: ["2", "3"],
@@ -47,6 +49,8 @@ describe("JsonParseNode", () => {
 				},
 			},
 			testDate,
+			status: "succeeded",
+			nextStatuses: ["succeeded", "failed"],
 		};
 
 		const writer = new JsonSerializationWriter();

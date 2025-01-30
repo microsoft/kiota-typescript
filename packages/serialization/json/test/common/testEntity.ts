@@ -22,7 +22,19 @@ export interface TestParser {
 	testNumber?: number | null | undefined;
 	testGuid?: Guid | null | undefined;
 	testUnionObject?: TestUnionObject | null | undefined;
+	status?: LongRunningOperationStatus | null;
+	nextStatuses?: LongRunningOperationStatus[] | null;
 }
+
+export const LongRunningOperationStatusObject = {
+	NotStarted: "notStarted",
+	Running: "running",
+	Succeeded: "succeeded",
+	Failed: "failed",
+	UnknownFutureValue: "unknownFutureValue",
+} as const;
+export type LongRunningOperationStatus = (typeof LongRunningOperationStatusObject)[keyof typeof LongRunningOperationStatusObject];
+
 export interface TestBackedModel extends TestParser, BackedModel {
 	backingStoreEnabled?: boolean | undefined;
 }
