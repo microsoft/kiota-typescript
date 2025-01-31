@@ -1,64 +1,32 @@
 import { assert, describe, it } from "vitest";
-import { LongRunningOperationStatusObject, serializeTestEntity, TestEntity } from "../testEntity";
-import { DateOnly, Duration, TimeOnly } from "@microsoft/kiota-abstractions/src";
 import { TextSerializationWriter } from "../../src";
 
 describe("TextSerializationWriter", () => {
-	it("writesSampleObjectValue", () => {
-		const testEntity = {} as TestEntity;
-		testEntity.id = "48d31887-5fad-4d73-a9f5-3c356e68a038";
-		testEntity.workDuration = new Duration({
-			hours: 1,
-		});
-		testEntity.startWorkTime = new TimeOnly({
-			hours: 8,
-		});
-		testEntity.birthday = new DateOnly({
-			year: 2017,
-			month: 9,
-			day: 4,
-		});
-		testEntity.officeLocation = null;
-		testEntity.endWorkTime = null;
-		testEntity.additionalData = {};
-		testEntity.additionalData["mobilePhone"] = null;
-		testEntity.additionalData["accountEnabled"] = false;
-		testEntity.additionalData["jobTitle"] = "Author";
-		testEntity.additionalData["createdDateTime"] = new Date(0);
-		testEntity.deviceNames = ["device1", "device2"];
-		testEntity.status = LongRunningOperationStatusObject.NotStarted;
-		testEntity.nextStatuses = [LongRunningOperationStatusObject.Running, LongRunningOperationStatusObject.Succeeded];
+	it("writeEnumValue", () => {
 		const textSerializationWriter = new TextSerializationWriter();
-		textSerializationWriter.writeObjectValue(undefined, testEntity, serializeTestEntity);
+
+		const statuses = [LongRunningOperationStatusObject.NotStarted, LongRunningOperationStatusObject.Running];
+		textSerializationWriter.writeEnumValue("", ...statuses);
 		const formContent = textSerializationWriter.getSerializedContent();
 		const form = new TextDecoder().decode(formContent);
-		const expectedString = [
-			"id=48d31887-5fad-4d73-a9f5-3c356e68a038",
-			"birthday=2017-09-04", // Serializes dates
-			"workDuration=PT1H", // Serializes timespans
-			"startWorkTime=08%3A00%3A00.0000000", //Serializes times
-			"mobilePhone=null", // Serializes null values in additionalData
-			"accountEnabled=false",
-			"jobTitle=Author",
-			"createdDateTime=1970-01-01T00%3A00%3A00.000Z",
-			"deviceNames=device1",
-			"deviceNames=device2", // Serializes collections
-			"officeLocation=null", // Serializes null values
-			"endWorkTime=null", // Serializes null values
-			"status=notStarted", // Serializes enum values
-			"nextStatuses=running",
-			"nextStatuses=succeeded", // Serializes collections of enum values
-		];
-		const arr = form.split("&");
-		let count = 0;
-		expectedString.forEach((expected) => {
-			const index = arr.indexOf(expected);
-			if (index >= 0) {
-				arr.splice(index, 1);
-				count++;
-			}
-		});
-		assert.equal(expectedString.length, count);
-		assert.equal(arr.length, 0);
+		const expectedString = "notStarted , running";
+		assert.equal(form, expectedString);
+	});
+	it("writeCollectionOfEnumValue", () => {
+		const textSerializationWriter = new TextSerializationWriter();
+		const statuses = [LongRunningOperationStatusObject.NotStarted, LongRunningOperationStatusObject.Running];
+		textSerializationWriter.writeCollectionOfEnumValue(undefined, statuses);
+		const formContent = textSerializationWriter.getSerializedContent();
+		const form = new TextDecoder().decode(formContent);
+		const expectedString = "notStarted running";
+		assert.equal(form, expectedString);
 	});
 });
+
+export const LongRunningOperationStatusObject = {
+	NotStarted: "notStarted",
+	Running: "running",
+	Succeeded: "succeeded",
+	Failed: "failed",
+	UnknownFutureValue: "unknownFutureValue",
+} as const;

@@ -138,10 +138,7 @@ export class TextSerializationWriter implements SerializationWriter {
 			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 			const rawValues = values.filter((x) => x !== undefined).map((x) => `${x}`);
 			if (rawValues.length > 0) {
-				this.writeStringValue(
-					key,
-					rawValues.reduce((x, y) => `${x}, ${y}`),
-				);
+				rawValues.forEach((value) => this.writeStringValue(key, value));
 			}
 		}
 	};
