@@ -35,8 +35,4 @@ export class BaseBearerTokenAuthenticationProvider implements AuthenticationProv
 			}
 		}
 	};
-
-	public get accessTokenProviderInstance(): AccessTokenProvider {
-		return this.accessTokenProvider;
-	}
 }
