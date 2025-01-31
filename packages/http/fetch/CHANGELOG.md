@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.81](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.80...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.81) (2025-01-31)
+
+
+### Features
+
+* adds authorization handler ([#1575](https://github.com/microsoft/kiota-typescript/issues/1575)) ([f9ff6ab](https://github.com/microsoft/kiota-typescript/commit/f9ff6ab91af308ce69cc86a8f8e5cc3eaebaf751))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.80 to ^1.0.0-preview.81
+
 ## [1.0.0-preview.80](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.79...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.80) (2025-01-21)
 
 
