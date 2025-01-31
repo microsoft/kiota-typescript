@@ -18,7 +18,7 @@ describe("TextSerializationWriter", () => {
 		textSerializationWriter.writeCollectionOfEnumValue("", statuses);
 		const formContent = textSerializationWriter.getSerializedContent();
 		const form = new TextDecoder().decode(formContent);
-		const expectedString = "notStarted running";
+		const expectedString = "notStarted,running";
 		assert.equal(form, expectedString);
 	});
 });

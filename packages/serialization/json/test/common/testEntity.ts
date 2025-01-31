@@ -101,6 +101,12 @@ export function deserializeTestParser(testParser: TestParser | undefined = {}): 
 		testUnionObject: (n) => {
 			testParser.testUnionObject = n.getStringValue() ?? n.getNumberValue() ?? n.getObjectValue(createTestUnionObjectFromDiscriminatorValue);
 		},
+		status: (n) => {
+			testParser.status = n.getEnumValue<LongRunningOperationStatus>(LongRunningOperationStatusObject);
+		},
+		nextStatuses: (n) => {
+			testParser.nextStatuses = n.getCollectionOfEnumValues<LongRunningOperationStatus>(LongRunningOperationStatusObject);
+		},
 	};
 }
 
@@ -160,6 +166,8 @@ export function serializeTestParser(writer: SerializationWriter, entity: TestPar
 	} else {
 		writer.writeObjectValue("testUnionObject", entity.testUnionObject as any, serializeTestUnionObject);
 	}
+	writer.writeEnumValue("status", entity.status);
+	writer.writeCollectionOfEnumValue("status", entity.nextStatuses);
 }
 
 export function serializeFoo(writer: SerializationWriter, entity: FooResponse | undefined = {}): void {
