@@ -7,6 +7,8 @@
 
 import { Middleware, MiddlewareFactory } from ".";
 import { HttpClient } from "./httpClient";
+import { BaseBearerTokenAuthenticationProvider } from "@microsoft/kiota-abstractions";
+import { AuthorizationHandler } from "./middlewares/authorizationHandler";
 
 /**
  *
@@ -21,6 +23,7 @@ export class KiotaClientFactory {
 	 * If middlewares param is undefined, the httpClient instance will use the default array of middlewares.
 	 * Set middlewares to `null` if you do not wish to use middlewares.
 	 * If custom fetch is undefined, the httpClient instance uses the `DefaultFetchHandler`
+	 * @param authenticationProvider - an optional instance of BaseBearerTokenAuthenticationProvider to be used for authentication
 	 * @returns a HttpClient instance
 	 * @example
 	 * ```Typescript
@@ -44,8 +47,11 @@ export class KiotaClientFactory {
 	 * ```
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-	public static create(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args) as any, middlewares?: Middleware[]): HttpClient {
+	public static create(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args) as any, middlewares?: Middleware[], authenticationProvider?: BaseBearerTokenAuthenticationProvider): HttpClient {
 		const middleware = middlewares || MiddlewareFactory.getDefaultMiddlewares(customFetch);
+		if (authenticationProvider) {
+			middleware.unshift(new AuthorizationHandler(authenticationProvider));
+		}
 		return new HttpClient(customFetch, ...middleware);
 	}
 }
