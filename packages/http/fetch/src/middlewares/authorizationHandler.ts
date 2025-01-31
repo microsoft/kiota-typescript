@@ -86,7 +86,7 @@ export class AuthorizationHandler implements Middleware {
 		if (claims) {
 			additionalAuthenticationContext.claims = claims;
 		}
-		return await this.authenticationProvider.getAccessTokenProvider().getAuthorizationToken(url, additionalAuthenticationContext);
+		return await this.authenticationProvider.accessTokenProvider.getAuthorizationToken(url, additionalAuthenticationContext);
 	}
 
 	private readonly getClaimsFromResponse = (response: Response, claims?: string) => {
