@@ -8,7 +8,14 @@
 import { assert, describe, it, beforeEach } from "vitest";
 
 import { JsonParseNode, JsonSerializationWriter } from "../../src/index";
-import { createTestBackedModelFromDiscriminatorValue, createTestParserFromDiscriminatorValue, serializeTestParser, TestBackedModel, type TestParser } from "./testEntity";
+import {
+  createTestBackedModelFromDiscriminatorValue,
+  createTestParserFromDiscriminatorValue,
+  LongRunningOperationStatusObject,
+  serializeTestParser,
+  TestBackedModel,
+  type TestParser
+} from "./testEntity";
 import { UntypedTestEntity, serializeUntypedTestEntity } from "./untypedTestEntiy";
 import { BackingStore, BackingStoreFactorySingleton, createBackedModelProxyHandler, createUntypedArray, createUntypedBoolean, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString } from "@microsoft/kiota-abstractions";
 
@@ -34,9 +41,7 @@ describe("JsonParseNode", () => {
 					},
 				},
 			},
-			testDate,
-			status: "succeeded",
-			nextStatuses: ["succeeded", "failed"],
+			testDate
 		};
 		const expectedObject: TestParser = {
 			testCollection: ["2", "3"],
@@ -48,9 +53,7 @@ describe("JsonParseNode", () => {
 					someValue: 123,
 				},
 			},
-			testDate,
-			status: "succeeded",
-			nextStatuses: ["succeeded", "failed"],
+			testDate
 		};
 
 		const writer = new JsonSerializationWriter();
@@ -62,6 +65,26 @@ describe("JsonParseNode", () => {
 		const stringValueResult = new JsonParseNode(result).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
 		assert.deepEqual(stringValueResult, expectedObject);
 	});
+
+  it("Test enum serialization", async () => {
+    const inputObject: TestParser = {
+      status: LongRunningOperationStatusObject.NotStarted,
+      nextStatuses: [LongRunningOperationStatusObject.Succeeded, LongRunningOperationStatusObject.Failed],
+    };
+    const expectedObject: TestParser = {
+      status: LongRunningOperationStatusObject.NotStarted,
+      nextStatuses: [LongRunningOperationStatusObject.Succeeded, LongRunningOperationStatusObject.Failed],
+    };
+
+    const writer = new JsonSerializationWriter();
+    writer.writeObjectValue("", inputObject, serializeTestParser);
+    const serializedContent = writer.getSerializedContent();
+    const decoder = new TextDecoder();
+    const contentAsStr = decoder.decode(serializedContent);
+    const result = JSON.parse(contentAsStr);
+    const stringValueResult = new JsonParseNode(result).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
+    assert.deepEqual(stringValueResult, expectedObject);
+  });
 
 	it("encodes characters properly", async () => {
 		const inputObject: TestParser = {

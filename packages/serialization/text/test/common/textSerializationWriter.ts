@@ -9,13 +9,13 @@ describe("TextSerializationWriter", () => {
 		textSerializationWriter.writeEnumValue("", ...statuses);
 		const formContent = textSerializationWriter.getSerializedContent();
 		const form = new TextDecoder().decode(formContent);
-		const expectedString = "notStarted , running";
+		const expectedString = "notStarted, running";
 		assert.equal(form, expectedString);
 	});
 	it("writeCollectionOfEnumValue", () => {
 		const textSerializationWriter = new TextSerializationWriter();
 		const statuses = [LongRunningOperationStatusObject.NotStarted, LongRunningOperationStatusObject.Running];
-		textSerializationWriter.writeCollectionOfEnumValue(undefined, statuses);
+		textSerializationWriter.writeCollectionOfEnumValue("", statuses);
 		const formContent = textSerializationWriter.getSerializedContent();
 		const form = new TextDecoder().decode(formContent);
 		const expectedString = "notStarted running";
