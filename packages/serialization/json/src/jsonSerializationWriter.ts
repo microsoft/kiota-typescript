@@ -221,6 +221,22 @@ export class JsonSerializationWriter implements SerializationWriter {
 			}
 		}
 	};
+
+	public writeCollectionOfEnumValues = <T>(key?: string, values?: (T | undefined | null)[]): void => {
+		if (values && values.length > 0) {
+			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+			const rawValues = values.filter((x) => x !== undefined).map((x) => `${x}`);
+
+			if (rawValues.length === 0) {
+				return;
+			}
+
+			key && this.writePropertyName(key);
+			this.writer.push(JSON.stringify(rawValues));
+			key && this.writer.push(JsonSerializationWriter.propertySeparator);
+		}
+	};
+
 	public getSerializedContent = (): ArrayBuffer => {
 		return this.convertStringToArrayBuffer(this.writer.join(``));
 	};

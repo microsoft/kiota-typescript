@@ -9,7 +9,7 @@ import { DateOnly, Duration, TimeOnly } from "@microsoft/kiota-abstractions";
 import { assert, describe, it } from "vitest";
 
 import { FormSerializationWriter } from "../../src";
-import { serializeTestEntity, type TestEntity } from "../testEntity";
+import { LongRunningOperationStatusObject, serializeTestEntity, type TestEntity } from "../testEntity";
 
 describe("FormSerializationWriter", () => {
 	it("writesSampleObjectValue", () => {
@@ -34,6 +34,8 @@ describe("FormSerializationWriter", () => {
 		testEntity.additionalData["jobTitle"] = "Author";
 		testEntity.additionalData["createdDateTime"] = new Date(0);
 		testEntity.deviceNames = ["device1", "device2"];
+		testEntity.status = LongRunningOperationStatusObject.NotStarted;
+		testEntity.nextStatuses = [LongRunningOperationStatusObject.Running, LongRunningOperationStatusObject.Succeeded];
 		const formSerializationWriter = new FormSerializationWriter();
 		formSerializationWriter.writeObjectValue(undefined, testEntity, serializeTestEntity);
 		const formContent = formSerializationWriter.getSerializedContent();
@@ -51,6 +53,9 @@ describe("FormSerializationWriter", () => {
 			"deviceNames=device2", // Serializes collections
 			"officeLocation=null", // Serializes null values
 			"endWorkTime=null", // Serializes null values
+			"status=notStarted", // Serializes enum values
+			"nextStatuses=running", // Serializes collection of enum values
+			"nextStatuses=succeeded",
 		];
 		const arr = form.split("&");
 		let count = 0;
@@ -63,6 +68,15 @@ describe("FormSerializationWriter", () => {
 		});
 		assert.equal(expectedString.length, count);
 		assert.equal(arr.length, 0);
+	});
+
+	it("writeCollectionOfEnumValues", () => {
+		const enums = [LongRunningOperationStatusObject.Running, LongRunningOperationStatusObject.Succeeded];
+		const formSerializationWriter = new FormSerializationWriter();
+		formSerializationWriter.writeCollectionOfEnumValues("nextStatuses", enums);
+		const formContent = formSerializationWriter.getSerializedContent();
+		const form = new TextDecoder().decode(formContent);
+		assert.equal("nextStatuses=running&nextStatuses=succeeded&", form);
 	});
 
 	it("writesSampleCollectionOfObjectValues", () => {

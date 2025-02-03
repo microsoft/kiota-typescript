@@ -22,7 +22,19 @@ export interface TestParser {
 	testNumber?: number | null | undefined;
 	testGuid?: Guid | null | undefined;
 	testUnionObject?: TestUnionObject | null | undefined;
+	status?: LongRunningOperationStatus | null;
+	nextStatuses?: LongRunningOperationStatus[] | null;
 }
+
+export const LongRunningOperationStatusObject = {
+	NotStarted: "notStarted",
+	Running: "running",
+	Succeeded: "succeeded",
+	Failed: "failed",
+	UnknownFutureValue: "unknownFutureValue",
+} as const;
+export type LongRunningOperationStatus = (typeof LongRunningOperationStatusObject)[keyof typeof LongRunningOperationStatusObject];
+
 export interface TestBackedModel extends TestParser, BackedModel {
 	backingStoreEnabled?: boolean | undefined;
 }
@@ -89,6 +101,12 @@ export function deserializeTestParser(testParser: TestParser | undefined = {}): 
 		testUnionObject: (n) => {
 			testParser.testUnionObject = n.getStringValue() ?? n.getNumberValue() ?? n.getObjectValue(createTestUnionObjectFromDiscriminatorValue);
 		},
+		status: (n) => {
+			testParser.status = n.getEnumValue<LongRunningOperationStatus>(LongRunningOperationStatusObject);
+		},
+		nextStatuses: (n) => {
+			testParser.nextStatuses = n.getCollectionOfEnumValues<LongRunningOperationStatus>(LongRunningOperationStatusObject);
+		},
 	};
 }
 
@@ -148,6 +166,8 @@ export function serializeTestParser(writer: SerializationWriter, entity: TestPar
 	} else {
 		writer.writeObjectValue("testUnionObject", entity.testUnionObject as any, serializeTestUnionObject);
 	}
+	writer.writeEnumValue("status", entity.status);
+	writer.writeCollectionOfEnumValues("nextStatuses", entity.nextStatuses);
 }
 
 export function serializeFoo(writer: SerializationWriter, entity: FooResponse | undefined = {}): void {

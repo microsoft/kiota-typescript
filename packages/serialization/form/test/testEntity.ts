@@ -16,7 +16,19 @@ export interface TestEntity extends Parsable, AdditionalDataHolder {
 	endWorkTime?: TimeOnly | null;
 	officeLocation?: string | null;
 	deviceNames?: string[] | null;
+	status?: LongRunningOperationStatus | null;
+	nextStatuses?: LongRunningOperationStatus[] | null;
 }
+
+export const LongRunningOperationStatusObject = {
+	NotStarted: "notStarted",
+	Running: "running",
+	Succeeded: "succeeded",
+	Failed: "failed",
+	UnknownFutureValue: "unknownFutureValue",
+} as const;
+export type LongRunningOperationStatus = (typeof LongRunningOperationStatusObject)[keyof typeof LongRunningOperationStatusObject];
+
 export function createTestParserFromDiscriminatorValue(parseNode: ParseNode | undefined) {
 	if (!parseNode) throw new Error("parseNode cannot be undefined");
 	return deserializeTestEntity;
@@ -48,6 +60,12 @@ export function deserializeTestEntity(testEntity: TestEntity | undefined = {}): 
 		deviceNames: (n) => {
 			testEntity.deviceNames = n.getCollectionOfPrimitiveValues();
 		},
+		status: (n) => {
+			testEntity.status = n.getEnumValue<LongRunningOperationStatus>(LongRunningOperationStatusObject);
+		},
+		nextStatuses: (n) => {
+			testEntity.nextStatuses = n.getCollectionOfEnumValues<LongRunningOperationStatus>(LongRunningOperationStatusObject);
+		},
 	};
 }
 
@@ -61,4 +79,6 @@ export function serializeTestEntity(writer: SerializationWriter, testEntity: Tes
 	writer.writeStringValue("officeLocation", testEntity.officeLocation);
 	writer.writeAdditionalData(testEntity.additionalData);
 	writer.writeCollectionOfPrimitiveValues("deviceNames", testEntity.deviceNames);
+	writer.writeEnumValue<LongRunningOperationStatus>("status", testEntity.status);
+	writer.writeCollectionOfEnumValues<LongRunningOperationStatus>("nextStatuses", testEntity.nextStatuses);
 }
