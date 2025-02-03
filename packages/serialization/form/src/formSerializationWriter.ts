@@ -136,9 +136,7 @@ export class FormSerializationWriter implements SerializationWriter {
 			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 			const rawValues = values.filter((x) => x !== undefined).map((x) => `${x}`);
 			if (rawValues.length > 0) {
-				rawValues.forEach((val) => {
-					this.writeStringValue(key, val);
-				});
+				this.writeCollectionOfPrimitiveValues<string>(key, rawValues);
 			}
 		}
 	};
