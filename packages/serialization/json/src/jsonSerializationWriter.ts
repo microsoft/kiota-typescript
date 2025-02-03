@@ -227,7 +227,7 @@ export class JsonSerializationWriter implements SerializationWriter {
 			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 			const rawValues = values.filter((x) => x !== undefined).map((x) => `${x}`);
 
-			if (rawValues.length > 0) {
+			if (rawValues.length === 0) {
 				return;
 			}
 

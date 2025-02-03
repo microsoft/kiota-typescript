@@ -167,7 +167,7 @@ export function serializeTestParser(writer: SerializationWriter, entity: TestPar
 		writer.writeObjectValue("testUnionObject", entity.testUnionObject as any, serializeTestUnionObject);
 	}
 	writer.writeEnumValue("status", entity.status);
-	writer.writeCollectionOfEnumValue("status", entity.nextStatuses);
+	writer.writeCollectionOfEnumValue("nextStatuses", entity.nextStatuses);
 }
 
 export function serializeFoo(writer: SerializationWriter, entity: FooResponse | undefined = {}): void {

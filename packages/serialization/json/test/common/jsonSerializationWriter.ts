@@ -62,11 +62,11 @@ describe("JsonParseNode", () => {
 	it("Test enum serialization", async () => {
 		const inputObject: TestParser = {
 			status: LongRunningOperationStatusObject.NotStarted,
-			nextStatuses: [LongRunningOperationStatusObject.Succeeded, LongRunningOperationStatusObject.Failed],
+			//nextStatuses: [LongRunningOperationStatusObject.Succeeded, LongRunningOperationStatusObject.Failed],
 		};
 		const expectedObject: TestParser = {
 			status: LongRunningOperationStatusObject.NotStarted,
-			nextStatuses: [LongRunningOperationStatusObject.Succeeded, LongRunningOperationStatusObject.Failed],
+			//nextStatuses: [LongRunningOperationStatusObject.Succeeded, LongRunningOperationStatusObject.Failed],
 		};
 
 		const writer = new JsonSerializationWriter();
@@ -77,6 +77,17 @@ describe("JsonParseNode", () => {
 		const result = JSON.parse(contentAsStr);
 		const stringValueResult = new JsonParseNode(result).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
 		assert.deepEqual(stringValueResult, expectedObject);
+	});
+
+	it("Test collection of enum serialization", async () => {
+		const writer = new JsonSerializationWriter();
+		const enums = [LongRunningOperationStatusObject.NotStarted, LongRunningOperationStatusObject.Succeeded];
+
+		writer.writeCollectionOfEnumValue("enum", enums);
+		const serializedContent = writer.getSerializedContent();
+		const decoder = new TextDecoder();
+		const contentAsStr = decoder.decode(serializedContent);
+		assert.equal(contentAsStr, '"enum":["notStarted","succeeded"],');
 	});
 
 	it("encodes characters properly", async () => {
