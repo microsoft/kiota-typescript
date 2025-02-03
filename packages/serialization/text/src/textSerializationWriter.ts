@@ -133,7 +133,7 @@ export class TextSerializationWriter implements SerializationWriter {
 			}
 		}
 	};
-	public writeCollectionOfEnumValue = <T>(key?: string, values?: T[] | null): void => {
+	public writeCollectionOfEnumValues = <T>(key?: string, values?: T[] | null): void => {
 		this.writeEnumValue(key, values);
 	};
 	public getSerializedContent = (): ArrayBuffer => {

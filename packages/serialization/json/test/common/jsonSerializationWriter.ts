@@ -62,11 +62,11 @@ describe("JsonParseNode", () => {
 	it("Test enum serialization", async () => {
 		const inputObject: TestParser = {
 			status: LongRunningOperationStatusObject.NotStarted,
-			//nextStatuses: [LongRunningOperationStatusObject.Succeeded, LongRunningOperationStatusObject.Failed],
+			nextStatuses: [LongRunningOperationStatusObject.Succeeded, LongRunningOperationStatusObject.Failed],
 		};
 		const expectedObject: TestParser = {
 			status: LongRunningOperationStatusObject.NotStarted,
-			//nextStatuses: [LongRunningOperationStatusObject.Succeeded, LongRunningOperationStatusObject.Failed],
+			nextStatuses: [LongRunningOperationStatusObject.Succeeded, LongRunningOperationStatusObject.Failed],
 		};
 
 		const writer = new JsonSerializationWriter();
@@ -83,7 +83,7 @@ describe("JsonParseNode", () => {
 		const writer = new JsonSerializationWriter();
 		const enums = [LongRunningOperationStatusObject.NotStarted, LongRunningOperationStatusObject.Succeeded];
 
-		writer.writeCollectionOfEnumValue("enum", enums);
+		writer.writeCollectionOfEnumValues("enum", enums);
 		const serializedContent = writer.getSerializedContent();
 		const decoder = new TextDecoder();
 		const contentAsStr = decoder.decode(serializedContent);

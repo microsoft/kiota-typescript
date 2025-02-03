@@ -12,10 +12,10 @@ describe("TextSerializationWriter", () => {
 		const expectedString = "notStarted, running";
 		assert.equal(form, expectedString);
 	});
-	it("writeCollectionOfEnumValue", () => {
+	it("writeCollectionOfEnumValues", () => {
 		const textSerializationWriter = new TextSerializationWriter();
 		const statuses = [LongRunningOperationStatusObject.NotStarted, LongRunningOperationStatusObject.Running];
-		textSerializationWriter.writeCollectionOfEnumValue("", statuses);
+		textSerializationWriter.writeCollectionOfEnumValues("", statuses);
 		const formContent = textSerializationWriter.getSerializedContent();
 		const form = new TextDecoder().decode(formContent);
 		const expectedString = "notStarted,running";

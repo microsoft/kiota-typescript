@@ -99,7 +99,7 @@ export interface SerializationWriter {
 	 * @param key the key to write the value with.
 	 * @param values the value to write to the stream.
 	 */
-	writeCollectionOfEnumValue<T>(key?: string, values?: (T | null | undefined)[]): void;
+	writeCollectionOfEnumValues<T>(key?: string, values?: (T | null | undefined)[]): void;
 	/**
 	 * Writes a null value for the specified key.
 	 * @param key the key to write the value with.

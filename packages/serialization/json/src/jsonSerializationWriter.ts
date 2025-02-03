@@ -222,7 +222,7 @@ export class JsonSerializationWriter implements SerializationWriter {
 		}
 	};
 
-	public writeCollectionOfEnumValue = <T>(key?: string, values?: (T | undefined | null)[]): void => {
+	public writeCollectionOfEnumValues = <T>(key?: string, values?: (T | undefined | null)[]): void => {
 		if (values && values.length > 0) {
 			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 			const rawValues = values.filter((x) => x !== undefined).map((x) => `${x}`);

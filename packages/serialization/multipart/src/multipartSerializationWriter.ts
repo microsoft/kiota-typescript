@@ -113,7 +113,7 @@ export class MultipartSerializationWriter implements SerializationWriter {
 	): void => {
 		throw new Error(`serialization of enum values is not supported with multipart`);
 	};
-	public writeCollectionOfEnumValue = <T>(
+	public writeCollectionOfEnumValues = <T>(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		key?: string,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
