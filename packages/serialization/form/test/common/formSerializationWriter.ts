@@ -35,7 +35,7 @@ describe("FormSerializationWriter", () => {
 		testEntity.additionalData["createdDateTime"] = new Date(0);
 		testEntity.deviceNames = ["device1", "device2"];
 		testEntity.status = LongRunningOperationStatusObject.NotStarted;
-		testEntity.nextStatuses = [LongRunningOperationStatusObject.Running, LongRunningOperationStatusObject.Succeeded];
+		//testEntity.nextStatuses = [LongRunningOperationStatusObject.Running, LongRunningOperationStatusObject.Succeeded];
 		const formSerializationWriter = new FormSerializationWriter();
 		formSerializationWriter.writeObjectValue(undefined, testEntity, serializeTestEntity);
 		const formContent = formSerializationWriter.getSerializedContent();
@@ -54,8 +54,6 @@ describe("FormSerializationWriter", () => {
 			"officeLocation=null", // Serializes null values
 			"endWorkTime=null", // Serializes null values
 			"status=notStarted", // Serializes enum values
-			"nextStatuses=running",
-			"nextStatuses=succeeded", // Serializes collections of enum values
 		];
 		const arr = form.split("&");
 		let count = 0;
@@ -68,6 +66,15 @@ describe("FormSerializationWriter", () => {
 		});
 		assert.equal(expectedString.length, count);
 		assert.equal(arr.length, 0);
+	});
+
+	it("writeCollectionOfEnumValues", () => {
+		const enums = [LongRunningOperationStatusObject.Running, LongRunningOperationStatusObject.Succeeded];
+		const formSerializationWriter = new FormSerializationWriter();
+		formSerializationWriter.writeCollectionOfEnumValue("nextStatuses", enums);
+		const formContent = formSerializationWriter.getSerializedContent();
+		const form = new TextDecoder().decode(formContent);
+		assert.equal("nextStatuses=running&nextStatuses=succeeded&", form);
 	});
 
 	it("writesSampleCollectionOfObjectValues", () => {

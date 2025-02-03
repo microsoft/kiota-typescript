@@ -80,5 +80,6 @@ export function serializeTestEntity(writer: SerializationWriter, testEntity: Tes
 	writer.writeAdditionalData(testEntity.additionalData);
 	writer.writeCollectionOfPrimitiveValues("deviceNames", testEntity.deviceNames);
 	writer.writeEnumValue<LongRunningOperationStatus>("status", testEntity.status);
-	writer.writeCollectionOfEnumValues<LongRunningOperationStatus>("nextStatuses", testEntity.nextStatuses);
+	// enable this line after publishing writeCollectionOfEnumValues
+	//writer.writeCollectionOfEnumValues<LongRunningOperationStatus>("nextStatuses", testEntity.nextStatuses);
 }
