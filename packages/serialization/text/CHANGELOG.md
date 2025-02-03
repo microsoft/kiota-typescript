@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.0-preview.82](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-text@1.0.0-preview.81...@microsoft/kiota-serialization-text@1.0.0-preview.82) (2025-02-03)
+
+
+### Bug Fixes
+
+* implements serialization of enum collections ([0a09f5c](https://github.com/microsoft/kiota-typescript/commit/0a09f5c42f8e9acf37a7a6a32b26dc87b8cb250a))
+* implements serialization of enum collections ([#1578](https://github.com/microsoft/kiota-typescript/issues/1578)) ([0a09f5c](https://github.com/microsoft/kiota-typescript/commit/0a09f5c42f8e9acf37a7a6a32b26dc87b8cb250a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.81 to ^1.0.0-preview.82
+
 ## [1.0.0-preview.81](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-text@1.0.0-preview.80...@microsoft/kiota-serialization-text@1.0.0-preview.81) (2025-01-31)
 
 
