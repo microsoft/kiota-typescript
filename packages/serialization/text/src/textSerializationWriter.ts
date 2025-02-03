@@ -128,7 +128,7 @@ export class TextSerializationWriter implements SerializationWriter {
 			if (rawValues.length > 0) {
 				this.writeStringValue(
 					key,
-					rawValues.reduce((x, y) => `${x}, ${y}`),
+					rawValues.reduce((x, y) => `${x},${y}`),
 				);
 			}
 		}

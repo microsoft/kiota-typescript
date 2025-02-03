@@ -9,7 +9,7 @@ describe("TextSerializationWriter", () => {
 		textSerializationWriter.writeEnumValue("", ...statuses);
 		const formContent = textSerializationWriter.getSerializedContent();
 		const form = new TextDecoder().decode(formContent);
-		const expectedString = "notStarted, running";
+		const expectedString = "notStarted,running";
 		assert.equal(form, expectedString);
 	});
 	it("writeCollectionOfEnumValues", () => {
