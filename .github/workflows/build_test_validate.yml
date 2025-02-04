@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: [ main ]
+    tags: [ '@microsoft/kiota-abstractions@*' ]
   pull_request:
 
 jobs:
@@ -95,7 +96,7 @@ jobs:
 
 
   publish-npm:
-    if: "${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'chore: release main') }}"
+    if: startsWith(github.ref, 'refs/tags/')
     needs: [build, check-typescript-version-matrix]
     environment:
       name: production_feed
@@ -104,14 +105,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           registry-url: https://registry.npmjs.org/
-      - run: |
-          git config --global user.name '${GITHUB_ACTOR}'
-          git config --global user.email '${GITHUB_ACTOR}@users.noreply.github.com'
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GITHUB_ACTOR: ${{ secrets.GIT_USERNAME }}
       - run: npm ci
       - run: npm run build
       - run: npx lerna publish from-package --no-push --yes
