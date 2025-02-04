@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: [ main ]
+    tags: [ '@microsoft/kiota-abstractions@*' ]
   pull_request:
 
 jobs:
@@ -95,7 +96,7 @@ jobs:
 
 
   publish-npm:
-    if: "${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'chore: release main') }}"
+    if: startsWith(github.ref, 'refs/tags/')
     needs: [build, check-typescript-version-matrix]
     environment:
       name: production_feed
