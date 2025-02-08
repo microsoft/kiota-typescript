@@ -122,4 +122,17 @@ describe("MultipartSerializationWriter", () => {
 		const multipartSerializationWriter = new MultipartSerializationWriter();
 		assert.throw(() => multipartSerializationWriter.writeCollectionOfObjectValues(undefined, [testEntity]));
 	});
+
+	it("serializes Content-Disposition with filename", () => {
+		const mpBody = new MultipartBody();
+		mpBody.addOrReplacePart("file", "application/octet-stream", byteForTest, undefined, "file.txt");
+
+		const multipartSerializationWriter = new MultipartSerializationWriter();
+		multipartSerializationWriter.writeObjectValue(undefined, mpBody, serializeMultipartBody);
+		const multipartContent = multipartSerializationWriter.getSerializedContent();
+		const result = new TextDecoder().decode(multipartContent);
+
+		const expectedString = "--" + mpBody.getBoundary() + '\r\nContent-Type: application/octet-stream\r\nContent-Disposition: form-data; name="file"; filename="file.txt"\r\n\r\n' + new TextDecoder().decode(byteForTest) + "\r\n--" + mpBody.getBoundary() + "--\r\n";
+		assert.equal(result, expectedString);
+	});
 });
