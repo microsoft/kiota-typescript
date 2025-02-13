@@ -4,9 +4,8 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-import { v4 as uuidv4 } from "uuid";
-
 import type { BackingStore } from "./backingStore";
+import { createGuid } from "../utils";
 
 interface storeEntryWrapper {
 	changed: boolean;
@@ -65,7 +64,7 @@ export class InMemoryBackingStore implements BackingStore {
 		if (!callback) {
 			throw new Error("callback cannot be undefined");
 		}
-		subscriptionId = subscriptionId ?? uuidv4();
+		subscriptionId = subscriptionId ?? createGuid();
 		this.subscriptions.set(subscriptionId, callback);
 		return subscriptionId;
 	}

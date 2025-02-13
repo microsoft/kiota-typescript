@@ -6,7 +6,7 @@
  */
 export type Guid = string;
 
-const guidValidator = new RegExp("^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$", "i");
+const guidValidator = /^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$/i;
 
 /**
  * Checks if the string is a valid GUID.

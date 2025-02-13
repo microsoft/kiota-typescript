@@ -30,20 +30,20 @@
 		"url": "https://github.com/microsoft/kiota-typescript/issues"
 	},
 	"homepage": "https://github.com/microsoft/kiota#readme",
-	"devDependencies": {
-		"@types/uuid": "^10.0.0"
-	},
 	"dependencies": {
 		"@opentelemetry/api": "^1.7.0",
 		"@std-uritemplate/std-uritemplate": "^2.0.0",
 		"tinyduration": "^3.3.0",
-		"tslib": "^2.6.2",
-		"uuid": "^11.0.2"
+		"tslib": "^2.6.2"
 	},
 	"publishConfig": {
 		"access": "public"
 	},
 	"browserslist": [
 		"defaults"
-	]
+	],
+	"devDependencies": {
+		"@types/uuid": "^10.0.0",
+		"uuid": "^11.0.5"
+	}
 }
