@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0-preview.83](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.82...@microsoft/kiota-abstractions@1.0.0-preview.83) (2025-02-13)
+
+
+### Bug Fixes
+
+* removes uuid package references ([cba577f](https://github.com/microsoft/kiota-typescript/commit/cba577f32d55f52e279b163b364f5451f17c62ac))
+* removes uuid usage from backing store ([f1b7911](https://github.com/microsoft/kiota-typescript/commit/f1b79115ecaa237a9d4ecf211ffb131110fb99ef))
+
 ## [1.0.0-preview.82](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.81...@microsoft/kiota-abstractions@1.0.0-preview.82) (2025-02-03)
 
 
