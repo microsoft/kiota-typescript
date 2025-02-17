@@ -10,11 +10,7 @@ import { type DateOnly, type Duration, type Guid, MultipartBody, type Parsable, 
 
 /** Serialization writer for multipart/form-data */
 export class MultipartSerializationWriter implements SerializationWriter {
-	public writeByteArrayValue(
-		key?: string,
-
-		value?: ArrayBuffer,
-	): void {
+	public writeByteArrayValue(key?: string, value?: ArrayBuffer | null): void {
 		if (!value) {
 			throw new Error("value cannot be undefined");
 		}

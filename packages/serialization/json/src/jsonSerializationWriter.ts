@@ -9,7 +9,7 @@
 import { DateOnly, Duration, type Guid, isUntypedNode, type ModelSerializerFunction, type Parsable, type SerializationWriter, TimeOnly, type UntypedNode, isUntypedBoolean, isUntypedString, isUntypedNull, isUntypedNumber, isUntypedObject, isUntypedArray, inNodeEnv } from "@microsoft/kiota-abstractions";
 
 export class JsonSerializationWriter implements SerializationWriter {
-	public writeByteArrayValue(key?: string, value?: ArrayBuffer): void {
+	public writeByteArrayValue(key?: string, value?: ArrayBuffer | null): void {
 		if (!value) {
 			throw new Error("value cannot be undefined");
 		}
