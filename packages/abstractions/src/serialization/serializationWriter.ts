@@ -19,7 +19,7 @@ export interface SerializationWriter {
 	 * @param key the key to write the value with.
 	 * @param value the value to write to the stream.
 	 */
-	writeByteArrayValue(key?: string, value?: ArrayBuffer): void;
+	writeByteArrayValue(key?: string, value?: ArrayBuffer | null): void;
 	/**
 	 * Writes the specified string value to the stream with an optional given key.
 	 * @param key the key to write the value with.
