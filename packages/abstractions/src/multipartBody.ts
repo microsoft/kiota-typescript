@@ -27,8 +27,9 @@ export class MultipartBody implements Parsable {
 	 * @param partContentType the content type of the part to add or replace.
 	 * @param content the content of the part to add or replace.
 	 * @param serializationCallback the serialization callback to use when serializing the part.
+	 * @param fileName the name of the file associated with this part.
 	 */
-	public addOrReplacePart<T>(partName: string, partContentType: string, content: T, serializationCallback?: ModelSerializerFunction<Parsable>): void {
+	public addOrReplacePart<T>(partName: string, partContentType: string, content: T, serializationCallback?: ModelSerializerFunction<Parsable>, fileName?: string): void {
 		if (!partName) throw new Error("partName cannot be undefined");
 		if (!partContentType) {
 			throw new Error("partContentType cannot be undefined");
@@ -39,6 +40,7 @@ export class MultipartBody implements Parsable {
 			contentType: partContentType,
 			content,
 			originalName: partName,
+			fileName,
 			serializationCallback,
 		};
 	}
@@ -90,6 +92,7 @@ interface MultipartEntry {
 	contentType: string;
 	content: any;
 	originalName: string;
+	fileName?: string;
 	serializationCallback?: ModelSerializerFunction<Parsable>;
 }
 
@@ -124,7 +127,7 @@ export const serializeMultipartBody = (writer: SerializationWriter, multipartBod
 			const part = parts[partName];
 			writer.writeStringValue("Content-Type", part.contentType);
 			writer.writeStringValue(undefined, "\r\n");
-			writer.writeStringValue("Content-Disposition", 'form-data; name="' + part.originalName + '"');
+			writer.writeStringValue("Content-Disposition", `form-data; name="${part.originalName}"${part.fileName ? `; filename="${part.fileName}"` : ""}`);
 			writer.writeStringValue(undefined, "\r\n");
 			writer.writeStringValue(undefined, "\r\n");
 			if (typeof part.content === "string") {

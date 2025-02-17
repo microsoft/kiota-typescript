@@ -40,3 +40,31 @@ describe("multipartBody", () => {
 	});
 	//serialize method is tested in the serialization library
 });
+
+describe("multipartBody with fileName", () => {
+	const arrayBuffer = new Uint8Array([0x01, 0x01, 0x01]);
+	const arrayBuffer2 = new Uint8Array([0x02, 0x02, 0x02]);
+
+	it("adds parts with a filename", () => {
+		const mpBody = new MultipartBody();
+		mpBody.addOrReplacePart("filepart", "application/octet-stream", arrayBuffer, undefined, "file.txt");
+
+		const part = mpBody.listParts()["filepart"];
+		assert.exists(part);
+		assert.strictEqual(part.contentType, "application/octet-stream");
+		assert.strictEqual(part.content, arrayBuffer);
+		assert.strictEqual(part.fileName, "file.txt");
+	});
+
+	it("updates filename when replacing a part", () => {
+		const mpBody = new MultipartBody();
+		mpBody.addOrReplacePart("filepart", "application/octet-stream", arrayBuffer, undefined, "file.txt");
+		mpBody.addOrReplacePart("filepart", "application/pdf", arrayBuffer2, undefined, "document.pdf");
+
+		const part = mpBody.listParts()["filepart"];
+		assert.exists(part);
+		assert.strictEqual(part.fileName, "document.pdf");
+		assert.strictEqual(part.content, arrayBuffer2);
+		assert.strictEqual(part.contentType, "application/pdf");
+	});
+});
