@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.0-preview.84](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-json@1.0.0-preview.83...@microsoft/kiota-serialization-json@1.0.0-preview.84) (2025-02-17)
+
+
+### Bug Fixes
+
+* corrects SerializationWriter.writeByteArrayValue to ensure consistency with other method writers ([e895a13](https://github.com/microsoft/kiota-typescript/commit/e895a13c1dc42c2c7b0f734258af3c8a0dc21c45))
+* SerializationWriter.writeByteArrayValue should accept a null value ([91bec86](https://github.com/microsoft/kiota-typescript/commit/91bec8613a8485d440986d51ca293af9eedf4919))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.83 to ^1.0.0-preview.84
+
 ## [1.0.0-preview.83](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-json@1.0.0-preview.82...@microsoft/kiota-serialization-json@1.0.0-preview.83) (2025-02-13)
 
 
