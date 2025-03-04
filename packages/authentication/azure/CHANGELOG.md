@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.0-preview.85](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-authentication-azure@1.0.0-preview.84...@microsoft/kiota-authentication-azure@1.0.0-preview.85) (2025-03-04)
+
+
+### Bug Fixes
+
+* adds missing observability options export ([a544894](https://github.com/microsoft/kiota-typescript/commit/a544894c1ba1ac7b93497b3dd5cd2b4eadbbd82e))
+* adds missing observability options export ([87e76c9](https://github.com/microsoft/kiota-typescript/commit/87e76c92aeae2916919f07cbf356570d1a9b699d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.84 to ^1.0.0-preview.85
+
 ## [1.0.0-preview.84](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-authentication-azure@1.0.0-preview.83...@microsoft/kiota-authentication-azure@1.0.0-preview.84) (2025-02-17)
 
 
