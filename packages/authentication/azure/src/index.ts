@@ -7,3 +7,4 @@
 
 export * from "./azureIdentityAuthenticationProvider";
 export * from "./azureIdentityAccessTokenProvider";
+export * from "./observabilityOptions";
