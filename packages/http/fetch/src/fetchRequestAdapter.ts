@@ -360,7 +360,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 	};
 	public enableBackingStore = (backingStoreFactory?: BackingStoreFactory): void => {
 		this.parseNodeFactory = enableBackingStoreForParseNodeFactory(this.parseNodeFactory as ParseNodeFactoryRegistry, this.parseNodeFactory);
-		this.serializationWriterFactory = enableBackingStoreForSerializationWriterFactory(this.serializationWriterFactory as SerializationWriterFactoryRegistry, this.serializationWriterFactory);
+		this.serializationWriterFactory = enableBackingStoreForSerializationWriterFactory(this.serializationWriterFactory as SerializationWriterFactoryRegistry, this.parseNodeFactory as ParseNodeFactoryRegistry, this.serializationWriterFactory);
 		if (!this.serializationWriterFactory || !this.parseNodeFactory) throw new Error("unable to enable backing store");
 		if (backingStoreFactory) {
 			BackingStoreFactorySingleton.instance = backingStoreFactory;
