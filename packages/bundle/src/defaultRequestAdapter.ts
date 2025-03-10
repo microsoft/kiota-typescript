@@ -30,12 +30,12 @@ export class DefaultRequestAdapter extends FetchRequestAdapter {
 	}
 
 	private setupDefaults() {
-		registerDefaultSerializer(super.getSerializationWriterFactory(), JsonSerializationWriterFactory);
-		registerDefaultSerializer(super.getSerializationWriterFactory(), TextSerializationWriterFactory);
-		registerDefaultSerializer(super.getSerializationWriterFactory(), FormSerializationWriterFactory);
-		registerDefaultSerializer(super.getSerializationWriterFactory(), MultipartSerializationWriterFactory);
-		registerDefaultDeserializer(super.getSerializationWriterFactory(), JsonParseNodeFactory);
-		registerDefaultDeserializer(super.getSerializationWriterFactory(), TextParseNodeFactory);
-		registerDefaultDeserializer(super.getSerializationWriterFactory(), FormParseNodeFactory);
+		registerDefaultSerializer(super.getSerializationWriterFactory() as SerializationWriterFactoryRegistry, JsonSerializationWriterFactory);
+		registerDefaultSerializer(super.getSerializationWriterFactory() as SerializationWriterFactoryRegistry, TextSerializationWriterFactory);
+		registerDefaultSerializer(super.getSerializationWriterFactory() as SerializationWriterFactoryRegistry, FormSerializationWriterFactory);
+		registerDefaultSerializer(super.getSerializationWriterFactory() as SerializationWriterFactoryRegistry, MultipartSerializationWriterFactory);
+		registerDefaultDeserializer(super.getParseNodeFactory() as ParseNodeFactoryRegistry, JsonParseNodeFactory);
+		registerDefaultDeserializer(super.getParseNodeFactory() as ParseNodeFactoryRegistry, TextParseNodeFactory);
+		registerDefaultDeserializer(super.getParseNodeFactory() as ParseNodeFactoryRegistry, FormParseNodeFactory);
 	}
 }

@@ -10,6 +10,7 @@ import type { ParsableFactory } from "./parsableFactory";
 import type { ModelSerializerFunction } from "./serializationFunctionTypes";
 import { SerializationWriterFactoryRegistry } from "./serializationWriterFactoryRegistry";
 import { ParseNodeFactoryRegistry } from "./parseNodeFactoryRegistry";
+import type { ParseNodeFactory } from "./parseNodeFactory";
 
 const jsonContentType = "application/json";
 /**
@@ -58,22 +59,22 @@ export function serializeCollectionToJsonAsString<T extends Parsable>(serializat
 
 /**
  * Deserializes a buffer into a parsable object
- * @param parseNodeFactoryRegistry the parse node factory registry
+ * @param parseNodeFactory the parse node factory for the content type
  * @param bufferOrString the value to serialize
  * @param factory the factory for the model type
  * @returns the deserialized parsable object
  */
-export function deserializeFromJson<T extends Parsable>(parseNodeFactoryRegistry: ParseNodeFactoryRegistry, bufferOrString: ArrayBuffer | string, factory: ParsableFactory<T>): Parsable {
-	return deserialize(parseNodeFactoryRegistry, jsonContentType, bufferOrString, factory);
+export function deserializeFromJson<T extends Parsable>(parseNodeFactory: ParseNodeFactory, bufferOrString: ArrayBuffer | string, factory: ParsableFactory<T>): Parsable {
+	return deserialize(parseNodeFactory, jsonContentType, bufferOrString, factory);
 }
 
 /**
  * Deserializes a buffer into a collection of parsable object
- * @param parseNodeFactoryRegistry the parse node factory registry
+ * @param parseNodeFactory the parse node factory for the content type
  * @param bufferOrString the value to serialize
  * @param factory the factory for the model type
  * @returns the deserialized collection of parsable objects
  */
-export function deserializeCollectionFromJson<T extends Parsable>(parseNodeFactoryRegistry: ParseNodeFactoryRegistry, bufferOrString: ArrayBuffer | string, factory: ParsableFactory<T>): T[] | undefined {
-	return deserializeCollection(parseNodeFactoryRegistry, jsonContentType, bufferOrString, factory);
+export function deserializeCollectionFromJson<T extends Parsable>(parseNodeFactory: ParseNodeFactory, bufferOrString: ArrayBuffer | string, factory: ParsableFactory<T>): T[] | undefined {
+	return deserializeCollection(parseNodeFactory, jsonContentType, bufferOrString, factory);
 }
