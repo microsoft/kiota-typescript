@@ -7,7 +7,7 @@
 import type { DateOnly } from "./dateOnly";
 import type { Duration } from "./duration";
 import { type RequestInformation } from "./requestInformation";
-import type { Parsable, ParsableFactory, SerializationWriterFactory } from "./serialization";
+import type { Parsable, ParsableFactory, ParseNodeFactory, SerializationWriterFactory } from "./serialization";
 import { type BackingStoreFactory } from "./store";
 import type { TimeOnly } from "./timeOnly";
 
