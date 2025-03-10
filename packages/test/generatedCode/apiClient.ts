@@ -13,6 +13,7 @@ import { JsonParseNodeFactory, JsonSerializationWriterFactory } from '@microsoft
 import { MultipartSerializationWriterFactory } from '@microsoft/kiota-serialization-multipart';
 // @ts-ignore
 import { TextParseNodeFactory, TextSerializationWriterFactory } from '@microsoft/kiota-serialization-text';
+import {ParseNodeFactoryRegistry, SerializationWriterFactory} from "@microsoft/kiota-abstractions/src";
 
 /**
  * The main entry point of the SDK, exposes the configuration and the fluent API.
@@ -29,13 +30,13 @@ export interface ApiClient extends BaseRequestBuilder<ApiClient> {
  */
 // @ts-ignore
 export function createApiClient(requestAdapter: RequestAdapter) {
-    registerDefaultSerializer(JsonSerializationWriterFactory);
-    registerDefaultSerializer(TextSerializationWriterFactory);
-    registerDefaultSerializer(FormSerializationWriterFactory);
-    registerDefaultSerializer(MultipartSerializationWriterFactory);
-    registerDefaultDeserializer(JsonParseNodeFactory);
-    registerDefaultDeserializer(TextParseNodeFactory);
-    registerDefaultDeserializer(FormParseNodeFactory);
+    registerDefaultSerializer(requestAdapter.getSerializationWriterFactory() as SerializationWriterFactory, JsonSerializationWriterFactory);
+    registerDefaultSerializer(requestAdapter.getSerializationWriterFactory() as SerializationWriterFactory, TextSerializationWriterFactory);
+    registerDefaultSerializer(requestAdapter.getSerializationWriterFactory() as SerializationWriterFactory, FormSerializationWriterFactory);
+    registerDefaultSerializer(requestAdapter.getSerializationWriterFactory() as SerializationWriterFactory, MultipartSerializationWriterFactory);
+    registerDefaultDeserializer(requestAdapter.getParseNodeFactory() as ParseNodeFactoryRegistry, JsonParseNodeFactory);
+    registerDefaultDeserializer(requestAdapter.getParseNodeFactory() as ParseNodeFactoryRegistry, TextParseNodeFactory);
+    registerDefaultDeserializer(requestAdapter.getParseNodeFactory() as ParseNodeFactoryRegistry, FormParseNodeFactory);
     if (requestAdapter.baseUrl === undefined || requestAdapter.baseUrl === "") {
         requestAdapter.baseUrl = "https://graph.microsoft.com/v1.0";
     }
