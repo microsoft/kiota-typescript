@@ -20,6 +20,9 @@ export class FetchRequestAdapter implements RequestAdapter {
 	public getSerializationWriterFactory(): SerializationWriterFactory {
 		return this.serializationWriterFactory;
 	}
+	public getParseNodeFactory(): ParseNodeFactory {
+		return this.parseNodeFactory;
+	}
 	private readonly observabilityOptions: ObservabilityOptionsImpl;
 	/**
 	 * Instantiates a new request adapter.
@@ -31,8 +34,8 @@ export class FetchRequestAdapter implements RequestAdapter {
 	 */
 	public constructor(
 		public readonly authenticationProvider: AuthenticationProvider,
-		private parseNodeFactory: ParseNodeFactory = ParseNodeFactoryRegistry.defaultInstance,
-		private serializationWriterFactory: SerializationWriterFactory = SerializationWriterFactoryRegistry.defaultInstance,
+		private parseNodeFactory: ParseNodeFactory = new ParseNodeFactoryRegistry(),
+		private serializationWriterFactory: SerializationWriterFactory = new SerializationWriterFactoryRegistry(),
 		private readonly httpClient: HttpClient = new HttpClient(),
 		observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl(),
 	) {
@@ -356,8 +359,8 @@ export class FetchRequestAdapter implements RequestAdapter {
 		});
 	};
 	public enableBackingStore = (backingStoreFactory?: BackingStoreFactory): void => {
-		this.parseNodeFactory = enableBackingStoreForParseNodeFactory(this.parseNodeFactory);
-		this.serializationWriterFactory = enableBackingStoreForSerializationWriterFactory(this.serializationWriterFactory);
+		this.parseNodeFactory = enableBackingStoreForParseNodeFactory(this.parseNodeFactory as ParseNodeFactoryRegistry, this.parseNodeFactory);
+		this.serializationWriterFactory = enableBackingStoreForSerializationWriterFactory(this.serializationWriterFactory as SerializationWriterFactoryRegistry, this.parseNodeFactory as ParseNodeFactoryRegistry, this.serializationWriterFactory);
 		if (!this.serializationWriterFactory || !this.parseNodeFactory) throw new Error("unable to enable backing store");
 		if (backingStoreFactory) {
 			BackingStoreFactorySingleton.instance = backingStoreFactory;

@@ -7,7 +7,7 @@
 import type { DateOnly } from "./dateOnly";
 import type { Duration } from "./duration";
 import { type RequestInformation } from "./requestInformation";
-import type { Parsable, ParsableFactory, SerializationWriterFactory } from "./serialization";
+import type { Parsable, ParsableFactory, ParseNodeFactory, SerializationWriterFactory } from "./serialization";
 import { type BackingStoreFactory } from "./store";
 import type { TimeOnly } from "./timeOnly";
 
@@ -18,6 +18,12 @@ export interface RequestAdapter {
 	 * @returns the serialization writer factory currently in use for the HTTP core service.
 	 */
 	getSerializationWriterFactory(): SerializationWriterFactory;
+
+	/**
+	 * Gets the parse node factory currently in use for the HTTP core service.
+	 * @returns the parse node factory currently in use for the HTTP core service.
+	 */
+	getParseNodeFactory(): ParseNodeFactory;
 	/**
 	 * Executes the HTTP request specified by the given RequestInformation and returns the deserialized response model.
 	 * @param requestInfo the request info to execute.

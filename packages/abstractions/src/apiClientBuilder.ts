@@ -9,28 +9,32 @@ import { BackingStoreParseNodeFactory, BackingStoreSerializationWriterProxyFacto
 
 /**
  * Registers the default serializer to the registry.
+ * @param serializationWriterFactoryRegistry The registry to which the default serializer will be registered.
  * @param type the class of the factory to be registered.
  */
-export function registerDefaultSerializer(type: new () => SerializationWriterFactory): void {
+export function registerDefaultSerializer(serializationWriterFactoryRegistry: SerializationWriterFactoryRegistry, type: new () => SerializationWriterFactory): void {
 	if (!type) throw new Error("Type is required");
 	const serializer = new type();
-	SerializationWriterFactoryRegistry.defaultInstance.contentTypeAssociatedFactories.set(serializer.getValidContentType(), serializer);
+	serializationWriterFactoryRegistry.contentTypeAssociatedFactories.set(serializer.getValidContentType(), serializer);
 }
 /**
  * Registers the default deserializer to the registry.
+ * @param parseNodeFactoryRegistry The registry to which the default deserializer will be registered.
  * @param type the class of the factory to be registered.
  */
-export function registerDefaultDeserializer(type: new () => ParseNodeFactory): void {
+export function registerDefaultDeserializer(parseNodeFactoryRegistry: ParseNodeFactoryRegistry, type: new () => ParseNodeFactory): void {
 	if (!type) throw new Error("Type is required");
 	const deserializer = new type();
-	ParseNodeFactoryRegistry.defaultInstance.contentTypeAssociatedFactories.set(deserializer.getValidContentType(), deserializer);
+	parseNodeFactoryRegistry.contentTypeAssociatedFactories.set(deserializer.getValidContentType(), deserializer);
 }
 /**
  * Enables the backing store on default serialization writers and the given serialization writer.
+ * @param serializationWriterFactoryRegistry The serialization writer factory registry to enable the backing store on.
+ * @param parseNodeFactoryRegistry The parse node factory registry to enable the backing store on.
  * @param original The serialization writer to enable the backing store on.
  * @returns A new serialization writer with the backing store enabled.
  */
-export function enableBackingStoreForSerializationWriterFactory(original: SerializationWriterFactory): SerializationWriterFactory {
+export function enableBackingStoreForSerializationWriterFactory(serializationWriterFactoryRegistry: SerializationWriterFactoryRegistry, parseNodeFactoryRegistry: ParseNodeFactoryRegistry, original: SerializationWriterFactory): SerializationWriterFactory {
 	if (!original) throw new Error("Original must be specified");
 	let result = original;
 	if (original instanceof SerializationWriterFactoryRegistry) {
@@ -38,16 +42,17 @@ export function enableBackingStoreForSerializationWriterFactory(original: Serial
 	} else {
 		result = new BackingStoreSerializationWriterProxyFactory(original);
 	}
-	enableBackingStoreForSerializationRegistry(SerializationWriterFactoryRegistry.defaultInstance);
-	enableBackingStoreForParseNodeRegistry(ParseNodeFactoryRegistry.defaultInstance);
+	enableBackingStoreForSerializationRegistry(serializationWriterFactoryRegistry);
+	enableBackingStoreForParseNodeRegistry(parseNodeFactoryRegistry);
 	return result;
 }
 /**
  * Enables the backing store on default parse node factories and the given parse node factory.
+ * @param parseNodeFactoryRegistry The parse node factory registry to enable the backing store on.
  * @param original The parse node factory to enable the backing store on.
  * @returns A new parse node factory with the backing store enabled.
  */
-export function enableBackingStoreForParseNodeFactory(original: ParseNodeFactory): ParseNodeFactory {
+export function enableBackingStoreForParseNodeFactory(parseNodeFactoryRegistry: ParseNodeFactoryRegistry, original: ParseNodeFactory): ParseNodeFactory {
 	if (!original) throw new Error("Original must be specified");
 	let result = original;
 	if (original instanceof ParseNodeFactoryRegistry) {
@@ -55,7 +60,7 @@ export function enableBackingStoreForParseNodeFactory(original: ParseNodeFactory
 	} else {
 		result = new BackingStoreParseNodeFactory(original);
 	}
-	enableBackingStoreForParseNodeRegistry(ParseNodeFactoryRegistry.defaultInstance);
+	enableBackingStoreForParseNodeRegistry(parseNodeFactoryRegistry);
 	return result;
 }
 /**

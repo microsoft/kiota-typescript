@@ -11,8 +11,6 @@ import type { ParseNodeFactory } from "./parseNodeFactory";
  * This factory holds a list of all the registered factories for the various types of nodes.
  */
 export class ParseNodeFactoryRegistry implements ParseNodeFactory {
-	/** Default singleton instance of the registry to be used when registring new factories that should be available by default. */
-	public static readonly defaultInstance = new ParseNodeFactoryRegistry();
 	public getValidContentType(): string {
 		throw new Error("The registry supports multiple content types. Get the registered factory instead.");
 	}
