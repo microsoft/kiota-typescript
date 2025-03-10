@@ -20,6 +20,9 @@ export class FetchRequestAdapter implements RequestAdapter {
 	public getSerializationWriterFactory(): SerializationWriterFactory {
 		return this.serializationWriterFactory;
 	}
+	public getParseNodeFactory(): ParseNodeFactory {
+		return this.parseNodeFactory;
+	}
 	private readonly observabilityOptions: ObservabilityOptionsImpl;
 	/**
 	 * Instantiates a new request adapter.
@@ -31,8 +34,8 @@ export class FetchRequestAdapter implements RequestAdapter {
 	 */
 	public constructor(
 		public readonly authenticationProvider: AuthenticationProvider,
-		private parseNodeFactory: ParseNodeFactory = ParseNodeFactoryRegistry.defaultInstance,
-		private serializationWriterFactory: SerializationWriterFactory = SerializationWriterFactoryRegistry.defaultInstance,
+		private parseNodeFactory: ParseNodeFactory = new ParseNodeFactoryRegistry(),
+		private serializationWriterFactory: SerializationWriterFactory = new SerializationWriterFactoryRegistry(),
 		private readonly httpClient: HttpClient = new HttpClient(),
 		observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl(),
 	) {

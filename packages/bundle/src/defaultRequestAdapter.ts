@@ -24,18 +24,18 @@ export class DefaultRequestAdapter extends FetchRequestAdapter {
 	 * @param httpClient the http client to use to execute requests.
 	 * @param observabilityOptions the observability options to use.
 	 */
-	public constructor(authenticationProvider: AuthenticationProvider, parseNodeFactory: ParseNodeFactory = ParseNodeFactoryRegistry.defaultInstance, serializationWriterFactory: SerializationWriterFactory = SerializationWriterFactoryRegistry.defaultInstance, httpClient: HttpClient = new HttpClient(), observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()) {
+	public constructor(authenticationProvider: AuthenticationProvider, parseNodeFactory: ParseNodeFactory = new ParseNodeFactoryRegistry(), serializationWriterFactory: SerializationWriterFactory = new SerializationWriterFactoryRegistry(), httpClient: HttpClient = new HttpClient(), observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()) {
 		super(authenticationProvider, parseNodeFactory, serializationWriterFactory, httpClient, observabilityOptions);
-		DefaultRequestAdapter.setupDefaults();
+		this.setupDefaults();
 	}
 
-	private static setupDefaults() {
-		registerDefaultSerializer(JsonSerializationWriterFactory);
-		registerDefaultSerializer(TextSerializationWriterFactory);
-		registerDefaultSerializer(FormSerializationWriterFactory);
-		registerDefaultSerializer(MultipartSerializationWriterFactory);
-		registerDefaultDeserializer(JsonParseNodeFactory);
-		registerDefaultDeserializer(TextParseNodeFactory);
-		registerDefaultDeserializer(FormParseNodeFactory);
+	private setupDefaults() {
+		registerDefaultSerializer(super.getSerializationWriterFactory(), JsonSerializationWriterFactory);
+		registerDefaultSerializer(super.getSerializationWriterFactory(), TextSerializationWriterFactory);
+		registerDefaultSerializer(super.getSerializationWriterFactory(), FormSerializationWriterFactory);
+		registerDefaultSerializer(super.getSerializationWriterFactory(), MultipartSerializationWriterFactory);
+		registerDefaultDeserializer(super.getSerializationWriterFactory(), JsonParseNodeFactory);
+		registerDefaultDeserializer(super.getSerializationWriterFactory(), TextParseNodeFactory);
+		registerDefaultDeserializer(super.getSerializationWriterFactory(), FormParseNodeFactory);
 	}
 }

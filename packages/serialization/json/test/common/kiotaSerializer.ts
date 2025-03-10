@@ -34,59 +34,55 @@ describe("kiotaSerializer", () => {
 		assert.throws(() => deserializeCollection(jsonContentType, "{}", undefined as unknown as ParsableFactory<TestBackedModel>));
 	});
 	it("Serializes an object", () => {
-		registerMockSerializer(`{"id": "123"}`);
+		const serializationWriterFactoryRegistry = new SerializationWriterFactoryRegistry();
+		registerMockSerializer(serializationWriterFactoryRegistry, `{"id": "123"}`);
 		const testEntity = {
 			id: "123",
 		} as TestBackedModel;
 
-		const result = serializeToJsonAsString(testEntity, serializeTestBackModel);
+		const result = serializeToJsonAsString(serializationWriterFactoryRegistry, testEntity, serializeTestBackModel);
 
 		assert.equal(result, `{"id": "123"}`);
-
-		SerializationWriterFactoryRegistry.defaultInstance.contentTypeAssociatedFactories.clear();
 	});
 	it("Serializes a collection", () => {
-		registerMockSerializer(`[{"id": "123"}]`);
+		const serializationWriterFactoryRegistry = new SerializationWriterFactoryRegistry();
+		registerMockSerializer(serializationWriterFactoryRegistry, `[{"id": "123"}]`);
 		const testEntity = {
 			id: "123",
 		} as TestBackedModel;
 
-		const result = serializeCollectionToJsonAsString([testEntity], serializeTestBackModel);
+		const result = serializeCollectionToJsonAsString(serializationWriterFactoryRegistry, [testEntity], serializeTestBackModel);
 
 		assert.equal(result, `[{"id": "123"}]`);
-
-		SerializationWriterFactoryRegistry.defaultInstance.contentTypeAssociatedFactories.clear();
 	});
 	it("Deserializes an object", () => {
-		registerMockParseNode({
+		const parseNodeFactoryRegistry = new ParseNodeFactoryRegistry();
+		registerMockParseNode(parseNodeFactoryRegistry, {
 			id: "123",
 		} as TestBackedModel);
-		const result = deserializeFromJson(`{"id": "123"}`, createTestBackedModelFromDiscriminatorValue);
+		const result = deserializeFromJson(parseNodeFactoryRegistry, `{"id": "123"}`, createTestBackedModelFromDiscriminatorValue);
 
 		assert.deepEqual(result, {
 			id: "123",
 		} as TestBackedModel);
-
-		ParseNodeFactoryRegistry.defaultInstance.contentTypeAssociatedFactories.clear();
 	});
 	it("Deserializes a collection", () => {
-		registerMockParseNode([
+		const parseNodeFactoryRegistry = new ParseNodeFactoryRegistry();
+		registerMockParseNode(parseNodeFactoryRegistry, [
 			{
 				id: "123",
 			} as TestBackedModel,
 		]);
-		const result = deserializeFromJson(`[{"id": "123"}]`, createTestBackedModelFromDiscriminatorValue);
+		const result = deserializeFromJson(parseNodeFactoryRegistry, `[{"id": "123"}]`, createTestBackedModelFromDiscriminatorValue);
 
 		assert.deepEqual(result, [
 			{
 				id: "123",
 			} as TestBackedModel,
 		]);
-
-		ParseNodeFactoryRegistry.defaultInstance.contentTypeAssociatedFactories.clear();
 	});
 });
-function registerMockParseNode(value: unknown): void {
+function registerMockParseNode(parseNodeFactoryRegistry: ParseNodeFactoryRegistry, value: unknown): void {
 	const mockParseNode = {
 		getObjectValue<T extends Parsable>(
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -111,9 +107,9 @@ function registerMockParseNode(value: unknown): void {
 			return mockParseNode;
 		},
 	} as unknown as ParseNodeFactory;
-	ParseNodeFactoryRegistry.defaultInstance.contentTypeAssociatedFactories.set(jsonContentType, mockParseNodeFactory);
+	parseNodeFactoryRegistry.contentTypeAssociatedFactories.set(jsonContentType, mockParseNodeFactory);
 }
-function registerMockSerializer(value: string): void {
+function registerMockSerializer(serializationWriterFactoryRegistry: SerializationWriterFactoryRegistry, value: string): void {
 	const mockSerializationWriter = {
 		getSerializedContent(): ArrayBuffer {
 			const encoder = new TextEncoder();
@@ -146,5 +142,5 @@ function registerMockSerializer(value: string): void {
 			return mockSerializationWriter;
 		},
 	} as unknown as SerializationWriterFactory;
-	SerializationWriterFactoryRegistry.defaultInstance.contentTypeAssociatedFactories.set(jsonContentType, mockSerializationWriterFactory);
+	serializationWriterFactoryRegistry.contentTypeAssociatedFactories.set(jsonContentType, mockSerializationWriterFactory);
 }
