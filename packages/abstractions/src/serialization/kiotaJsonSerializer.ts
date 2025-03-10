@@ -9,7 +9,6 @@ import type { Parsable } from "./parsable";
 import type { ParsableFactory } from "./parsableFactory";
 import type { ModelSerializerFunction } from "./serializationFunctionTypes";
 import { SerializationWriterFactoryRegistry } from "./serializationWriterFactoryRegistry";
-import { ParseNodeFactoryRegistry } from "./parseNodeFactoryRegistry";
 import type { ParseNodeFactory } from "./parseNodeFactory";
 
 const jsonContentType = "application/json";
