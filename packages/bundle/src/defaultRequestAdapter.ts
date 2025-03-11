@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { AuthenticationProvider, ParseNodeFactory, ParseNodeFactoryRegistry, registerDefaultDeserializer, registerDefaultSerializer, SerializationWriterFactory, SerializationWriterFactoryRegistry } from "@microsoft/kiota-abstractions";
+import { AuthenticationProvider, ParseNodeFactory, ParseNodeFactoryRegistry, SerializationWriterFactory, SerializationWriterFactoryRegistry } from "@microsoft/kiota-abstractions";
 import { FormParseNodeFactory, FormSerializationWriterFactory } from "@microsoft/kiota-serialization-form";
 import { JsonParseNodeFactory, JsonSerializationWriterFactory } from "@microsoft/kiota-serialization-json";
 import { MultipartSerializationWriterFactory } from "@microsoft/kiota-serialization-multipart";
@@ -30,12 +30,26 @@ export class DefaultRequestAdapter extends FetchRequestAdapter {
 	}
 
 	private setupDefaults() {
-		registerDefaultSerializer(super.getSerializationWriterFactory() as SerializationWriterFactoryRegistry, JsonSerializationWriterFactory);
-		registerDefaultSerializer(super.getSerializationWriterFactory() as SerializationWriterFactoryRegistry, TextSerializationWriterFactory);
-		registerDefaultSerializer(super.getSerializationWriterFactory() as SerializationWriterFactoryRegistry, FormSerializationWriterFactory);
-		registerDefaultSerializer(super.getSerializationWriterFactory() as SerializationWriterFactoryRegistry, MultipartSerializationWriterFactory);
-		registerDefaultDeserializer(super.getParseNodeFactory() as ParseNodeFactoryRegistry, JsonParseNodeFactory);
-		registerDefaultDeserializer(super.getParseNodeFactory() as ParseNodeFactoryRegistry, TextParseNodeFactory);
-		registerDefaultDeserializer(super.getParseNodeFactory() as ParseNodeFactoryRegistry, FormParseNodeFactory);
+		let parseNodeFactoryRegistry: ParseNodeFactoryRegistry;
+		if (super.getParseNodeFactory() instanceof ParseNodeFactoryRegistry) {
+			parseNodeFactoryRegistry = super.getParseNodeFactory() as ParseNodeFactoryRegistry;
+		} else {
+			throw new Error("ParseNodeFactory must be a ParseNodeFactoryRegistry");
+		}
+
+		let serializationWriterFactoryRegistry: SerializationWriterFactoryRegistry;
+		if (super.getSerializationWriterFactory() instanceof SerializationWriterFactoryRegistry) {
+			serializationWriterFactoryRegistry = super.getSerializationWriterFactory() as SerializationWriterFactoryRegistry;
+		} else {
+			throw new Error("SerializationWriterFactory must be a SerializationWriterFactoryRegistry");
+		}
+
+		serializationWriterFactoryRegistry.registerDefaultSerializer(JsonSerializationWriterFactory);
+		serializationWriterFactoryRegistry.registerDefaultSerializer(TextSerializationWriterFactory);
+		serializationWriterFactoryRegistry.registerDefaultSerializer(FormSerializationWriterFactory);
+		serializationWriterFactoryRegistry.registerDefaultSerializer(MultipartSerializationWriterFactory);
+		parseNodeFactoryRegistry.registerDefaultDeserializer(JsonParseNodeFactory);
+		parseNodeFactoryRegistry.registerDefaultDeserializer(TextParseNodeFactory);
+		parseNodeFactoryRegistry.registerDefaultDeserializer(FormParseNodeFactory);
 	}
 }
