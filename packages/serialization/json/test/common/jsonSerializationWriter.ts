@@ -68,7 +68,7 @@ describe("JsonParseNode", () => {
 					},
 				},
 			},
-			testDate: testDate.toISOString(),
+			testDate: testDate,
 		});
 	});
 
