@@ -10,11 +10,15 @@ import { Parsable } from "./parsable";
 import type { ParsableFactory } from "./parsableFactory";
 import { BackingStoreParseNodeFactory } from "../store";
 
-const jsonContentType = "application/json";
 /**
  * This factory holds a list of all the registered factories for the various types of nodes.
  */
 export class ParseNodeFactoryRegistry implements ParseNodeFactory {
+	/**
+	 * The content type for JSON data.
+	 */
+	private readonly jsonContentType = "application/json";
+
 	public getValidContentType(): string {
 		throw new Error("The registry supports multiple content types. Get the registered factory instead.");
 	}
@@ -84,7 +88,7 @@ export class ParseNodeFactoryRegistry implements ParseNodeFactory {
 	 * @returns the deserialized parsable object
 	 */
 	public deserializeFromJson<T extends Parsable>(bufferOrString: ArrayBuffer | string, factory: ParsableFactory<T>): Parsable {
-		return this.deserialize(jsonContentType, bufferOrString, factory);
+		return this.deserialize(this.jsonContentType, bufferOrString, factory);
 	}
 
 	/**
@@ -94,7 +98,7 @@ export class ParseNodeFactoryRegistry implements ParseNodeFactory {
 	 * @returns the deserialized collection of parsable objects
 	 */
 	public deserializeCollectionFromJson<T extends Parsable>(bufferOrString: ArrayBuffer | string, factory: ParsableFactory<T>): T[] | undefined {
-		return this.deserializeCollection(jsonContentType, bufferOrString, factory);
+		return this.deserializeCollection(this.jsonContentType, bufferOrString, factory);
 	}
 
 	/**

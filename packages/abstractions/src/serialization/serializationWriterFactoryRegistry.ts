@@ -10,9 +10,13 @@ import type { Parsable } from "./parsable";
 import type { ModelSerializerFunction } from "./serializationFunctionTypes";
 import { BackingStoreSerializationWriterProxyFactory } from "../store";
 
-const jsonContentType = "application/json";
 /** This factory holds a list of all the registered factories for the various types of nodes. */
 export class SerializationWriterFactoryRegistry implements SerializationWriterFactory {
+	/**
+	 * The content type for JSON data.
+	 */
+	private readonly jsonContentType = "application/json";
+
 	public getValidContentType(): string {
 		throw new Error("The registry supports multiple content types. Get the registered factory instead.");
 	}
@@ -63,7 +67,7 @@ export class SerializationWriterFactoryRegistry implements SerializationWriterFa
 	 * @returns a buffer containing the serialized value
 	 */
 	public serializeToJson<T extends Parsable>(value: T, serializationFunction: ModelSerializerFunction<T>): ArrayBuffer {
-		return this.serialize(jsonContentType, value, serializationFunction);
+		return this.serialize(this.jsonContentType, value, serializationFunction);
 	}
 
 	/**
@@ -73,7 +77,7 @@ export class SerializationWriterFactoryRegistry implements SerializationWriterFa
 	 * @returns a string representing the serialized value
 	 */
 	public serializeToJsonAsString<T extends Parsable>(value: T, serializationFunction: ModelSerializerFunction<T>): string {
-		return this.serializeToString(jsonContentType, value, serializationFunction);
+		return this.serializeToString(this.jsonContentType, value, serializationFunction);
 	}
 
 	/**
@@ -83,7 +87,7 @@ export class SerializationWriterFactoryRegistry implements SerializationWriterFa
 	 * @returns a string representing the serialized value
 	 */
 	public serializeCollectionToJson<T extends Parsable>(values: T[], serializationFunction: ModelSerializerFunction<T>): ArrayBuffer {
-		return this.serializeCollection(jsonContentType, values, serializationFunction);
+		return this.serializeCollection(this.jsonContentType, values, serializationFunction);
 	}
 
 	/**
@@ -93,7 +97,7 @@ export class SerializationWriterFactoryRegistry implements SerializationWriterFa
 	 * @returns a string representing the serialized value
 	 */
 	public serializeCollectionToJsonAsString<T extends Parsable>(values: T[], serializationFunction: ModelSerializerFunction<T>): string {
-		return this.serializeCollectionToString(jsonContentType, values, serializationFunction);
+		return this.serializeCollectionToString(this.jsonContentType, values, serializationFunction);
 	}
 
 	/**
