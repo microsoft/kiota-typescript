@@ -8,7 +8,7 @@
 import { assert, describe, it } from "vitest";
 import { JsonParseNode } from "../../src/index";
 import { createTestParserFromDiscriminatorValue, type TestBackedModel, createTestBackedModelFromDiscriminatorValue, type TestParser, TestUnionObject, BarResponse } from "./testEntity";
-import { UntypedTestEntity, createUntypedTestEntityFromDiscriminatorValue } from "./untypedTestEntiy";
+import { UntypedTestEntity, createUntypedTestEntityFromDiscriminatorValue } from "./untypedTestEntity";
 import { UntypedNode, UntypedObject, isUntypedArray, isUntypedBoolean, isUntypedNode, isUntypedNumber, isUntypedObject } from "@microsoft/kiota-abstractions";
 
 describe("JsonParseNode", () => {
