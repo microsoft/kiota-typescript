@@ -146,14 +146,14 @@ export function deserializeBarParser(barResponse: BarResponse | undefined = {}):
 
 export function serializeTestObject(writer: SerializationWriter, entity: { additionalData?: Record<string, unknown> } | undefined | null = {}): void {
 	if (!entity) {
-    return;
-  }
-  writer.writeAdditionalData(entity.additionalData);
+		return;
+	}
+	writer.writeAdditionalData(entity.additionalData);
 }
 export function serializeTestParser(writer: SerializationWriter, entity: TestParser | undefined | null = {}): void {
-  if (!entity) {
-    return;
-  }
+	if (!entity) {
+		return;
+	}
 	writer.writeStringValue("id", entity.id);
 	writer.writeCollectionOfPrimitiveValues("testCollection", entity.testCollection);
 	writer.writeStringValue("testString", entity.testString);
@@ -177,26 +177,26 @@ export function serializeTestParser(writer: SerializationWriter, entity: TestPar
 }
 
 export function serializeFoo(writer: SerializationWriter, entity: FooResponse | undefined | null = {}): void {
-  if (!entity) {
-    return;
-  }
+	if (!entity) {
+		return;
+	}
 	writer.writeStringValue("id", entity.id);
 	writer.writeCollectionOfObjectValues("bars", entity.bars, serializeBar);
 }
 
 export function serializeBar(writer: SerializationWriter, entity: BarResponse | undefined | null = {}): void {
-  if (!entity) {
-    return;
-  }
+	if (!entity) {
+		return;
+	}
 	writer.writeStringValue("propA", entity.propA);
 	writer.writeStringValue("propB", entity.propB);
 	writer.writeDateValue("propC", entity.propC);
 }
 
 export function serializeTestBackModel(writer: SerializationWriter, entity: TestBackedModel | undefined | null = {}): void {
-  if (!entity) {
-    return;
-  }
+	if (!entity) {
+		return;
+	}
 	serializeTestParser(writer, entity);
 }
 
@@ -214,9 +214,9 @@ export function deserializeIntoTestUnionObject(fooBar: Partial<TestUnionObject> 
 }
 
 export function serializeTestUnionObject(writer: SerializationWriter, fooBar: Partial<TestUnionObject> | undefined | null = {}): void {
-  if (!fooBar) {
-    return;
-  }
+	if (!fooBar) {
+		return;
+	}
 	serializeFoo(writer, fooBar as FooResponse);
 	serializeBar(writer, fooBar as BarResponse);
 }
