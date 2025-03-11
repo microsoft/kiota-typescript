@@ -36,7 +36,14 @@ describe("JsonParseNode", () => {
 			},
 			testDate,
 		};
-		const expectedObject: TestParser = {
+
+		const writer = new JsonSerializationWriter();
+		writer.writeObjectValue("", inputObject, serializeTestParser);
+		const serializedContent = writer.getSerializedContent();
+		const decoder = new TextDecoder();
+		const contentAsStr = decoder.decode(serializedContent);
+		const result = JSON.parse(contentAsStr);
+		assert.deepEqual(result, {
 			testCollection: ["2", "3"],
 			testString: "test",
 			testComplexString: "A more \"complex\" string with \r\nlinebreaks and 'weird' characters",
@@ -46,17 +53,23 @@ describe("JsonParseNode", () => {
 					someValue: 123,
 				},
 			},
-			testDate,
-		};
-
-		const writer = new JsonSerializationWriter();
-		writer.writeObjectValue("", inputObject, serializeTestParser);
-		const serializedContent = writer.getSerializedContent();
-		const decoder = new TextDecoder();
-		const contentAsStr = decoder.decode(serializedContent);
-		const result = JSON.parse(contentAsStr);
-		const stringValueResult = new JsonParseNode(result).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
-		assert.deepEqual(stringValueResult, expectedObject);
+			testDate: testDate.toISOString(),
+		});
+		const parsedValueResult = new JsonParseNode(result).getObjectValue(createTestParserFromDiscriminatorValue);
+		assert.deepEqual(parsedValueResult as object, {
+			testCollection: ["2", "3"],
+			testString: "test",
+			testComplexString: "A more \"complex\" string with \r\nlinebreaks and 'weird' characters",
+			testObject: {
+				additionalData: {
+					testObjectName: "str",
+					testObjectProp: {
+						someValue: 123,
+					},
+				},
+			},
+			testDate: testDate.toISOString(),
+		});
 	});
 
 	it("Test enum serialization", async () => {

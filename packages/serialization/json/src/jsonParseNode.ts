@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { DateOnly, Duration, TimeOnly, UntypedNode, createBackedModelProxyHandler, createUntypedArray, createUntypedBoolean, createUntypedNodeFromDiscriminatorValue, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString, inNodeEnv, isBackingStoreEnabled, isUntypedNode, parseGuidString, getEnumValueFromStringValue, type Parsable, type ParsableFactory, type ParseNode } from "@microsoft/kiota-abstractions";
+import { DateOnly, Duration, TimeOnly, UntypedNode, createBackedModelProxyHandler, createUntypedArray, createUntypedBoolean, createUntypedNodeFromDiscriminatorValue, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString, inNodeEnv, isBackingStoreEnabled, isUntypedNode, parseGuidString, getEnumValueFromStringValue, type Parsable, type ParsableFactory, type ParseNode, AdditionalDataHolder } from "@microsoft/kiota-abstractions";
 export class JsonParseNode implements ParseNode {
 	constructor(private readonly _jsonNode: unknown) {}
 	public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
@@ -108,8 +108,11 @@ export class JsonParseNode implements ParseNode {
 			if (deserializer) {
 				deserializer(new JsonParseNode(v));
 			} else {
+				// there is no real way to test if the model is actually a holder or not
 				// additional properties
-				(model as Record<string, unknown>)[k] = v;
+				const modelDataHolder = model as AdditionalDataHolder;
+				modelDataHolder.additionalData ??= {} as Record<string, unknown>;
+				modelDataHolder.additionalData[k] = v;
 			}
 		});
 	};
