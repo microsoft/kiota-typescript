@@ -14,6 +14,9 @@ export class BackingStoreParseNodeFactory extends ParseNodeProxyFactory {
 	 * @param concrete the concrete implementation of the ParseNodeFactory
 	 */
 	public constructor(concrete: ParseNodeFactory) {
+		if (!concrete) {
+			throw new Error("Concrete ParseNodeFactory implementation is required");
+		}
 		super(
 			concrete,
 			(value) => {
