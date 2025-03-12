@@ -4,7 +4,7 @@
 // @ts-ignore
 import { type UsersRequestBuilder, UsersRequestBuilderNavigationMetadata } from './users/index.js';
 // @ts-ignore
-import { apiClientProxifier, registerDefaultDeserializer, registerDefaultSerializer, type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type RequestAdapter } from '@microsoft/kiota-abstractions';
+import { apiClientProxifier, type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type RequestAdapter, ParseNodeFactoryRegistry, SerializationWriterFactoryRegistry } from '@microsoft/kiota-abstractions';
 // @ts-ignore
 import { FormParseNodeFactory, FormSerializationWriterFactory } from '@microsoft/kiota-serialization-form';
 // @ts-ignore
@@ -13,10 +13,6 @@ import { JsonParseNodeFactory, JsonSerializationWriterFactory } from '@microsoft
 import { MultipartSerializationWriterFactory } from '@microsoft/kiota-serialization-multipart';
 // @ts-ignore
 import { TextParseNodeFactory, TextSerializationWriterFactory } from '@microsoft/kiota-serialization-text';
-import {
-  ParseNodeFactoryRegistry,
-  SerializationWriterFactoryRegistry
-} from "@microsoft/kiota-abstractions/src";
 
 /**
  * The main entry point of the SDK, exposes the configuration and the fluent API.
@@ -50,13 +46,13 @@ export function createApiClient(requestAdapter: RequestAdapter) {
       throw new Error("serializationWriterFactory is not an instance of SerializationWriterFactory");
     }
 
-      serializationWriterFactory.registerDefaultSerializer( JsonSerializationWriterFactory);
-      serializationWriterFactory.registerDefaultSerializer( TextSerializationWriterFactory);
-      serializationWriterFactory.registerDefaultSerializer( FormSerializationWriterFactory);
-      serializationWriterFactory.registerDefaultSerializer( MultipartSerializationWriterFactory);
-      parseNodeFactoryRegistry.registerDefaultDeserializer( JsonParseNodeFactory);
-      parseNodeFactoryRegistry.registerDefaultDeserializer( TextParseNodeFactory);
-      parseNodeFactoryRegistry.registerDefaultDeserializer( FormParseNodeFactory);
+    serializationWriterFactory.registerDefaultSerializer(JsonSerializationWriterFactory);
+    serializationWriterFactory.registerDefaultSerializer(TextSerializationWriterFactory);
+    serializationWriterFactory.registerDefaultSerializer(FormSerializationWriterFactory);
+    serializationWriterFactory.registerDefaultSerializer(MultipartSerializationWriterFactory);
+    parseNodeFactoryRegistry.registerDefaultDeserializer(JsonParseNodeFactory);
+    parseNodeFactoryRegistry.registerDefaultDeserializer(TextParseNodeFactory);
+    parseNodeFactoryRegistry.registerDefaultDeserializer(FormParseNodeFactory);
     if (requestAdapter.baseUrl === undefined || requestAdapter.baseUrl === "") {
         requestAdapter.baseUrl = "https://graph.microsoft.com/v1.0";
     }

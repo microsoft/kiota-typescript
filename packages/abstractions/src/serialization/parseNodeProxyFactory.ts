@@ -19,7 +19,7 @@ export abstract class ParseNodeProxyFactory implements ParseNodeFactory {
 	 * @param _onBefore the callback to invoke before the deserialization of any model object.
 	 * @param _onAfter the callback to invoke after the deserialization of any model object.
 	 */
-	protected constructor(
+	constructor(
 		private readonly _concrete: ParseNodeFactory,
 		private readonly _onBefore: (value: Parsable) => void,
 		private readonly _onAfter: (value: Parsable) => void,

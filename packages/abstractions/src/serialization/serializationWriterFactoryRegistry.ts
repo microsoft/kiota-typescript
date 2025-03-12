@@ -9,6 +9,7 @@ import type { SerializationWriterFactory } from "./serializationWriterFactory";
 import type { Parsable } from "./parsable";
 import type { ModelSerializerFunction } from "./serializationFunctionTypes";
 import { BackingStoreSerializationWriterProxyFactory } from "../store";
+import { ParseNodeFactoryRegistry } from "./parseNodeFactoryRegistry";
 
 /** This factory holds a list of all the registered factories for the various types of nodes. */
 export class SerializationWriterFactoryRegistry implements SerializationWriterFactory {
@@ -177,4 +178,23 @@ export class SerializationWriterFactoryRegistry implements SerializationWriterFa
 		const decoder = new TextDecoder();
 		return decoder.decode(buffer);
 	}
+
+	/**
+	 * Enables the backing store on default serialization writers and the given serialization writer.
+	 * @param parseNodeFactoryRegistry The parse node factory registry to enable the backing store on.
+	 * @param original The serialization writer to enable the backing store on.
+	 * @returns A new serialization writer with the backing store enabled.
+	 */
+	public enableBackingStoreForSerializationWriterFactory = (parseNodeFactoryRegistry: ParseNodeFactoryRegistry, original: SerializationWriterFactory): SerializationWriterFactory => {
+		if (!original) throw new Error("Original must be specified");
+		let result = original;
+		if (original instanceof SerializationWriterFactoryRegistry) {
+			original.enableBackingStoreForSerializationRegistry();
+		} else {
+			result = new BackingStoreSerializationWriterProxyFactory(original);
+		}
+		this.enableBackingStoreForSerializationRegistry();
+		parseNodeFactoryRegistry.enableBackingStoreForParseNodeRegistry();
+		return result;
+	};
 }

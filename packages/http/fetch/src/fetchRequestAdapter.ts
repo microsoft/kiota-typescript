@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, BackingStoreFactorySingleton, type DateOnly, DefaultApiError, type Duration, enableBackingStoreForSerializationWriterFactory, type ErrorMappings, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type PrimitiveTypesForDeserialization, type PrimitiveTypesForDeserializationType, type RequestAdapter, type RequestInformation, type ResponseHandler, type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
+import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, BackingStoreFactorySingleton, type DateOnly, DefaultApiError, type Duration, type ErrorMappings, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type PrimitiveTypesForDeserialization, type PrimitiveTypesForDeserializationType, type RequestAdapter, type RequestInformation, type ResponseHandler, type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
 import { type Span, SpanStatusCode, trace } from "@opentelemetry/api";
 
 import { HttpClient } from "./httpClient";
@@ -365,7 +365,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 			throw new Error("parseNodeFactory is not a ParseNodeFactoryRegistry");
 		}
 		if (this.serializationWriterFactory instanceof SerializationWriterFactoryRegistry && this.parseNodeFactory instanceof ParseNodeFactoryRegistry) {
-			this.serializationWriterFactory = enableBackingStoreForSerializationWriterFactory(this.serializationWriterFactory, this.parseNodeFactory, this.serializationWriterFactory);
+			this.serializationWriterFactory = this.serializationWriterFactory.enableBackingStoreForSerializationWriterFactory(this.parseNodeFactory, this.serializationWriterFactory);
 		} else {
 			throw new Error("serializationWriterFactory is not a SerializationWriterFactoryRegistry or parseNodeFactory is not a ParseNodeFactoryRegistry");
 		}
