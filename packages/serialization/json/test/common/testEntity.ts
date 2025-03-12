@@ -69,42 +69,53 @@ export function createBarParserFromDiscriminatorValue(parseNode: ParseNode | und
 	return deserializeBarParser;
 }
 
+export function createTestObjectFromDiscriminatorValue(parseNode: ParseNode | undefined) {
+	if (!parseNode) throw new Error("parseNode cannot be undefined");
+	return deserializeTestObject;
+}
+export function deserializeTestObject(testObject: { additionalData?: Record<string, unknown> } | undefined = {}): Record<string, (node: ParseNode) => void> {
+	return {};
+}
+
 export function deserializeTestParser(testParser: TestParser | undefined = {}): Record<string, (node: ParseNode) => void> {
 	return {
-		testCollection: (n) => {
+		"testObject": (n) => {
+			testParser.testObject = n.getObjectValue<{ additionalData?: Record<string, unknown> }>(createTestObjectFromDiscriminatorValue);
+		},
+		"testCollection": (n) => {
 			testParser.testCollection = n.getCollectionOfPrimitiveValues();
 		},
-		testString: (n) => {
+		"testString": (n) => {
 			testParser.testString = n.getStringValue();
 		},
-		testBoolean: (n) => {
+		"testBoolean": (n) => {
 			testParser.testBoolean = n.getBooleanValue();
 		},
-		textComplexString: (n) => {
+		"testComplexString": (n) => {
 			testParser.testComplexString = n.getStringValue();
 		},
-		testDate: (n) => {
+		"testDate": (n) => {
 			testParser.testDate = n.getDateValue();
 		},
-		foos: (n) => {
+		"foos": (n) => {
 			testParser.foos = n.getCollectionOfObjectValues(createFooParserFromDiscriminatorValue);
 		},
-		id: (n) => {
+		"id": (n) => {
 			testParser.id = n.getStringValue();
 		},
-		testNumber: (n) => {
+		"testNumber": (n) => {
 			testParser.testNumber = n.getNumberValue();
 		},
-		testGuid: (n) => {
+		"testGuid": (n) => {
 			testParser.testGuid = n.getGuidValue();
 		},
-		testUnionObject: (n) => {
+		"testUnionObject": (n) => {
 			testParser.testUnionObject = n.getStringValue() ?? n.getNumberValue() ?? n.getObjectValue(createTestUnionObjectFromDiscriminatorValue);
 		},
-		status: (n) => {
+		"status": (n) => {
 			testParser.status = n.getEnumValue<LongRunningOperationStatus>(LongRunningOperationStatusObject);
 		},
-		nextStatuses: (n) => {
+		"nextStatuses": (n) => {
 			testParser.nextStatuses = n.getCollectionOfEnumValues<LongRunningOperationStatus>(LongRunningOperationStatusObject);
 		},
 	};
@@ -112,7 +123,7 @@ export function deserializeTestParser(testParser: TestParser | undefined = {}): 
 
 export function deserializeTestBackedModel(testParser: TestBackedModel | undefined = {}): Record<string, (node: ParseNode) => void> {
 	return {
-		backingStoreEnabled: (n) => {
+		"backingStoreEnabled": (n) => {
 			testParser.backingStoreEnabled = true;
 		},
 		...deserializeTestParser(testParser),
@@ -121,10 +132,10 @@ export function deserializeTestBackedModel(testParser: TestBackedModel | undefin
 
 export function deserializeFooParser(fooResponse: FooResponse | undefined = {}): Record<string, (node: ParseNode) => void> {
 	return {
-		id: (n) => {
+		"id": (n) => {
 			fooResponse.id = n.getStringValue();
 		},
-		bars: (n) => {
+		"bars": (n) => {
 			fooResponse.bars = n.getCollectionOfObjectValues(createBarParserFromDiscriminatorValue);
 		},
 	};
@@ -132,22 +143,28 @@ export function deserializeFooParser(fooResponse: FooResponse | undefined = {}):
 
 export function deserializeBarParser(barResponse: BarResponse | undefined = {}): Record<string, (node: ParseNode) => void> {
 	return {
-		propA: (n) => {
+		"propA": (n) => {
 			barResponse.propA = n.getStringValue();
 		},
-		propB: (n) => {
+		"propB": (n) => {
 			barResponse.propB = n.getStringValue();
 		},
-		propC: (n) => {
+		"propC": (n) => {
 			barResponse.propC = n.getDateValue();
 		},
 	};
 }
 
-export function serializeTestObject(writer: SerializationWriter, entity: { additionalData?: Record<string, unknown> } | undefined = {}): void {
+export function serializeTestObject(writer: SerializationWriter, entity: { additionalData?: Record<string, unknown> } | undefined | null = {}): void {
+	if (!entity) {
+		return;
+	}
 	writer.writeAdditionalData(entity.additionalData);
 }
-export function serializeTestParser(writer: SerializationWriter, entity: TestParser | undefined = {}): void {
+export function serializeTestParser(writer: SerializationWriter, entity: TestParser | undefined | null = {}): void {
+	if (!entity) {
+		return;
+	}
 	writer.writeStringValue("id", entity.id);
 	writer.writeCollectionOfPrimitiveValues("testCollection", entity.testCollection);
 	writer.writeStringValue("testString", entity.testString);
@@ -170,18 +187,27 @@ export function serializeTestParser(writer: SerializationWriter, entity: TestPar
 	writer.writeCollectionOfEnumValues("nextStatuses", entity.nextStatuses);
 }
 
-export function serializeFoo(writer: SerializationWriter, entity: FooResponse | undefined = {}): void {
+export function serializeFoo(writer: SerializationWriter, entity: FooResponse | undefined | null = {}): void {
+	if (!entity) {
+		return;
+	}
 	writer.writeStringValue("id", entity.id);
 	writer.writeCollectionOfObjectValues("bars", entity.bars, serializeBar);
 }
 
-export function serializeBar(writer: SerializationWriter, entity: BarResponse | undefined = {}): void {
+export function serializeBar(writer: SerializationWriter, entity: BarResponse | undefined | null = {}): void {
+	if (!entity) {
+		return;
+	}
 	writer.writeStringValue("propA", entity.propA);
 	writer.writeStringValue("propB", entity.propB);
 	writer.writeDateValue("propC", entity.propC);
 }
 
-export function serializeTestBackModel(writer: SerializationWriter, entity: TestBackedModel | undefined = {}): void {
+export function serializeTestBackModel(writer: SerializationWriter, entity: TestBackedModel | undefined | null = {}): void {
+	if (!entity) {
+		return;
+	}
 	serializeTestParser(writer, entity);
 }
 
@@ -198,7 +224,10 @@ export function deserializeIntoTestUnionObject(fooBar: Partial<TestUnionObject> 
 	};
 }
 
-export function serializeTestUnionObject(writer: SerializationWriter, fooBar: Partial<TestUnionObject> | undefined = {}): void {
+export function serializeTestUnionObject(writer: SerializationWriter, fooBar: Partial<TestUnionObject> | undefined | null = {}): void {
+	if (!fooBar) {
+		return;
+	}
 	serializeFoo(writer, fooBar as FooResponse);
 	serializeBar(writer, fooBar as BarResponse);
 }
