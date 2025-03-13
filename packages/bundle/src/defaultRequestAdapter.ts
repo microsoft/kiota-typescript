@@ -45,10 +45,10 @@ export class DefaultRequestAdapter extends FetchRequestAdapter {
 		}
 
 		const backingStoreFactory = super.getBackingStoreFactory();
-		registerDefaultSerializer(serializationWriterFactoryRegistry, JsonSerializationWriterFactory, backingStoreFactory);
-		registerDefaultSerializer(serializationWriterFactoryRegistry, TextSerializationWriterFactory, backingStoreFactory);
-		registerDefaultSerializer(serializationWriterFactoryRegistry, FormSerializationWriterFactory, backingStoreFactory);
-		registerDefaultSerializer(serializationWriterFactoryRegistry, MultipartSerializationWriterFactory, backingStoreFactory);
+		registerDefaultSerializer(serializationWriterFactoryRegistry, JsonSerializationWriterFactory);
+		registerDefaultSerializer(serializationWriterFactoryRegistry, TextSerializationWriterFactory);
+		registerDefaultSerializer(serializationWriterFactoryRegistry, FormSerializationWriterFactory);
+		registerDefaultSerializer(serializationWriterFactoryRegistry, MultipartSerializationWriterFactory);
 		registerDefaultDeserializer(parseNodeFactoryRegistry, JsonParseNodeFactory, backingStoreFactory);
 		registerDefaultDeserializer(parseNodeFactoryRegistry, TextParseNodeFactory, backingStoreFactory);
 		registerDefaultDeserializer(parseNodeFactoryRegistry, FormParseNodeFactory, backingStoreFactory);

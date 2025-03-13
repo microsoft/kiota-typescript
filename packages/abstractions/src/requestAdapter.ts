@@ -23,7 +23,8 @@ export interface RequestAdapter {
 	 * @returns the parse node factory currently in use for the HTTP core service.
 	 */
 	getParseNodeFactory(): ParseNodeFactory;
-	/** * Gets the backing store factory currently in use for the HTTP core service. *
+	/**
+	 * Gets the backing store factory currently in use for the HTTP core service.
 	 * @returns The backing store factory currently in use for the HTTP core service.
 	 */
 	getBackingStoreFactory(): BackingStoreFactory;

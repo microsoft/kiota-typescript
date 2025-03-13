@@ -5,16 +5,11 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { type SerializationWriter, type SerializationWriterFactory, BackingStoreFactory } from "@microsoft/kiota-abstractions";
+import { type SerializationWriter, type SerializationWriterFactory } from "@microsoft/kiota-abstractions";
 
 import { MultipartSerializationWriter } from "./multipartSerializationWriter";
 
 export class MultipartSerializationWriterFactory implements SerializationWriterFactory {
-	/**
-	 * Creates a new instance of the MultipartSerializationWriterFactory
-	 * @param {BackingStoreFactory} backingStoreFactory - The factory for creating backing stores
-	 */
-	constructor(private readonly backingStoreFactory: BackingStoreFactory) {}
 	public getValidContentType(): string {
 		return "multipart/form-data";
 	}

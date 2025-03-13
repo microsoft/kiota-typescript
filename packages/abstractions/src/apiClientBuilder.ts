@@ -11,11 +11,10 @@ import { BackingStoreFactory, BackingStoreParseNodeFactory, BackingStoreSerializ
  * Registers the default serializer to the registry.
  * @param serializationWriterFactoryRegistry The serialization writer factory registry to register the default serializer to.
  * @param type the class of the factory to be registered.
- * @param backingStoreFactory The backing store factory to use.
  */
-export function registerDefaultSerializer(serializationWriterFactoryRegistry: SerializationWriterFactoryRegistry, type: new (backingStoreFactory: BackingStoreFactory) => SerializationWriterFactory, backingStoreFactory: BackingStoreFactory): void {
+export function registerDefaultSerializer(serializationWriterFactoryRegistry: SerializationWriterFactoryRegistry, type: new () => SerializationWriterFactory): void {
 	if (!type) throw new Error("Type is required");
-	const serializer = new type(backingStoreFactory);
+	const serializer = new type();
 	serializationWriterFactoryRegistry.contentTypeAssociatedFactories.set(serializer.getValidContentType(), serializer);
 }
 /**

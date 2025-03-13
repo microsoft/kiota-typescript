@@ -47,10 +47,10 @@ export function createApiClient(requestAdapter: RequestAdapter) {
     }
 
     const backingStoreFactory = requestAdapter.getBackingStoreFactory();
-    registerDefaultSerializer(serializationWriterFactory, JsonSerializationWriterFactory, backingStoreFactory);
-    registerDefaultSerializer(serializationWriterFactory, TextSerializationWriterFactory, backingStoreFactory);
-    registerDefaultSerializer(serializationWriterFactory, FormSerializationWriterFactory, backingStoreFactory);
-    registerDefaultSerializer(serializationWriterFactory, MultipartSerializationWriterFactory, backingStoreFactory);
+    registerDefaultSerializer(serializationWriterFactory, JsonSerializationWriterFactory);
+    registerDefaultSerializer(serializationWriterFactory, TextSerializationWriterFactory);
+    registerDefaultSerializer(serializationWriterFactory, FormSerializationWriterFactory);
+    registerDefaultSerializer(serializationWriterFactory, MultipartSerializationWriterFactory);
     registerDefaultDeserializer(parseNodeFactoryRegistry, JsonParseNodeFactory, backingStoreFactory);
     registerDefaultDeserializer(parseNodeFactoryRegistry, TextParseNodeFactory, backingStoreFactory);
     registerDefaultDeserializer(parseNodeFactoryRegistry, FormParseNodeFactory, backingStoreFactory);
