@@ -8,7 +8,6 @@ import type { ParseNode } from "./parseNode";
 import type { ParseNodeFactory } from "./parseNodeFactory";
 import { Parsable } from "./parsable";
 import type { ParsableFactory } from "./parsableFactory";
-import { BackingStoreParseNodeFactory } from "../store";
 
 /**
  * This factory holds a list of all the registered factories for the various types of nodes.
@@ -24,6 +23,13 @@ export class ParseNodeFactoryRegistry implements ParseNodeFactory {
 	}
 	/** List of factories that are registered by content type. */
 	public contentTypeAssociatedFactories = new Map<string, ParseNodeFactory>();
+
+	/**
+	 * Creates a {@link ParseNode} from the given {@link ArrayBuffer} and content type.
+	 * @param contentType the content type of the {@link ArrayBuffer}.
+	 * @param content the {@link ArrayBuffer} to read from.
+	 * @returns a {@link ParseNode} that can deserialize the given {@link ArrayBuffer}.
+	 */
 	public getRootParseNode(contentType: string, content: ArrayBuffer): ParseNode {
 		if (!contentType) {
 			throw new Error("content type cannot be undefined or empty");
@@ -42,43 +48,6 @@ export class ParseNodeFactoryRegistry implements ParseNodeFactory {
 			return factory.getRootParseNode(cleanedContentType, content);
 		}
 		throw new Error(`Content type ${cleanedContentType} does not have a factory registered to be parsed`);
-	}
-
-	/**
-	 * Registers the default deserializer to the registry.
-	 * @param type the class of the factory to be registered.
-	 */
-	public registerDefaultDeserializer(type: new () => ParseNodeFactory): void {
-		if (!type) throw new Error("Type is required");
-		const deserializer = new type();
-		this.contentTypeAssociatedFactories.set(deserializer.getValidContentType(), deserializer);
-	}
-
-	/**
-	 * Enables the backing store on default parse node factories and the given parse node factory.
-	 * @param original The parse node factory to enable the backing store on.
-	 * @returns A new parse node factory with the backing store enabled.
-	 */
-	public enableBackingStoreForParseNodeFactory(original: ParseNodeFactory): ParseNodeFactory {
-		if (!original) throw new Error("Original must be specified");
-		let result = original;
-		if (original instanceof ParseNodeFactoryRegistry) {
-			original.enableBackingStoreForParseNodeRegistry();
-		} else {
-			result = new BackingStoreParseNodeFactory(original);
-		}
-		this.enableBackingStoreForParseNodeRegistry();
-		return result;
-	}
-	/**
-	 * Enables the backing store on the given parse node factory registry.
-	 */
-	public enableBackingStoreForParseNodeRegistry(): void {
-		for (const [k, v] of this.contentTypeAssociatedFactories) {
-			if (!(v instanceof BackingStoreParseNodeFactory || v instanceof ParseNodeFactoryRegistry)) {
-				this.contentTypeAssociatedFactories.set(k, new BackingStoreParseNodeFactory(v));
-			}
-		}
 	}
 
 	/**

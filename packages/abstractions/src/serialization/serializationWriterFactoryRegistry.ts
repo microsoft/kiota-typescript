@@ -8,8 +8,6 @@ import type { SerializationWriter } from "./serializationWriter";
 import type { SerializationWriterFactory } from "./serializationWriterFactory";
 import type { Parsable } from "./parsable";
 import type { ModelSerializerFunction } from "./serializationFunctionTypes";
-import { BackingStoreSerializationWriterProxyFactory } from "../store";
-import { ParseNodeFactoryRegistry } from "./parseNodeFactoryRegistry";
 
 /** This factory holds a list of all the registered factories for the various types of nodes. */
 export class SerializationWriterFactoryRegistry implements SerializationWriterFactory {
@@ -38,27 +36,6 @@ export class SerializationWriterFactoryRegistry implements SerializationWriterFa
 			return factory.getSerializationWriter(cleanedContentType);
 		}
 		throw new Error(`Content type ${cleanedContentType} does not have a factory registered to be serialized`);
-	}
-
-	/**
-	 * Registers the default serializer to the registry.
-	 * @param type the class of the factory to be registered.
-	 */
-	public registerDefaultSerializer(type: new () => SerializationWriterFactory): void {
-		if (!type) throw new Error("Type is required");
-		const serializer = new type();
-		this.contentTypeAssociatedFactories.set(serializer.getValidContentType(), serializer);
-	}
-
-	/**
-	 * Enables the backing store on the given serialization factory registry.
-	 */
-	public enableBackingStoreForSerializationRegistry(): void {
-		for (const [k, v] of this.contentTypeAssociatedFactories) {
-			if (!(v instanceof BackingStoreSerializationWriterProxyFactory || v instanceof SerializationWriterFactoryRegistry)) {
-				this.contentTypeAssociatedFactories.set(k, new BackingStoreSerializationWriterProxyFactory(v));
-			}
-		}
 	}
 
 	/**
@@ -178,23 +155,4 @@ export class SerializationWriterFactoryRegistry implements SerializationWriterFa
 		const decoder = new TextDecoder();
 		return decoder.decode(buffer);
 	}
-
-	/**
-	 * Enables the backing store on default serialization writers and the given serialization writer.
-	 * @param parseNodeFactoryRegistry The parse node factory registry to enable the backing store on.
-	 * @param original The serialization writer to enable the backing store on.
-	 * @returns A new serialization writer with the backing store enabled.
-	 */
-	public enableBackingStoreForSerializationWriterFactory = (parseNodeFactoryRegistry: ParseNodeFactoryRegistry, original: SerializationWriterFactory): SerializationWriterFactory => {
-		if (!original) throw new Error("Original must be specified");
-		let result = original;
-		if (original instanceof SerializationWriterFactoryRegistry) {
-			original.enableBackingStoreForSerializationRegistry();
-		} else {
-			result = new BackingStoreSerializationWriterProxyFactory(original);
-		}
-		this.enableBackingStoreForSerializationRegistry();
-		parseNodeFactoryRegistry.enableBackingStoreForParseNodeRegistry();
-		return result;
-	};
 }
