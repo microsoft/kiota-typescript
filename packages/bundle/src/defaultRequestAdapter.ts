@@ -24,18 +24,33 @@ export class DefaultRequestAdapter extends FetchRequestAdapter {
 	 * @param httpClient the http client to use to execute requests.
 	 * @param observabilityOptions the observability options to use.
 	 */
-	public constructor(authenticationProvider: AuthenticationProvider, parseNodeFactory: ParseNodeFactory = ParseNodeFactoryRegistry.defaultInstance, serializationWriterFactory: SerializationWriterFactory = SerializationWriterFactoryRegistry.defaultInstance, httpClient: HttpClient = new HttpClient(), observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()) {
+	public constructor(authenticationProvider: AuthenticationProvider, parseNodeFactory: ParseNodeFactory = new ParseNodeFactoryRegistry(), serializationWriterFactory: SerializationWriterFactory = new SerializationWriterFactoryRegistry(), httpClient: HttpClient = new HttpClient(), observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()) {
 		super(authenticationProvider, parseNodeFactory, serializationWriterFactory, httpClient, observabilityOptions);
-		DefaultRequestAdapter.setupDefaults();
+		this.setupDefaults();
 	}
 
-	private static setupDefaults() {
-		registerDefaultSerializer(JsonSerializationWriterFactory);
-		registerDefaultSerializer(TextSerializationWriterFactory);
-		registerDefaultSerializer(FormSerializationWriterFactory);
-		registerDefaultSerializer(MultipartSerializationWriterFactory);
-		registerDefaultDeserializer(JsonParseNodeFactory);
-		registerDefaultDeserializer(TextParseNodeFactory);
-		registerDefaultDeserializer(FormParseNodeFactory);
+	private setupDefaults() {
+		let parseNodeFactoryRegistry: ParseNodeFactoryRegistry;
+		if (super.getParseNodeFactory() instanceof ParseNodeFactoryRegistry) {
+			parseNodeFactoryRegistry = super.getParseNodeFactory() as ParseNodeFactoryRegistry;
+		} else {
+			throw new Error("ParseNodeFactory must be a ParseNodeFactoryRegistry");
+		}
+
+		let serializationWriterFactoryRegistry: SerializationWriterFactoryRegistry;
+		if (super.getSerializationWriterFactory() instanceof SerializationWriterFactoryRegistry) {
+			serializationWriterFactoryRegistry = super.getSerializationWriterFactory() as SerializationWriterFactoryRegistry;
+		} else {
+			throw new Error("SerializationWriterFactory must be a SerializationWriterFactoryRegistry");
+		}
+
+		const backingStoreFactory = super.getBackingStoreFactory();
+		registerDefaultSerializer(serializationWriterFactoryRegistry, JsonSerializationWriterFactory);
+		registerDefaultSerializer(serializationWriterFactoryRegistry, TextSerializationWriterFactory);
+		registerDefaultSerializer(serializationWriterFactoryRegistry, FormSerializationWriterFactory);
+		registerDefaultSerializer(serializationWriterFactoryRegistry, MultipartSerializationWriterFactory);
+		registerDefaultDeserializer(parseNodeFactoryRegistry, JsonParseNodeFactory, backingStoreFactory);
+		registerDefaultDeserializer(parseNodeFactoryRegistry, TextParseNodeFactory, backingStoreFactory);
+		registerDefaultDeserializer(parseNodeFactoryRegistry, FormParseNodeFactory, backingStoreFactory);
 	}
 }

@@ -4,12 +4,12 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-import { BackingStoreFactorySingleton } from "./backingStoreFactorySingleton";
+import { BackingStoreFactory } from "./backingStoreFactory";
 
 // A method that creates a ProxyHandler for a generic model T and attaches it to a backing store.
-export const createBackedModelProxyHandler = <T extends object>(): ProxyHandler<T> => {
+export const createBackedModelProxyHandler = <T extends object>(backingStoreFactory: BackingStoreFactory): ProxyHandler<T> => {
 	// Each model has a backing store that is created by the BackingStoreFactorySingleton
-	const backingStore = BackingStoreFactorySingleton.instance.createBackingStore();
+	const backingStore = backingStoreFactory.createBackingStore();
 
 	/**
 	 * The ProxyHandler for the model.
