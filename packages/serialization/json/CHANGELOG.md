@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.86](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-json@1.0.0-preview.85...@microsoft/kiota-serialization-json@1.0.0-preview.86) (2025-03-12)
+
+
+### Bug Fixes
+
+* a bug where additional data would not go to the dedicated property ([145fc50](https://github.com/microsoft/kiota-typescript/commit/145fc5074fd95fcb922442d973ad71567fa5dab1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.85 to ^1.0.0-preview.86
+
 ## [1.0.0-preview.85](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-json@1.0.0-preview.84...@microsoft/kiota-serialization-json@1.0.0-preview.85) (2025-03-04)
 
 

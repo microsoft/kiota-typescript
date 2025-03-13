@@ -8,8 +8,8 @@
 import { assert, beforeEach, describe, it } from "vitest";
 import { JsonParseNode } from "../../src/index";
 import { createTestParserFromDiscriminatorValue, type TestBackedModel, createTestBackedModelFromDiscriminatorValue, type TestParser, TestUnionObject, BarResponse } from "./testEntity";
-import { UntypedTestEntity, createUntypedTestEntityFromDiscriminatorValue } from "./untypedTestEntiy";
-import { BackingStoreFactory, InMemoryBackingStoreFactory, UntypedNode, UntypedObject, isUntypedArray, isUntypedBoolean, isUntypedNode, isUntypedNumber, isUntypedObject, BackingStore } from "@microsoft/kiota-abstractions";
+import { UntypedTestEntity, createUntypedTestEntityFromDiscriminatorValue } from "./untypedTestEntity";
+import { BackingStoreFactory, BackingStore, InMemoryBackingStoreFactory, UntypedNode, UntypedObject, isUntypedArray, isUntypedBoolean, isUntypedNode, isUntypedNumber, isUntypedObject } from "@microsoft/kiota-abstractions";
 
 describe("JsonParseNode", () => {
 	let backingStoreFactory: BackingStoreFactory;

@@ -43,7 +43,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		private serializationWriterFactory: SerializationWriterFactory = new SerializationWriterFactoryRegistry(),
 		private readonly httpClient: HttpClient = new HttpClient(),
 		observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl(),
-		private readonly backingStoreFactory = new InMemoryBackingStoreFactory(),
+		private backingStoreFactory = new InMemoryBackingStoreFactory(),
 	) {
 		if (!authenticationProvider) {
 			throw new Error("authentication provider cannot be null");
