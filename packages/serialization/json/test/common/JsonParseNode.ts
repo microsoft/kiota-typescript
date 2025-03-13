@@ -9,8 +9,7 @@ import { assert, beforeEach, describe, it } from "vitest";
 import { JsonParseNode } from "../../src/index";
 import { createTestParserFromDiscriminatorValue, type TestBackedModel, createTestBackedModelFromDiscriminatorValue, type TestParser, TestUnionObject, BarResponse } from "./testEntity";
 import { UntypedTestEntity, createUntypedTestEntityFromDiscriminatorValue } from "./untypedTestEntiy";
-import { UntypedNode, UntypedObject, isUntypedArray, isUntypedBoolean, isUntypedNode, isUntypedNumber, isUntypedObject, BackingStore } from "@microsoft/kiota-abstractions";
-import { BackingStoreFactory, InMemoryBackingStoreFactory } from "@microsoft/kiota-abstractions/src";
+import { BackingStoreFactory, InMemoryBackingStoreFactory, UntypedNode, UntypedObject, isUntypedArray, isUntypedBoolean, isUntypedNode, isUntypedNumber, isUntypedObject, BackingStore } from "@microsoft/kiota-abstractions";
 
 describe("JsonParseNode", () => {
 	let backingStoreFactory: BackingStoreFactory;

@@ -5,10 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import type { ParseNode, ParseNodeFactory } from "@microsoft/kiota-abstractions";
+import { BackingStoreFactory, type ParseNode, type ParseNodeFactory } from "@microsoft/kiota-abstractions";
 
 import { TextParseNode } from "./../textParseNode";
-import { BackingStoreFactory } from "@microsoft/kiota-abstractions/src";
 
 export class TextParseNodeFactory implements ParseNodeFactory {
 	/**

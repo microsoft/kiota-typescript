@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { DateOnly, Duration, TimeOnly, UntypedNode, createBackedModelProxyHandler, createUntypedArray, createUntypedBoolean, createUntypedNodeFromDiscriminatorValue, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString, inNodeEnv, isBackingStoreEnabled, isUntypedNode, parseGuidString, getEnumValueFromStringValue, type Parsable, type ParsableFactory, type ParseNode } from "@microsoft/kiota-abstractions";
-import { BackingStoreFactory } from "@microsoft/kiota-abstractions/src";
+import { BackingStoreFactory, DateOnly, Duration, TimeOnly, UntypedNode, createBackedModelProxyHandler, createUntypedArray, createUntypedBoolean, createUntypedNodeFromDiscriminatorValue, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString, inNodeEnv, isBackingStoreEnabled, isUntypedNode, parseGuidString, getEnumValueFromStringValue, type Parsable, type ParsableFactory, type ParseNode } from "@microsoft/kiota-abstractions";
+
 export class JsonParseNode implements ParseNode {
 	/**
 	 * Creates an instance of JsonParseNode.

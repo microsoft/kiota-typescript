@@ -11,7 +11,6 @@ import { JsonParseNodeFactory, JsonSerializationWriterFactory } from "@microsoft
 import { MultipartSerializationWriterFactory } from "@microsoft/kiota-serialization-multipart";
 import { TextParseNodeFactory, TextSerializationWriterFactory } from "@microsoft/kiota-serialization-text";
 import { FetchRequestAdapter, HttpClient, type ObservabilityOptions, ObservabilityOptionsImpl } from "@microsoft/kiota-http-fetchlibrary";
-import { BackingStoreFactory } from "@microsoft/kiota-abstractions/src";
 
 /**
  * Default request adapter for graph clients. Bootstraps serialization and other aspects.

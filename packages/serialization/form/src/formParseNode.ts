@@ -5,8 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { createBackedModelProxyHandler, DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, isBackingStoreEnabled, getEnumValueFromStringValue } from "@microsoft/kiota-abstractions";
-import { BackingStoreFactory } from "@microsoft/kiota-abstractions/src";
+import { BackingStoreFactory, createBackedModelProxyHandler, DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, isBackingStoreEnabled, getEnumValueFromStringValue } from "@microsoft/kiota-abstractions";
 
 export class FormParseNode implements ParseNode {
 	private readonly _fields: Record<string, string> = {};
