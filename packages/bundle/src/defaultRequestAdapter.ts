@@ -11,6 +11,7 @@ import { JsonParseNodeFactory, JsonSerializationWriterFactory } from "@microsoft
 import { MultipartSerializationWriterFactory } from "@microsoft/kiota-serialization-multipart";
 import { TextParseNodeFactory, TextSerializationWriterFactory } from "@microsoft/kiota-serialization-text";
 import { FetchRequestAdapter, HttpClient, type ObservabilityOptions, ObservabilityOptionsImpl } from "@microsoft/kiota-http-fetchlibrary";
+import { BackingStoreFactory } from "@microsoft/kiota-abstractions/src";
 
 /**
  * Default request adapter for graph clients. Bootstraps serialization and other aspects.
@@ -44,12 +45,13 @@ export class DefaultRequestAdapter extends FetchRequestAdapter {
 			throw new Error("SerializationWriterFactory must be a SerializationWriterFactoryRegistry");
 		}
 
-		registerDefaultSerializer(serializationWriterFactoryRegistry, JsonSerializationWriterFactory);
-		registerDefaultSerializer(serializationWriterFactoryRegistry, TextSerializationWriterFactory);
-		registerDefaultSerializer(serializationWriterFactoryRegistry, FormSerializationWriterFactory);
-		registerDefaultSerializer(serializationWriterFactoryRegistry, MultipartSerializationWriterFactory);
-		registerDefaultDeserializer(parseNodeFactoryRegistry, JsonParseNodeFactory);
-		registerDefaultDeserializer(parseNodeFactoryRegistry, TextParseNodeFactory);
-		registerDefaultDeserializer(parseNodeFactoryRegistry, FormParseNodeFactory);
+		const backingStoreFactory = super.getBackingStoreFactory();
+		registerDefaultSerializer(serializationWriterFactoryRegistry, JsonSerializationWriterFactory, backingStoreFactory);
+		registerDefaultSerializer(serializationWriterFactoryRegistry, TextSerializationWriterFactory, backingStoreFactory);
+		registerDefaultSerializer(serializationWriterFactoryRegistry, FormSerializationWriterFactory, backingStoreFactory);
+		registerDefaultSerializer(serializationWriterFactoryRegistry, MultipartSerializationWriterFactory, backingStoreFactory);
+		registerDefaultDeserializer(parseNodeFactoryRegistry, JsonParseNodeFactory, backingStoreFactory);
+		registerDefaultDeserializer(parseNodeFactoryRegistry, TextParseNodeFactory, backingStoreFactory);
+		registerDefaultDeserializer(parseNodeFactoryRegistry, FormParseNodeFactory, backingStoreFactory);
 	}
 }

@@ -6,14 +6,19 @@
  */
 
 import { createBackedModelProxyHandler, DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, isBackingStoreEnabled, getEnumValueFromStringValue } from "@microsoft/kiota-abstractions";
+import { BackingStoreFactory } from "@microsoft/kiota-abstractions/src";
 
 export class FormParseNode implements ParseNode {
 	private readonly _fields: Record<string, string> = {};
 	/**
 	 *  Creates a new instance of FormParseNode
 	 * @param _rawString the raw string to parse
+	 * @param backingStoreFactory the backing store factory to use
 	 */
-	constructor(private readonly _rawString: string) {
+	constructor(
+		private readonly _rawString: string,
+		private readonly backingStoreFactory: BackingStoreFactory,
+	) {
 		if (!_rawString) {
 			throw new Error("rawString cannot be undefined");
 		}
@@ -39,7 +44,7 @@ export class FormParseNode implements ParseNode {
 	public getStringValue = (): string => decodeURIComponent(this._rawString);
 	public getChildNode = (identifier: string): ParseNode | undefined => {
 		if (this._fields[identifier]) {
-			return new FormParseNode(this._fields[identifier]);
+			return new FormParseNode(this._fields[identifier], this.backingStoreFactory);
 		}
 		return undefined;
 	};
@@ -60,7 +65,7 @@ export class FormParseNode implements ParseNode {
 	public getDurationValue = () => Duration.parse(this.getStringValue());
 	public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
 		return (this._rawString.split(",") as unknown[]).map((x) => {
-			const currentParseNode = new FormParseNode(x as string);
+			const currentParseNode = new FormParseNode(x as string, this.backingStoreFactory);
 			const typeOfX = typeof x;
 			if (typeOfX === "boolean") {
 				return currentParseNode.getBooleanValue() as unknown as T;
@@ -90,7 +95,7 @@ export class FormParseNode implements ParseNode {
 	public getObjectValue = <T extends Parsable>(parsableFactory: ParsableFactory<T>): T => {
 		const temp: T = {} as T;
 		const enableBackingStore = isBackingStoreEnabled(parsableFactory(this)(temp));
-		const value: T = enableBackingStore ? new Proxy(temp, createBackedModelProxyHandler<T>()) : temp;
+		const value: T = enableBackingStore ? new Proxy(temp, createBackedModelProxyHandler<T>(this.backingStoreFactory)) : temp;
 		if (this.onBeforeAssignFieldValues) {
 			this.onBeforeAssignFieldValues(value);
 		}
@@ -122,7 +127,7 @@ export class FormParseNode implements ParseNode {
 			.forEach(([k, v]) => {
 				const deserializer = fields[k];
 				if (deserializer) {
-					deserializer(new FormParseNode(v));
+					deserializer(new FormParseNode(v, this.backingStoreFactory));
 				} else {
 					(model as Record<string, unknown>)[k] = v;
 				}

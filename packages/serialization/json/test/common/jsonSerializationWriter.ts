@@ -10,14 +10,15 @@ import { assert, describe, it, beforeEach } from "vitest";
 import { JsonParseNode, JsonSerializationWriter } from "../../src/index";
 import { createTestBackedModelFromDiscriminatorValue, createTestParserFromDiscriminatorValue, LongRunningOperationStatusObject, serializeTestParser, TestBackedModel, type TestParser } from "./testEntity";
 import { UntypedTestEntity, serializeUntypedTestEntity } from "./untypedTestEntiy";
-import { BackingStore, BackingStoreFactorySingleton, createBackedModelProxyHandler, createUntypedArray, createUntypedBoolean, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString } from "@microsoft/kiota-abstractions";
+import { BackingStore, createBackedModelProxyHandler, createUntypedArray, createUntypedBoolean, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString } from "@microsoft/kiota-abstractions";
+import { BackingStoreFactory, InMemoryBackingStoreFactory } from "@microsoft/kiota-abstractions/src";
 
 describe("JsonParseNode", () => {
-	let backingStoreFactorySingleton: BackingStoreFactorySingleton;
+	let backingStoreFactory: BackingStoreFactory;
 	const dummyBackingStore = {} as BackingStore;
 
 	beforeEach(() => {
-		backingStoreFactorySingleton = BackingStoreFactorySingleton.instance;
+		backingStoreFactory = new InMemoryBackingStoreFactory();
 	});
 
 	it("Test object serialization", async () => {
@@ -55,7 +56,7 @@ describe("JsonParseNode", () => {
 		const decoder = new TextDecoder();
 		const contentAsStr = decoder.decode(serializedContent);
 		const result = JSON.parse(contentAsStr);
-		const stringValueResult = new JsonParseNode(result).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
+		const stringValueResult = new JsonParseNode(result, backingStoreFactory).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
 		assert.deepEqual(stringValueResult, expectedObject);
 	});
 
@@ -75,7 +76,7 @@ describe("JsonParseNode", () => {
 		const decoder = new TextDecoder();
 		const contentAsStr = decoder.decode(serializedContent);
 		const result = JSON.parse(contentAsStr);
-		const stringValueResult = new JsonParseNode(result).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
+		const stringValueResult = new JsonParseNode(result, backingStoreFactory).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
 		assert.deepEqual(stringValueResult, expectedObject);
 	});
 
@@ -211,7 +212,7 @@ describe("JsonParseNode", () => {
 			],
 		};
 
-		const backedModel: TestBackedModel = new JsonParseNode(jsonObject).getObjectValue(createTestBackedModelFromDiscriminatorValue) as TestBackedModel;
+		const backedModel: TestBackedModel = new JsonParseNode(jsonObject, backingStoreFactory).getObjectValue(createTestBackedModelFromDiscriminatorValue) as TestBackedModel;
 
 		const writer = new JsonSerializationWriter();
 		writer.writeObjectValue("", backedModel, serializeTestParser);
@@ -228,7 +229,7 @@ describe("JsonParseNode", () => {
 		assert.isTrue("id" in result);
 		assert.isTrue("testGuid" in result);
 
-		const handler = createBackedModelProxyHandler<TestBackedModel>();
+		const handler = createBackedModelProxyHandler<TestBackedModel>(backingStoreFactory);
 		const model = new Proxy<TestBackedModel>({ backingStore: dummyBackingStore }, handler);
 		model.id = "abc";
 		model.testCollection = ["2", "3"];

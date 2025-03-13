@@ -46,13 +46,14 @@ export function createApiClient(requestAdapter: RequestAdapter) {
       throw new Error("serializationWriterFactory is not an instance of SerializationWriterFactory");
     }
 
-    registerDefaultSerializer(serializationWriterFactory, JsonSerializationWriterFactory);
-    registerDefaultSerializer(serializationWriterFactory, TextSerializationWriterFactory);
-    registerDefaultSerializer(serializationWriterFactory, FormSerializationWriterFactory);
-    registerDefaultSerializer(serializationWriterFactory, MultipartSerializationWriterFactory);
-    registerDefaultDeserializer(parseNodeFactoryRegistry, JsonParseNodeFactory);
-    registerDefaultDeserializer(parseNodeFactoryRegistry, TextParseNodeFactory);
-    registerDefaultDeserializer(parseNodeFactoryRegistry, FormParseNodeFactory);
+    const backingStoreFactory = requestAdapter.getBackingStoreFactory();
+    registerDefaultSerializer(serializationWriterFactory, JsonSerializationWriterFactory, backingStoreFactory);
+    registerDefaultSerializer(serializationWriterFactory, TextSerializationWriterFactory, backingStoreFactory);
+    registerDefaultSerializer(serializationWriterFactory, FormSerializationWriterFactory, backingStoreFactory);
+    registerDefaultSerializer(serializationWriterFactory, MultipartSerializationWriterFactory, backingStoreFactory);
+    registerDefaultDeserializer(parseNodeFactoryRegistry, JsonParseNodeFactory, backingStoreFactory);
+    registerDefaultDeserializer(parseNodeFactoryRegistry, TextParseNodeFactory, backingStoreFactory);
+    registerDefaultDeserializer(parseNodeFactoryRegistry, FormParseNodeFactory, backingStoreFactory);
     if (requestAdapter.baseUrl === undefined || requestAdapter.baseUrl === "") {
         requestAdapter.baseUrl = "https://graph.microsoft.com/v1.0";
     }

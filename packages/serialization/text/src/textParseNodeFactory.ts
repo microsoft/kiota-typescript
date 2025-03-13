@@ -8,8 +8,14 @@
 import type { ParseNode, ParseNodeFactory } from "@microsoft/kiota-abstractions";
 
 import { TextParseNode } from "./textParseNode";
+import { BackingStoreFactory } from "@microsoft/kiota-abstractions/src";
 
 export class TextParseNodeFactory implements ParseNodeFactory {
+	/**
+	 * Creates an instance of TextParseNode.
+	 * @param backingStoreFactory - The factory to create backing stores.
+	 */
+	constructor(private readonly backingStoreFactory: BackingStoreFactory) {}
 	public getValidContentType(): string {
 		return "text/plain";
 	}

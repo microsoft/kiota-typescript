@@ -8,8 +8,15 @@
 import type { ParseNode, ParseNodeFactory } from "@microsoft/kiota-abstractions";
 
 import { FormParseNode } from "./formParseNode";
+import { BackingStoreFactory } from "@microsoft/kiota-abstractions/src";
 
 export class FormParseNodeFactory implements ParseNodeFactory {
+	/**
+	 * Creates an instance of JsonParseNode.
+	 * @param backingStoreFactory - The factory to create backing stores.
+	 */
+	constructor(private readonly backingStoreFactory: BackingStoreFactory) {}
+
 	public getValidContentType(): string {
 		return "application/x-www-form-urlencoded";
 	}
@@ -21,7 +28,7 @@ export class FormParseNodeFactory implements ParseNodeFactory {
 		} else if (this.getValidContentType() !== contentType) {
 			throw new Error(`expected a ${this.getValidContentType()} content type`);
 		}
-		return new FormParseNode(this.convertArrayBufferToString(content));
+		return new FormParseNode(this.convertArrayBufferToString(content), this.backingStoreFactory);
 	}
 
 	private convertArrayBufferToString(content: ArrayBuffer) {

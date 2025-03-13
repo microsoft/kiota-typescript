@@ -6,12 +6,21 @@
  */
 
 import { DateOnly, Duration, TimeOnly, UntypedNode, createBackedModelProxyHandler, createUntypedArray, createUntypedBoolean, createUntypedNodeFromDiscriminatorValue, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString, inNodeEnv, isBackingStoreEnabled, isUntypedNode, parseGuidString, getEnumValueFromStringValue, type Parsable, type ParsableFactory, type ParseNode } from "@microsoft/kiota-abstractions";
+import { BackingStoreFactory } from "@microsoft/kiota-abstractions/src";
 export class JsonParseNode implements ParseNode {
-	constructor(private readonly _jsonNode: unknown) {}
+	/**
+	 * Creates an instance of JsonParseNode.
+	 * @param _jsonNode - The JSON node to parse.
+	 * @param backingStoreFactory - The factory to create backing stores.
+	 */
+	constructor(
+		private readonly _jsonNode: unknown,
+		private readonly backingStoreFactory: BackingStoreFactory,
+	) {}
 	public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
 	public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
 	public getStringValue = () => (typeof this._jsonNode === "string" ? this._jsonNode : undefined);
-	public getChildNode = (identifier: string): ParseNode | undefined => (this._jsonNode && typeof this._jsonNode === "object" && (this._jsonNode as Record<string, unknown>)[identifier] !== undefined ? new JsonParseNode((this._jsonNode as Record<string, unknown>)[identifier]) : undefined);
+	public getChildNode = (identifier: string): ParseNode | undefined => (this._jsonNode && typeof this._jsonNode === "object" && (this._jsonNode as Record<string, unknown>)[identifier] !== undefined ? new JsonParseNode((this._jsonNode as Record<string, unknown>)[identifier], this.backingStoreFactory) : undefined);
 	public getBooleanValue = () => (typeof this._jsonNode === "boolean" ? this._jsonNode : undefined);
 	public getNumberValue = () => (typeof this._jsonNode === "number" ? this._jsonNode : undefined);
 	public getGuidValue = () => parseGuidString(this.getStringValue());
@@ -24,7 +33,7 @@ export class JsonParseNode implements ParseNode {
 			return undefined;
 		}
 		return (this._jsonNode as unknown[]).map((x) => {
-			const currentParseNode = new JsonParseNode(x);
+			const currentParseNode = new JsonParseNode(x, this.backingStoreFactory);
 			const typeOfX = typeof x;
 			if (typeOfX === "boolean") {
 				return currentParseNode.getBooleanValue() as unknown as T;
@@ -56,7 +65,7 @@ export class JsonParseNode implements ParseNode {
 		if (!Array.isArray(this._jsonNode)) {
 			return undefined;
 		}
-		return this._jsonNode ? (this._jsonNode as unknown[]).map((x) => new JsonParseNode(x)).map((x) => x.getObjectValue<T>(method)) : undefined;
+		return this._jsonNode ? (this._jsonNode as unknown[]).map((x) => new JsonParseNode(x, this.backingStoreFactory)).map((x) => x.getObjectValue<T>(method)) : undefined;
 	};
 
 	public getObjectValue = <T extends Parsable>(parsableFactory: ParsableFactory<T>): T => {
@@ -74,13 +83,13 @@ export class JsonParseNode implements ParseNode {
 				const nodes: UntypedNode[] = [];
 
 				this._jsonNode.forEach((x) => {
-					nodes.push(new JsonParseNode(x).getObjectValue(createUntypedNodeFromDiscriminatorValue));
+					nodes.push(new JsonParseNode(x, this.backingStoreFactory).getObjectValue(createUntypedNodeFromDiscriminatorValue));
 				});
 				value = createUntypedArray(nodes) as unknown as T;
 			} else if (this._jsonNode && valueType === "object") {
 				const properties: Record<string, UntypedNode> = {};
 				Object.entries(this._jsonNode).forEach(([k, v]) => {
-					properties[k] = new JsonParseNode(v).getObjectValue(createUntypedNodeFromDiscriminatorValue);
+					properties[k] = new JsonParseNode(v, this.backingStoreFactory).getObjectValue(createUntypedNodeFromDiscriminatorValue);
 				});
 				value = createUntypedObject(properties) as unknown as T;
 			} else if (!this._jsonNode) {
@@ -89,7 +98,7 @@ export class JsonParseNode implements ParseNode {
 			return value;
 		}
 		const enableBackingStore = isBackingStoreEnabled(parsableFactory(this)(temp));
-		const objectValue: T = enableBackingStore ? new Proxy(temp, createBackedModelProxyHandler<T>()) : temp;
+		const objectValue: T = enableBackingStore ? new Proxy(temp, createBackedModelProxyHandler<T>(this.backingStoreFactory)) : temp;
 		if (this.onBeforeAssignFieldValues) {
 			this.onBeforeAssignFieldValues(objectValue);
 		}
@@ -106,7 +115,7 @@ export class JsonParseNode implements ParseNode {
 		Object.entries(this._jsonNode).forEach(([k, v]) => {
 			const deserializer = fields[k];
 			if (deserializer) {
-				deserializer(new JsonParseNode(v));
+				deserializer(new JsonParseNode(v, this.backingStoreFactory));
 			} else {
 				// additional properties
 				(model as Record<string, unknown>)[k] = v;
@@ -117,7 +126,7 @@ export class JsonParseNode implements ParseNode {
 		if (Array.isArray(this._jsonNode)) {
 			return this._jsonNode
 				.map((x) => {
-					const node = new JsonParseNode(x);
+					const node = new JsonParseNode(x, this.backingStoreFactory);
 					return node.getEnumValue(type) as T;
 				})
 				.filter(Boolean);

@@ -5,26 +5,28 @@
  * -------------------------------------------------------------------------------------------
  */
 import { type ParseNodeFactory, ParseNodeFactoryRegistry, type SerializationWriterFactory, SerializationWriterFactoryRegistry } from "./serialization";
-import { BackingStoreParseNodeFactory, BackingStoreSerializationWriterProxyFactory } from "./store";
+import { BackingStoreFactory, BackingStoreParseNodeFactory, BackingStoreSerializationWriterProxyFactory } from "./store";
 
 /**
  * Registers the default serializer to the registry.
  * @param serializationWriterFactoryRegistry The serialization writer factory registry to register the default serializer to.
  * @param type the class of the factory to be registered.
+ * @param backingStoreFactory The backing store factory to use.
  */
-export function registerDefaultSerializer(serializationWriterFactoryRegistry: SerializationWriterFactoryRegistry, type: new () => SerializationWriterFactory): void {
+export function registerDefaultSerializer(serializationWriterFactoryRegistry: SerializationWriterFactoryRegistry, type: new (backingStoreFactory: BackingStoreFactory) => SerializationWriterFactory, backingStoreFactory: BackingStoreFactory): void {
 	if (!type) throw new Error("Type is required");
-	const serializer = new type();
+	const serializer = new type(backingStoreFactory);
 	serializationWriterFactoryRegistry.contentTypeAssociatedFactories.set(serializer.getValidContentType(), serializer);
 }
 /**
  * Registers the default deserializer to the registry.
  * @param parseNodeFactoryRegistry The parse node factory registry to register the default deserializer to.
  * @param type the class of the factory to be registered.
+ * @param backingStoreFactory The backing store factory to use.
  */
-export function registerDefaultDeserializer(parseNodeFactoryRegistry: ParseNodeFactoryRegistry, type: new () => ParseNodeFactory): void {
+export function registerDefaultDeserializer(parseNodeFactoryRegistry: ParseNodeFactoryRegistry, type: new (backingStoreFactory: BackingStoreFactory) => ParseNodeFactory, backingStoreFactory: BackingStoreFactory): void {
 	if (!type) throw new Error("Type is required");
-	const deserializer = new type();
+	const deserializer = new type(backingStoreFactory);
 	parseNodeFactoryRegistry.contentTypeAssociatedFactories.set(deserializer.getValidContentType(), deserializer);
 }
 /**

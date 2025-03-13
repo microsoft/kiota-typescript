@@ -18,12 +18,15 @@ export interface RequestAdapter {
 	 * @returns the serialization writer factory currently in use for the HTTP core service.
 	 */
 	getSerializationWriterFactory(): SerializationWriterFactory;
-
 	/**
 	 * Gets the parse node factory currently in use for the HTTP core service.
 	 * @returns the parse node factory currently in use for the HTTP core service.
 	 */
 	getParseNodeFactory(): ParseNodeFactory;
+	/** * Gets the backing store factory currently in use for the HTTP core service. *
+	 * @returns The backing store factory currently in use for the HTTP core service.
+	 */
+	getBackingStoreFactory(): BackingStoreFactory;
 	/**
 	 * Executes the HTTP request specified by the given RequestInformation and returns the deserialized response model.
 	 * @param requestInfo the request info to execute.
