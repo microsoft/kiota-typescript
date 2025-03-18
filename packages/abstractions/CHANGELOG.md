@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0-preview.87](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.86...@microsoft/kiota-abstractions@1.0.0-preview.87) (2025-03-17)
+
+
+### Bug Fixes
+
+* use compatible iterator types for the base types ([9608918](https://github.com/microsoft/kiota-typescript/commit/96089183ea88bebed54a63cb2b845aaec8fa24bb))
+* use compatible iterator types for the base types ([3b2c7fa](https://github.com/microsoft/kiota-typescript/commit/3b2c7fa7b98b4467ea36dad5bed1f9cbcfcea486))
+
 ## [1.0.0-preview.86](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.85...@microsoft/kiota-abstractions@1.0.0-preview.86) (2025-03-12)
 
 
