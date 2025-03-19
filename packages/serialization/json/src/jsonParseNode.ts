@@ -48,7 +48,19 @@ export class JsonParseNode implements ParseNode {
 	public getByteArrayValue(): ArrayBuffer | undefined {
 		const strValue = this.getStringValue();
 		if (strValue && strValue.length > 0) {
-			return inNodeEnv() ? Buffer.from(strValue, "base64").buffer : new TextEncoder().encode(strValue);
+			/**
+			 * Node.js Buffer objects created via Buffer.from() use a shared memory pool
+			 * and may be subject to reuse/recycling, which can lead to unexpected behavior.
+			 *
+			 * For consistent behavior across environments:
+			 * - In Node: We convert the base64 string to a Buffer first, then create a new
+			 *   Uint8Array from it to ensure we have a stable, independent copy
+			 * - In browsers: We convert the string directly using TextEncoder
+			 *
+			 * TODO: Consider standardizing on a cross-platform UInt8Array.fromBase64 (after the API is stabilized across browsers)
+			 * in the future instead of the current environment-specific approach
+			 */
+			return inNodeEnv() ? new Uint8Array(Buffer.from(strValue, "base64")).buffer : new TextEncoder().encode(strValue);
 		}
 		return undefined;
 	}
