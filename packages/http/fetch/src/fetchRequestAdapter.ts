@@ -72,54 +72,50 @@ export class FetchRequestAdapter implements RequestAdapter {
 			throw new Error("requestInfo cannot be null");
 		}
 		return this.startTracingSpan(requestInfo, "sendCollectionOfPrimitive", async (span) => {
-			try {
-				const response = await this.getHttpResponseMessage(requestInfo, span);
-				const responseHandler = this.getResponseHandler(requestInfo);
-				if (responseHandler) {
-					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
-					return await responseHandler.handleResponse(response, errorMappings);
-				} else {
-					try {
-						await this.throwIfFailedResponse(response, errorMappings, span);
-						if (this.shouldReturnUndefined(response)) return undefined;
-						switch (responseType) {
-							case "string":
-							case "number":
-							case "boolean":
-							case "Date":
-								// eslint-disable-next-line no-case-declarations
-								const rootNode = await this.getRootParseNode(response);
-								return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan(`getCollectionOf${responseType}Value`, (deserializeSpan) => {
-									try {
-										span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, responseType);
-										if (responseType === "string") {
-											return rootNode.getCollectionOfPrimitiveValues<string>() as unknown as ResponseType[];
-										} else if (responseType === "number") {
-											return rootNode.getCollectionOfPrimitiveValues<number>() as unknown as ResponseType[];
-										} else if (responseType === "boolean") {
-											return rootNode.getCollectionOfPrimitiveValues<boolean>() as unknown as ResponseType[];
-										} else if (responseType === "Date") {
-											return rootNode.getCollectionOfPrimitiveValues<Date>() as unknown as ResponseType[];
-										} else if (responseType === "Duration") {
-											return rootNode.getCollectionOfPrimitiveValues<Duration>() as unknown as ResponseType[];
-										} else if (responseType === "DateOnly") {
-											return rootNode.getCollectionOfPrimitiveValues<DateOnly>() as unknown as ResponseType[];
-										} else if (responseType === "TimeOnly") {
-											return rootNode.getCollectionOfPrimitiveValues<TimeOnly>() as unknown as ResponseType[];
-										} else {
-											throw new Error("unexpected type to deserialize");
-										}
-									} finally {
-										deserializeSpan.end();
+			const response = await this.getHttpResponseMessage(requestInfo, span);
+			const responseHandler = this.getResponseHandler(requestInfo);
+			if (responseHandler) {
+				span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
+				return await responseHandler.handleResponse(response, errorMappings);
+			} else {
+				try {
+					await this.throwIfFailedResponse(response, errorMappings, span);
+					if (this.shouldReturnUndefined(response)) return undefined;
+					switch (responseType) {
+						case "string":
+						case "number":
+						case "boolean":
+						case "Date":
+							// eslint-disable-next-line no-case-declarations
+							const rootNode = await this.getRootParseNode(response);
+							return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan(`getCollectionOf${responseType}Value`, (deserializeSpan) => {
+								try {
+									span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, responseType);
+									if (responseType === "string") {
+										return rootNode.getCollectionOfPrimitiveValues<string>() as unknown as ResponseType[];
+									} else if (responseType === "number") {
+										return rootNode.getCollectionOfPrimitiveValues<number>() as unknown as ResponseType[];
+									} else if (responseType === "boolean") {
+										return rootNode.getCollectionOfPrimitiveValues<boolean>() as unknown as ResponseType[];
+									} else if (responseType === "Date") {
+										return rootNode.getCollectionOfPrimitiveValues<Date>() as unknown as ResponseType[];
+									} else if (responseType === "Duration") {
+										return rootNode.getCollectionOfPrimitiveValues<Duration>() as unknown as ResponseType[];
+									} else if (responseType === "DateOnly") {
+										return rootNode.getCollectionOfPrimitiveValues<DateOnly>() as unknown as ResponseType[];
+									} else if (responseType === "TimeOnly") {
+										return rootNode.getCollectionOfPrimitiveValues<TimeOnly>() as unknown as ResponseType[];
+									} else {
+										throw new Error("unexpected type to deserialize");
 									}
-								});
-						}
-					} finally {
-						await this.purgeResponseBody(response);
+								} finally {
+									deserializeSpan.end();
+								}
+							});
 					}
+				} finally {
+					await this.purgeResponseBody(response);
 				}
-			} finally {
-				span.end();
 			}
 		});
 	};
@@ -128,32 +124,28 @@ export class FetchRequestAdapter implements RequestAdapter {
 			throw new Error("requestInfo cannot be null");
 		}
 		return this.startTracingSpan(requestInfo, "sendCollection", async (span) => {
-			try {
-				const response = await this.getHttpResponseMessage(requestInfo, span);
-				const responseHandler = this.getResponseHandler(requestInfo);
-				if (responseHandler) {
-					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
-					return await responseHandler.handleResponse(response, errorMappings);
-				} else {
-					try {
-						await this.throwIfFailedResponse(response, errorMappings, span);
-						if (this.shouldReturnUndefined(response)) return undefined;
-						const rootNode = await this.getRootParseNode(response);
-						return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getCollectionOfObjectValues", (deserializeSpan) => {
-							try {
-								const result = rootNode.getCollectionOfObjectValues(deserialization);
-								span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "object[]");
-								return result as unknown as ModelType[];
-							} finally {
-								deserializeSpan.end();
-							}
-						});
-					} finally {
-						await this.purgeResponseBody(response);
-					}
+			const response = await this.getHttpResponseMessage(requestInfo, span);
+			const responseHandler = this.getResponseHandler(requestInfo);
+			if (responseHandler) {
+				span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
+				return await responseHandler.handleResponse(response, errorMappings);
+			} else {
+				try {
+					await this.throwIfFailedResponse(response, errorMappings, span);
+					if (this.shouldReturnUndefined(response)) return undefined;
+					const rootNode = await this.getRootParseNode(response);
+					return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getCollectionOfObjectValues", (deserializeSpan) => {
+						try {
+							const result = rootNode.getCollectionOfObjectValues(deserialization);
+							span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "object[]");
+							return result as unknown as ModelType[];
+						} finally {
+							deserializeSpan.end();
+						}
+					});
+				} finally {
+					await this.purgeResponseBody(response);
 				}
-			} finally {
-				span.end();
 			}
 		});
 	};
@@ -175,32 +167,28 @@ export class FetchRequestAdapter implements RequestAdapter {
 			throw new Error("requestInfo cannot be null");
 		}
 		return this.startTracingSpan(requestInfo, "send", async (span) => {
-			try {
-				const response = await this.getHttpResponseMessage(requestInfo, span);
-				const responseHandler = this.getResponseHandler(requestInfo);
-				if (responseHandler) {
-					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
-					return await responseHandler.handleResponse(response, errorMappings);
-				} else {
-					try {
-						await this.throwIfFailedResponse(response, errorMappings, span);
-						if (this.shouldReturnUndefined(response)) return undefined;
-						const rootNode = await this.getRootParseNode(response);
-						return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getObjectValue", (deserializeSpan) => {
-							try {
-								span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "object");
-								const result = rootNode.getObjectValue(deserializer);
-								return result as unknown as ModelType;
-							} finally {
-								deserializeSpan.end();
-							}
-						});
-					} finally {
-						await this.purgeResponseBody(response);
-					}
+			const response = await this.getHttpResponseMessage(requestInfo, span);
+			const responseHandler = this.getResponseHandler(requestInfo);
+			if (responseHandler) {
+				span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
+				return await responseHandler.handleResponse(response, errorMappings);
+			} else {
+				try {
+					await this.throwIfFailedResponse(response, errorMappings, span);
+					if (this.shouldReturnUndefined(response)) return undefined;
+					const rootNode = await this.getRootParseNode(response);
+					return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getObjectValue", (deserializeSpan) => {
+						try {
+							span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "object");
+							const result = rootNode.getObjectValue(deserializer);
+							return result as unknown as ModelType;
+						} finally {
+							deserializeSpan.end();
+						}
+					});
+				} finally {
+					await this.purgeResponseBody(response);
 				}
-			} finally {
-				span.end();
 			}
 		}) as Promise<ModelType>;
 	};
@@ -209,59 +197,55 @@ export class FetchRequestAdapter implements RequestAdapter {
 			throw new Error("requestInfo cannot be null");
 		}
 		return this.startTracingSpan(requestInfo, "sendPrimitive", async (span) => {
-			try {
-				const response = await this.getHttpResponseMessage(requestInfo, span);
-				const responseHandler = this.getResponseHandler(requestInfo);
-				if (responseHandler) {
-					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
-					return await responseHandler.handleResponse(response, errorMappings);
-				} else {
-					try {
-						await this.throwIfFailedResponse(response, errorMappings, span);
-						if (this.shouldReturnUndefined(response)) return undefined;
-						switch (responseType) {
-							case "ArrayBuffer":
-								if (!response.body) {
-									return undefined;
-								}
-								return (await response.arrayBuffer()) as unknown as ResponseType;
-							case "string":
-							case "number":
-							case "boolean":
-							case "Date":
-								// eslint-disable-next-line no-case-declarations
-								const rootNode = await this.getRootParseNode(response);
-								span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, responseType);
-								return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan(`get${responseType}Value`, (deserializeSpan) => {
-									try {
-										if (responseType === "string") {
-											return rootNode.getStringValue() as unknown as ResponseType;
-										} else if (responseType === "number") {
-											return rootNode.getNumberValue() as unknown as ResponseType;
-										} else if (responseType === "boolean") {
-											return rootNode.getBooleanValue() as unknown as ResponseType;
-										} else if (responseType === "Date") {
-											return rootNode.getDateValue() as unknown as ResponseType;
-										} else if (responseType === "Duration") {
-											return rootNode.getDurationValue() as unknown as ResponseType;
-										} else if (responseType === "DateOnly") {
-											return rootNode.getDateOnlyValue() as unknown as ResponseType;
-										} else if (responseType === "TimeOnly") {
-											return rootNode.getTimeOnlyValue() as unknown as ResponseType;
-										} else {
-											throw new Error("unexpected type to deserialize");
-										}
-									} finally {
-										deserializeSpan.end();
+			const response = await this.getHttpResponseMessage(requestInfo, span);
+			const responseHandler = this.getResponseHandler(requestInfo);
+			if (responseHandler) {
+				span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
+				return await responseHandler.handleResponse(response, errorMappings);
+			} else {
+				try {
+					await this.throwIfFailedResponse(response, errorMappings, span);
+					if (this.shouldReturnUndefined(response)) return undefined;
+					switch (responseType) {
+						case "ArrayBuffer":
+							if (!response.body) {
+								return undefined;
+							}
+							return (await response.arrayBuffer()) as unknown as ResponseType;
+						case "string":
+						case "number":
+						case "boolean":
+						case "Date":
+							// eslint-disable-next-line no-case-declarations
+							const rootNode = await this.getRootParseNode(response);
+							span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, responseType);
+							return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan(`get${responseType}Value`, (deserializeSpan) => {
+								try {
+									if (responseType === "string") {
+										return rootNode.getStringValue() as unknown as ResponseType;
+									} else if (responseType === "number") {
+										return rootNode.getNumberValue() as unknown as ResponseType;
+									} else if (responseType === "boolean") {
+										return rootNode.getBooleanValue() as unknown as ResponseType;
+									} else if (responseType === "Date") {
+										return rootNode.getDateValue() as unknown as ResponseType;
+									} else if (responseType === "Duration") {
+										return rootNode.getDurationValue() as unknown as ResponseType;
+									} else if (responseType === "DateOnly") {
+										return rootNode.getDateOnlyValue() as unknown as ResponseType;
+									} else if (responseType === "TimeOnly") {
+										return rootNode.getTimeOnlyValue() as unknown as ResponseType;
+									} else {
+										throw new Error("unexpected type to deserialize");
 									}
-								});
-						}
-					} finally {
-						await this.purgeResponseBody(response);
+								} finally {
+									deserializeSpan.end();
+								}
+							});
 					}
+				} finally {
+					await this.purgeResponseBody(response);
 				}
-			} finally {
-				span.end();
 			}
 		});
 	};
@@ -270,20 +254,16 @@ export class FetchRequestAdapter implements RequestAdapter {
 			throw new Error("requestInfo cannot be null");
 		}
 		return this.startTracingSpan(requestInfo, "sendNoResponseContent", async (span) => {
+			const response = await this.getHttpResponseMessage(requestInfo, span);
+			const responseHandler = this.getResponseHandler(requestInfo);
+			if (responseHandler) {
+				span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
+				return await responseHandler.handleResponse(response, errorMappings);
+			}
 			try {
-				const response = await this.getHttpResponseMessage(requestInfo, span);
-				const responseHandler = this.getResponseHandler(requestInfo);
-				if (responseHandler) {
-					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
-					return await responseHandler.handleResponse(response, errorMappings);
-				}
-				try {
-					await this.throwIfFailedResponse(response, errorMappings, span);
-				} finally {
-					await this.purgeResponseBody(response);
-				}
+				await this.throwIfFailedResponse(response, errorMappings, span);
 			} finally {
-				span.end();
+				await this.purgeResponseBody(response);
 			}
 		});
 	};
@@ -292,32 +272,28 @@ export class FetchRequestAdapter implements RequestAdapter {
 			throw new Error("requestInfo cannot be null");
 		}
 		return this.startTracingSpan(requestInfo, "sendEnum", async (span) => {
-			try {
-				const response = await this.getHttpResponseMessage(requestInfo, span);
-				const responseHandler = this.getResponseHandler(requestInfo);
-				if (responseHandler) {
-					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
-					return await responseHandler.handleResponse(response, errorMappings);
-				} else {
-					try {
-						await this.throwIfFailedResponse(response, errorMappings, span);
-						if (this.shouldReturnUndefined(response)) return undefined;
-						const rootNode = await this.getRootParseNode(response);
-						return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getEnumValue", (deserializeSpan) => {
-							try {
-								span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "enum");
-								const result = rootNode.getEnumValue(enumObject);
-								return result as EnumObject[keyof EnumObject];
-							} finally {
-								deserializeSpan.end();
-							}
-						});
-					} finally {
-						await this.purgeResponseBody(response);
-					}
+			const response = await this.getHttpResponseMessage(requestInfo, span);
+			const responseHandler = this.getResponseHandler(requestInfo);
+			if (responseHandler) {
+				span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
+				return await responseHandler.handleResponse(response, errorMappings);
+			} else {
+				try {
+					await this.throwIfFailedResponse(response, errorMappings, span);
+					if (this.shouldReturnUndefined(response)) return undefined;
+					const rootNode = await this.getRootParseNode(response);
+					return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getEnumValue", (deserializeSpan) => {
+						try {
+							span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "enum");
+							const result = rootNode.getEnumValue(enumObject);
+							return result as EnumObject[keyof EnumObject];
+						} finally {
+							deserializeSpan.end();
+						}
+					});
+				} finally {
+					await this.purgeResponseBody(response);
 				}
-			} finally {
-				span.end();
 			}
 		}) as Promise<EnumObject[keyof EnumObject]>;
 	};
@@ -326,32 +302,28 @@ export class FetchRequestAdapter implements RequestAdapter {
 			throw new Error("requestInfo cannot be null");
 		}
 		return this.startTracingSpan(requestInfo, "sendCollectionOfEnum", async (span) => {
-			try {
-				const response = await this.getHttpResponseMessage(requestInfo, span);
-				const responseHandler = this.getResponseHandler(requestInfo);
-				if (responseHandler) {
-					span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
-					return await responseHandler.handleResponse(response, errorMappings);
-				} else {
-					try {
-						await this.throwIfFailedResponse(response, errorMappings, span);
-						if (this.shouldReturnUndefined(response)) return undefined;
-						const rootNode = await this.getRootParseNode(response);
-						return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getCollectionOfEnumValues", (deserializeSpan) => {
-							try {
-								const result = rootNode.getCollectionOfEnumValues(enumObject);
-								span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "enum[]");
-								return result as unknown as EnumObject[keyof EnumObject][];
-							} finally {
-								deserializeSpan.end();
-							}
-						});
-					} finally {
-						await this.purgeResponseBody(response);
-					}
+			const response = await this.getHttpResponseMessage(requestInfo, span);
+			const responseHandler = this.getResponseHandler(requestInfo);
+			if (responseHandler) {
+				span.addEvent(FetchRequestAdapter.eventResponseHandlerInvokedKey);
+				return await responseHandler.handleResponse(response, errorMappings);
+			} else {
+				try {
+					await this.throwIfFailedResponse(response, errorMappings, span);
+					if (this.shouldReturnUndefined(response)) return undefined;
+					const rootNode = await this.getRootParseNode(response);
+					return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getCollectionOfEnumValues", (deserializeSpan) => {
+						try {
+							const result = rootNode.getCollectionOfEnumValues(enumObject);
+							span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "enum[]");
+							return result as unknown as EnumObject[keyof EnumObject][];
+						} finally {
+							deserializeSpan.end();
+						}
+					});
+				} finally {
+					await this.purgeResponseBody(response);
 				}
-			} finally {
-				span.end();
 			}
 		});
 	};
