@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.88](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.87...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.88) (2025-03-19)
+
+
+### Bug Fixes
+
+* error Operation attempted on ended Span ([fc930f6](https://github.com/microsoft/kiota-typescript/commit/fc930f6f85359e313a325d8328cf419deb0d9dd8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.87 to ^1.0.0-preview.88
+
 ## [1.0.0-preview.87](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.86...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.87) (2025-03-17)
 
 
