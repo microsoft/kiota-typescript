@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.89](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-text@1.0.0-preview.88...@microsoft/kiota-serialization-text@1.0.0-preview.89) (2025-03-19)
+
+
+### Bug Fixes
+
+* json parser ArrayBuffer memory leak ([968a4fa](https://github.com/microsoft/kiota-typescript/commit/968a4fa45f5e1d44457695effe0269487cdce30b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.88 to ^1.0.0-preview.89
+
 ## [1.0.0-preview.88](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-text@1.0.0-preview.87...@microsoft/kiota-serialization-text@1.0.0-preview.88) (2025-03-19)
 
 

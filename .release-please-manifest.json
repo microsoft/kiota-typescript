@@ -1,11 +1,11 @@
 {
-  "packages/abstractions": "1.0.0-preview.88",
-  "packages/authentication/azure": "1.0.0-preview.88",
-  "packages/authentication/spfx": "1.0.0-preview.88",
-  "packages/bundle": "1.0.0-preview.88",
-  "packages/http/fetch": "1.0.0-preview.88",
-  "packages/serialization/form": "1.0.0-preview.88",
-  "packages/serialization/json": "1.0.0-preview.88",
-  "packages/serialization/multipart": "1.0.0-preview.88",
-  "packages/serialization/text": "1.0.0-preview.88"
+  "packages/abstractions": "1.0.0-preview.89",
+  "packages/authentication/azure": "1.0.0-preview.89",
+  "packages/authentication/spfx": "1.0.0-preview.89",
+  "packages/bundle": "1.0.0-preview.89",
+  "packages/http/fetch": "1.0.0-preview.89",
+  "packages/serialization/form": "1.0.0-preview.89",
+  "packages/serialization/json": "1.0.0-preview.89",
+  "packages/serialization/multipart": "1.0.0-preview.89",
+  "packages/serialization/text": "1.0.0-preview.89"
 }
