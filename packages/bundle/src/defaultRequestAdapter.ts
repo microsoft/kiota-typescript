@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { AuthenticationProvider, ParseNodeFactory, ParseNodeFactoryRegistry, registerDefaultDeserializer, registerDefaultSerializer, SerializationWriterFactory, SerializationWriterFactoryRegistry } from "@microsoft/kiota-abstractions";
+import { AuthenticationProvider, ParseNodeFactory, ParseNodeFactoryRegistry, SerializationWriterFactory, SerializationWriterFactoryRegistry } from "@microsoft/kiota-abstractions";
 import { FormParseNodeFactory, FormSerializationWriterFactory } from "@microsoft/kiota-serialization-form";
 import { JsonParseNodeFactory, JsonSerializationWriterFactory } from "@microsoft/kiota-serialization-json";
 import { MultipartSerializationWriterFactory } from "@microsoft/kiota-serialization-multipart";
@@ -45,12 +45,12 @@ export class DefaultRequestAdapter extends FetchRequestAdapter {
 		}
 
 		const backingStoreFactory = super.getBackingStoreFactory();
-		registerDefaultSerializer(serializationWriterFactoryRegistry, JsonSerializationWriterFactory);
-		registerDefaultSerializer(serializationWriterFactoryRegistry, TextSerializationWriterFactory);
-		registerDefaultSerializer(serializationWriterFactoryRegistry, FormSerializationWriterFactory);
-		registerDefaultSerializer(serializationWriterFactoryRegistry, MultipartSerializationWriterFactory);
-		registerDefaultDeserializer(parseNodeFactoryRegistry, JsonParseNodeFactory, backingStoreFactory);
-		registerDefaultDeserializer(parseNodeFactoryRegistry, TextParseNodeFactory, backingStoreFactory);
-		registerDefaultDeserializer(parseNodeFactoryRegistry, FormParseNodeFactory, backingStoreFactory);
+		serializationWriterFactoryRegistry.registerDefaultSerializer(JsonSerializationWriterFactory);
+		serializationWriterFactoryRegistry.registerDefaultSerializer(TextSerializationWriterFactory);
+		serializationWriterFactoryRegistry.registerDefaultSerializer(FormSerializationWriterFactory);
+		serializationWriterFactoryRegistry.registerDefaultSerializer(MultipartSerializationWriterFactory);
+		parseNodeFactoryRegistry.registerDefaultDeserializer(JsonParseNodeFactory, backingStoreFactory);
+		parseNodeFactoryRegistry.registerDefaultDeserializer(TextParseNodeFactory, backingStoreFactory);
+		parseNodeFactoryRegistry.registerDefaultDeserializer(FormParseNodeFactory, backingStoreFactory);
 	}
 }

@@ -15,7 +15,7 @@ export class JsonParseNode implements ParseNode {
 	 */
 	constructor(
 		private readonly _jsonNode: unknown,
-		private readonly backingStoreFactory: BackingStoreFactory,
+		private readonly backingStoreFactory?: BackingStoreFactory,
 	) {}
 	public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
 	public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
@@ -98,7 +98,7 @@ export class JsonParseNode implements ParseNode {
 			return value;
 		}
 		const enableBackingStore = isBackingStoreEnabled(parsableFactory(this)(temp));
-		const objectValue: T = enableBackingStore ? new Proxy(temp, createBackedModelProxyHandler<T>(this.backingStoreFactory)) : temp;
+		const objectValue: T = enableBackingStore && this.backingStoreFactory ? new Proxy(temp, createBackedModelProxyHandler<T>(this.backingStoreFactory)) : temp;
 		if (this.onBeforeAssignFieldValues) {
 			this.onBeforeAssignFieldValues(objectValue);
 		}

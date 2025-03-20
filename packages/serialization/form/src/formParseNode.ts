@@ -12,11 +12,11 @@ export class FormParseNode implements ParseNode {
 	/**
 	 *  Creates a new instance of FormParseNode
 	 * @param _rawString the raw string to parse
-	 * @param backingStoreFactory the backing store factory to use
+	 * @param backingStoreFactory the factory to create backing stores
 	 */
 	constructor(
 		private readonly _rawString: string,
-		private readonly backingStoreFactory: BackingStoreFactory,
+		private readonly backingStoreFactory?: BackingStoreFactory,
 	) {
 		if (!_rawString) {
 			throw new Error("rawString cannot be undefined");
@@ -94,7 +94,7 @@ export class FormParseNode implements ParseNode {
 	public getObjectValue = <T extends Parsable>(parsableFactory: ParsableFactory<T>): T => {
 		const temp: T = {} as T;
 		const enableBackingStore = isBackingStoreEnabled(parsableFactory(this)(temp));
-		const value: T = enableBackingStore ? new Proxy(temp, createBackedModelProxyHandler<T>(this.backingStoreFactory)) : temp;
+		const value: T = enableBackingStore && this.backingStoreFactory ? new Proxy(temp, createBackedModelProxyHandler<T>(this.backingStoreFactory)) : temp;
 		if (this.onBeforeAssignFieldValues) {
 			this.onBeforeAssignFieldValues(value);
 		}

@@ -14,7 +14,7 @@ export class TextParseNodeFactory implements ParseNodeFactory {
 	 * Creates an instance of TextParseNode.
 	 * @param backingStoreFactory - The factory to create backing stores.
 	 */
-	constructor(private readonly backingStoreFactory: BackingStoreFactory) {}
+	constructor(private readonly backingStoreFactory?: BackingStoreFactory) {}
 	public getValidContentType(): string {
 		return "text/plain";
 	}

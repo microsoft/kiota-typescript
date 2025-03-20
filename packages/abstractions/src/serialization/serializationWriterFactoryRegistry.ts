@@ -39,6 +39,16 @@ export class SerializationWriterFactoryRegistry implements SerializationWriterFa
 	}
 
 	/**
+	 * Registers the default serializer to the registry.
+	 * @param type the class of the factory to be registered.
+	 */
+	public registerDefaultSerializer(type: new () => SerializationWriterFactory): void {
+		if (!type) throw new Error("Type is required");
+		const serializer = new type();
+		this.contentTypeAssociatedFactories.set(serializer.getValidContentType(), serializer);
+	}
+
+	/**
 	 * Serializes a parsable object into a buffer
 	 * @param value the value to serialize
 	 * @param serializationFunction the serialization function for the model type

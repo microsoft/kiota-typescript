@@ -8,6 +8,7 @@ import type { ParseNode } from "./parseNode";
 import type { ParseNodeFactory } from "./parseNodeFactory";
 import { Parsable } from "./parsable";
 import type { ParsableFactory } from "./parsableFactory";
+import { BackingStoreFactory } from "../store";
 
 /**
  * This factory holds a list of all the registered factories for the various types of nodes.
@@ -48,6 +49,17 @@ export class ParseNodeFactoryRegistry implements ParseNodeFactory {
 			return factory.getRootParseNode(cleanedContentType, content);
 		}
 		throw new Error(`Content type ${cleanedContentType} does not have a factory registered to be parsed`);
+	}
+
+	/**
+	 * Registers the default deserializer to the registry.
+	 * @param type the class of the factory to be registered.
+	 * @param backingStoreFactory The backing store factory to use.
+	 */
+	public registerDefaultDeserializer(type: new (backingStoreFactory: BackingStoreFactory) => ParseNodeFactory, backingStoreFactory: BackingStoreFactory): void {
+		if (!type) throw new Error("Type is required");
+		const deserializer = new type(backingStoreFactory);
+		this.contentTypeAssociatedFactories.set(deserializer.getValidContentType(), deserializer);
 	}
 
 	/**

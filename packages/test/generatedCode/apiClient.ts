@@ -4,7 +4,7 @@
 // @ts-ignore
 import { type UsersRequestBuilder, UsersRequestBuilderNavigationMetadata } from './users/index.js';
 // @ts-ignore
-import { apiClientProxifier,registerDefaultDeserializer, registerDefaultSerializer, type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type RequestAdapter, ParseNodeFactoryRegistry, SerializationWriterFactoryRegistry } from '@microsoft/kiota-abstractions';
+import { apiClientProxifier,type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type RequestAdapter, ParseNodeFactoryRegistry, SerializationWriterFactoryRegistry } from '@microsoft/kiota-abstractions';
 // @ts-ignore
 import { FormParseNodeFactory, FormSerializationWriterFactory } from '@microsoft/kiota-serialization-form';
 // @ts-ignore
@@ -47,13 +47,13 @@ export function createApiClient(requestAdapter: RequestAdapter) {
     }
 
     const backingStoreFactory = requestAdapter.getBackingStoreFactory();
-    registerDefaultSerializer(serializationWriterFactory, JsonSerializationWriterFactory);
-    registerDefaultSerializer(serializationWriterFactory, TextSerializationWriterFactory);
-    registerDefaultSerializer(serializationWriterFactory, FormSerializationWriterFactory);
-    registerDefaultSerializer(serializationWriterFactory, MultipartSerializationWriterFactory);
-    registerDefaultDeserializer(parseNodeFactoryRegistry, JsonParseNodeFactory, backingStoreFactory);
-    registerDefaultDeserializer(parseNodeFactoryRegistry, TextParseNodeFactory, backingStoreFactory);
-    registerDefaultDeserializer(parseNodeFactoryRegistry, FormParseNodeFactory, backingStoreFactory);
+    serializationWriterFactory.registerDefaultSerializer( JsonSerializationWriterFactory);
+    serializationWriterFactory.registerDefaultSerializer( TextSerializationWriterFactory);
+    serializationWriterFactory.registerDefaultSerializer( FormSerializationWriterFactory);
+    serializationWriterFactory.registerDefaultSerializer( MultipartSerializationWriterFactory);
+    parseNodeFactoryRegistry.registerDefaultDeserializer( JsonParseNodeFactory, backingStoreFactory);
+    parseNodeFactoryRegistry.registerDefaultDeserializer( TextParseNodeFactory, backingStoreFactory);
+    parseNodeFactoryRegistry.registerDefaultDeserializer( FormParseNodeFactory, backingStoreFactory);
     if (requestAdapter.baseUrl === undefined || requestAdapter.baseUrl === "") {
         requestAdapter.baseUrl = "https://graph.microsoft.com/v1.0";
     }

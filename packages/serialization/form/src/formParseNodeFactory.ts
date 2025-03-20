@@ -14,7 +14,7 @@ export class FormParseNodeFactory implements ParseNodeFactory {
 	 * Creates an instance of JsonParseNode.
 	 * @param backingStoreFactory - The factory to create backing stores.
 	 */
-	constructor(private readonly backingStoreFactory: BackingStoreFactory) {}
+	constructor(private readonly backingStoreFactory?: BackingStoreFactory) {}
 
 	public getValidContentType(): string {
 		return "application/x-www-form-urlencoded";
