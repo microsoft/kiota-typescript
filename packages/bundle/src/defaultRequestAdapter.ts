@@ -49,8 +49,8 @@ export class DefaultRequestAdapter extends FetchRequestAdapter {
 		serializationWriterFactoryRegistry.registerDefaultSerializer(TextSerializationWriterFactory);
 		serializationWriterFactoryRegistry.registerDefaultSerializer(FormSerializationWriterFactory);
 		serializationWriterFactoryRegistry.registerDefaultSerializer(MultipartSerializationWriterFactory);
-		parseNodeFactoryRegistry.registerDefaultDeserializer(JsonParseNodeFactory, backingStoreFactory);
-		parseNodeFactoryRegistry.registerDefaultDeserializer(TextParseNodeFactory, backingStoreFactory);
-		parseNodeFactoryRegistry.registerDefaultDeserializer(FormParseNodeFactory, backingStoreFactory);
+		parseNodeFactoryRegistry.registerDefaultDeserializer(TextParseNodeFactory);
+		parseNodeFactoryRegistry.registerDefaultDeserializerWithBackingStoreFactory(JsonParseNodeFactory, backingStoreFactory);
+		parseNodeFactoryRegistry.registerDefaultDeserializerWithBackingStoreFactory(FormParseNodeFactory, backingStoreFactory);
 	}
 }

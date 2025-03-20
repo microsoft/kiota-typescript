@@ -47,13 +47,13 @@ export function createApiClient(requestAdapter: RequestAdapter) {
     }
 
     const backingStoreFactory = requestAdapter.getBackingStoreFactory();
-    serializationWriterFactory.registerDefaultSerializer( JsonSerializationWriterFactory);
-    serializationWriterFactory.registerDefaultSerializer( TextSerializationWriterFactory);
-    serializationWriterFactory.registerDefaultSerializer( FormSerializationWriterFactory);
-    serializationWriterFactory.registerDefaultSerializer( MultipartSerializationWriterFactory);
-    parseNodeFactoryRegistry.registerDefaultDeserializer( JsonParseNodeFactory, backingStoreFactory);
-    parseNodeFactoryRegistry.registerDefaultDeserializer( TextParseNodeFactory, backingStoreFactory);
-    parseNodeFactoryRegistry.registerDefaultDeserializer( FormParseNodeFactory, backingStoreFactory);
+    serializationWriterFactory.registerDefaultSerializer(JsonSerializationWriterFactory);
+    serializationWriterFactory.registerDefaultSerializer(TextSerializationWriterFactory);
+    serializationWriterFactory.registerDefaultSerializer(FormSerializationWriterFactory);
+    serializationWriterFactory.registerDefaultSerializer(MultipartSerializationWriterFactory);
+    parseNodeFactoryRegistry.registerDefaultDeserializer(TextParseNodeFactory);
+    parseNodeFactoryRegistry.registerDefaultDeserializerWithBackingStoreFactory(JsonParseNodeFactory, backingStoreFactory);
+    parseNodeFactoryRegistry.registerDefaultDeserializerWithBackingStoreFactory(FormParseNodeFactory, backingStoreFactory);
     if (requestAdapter.baseUrl === undefined || requestAdapter.baseUrl === "") {
         requestAdapter.baseUrl = "https://graph.microsoft.com/v1.0";
     }
