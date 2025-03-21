@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-preview.90](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.89...@microsoft/kiota-abstractions@1.0.0-preview.90) (2025-03-21)
+
+
+### Bug Fixes
+
+* revert to IterableIterator type ([554acbc](https://github.com/microsoft/kiota-typescript/commit/554acbc0342c32eaf00f890fb488557c4faec75f))
+
 ## [1.0.0-preview.89](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.88...@microsoft/kiota-abstractions@1.0.0-preview.89) (2025-03-19)
 
 
