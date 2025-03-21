@@ -11,8 +11,9 @@ import { DateOnly, Duration, type Guid, isUntypedNode, type ModelSerializerFunct
 export class JsonSerializationWriter implements SerializationWriter {
 	public writeByteArrayValue(key?: string, value?: ArrayBuffer | null): void {
 		if (!value) {
-			throw new Error("value cannot be undefined");
+			return;
 		}
+
 		const b64 = inNodeEnv() ? Buffer.from(value).toString("base64") : btoa(new TextDecoder().decode(value));
 		this.writeStringValue(key, b64);
 	}
