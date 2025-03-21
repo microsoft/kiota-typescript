@@ -258,7 +258,7 @@ export class Headers extends Map<string, Set<string>> {
 	 * get keys of the headers collection
 	 * @returns an iterator of keys
 	 */
-	public keys(): StringIterator<string> {
+	public keys(): IterableIterator<string> {
 		return Object.keys(this.headers)[Symbol.iterator]();
 	}
 
@@ -266,7 +266,7 @@ export class Headers extends Map<string, Set<string>> {
 	 * get entries
 	 * @returns an iterator of entries
 	 */
-	public entries(): MapIterator<[string, Set<string>]> {
+	public entries(): IterableIterator<[string, Set<string>]> {
 		return Object.entries(this.headers)[Symbol.iterator]();
 	}
 }
