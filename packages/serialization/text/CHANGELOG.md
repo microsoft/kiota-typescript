@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.0-preview.91](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-text@1.0.0-preview.90...@microsoft/kiota-serialization-text@1.0.0-preview.91) (2025-03-21)
+
+
+### Bug Fixes
+
+* prevent error on undefined byte array value in serialization writers ([de80b9a](https://github.com/microsoft/kiota-typescript/commit/de80b9af094904a4c2f7a98d930eb796c6b86e85))
+* prevent error on undefined byte array value in serialization writers ([cf96887](https://github.com/microsoft/kiota-typescript/commit/cf9688749827e8a951fa906399027a36c595d2ac))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.90 to ^1.0.0-preview.91
+
 ## [1.0.0-preview.90](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-text@1.0.0-preview.89...@microsoft/kiota-serialization-text@1.0.0-preview.90) (2025-03-21)
 
 
