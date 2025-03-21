@@ -20,8 +20,8 @@ describe("defaultRequestAdapter.ts", () => {
 
 			assert.isNotNull(requestAdapter);
 
-			const serializerMap = SerializationWriterFactoryRegistry.defaultInstance.contentTypeAssociatedFactories;
-			const deserializerMap = ParseNodeFactoryRegistry.defaultInstance.contentTypeAssociatedFactories;
+			const serializerMap = requestAdapter.getSerializationWriterFactory().contentTypeAssociatedFactories;
+			const deserializerMap = requestAdapter.getParseNodeFactory().contentTypeAssociatedFactories;
 
 			assert.isNotNull(serializerMap);
 			assert.isNotNull(deserializerMap);

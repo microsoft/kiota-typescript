@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import type { ParseNode, ParseNodeFactory } from "@microsoft/kiota-abstractions";
+import { type ParseNode, type ParseNodeFactory } from "@microsoft/kiota-abstractions";
 
 import { TextParseNode } from "./textParseNode";
 

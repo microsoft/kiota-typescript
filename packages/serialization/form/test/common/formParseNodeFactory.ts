@@ -8,14 +8,17 @@
 import { assert, describe, it } from "vitest";
 
 import { FormParseNodeFactory } from "../../src/index";
+import { BackingStoreFactory, InMemoryBackingStoreFactory } from "@microsoft/kiota-abstractions";
 
 describe("formParseNodeFactory", () => {
+	const backingStoreFactory: BackingStoreFactory = new InMemoryBackingStoreFactory();
+
 	it("formParseNodeFactory", () => {
-		const formParseNodeFactory = new FormParseNodeFactory();
+		const formParseNodeFactory = new FormParseNodeFactory(backingStoreFactory);
 		assert.isDefined(formParseNodeFactory);
 	});
 	it("formParseNodeFactory:getsWriterForFormContentType", () => {
-		const factory = new FormParseNodeFactory();
+		const factory = new FormParseNodeFactory(backingStoreFactory);
 
 		const expectedForm = "subject=subject-value";
 		const sampleArrayBuffer = new TextEncoder().encode(expectedForm);
@@ -24,7 +27,7 @@ describe("formParseNodeFactory", () => {
 		assert.isDefined(formParseNode);
 	});
 	it("formParseNodeFactory:throwsForInvalidContentType", () => {
-		const factory = new FormParseNodeFactory();
+		const factory = new FormParseNodeFactory(backingStoreFactory);
 
 		const expectedForm = "subject=subject-value";
 		const sampleArrayBuffer = new TextEncoder().encode(expectedForm);
@@ -32,7 +35,7 @@ describe("formParseNodeFactory", () => {
 		assert.throw(() => factory.getRootParseNode("application/json", sampleArrayBuffer));
 	});
 	it("formParseNodeFactory:throwsForNoContentType", () => {
-		const factory = new FormParseNodeFactory();
+		const factory = new FormParseNodeFactory(backingStoreFactory);
 
 		assert.throw(() => {
 			const sampleArrayBuffer = new TextEncoder().encode("foo");

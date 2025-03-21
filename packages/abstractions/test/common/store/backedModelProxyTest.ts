@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-import { type BackedModel, type BackingStore, BackingStoreFactorySingleton, createBackedModelProxyHandler } from "../../../src/store";
+import { type BackedModel, type BackingStore, BackingStoreFactory, createBackedModelProxyHandler, InMemoryBackingStoreFactory } from "../../../src/store";
 import { assert, describe, it, beforeEach, afterEach } from "vitest";
 
 export interface Model extends BackedModel {
@@ -13,11 +13,11 @@ export interface Model extends BackedModel {
 }
 
 describe("createBackedModelProxyHandler", () => {
-	let backingStoreFactorySingleton: BackingStoreFactorySingleton;
+	let backingStoreFactory: BackingStoreFactory;
 	const fakeBackingStore = {} as BackingStore;
 
 	beforeEach(() => {
-		backingStoreFactorySingleton = BackingStoreFactorySingleton.instance;
+		backingStoreFactory = new InMemoryBackingStoreFactory();
 	});
 
 	afterEach(() => {
@@ -26,7 +26,7 @@ describe("createBackedModelProxyHandler", () => {
 
 	it("should get a property from the backing store", () => {
 		// Arrange
-		const handler = createBackedModelProxyHandler<Model>();
+		const handler = createBackedModelProxyHandler<Model>(backingStoreFactory);
 		const model = new Proxy<Model>({ backingStore: fakeBackingStore }, handler);
 
 		// Act
@@ -38,7 +38,7 @@ describe("createBackedModelProxyHandler", () => {
 
 	it("should set a property in the backing store", () => {
 		// Arrange
-		const handler = createBackedModelProxyHandler<{ name?: string }>();
+		const handler = createBackedModelProxyHandler<{ name?: string }>(backingStoreFactory);
 		const model = new Proxy<Model>({ backingStore: fakeBackingStore }, handler);
 
 		// Act
@@ -50,7 +50,7 @@ describe("createBackedModelProxyHandler", () => {
 
 	it("should get and set multiple properties in the backing store", () => {
 		// Arrange
-		const handler = createBackedModelProxyHandler();
+		const handler = createBackedModelProxyHandler(backingStoreFactory);
 		const model = new Proxy<Model>({ backingStore: fakeBackingStore }, handler);
 
 		// Act
@@ -66,7 +66,7 @@ describe("createBackedModelProxyHandler", () => {
 
 	it("should ignore setting the backingStore property", () => {
 		// Arrange
-		const handler = createBackedModelProxyHandler();
+		const handler = createBackedModelProxyHandler(backingStoreFactory);
 		const model = new Proxy<Model>({ backingStore: fakeBackingStore }, handler);
 
 		// Act
@@ -79,7 +79,7 @@ describe("createBackedModelProxyHandler", () => {
 
 	it("should return the backing store when the property itself is backingStore", () => {
 		// Arrange
-		const handler = createBackedModelProxyHandler();
+		const handler = createBackedModelProxyHandler(backingStoreFactory);
 		const model = new Proxy<Model>({ backingStore: fakeBackingStore }, handler);
 
 		// Act

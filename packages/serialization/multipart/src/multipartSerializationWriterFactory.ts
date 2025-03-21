@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import type { SerializationWriter, SerializationWriterFactory } from "@microsoft/kiota-abstractions";
+import { type SerializationWriter, type SerializationWriterFactory } from "@microsoft/kiota-abstractions";
 
 import { MultipartSerializationWriter } from "./multipartSerializationWriter";
 
