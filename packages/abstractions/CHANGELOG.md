@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-preview.92](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.91...@microsoft/kiota-abstractions@1.0.0-preview.92) (2025-03-24)
+
+
+### Bug Fixes
+
+* Removes singleton registries ([#1634](https://github.com/microsoft/kiota-typescript/issues/1634)) ([8baf6e3](https://github.com/microsoft/kiota-typescript/commit/8baf6e3ae7f479f3745c502c93513678eb9f05c6))
+
 ## [1.0.0-preview.91](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.90...@microsoft/kiota-abstractions@1.0.0-preview.91) (2025-03-21)
 
 
