@@ -56,19 +56,9 @@ export class ParseNodeFactoryRegistry implements ParseNodeFactory {
 	 * @param type the class of the factory to be registered.
 	 * @param backingStoreFactory The backing store factory to use.
 	 */
-	public registerDefaultDeserializerWithBackingStoreFactory(type: new (backingStoreFactory: BackingStoreFactory) => ParseNodeFactory, backingStoreFactory: BackingStoreFactory): void {
+	public registerDefaultDeserializer(type: new (backingStoreFactory: BackingStoreFactory) => ParseNodeFactory, backingStoreFactory: BackingStoreFactory): void {
 		if (!type) throw new Error("Type is required");
 		const deserializer = new type(backingStoreFactory);
-		this.contentTypeAssociatedFactories.set(deserializer.getValidContentType(), deserializer);
-	}
-
-	/**
-	 * Registers the default deserializer to the registry.
-	 * @param type the class of the factory to be registered.
-	 */
-	public registerDefaultDeserializer(type: new () => ParseNodeFactory): void {
-		if (!type) throw new Error("Type is required");
-		const deserializer = new type();
 		this.contentTypeAssociatedFactories.set(deserializer.getValidContentType(), deserializer);
 	}
 

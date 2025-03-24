@@ -51,9 +51,9 @@ export function createApiClient(requestAdapter: RequestAdapter) {
     serializationWriterFactory.registerDefaultSerializer(TextSerializationWriterFactory);
     serializationWriterFactory.registerDefaultSerializer(FormSerializationWriterFactory);
     serializationWriterFactory.registerDefaultSerializer(MultipartSerializationWriterFactory);
-    parseNodeFactoryRegistry.registerDefaultDeserializer(TextParseNodeFactory);
-    parseNodeFactoryRegistry.registerDefaultDeserializerWithBackingStoreFactory(JsonParseNodeFactory, backingStoreFactory);
-    parseNodeFactoryRegistry.registerDefaultDeserializerWithBackingStoreFactory(FormParseNodeFactory, backingStoreFactory);
+    parseNodeFactoryRegistry.registerDefaultDeserializer(TextParseNodeFactory, backingStoreFactory);
+    parseNodeFactoryRegistry.registerDefaultDeserializer(JsonParseNodeFactory, backingStoreFactory);
+    parseNodeFactoryRegistry.registerDefaultDeserializer(FormParseNodeFactory, backingStoreFactory);
     if (requestAdapter.baseUrl === undefined || requestAdapter.baseUrl === "") {
         requestAdapter.baseUrl = "https://graph.microsoft.com/v1.0";
     }
