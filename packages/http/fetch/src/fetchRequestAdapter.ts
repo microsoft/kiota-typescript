@@ -5,9 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, BackingStoreFactorySingleton, type DateOnly, DefaultApiError, type Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, type ErrorMappings, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type PrimitiveTypesForDeserialization, type PrimitiveTypesForDeserializationType, type RequestAdapter, type RequestInformation, type ResponseHandler, type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
+import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, InMemoryBackingStoreFactory, type DateOnly, DefaultApiError, type Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, type ErrorMappings, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type PrimitiveTypesForDeserialization, type PrimitiveTypesForDeserializationType, type RequestAdapter, type RequestInformation, type ResponseHandler, type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
 import { type Span, SpanStatusCode, trace } from "@opentelemetry/api";
-
 import { HttpClient } from "./httpClient";
 import { type ObservabilityOptions, ObservabilityOptionsImpl } from "./observabilityOptions";
 
@@ -20,6 +19,14 @@ export class FetchRequestAdapter implements RequestAdapter {
 	public getSerializationWriterFactory(): SerializationWriterFactory {
 		return this.serializationWriterFactory;
 	}
+	public getParseNodeFactory(): ParseNodeFactory {
+		return this.parseNodeFactory;
+	}
+
+	public getBackingStoreFactory(): BackingStoreFactory {
+		return this.backingStoreFactory;
+	}
+
 	private readonly observabilityOptions: ObservabilityOptionsImpl;
 	/**
 	 * Instantiates a new request adapter.
@@ -28,13 +35,15 @@ export class FetchRequestAdapter implements RequestAdapter {
 	 * @param serializationWriterFactory the serialization writer factory to use to serialize request bodies.
 	 * @param httpClient the http client to use to execute requests.
 	 * @param observabilityOptions the observability options to use.
+	 * @param backingStoreFactory the backing store factory to use.
 	 */
 	public constructor(
 		public readonly authenticationProvider: AuthenticationProvider,
-		private parseNodeFactory: ParseNodeFactory = ParseNodeFactoryRegistry.defaultInstance,
-		private serializationWriterFactory: SerializationWriterFactory = SerializationWriterFactoryRegistry.defaultInstance,
+		private parseNodeFactory: ParseNodeFactory = new ParseNodeFactoryRegistry(),
+		private serializationWriterFactory: SerializationWriterFactory = new SerializationWriterFactoryRegistry(),
 		private readonly httpClient: HttpClient = new HttpClient(),
 		observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl(),
+		private backingStoreFactory = new InMemoryBackingStoreFactory(),
 	) {
 		if (!authenticationProvider) {
 			throw new Error("authentication provider cannot be null");
@@ -328,11 +337,19 @@ export class FetchRequestAdapter implements RequestAdapter {
 		});
 	};
 	public enableBackingStore = (backingStoreFactory?: BackingStoreFactory): void => {
-		this.parseNodeFactory = enableBackingStoreForParseNodeFactory(this.parseNodeFactory);
-		this.serializationWriterFactory = enableBackingStoreForSerializationWriterFactory(this.serializationWriterFactory);
+		if (this.parseNodeFactory instanceof ParseNodeFactoryRegistry) {
+			this.parseNodeFactory = enableBackingStoreForParseNodeFactory(this.parseNodeFactory, this.parseNodeFactory);
+		} else {
+			throw new Error("parseNodeFactory is not a ParseNodeFactoryRegistry");
+		}
+		if (this.serializationWriterFactory instanceof SerializationWriterFactoryRegistry && this.parseNodeFactory instanceof ParseNodeFactoryRegistry) {
+			this.serializationWriterFactory = enableBackingStoreForSerializationWriterFactory(this.serializationWriterFactory, this.parseNodeFactory, this.serializationWriterFactory);
+		} else {
+			throw new Error("serializationWriterFactory is not a SerializationWriterFactoryRegistry or parseNodeFactory is not a ParseNodeFactoryRegistry");
+		}
 		if (!this.serializationWriterFactory || !this.parseNodeFactory) throw new Error("unable to enable backing store");
 		if (backingStoreFactory) {
-			BackingStoreFactorySingleton.instance = backingStoreFactory;
+			this.backingStoreFactory = backingStoreFactory;
 		}
 	};
 	private readonly getRootParseNode = (response: Response): Promise<ParseNode> => {

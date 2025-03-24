@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { AuthenticationProvider, ParseNodeFactory, ParseNodeFactoryRegistry, registerDefaultDeserializer, registerDefaultSerializer, SerializationWriterFactory, SerializationWriterFactoryRegistry } from "@microsoft/kiota-abstractions";
+import { AuthenticationProvider, ParseNodeFactory, ParseNodeFactoryRegistry, SerializationWriterFactory, SerializationWriterFactoryRegistry } from "@microsoft/kiota-abstractions";
 import { FormParseNodeFactory, FormSerializationWriterFactory } from "@microsoft/kiota-serialization-form";
 import { JsonParseNodeFactory, JsonSerializationWriterFactory } from "@microsoft/kiota-serialization-json";
 import { MultipartSerializationWriterFactory } from "@microsoft/kiota-serialization-multipart";
@@ -24,18 +24,33 @@ export class DefaultRequestAdapter extends FetchRequestAdapter {
 	 * @param httpClient the http client to use to execute requests.
 	 * @param observabilityOptions the observability options to use.
 	 */
-	public constructor(authenticationProvider: AuthenticationProvider, parseNodeFactory: ParseNodeFactory = ParseNodeFactoryRegistry.defaultInstance, serializationWriterFactory: SerializationWriterFactory = SerializationWriterFactoryRegistry.defaultInstance, httpClient: HttpClient = new HttpClient(), observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()) {
+	public constructor(authenticationProvider: AuthenticationProvider, parseNodeFactory: ParseNodeFactory = new ParseNodeFactoryRegistry(), serializationWriterFactory: SerializationWriterFactory = new SerializationWriterFactoryRegistry(), httpClient: HttpClient = new HttpClient(), observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl()) {
 		super(authenticationProvider, parseNodeFactory, serializationWriterFactory, httpClient, observabilityOptions);
-		DefaultRequestAdapter.setupDefaults();
+		this.setupDefaults();
 	}
 
-	private static setupDefaults() {
-		registerDefaultSerializer(JsonSerializationWriterFactory);
-		registerDefaultSerializer(TextSerializationWriterFactory);
-		registerDefaultSerializer(FormSerializationWriterFactory);
-		registerDefaultSerializer(MultipartSerializationWriterFactory);
-		registerDefaultDeserializer(JsonParseNodeFactory);
-		registerDefaultDeserializer(TextParseNodeFactory);
-		registerDefaultDeserializer(FormParseNodeFactory);
+	private setupDefaults() {
+		let parseNodeFactoryRegistry: ParseNodeFactoryRegistry;
+		if (super.getParseNodeFactory() instanceof ParseNodeFactoryRegistry) {
+			parseNodeFactoryRegistry = super.getParseNodeFactory() as ParseNodeFactoryRegistry;
+		} else {
+			throw new Error("ParseNodeFactory must be a ParseNodeFactoryRegistry");
+		}
+
+		let serializationWriterFactoryRegistry: SerializationWriterFactoryRegistry;
+		if (super.getSerializationWriterFactory() instanceof SerializationWriterFactoryRegistry) {
+			serializationWriterFactoryRegistry = super.getSerializationWriterFactory() as SerializationWriterFactoryRegistry;
+		} else {
+			throw new Error("SerializationWriterFactory must be a SerializationWriterFactoryRegistry");
+		}
+
+		const backingStoreFactory = super.getBackingStoreFactory();
+		serializationWriterFactoryRegistry.registerDefaultSerializer(JsonSerializationWriterFactory);
+		serializationWriterFactoryRegistry.registerDefaultSerializer(TextSerializationWriterFactory);
+		serializationWriterFactoryRegistry.registerDefaultSerializer(FormSerializationWriterFactory);
+		serializationWriterFactoryRegistry.registerDefaultSerializer(MultipartSerializationWriterFactory);
+		parseNodeFactoryRegistry.registerDefaultDeserializer(TextParseNodeFactory, backingStoreFactory);
+		parseNodeFactoryRegistry.registerDefaultDeserializer(JsonParseNodeFactory, backingStoreFactory);
+		parseNodeFactoryRegistry.registerDefaultDeserializer(FormParseNodeFactory, backingStoreFactory);
 	}
 }

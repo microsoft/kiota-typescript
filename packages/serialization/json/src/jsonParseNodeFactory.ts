@@ -5,11 +5,17 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import type { ParseNode, ParseNodeFactory } from "@microsoft/kiota-abstractions";
+import { BackingStoreFactory, type ParseNode, type ParseNodeFactory } from "@microsoft/kiota-abstractions";
 
 import { JsonParseNode } from "./jsonParseNode";
 
 export class JsonParseNodeFactory implements ParseNodeFactory {
+	/**
+	 * Creates an instance of JsonParseNode.
+	 * @param backingStoreFactory - The factory to create backing stores.
+	 */
+	constructor(private readonly backingStoreFactory?: BackingStoreFactory) {}
+
 	public getValidContentType(): string {
 		return "application/json";
 	}
@@ -21,7 +27,7 @@ export class JsonParseNodeFactory implements ParseNodeFactory {
 		} else if (this.getValidContentType() !== contentType) {
 			throw new Error(`expected a ${this.getValidContentType()} content type`);
 		}
-		return new JsonParseNode(this.convertArrayBufferToJson(content));
+		return new JsonParseNode(this.convertArrayBufferToJson(content), this.backingStoreFactory);
 	}
 
 	private convertArrayBufferToJson(content: ArrayBuffer) {

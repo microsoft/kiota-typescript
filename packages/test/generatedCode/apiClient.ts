@@ -4,7 +4,7 @@
 // @ts-ignore
 import { type UsersRequestBuilder, UsersRequestBuilderNavigationMetadata } from './users/index.js';
 // @ts-ignore
-import { apiClientProxifier, registerDefaultDeserializer, registerDefaultSerializer, type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type RequestAdapter } from '@microsoft/kiota-abstractions';
+import { apiClientProxifier,type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type RequestAdapter, ParseNodeFactoryRegistry, SerializationWriterFactoryRegistry } from '@microsoft/kiota-abstractions';
 // @ts-ignore
 import { FormParseNodeFactory, FormSerializationWriterFactory } from '@microsoft/kiota-serialization-form';
 // @ts-ignore
@@ -29,13 +29,31 @@ export interface ApiClient extends BaseRequestBuilder<ApiClient> {
  */
 // @ts-ignore
 export function createApiClient(requestAdapter: RequestAdapter) {
-    registerDefaultSerializer(JsonSerializationWriterFactory);
-    registerDefaultSerializer(TextSerializationWriterFactory);
-    registerDefaultSerializer(FormSerializationWriterFactory);
-    registerDefaultSerializer(MultipartSerializationWriterFactory);
-    registerDefaultDeserializer(JsonParseNodeFactory);
-    registerDefaultDeserializer(TextParseNodeFactory);
-    registerDefaultDeserializer(FormParseNodeFactory);
+    if (requestAdapter === undefined) {
+        throw new Error("requestAdapter cannot be undefined");
+    }
+    let serializationWriterFactory : SerializationWriterFactoryRegistry
+    let parseNodeFactoryRegistry : ParseNodeFactoryRegistry
+
+    if (requestAdapter.getParseNodeFactory() instanceof ParseNodeFactoryRegistry) {
+      parseNodeFactoryRegistry = requestAdapter.getParseNodeFactory() as ParseNodeFactoryRegistry
+    } else{
+      throw new Error("parseNodeFactoryRegistry is not an instance of ParseNodeFactoryRegistry");
+    }
+    if (requestAdapter.getSerializationWriterFactory() instanceof SerializationWriterFactoryRegistry) {
+      serializationWriterFactory = requestAdapter.getSerializationWriterFactory() as SerializationWriterFactoryRegistry;
+    }else{
+      throw new Error("serializationWriterFactory is not an instance of SerializationWriterFactory");
+    }
+
+    const backingStoreFactory = requestAdapter.getBackingStoreFactory();
+    serializationWriterFactory.registerDefaultSerializer(JsonSerializationWriterFactory);
+    serializationWriterFactory.registerDefaultSerializer(TextSerializationWriterFactory);
+    serializationWriterFactory.registerDefaultSerializer(FormSerializationWriterFactory);
+    serializationWriterFactory.registerDefaultSerializer(MultipartSerializationWriterFactory);
+    parseNodeFactoryRegistry.registerDefaultDeserializer(TextParseNodeFactory, backingStoreFactory);
+    parseNodeFactoryRegistry.registerDefaultDeserializer(JsonParseNodeFactory, backingStoreFactory);
+    parseNodeFactoryRegistry.registerDefaultDeserializer(FormParseNodeFactory, backingStoreFactory);
     if (requestAdapter.baseUrl === undefined || requestAdapter.baseUrl === "") {
         requestAdapter.baseUrl = "https://graph.microsoft.com/v1.0";
     }
