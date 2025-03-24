@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.0.0-preview.92](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-bundle@1.0.0-preview.91...@microsoft/kiota-bundle@1.0.0-preview.92) (2025-03-24)
+
+
+### Bug Fixes
+
+* Removes singleton registries ([#1634](https://github.com/microsoft/kiota-typescript/issues/1634)) ([8baf6e3](https://github.com/microsoft/kiota-typescript/commit/8baf6e3ae7f479f3745c502c93513678eb9f05c6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.91 to ^1.0.0-preview.92
+    * @microsoft/kiota-http-fetchlibrary bumped from ^1.0.0-preview.91 to ^1.0.0-preview.92
+    * @microsoft/kiota-serialization-form bumped from ^1.0.0-preview.91 to ^1.0.0-preview.92
+    * @microsoft/kiota-serialization-json bumped from ^1.0.0-preview.91 to ^1.0.0-preview.92
+    * @microsoft/kiota-serialization-multipart bumped from ^1.0.0-preview.91 to ^1.0.0-preview.92
+    * @microsoft/kiota-serialization-text bumped from ^1.0.0-preview.91 to ^1.0.0-preview.92
+
 ## [1.0.0-preview.91](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-bundle@1.0.0-preview.90...@microsoft/kiota-bundle@1.0.0-preview.91) (2025-03-21)
 
 
