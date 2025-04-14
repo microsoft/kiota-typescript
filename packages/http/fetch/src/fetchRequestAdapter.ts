@@ -366,7 +366,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		});
 	};
 	private readonly shouldReturnUndefined = (response: Response): boolean => {
-		return response.status === 204 || !response.body;
+		return response.status === 204 || response.status === 304 || !response.body;
 	};
 	/**
 	 * purges the response body if it hasn't been read to release the connection to the server
