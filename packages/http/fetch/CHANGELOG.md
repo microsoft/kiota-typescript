@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.0-preview.93](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.92...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.93) (2025-04-14)
+
+
+### Features
+
+* Adds 304 to return undefined body ([4358679](https://github.com/microsoft/kiota-typescript/commit/43586797190480d2f46a455655e1a77db5259dc0))
+* Adds 304 to return undefined body ([a0d7448](https://github.com/microsoft/kiota-typescript/commit/a0d744876d9a0dd7b461d0c32baad06b7c108ee3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.92 to ^1.0.0-preview.93
+
 ## [1.0.0-preview.92](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.91...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.92) (2025-03-24)
 
 
