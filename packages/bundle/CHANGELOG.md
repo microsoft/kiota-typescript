@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.0.0-preview.94](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-bundle@1.0.0-preview.93...@microsoft/kiota-bundle@1.0.0-preview.94) (2025-06-02)
+
+
+### Bug Fixes
+
+* client creation fails because of instanceof use ([3a039c1](https://github.com/microsoft/kiota-typescript/commit/3a039c1d36f341ddb8d7043c5a0dee37429c63e1))
+* client creation fails because of instanceof use ([88c0604](https://github.com/microsoft/kiota-typescript/commit/88c0604eb9286b8a5c9014388e5a5213f78f99dc))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.93 to ^1.0.0-preview.94
+    * @microsoft/kiota-http-fetchlibrary bumped from ^1.0.0-preview.93 to ^1.0.0-preview.94
+    * @microsoft/kiota-serialization-form bumped from ^1.0.0-preview.93 to ^1.0.0-preview.94
+    * @microsoft/kiota-serialization-json bumped from ^1.0.0-preview.93 to ^1.0.0-preview.94
+    * @microsoft/kiota-serialization-multipart bumped from ^1.0.0-preview.93 to ^1.0.0-preview.94
+    * @microsoft/kiota-serialization-text bumped from ^1.0.0-preview.93 to ^1.0.0-preview.94
+
 ## [1.0.0-preview.93](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-bundle@1.0.0-preview.92...@microsoft/kiota-bundle@1.0.0-preview.93) (2025-04-14)
 
 
