@@ -30,27 +30,20 @@ export class DefaultRequestAdapter extends FetchRequestAdapter {
 	}
 
 	private setupDefaults() {
-		let parseNodeFactoryRegistry: ParseNodeFactoryRegistry;
-		if (super.getParseNodeFactory() instanceof ParseNodeFactoryRegistry) {
-			parseNodeFactoryRegistry = super.getParseNodeFactory() as ParseNodeFactoryRegistry;
-		} else {
-			throw new Error("ParseNodeFactory must be a ParseNodeFactoryRegistry");
-		}
-
-		let serializationWriterFactoryRegistry: SerializationWriterFactoryRegistry;
-		if (super.getSerializationWriterFactory() instanceof SerializationWriterFactoryRegistry) {
-			serializationWriterFactoryRegistry = super.getSerializationWriterFactory() as SerializationWriterFactoryRegistry;
-		} else {
-			throw new Error("SerializationWriterFactory must be a SerializationWriterFactoryRegistry");
-		}
-
+		const parseNodeFactoryRegistry = super.getParseNodeFactory() as ParseNodeFactoryRegistry;
+		const serializationWriterFactoryRegistry = super.getSerializationWriterFactory() as SerializationWriterFactoryRegistry;
 		const backingStoreFactory = super.getBackingStoreFactory();
-		serializationWriterFactoryRegistry.registerDefaultSerializer(JsonSerializationWriterFactory);
-		serializationWriterFactoryRegistry.registerDefaultSerializer(TextSerializationWriterFactory);
-		serializationWriterFactoryRegistry.registerDefaultSerializer(FormSerializationWriterFactory);
-		serializationWriterFactoryRegistry.registerDefaultSerializer(MultipartSerializationWriterFactory);
-		parseNodeFactoryRegistry.registerDefaultDeserializer(TextParseNodeFactory, backingStoreFactory);
-		parseNodeFactoryRegistry.registerDefaultDeserializer(JsonParseNodeFactory, backingStoreFactory);
-		parseNodeFactoryRegistry.registerDefaultDeserializer(FormParseNodeFactory, backingStoreFactory);
+		if (parseNodeFactoryRegistry.registerDefaultDeserializer) {
+			parseNodeFactoryRegistry.registerDefaultDeserializer(TextParseNodeFactory, backingStoreFactory);
+			parseNodeFactoryRegistry.registerDefaultDeserializer(JsonParseNodeFactory, backingStoreFactory);
+			parseNodeFactoryRegistry.registerDefaultDeserializer(FormParseNodeFactory, backingStoreFactory);
+		}
+
+		if (serializationWriterFactoryRegistry.registerDefaultSerializer) {
+			serializationWriterFactoryRegistry.registerDefaultSerializer(JsonSerializationWriterFactory);
+			serializationWriterFactoryRegistry.registerDefaultSerializer(TextSerializationWriterFactory);
+			serializationWriterFactoryRegistry.registerDefaultSerializer(FormSerializationWriterFactory);
+			serializationWriterFactoryRegistry.registerDefaultSerializer(MultipartSerializationWriterFactory);
+		}
 	}
 }
