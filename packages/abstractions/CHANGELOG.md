@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-preview.95](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.94...@microsoft/kiota-abstractions@1.0.0-preview.95) (2025-06-10)
+
+
+### Bug Fixes
+
+* type definition for headers and compatibility with node 24 types ([beb5041](https://github.com/microsoft/kiota-typescript/commit/beb504118503080cf86a9320dabc6cd76d36a2e0))
+
 ## [1.0.0-preview.94](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.93...@microsoft/kiota-abstractions@1.0.0-preview.94) (2025-06-02)
 
 
