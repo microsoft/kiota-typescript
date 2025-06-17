@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.0-preview.96](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.95...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.96) (2025-06-17)
+
+
+### Bug Fixes
+
+* removes verbose logging for handlers factory ([a7c036f](https://github.com/microsoft/kiota-typescript/commit/a7c036fdd993dca6763d287fed94c8f0b18c5488))
+* removes verbose logging for handlers factory ([d0eda43](https://github.com/microsoft/kiota-typescript/commit/d0eda4366819240f299c5648080001a40f308f2f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.95 to ^1.0.0-preview.96
+
 ## [1.0.0-preview.95](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.94...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.95) (2025-06-10)
 
 
