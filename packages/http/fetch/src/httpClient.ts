@@ -32,7 +32,7 @@ export class HttpClient {
 			middlewares.push(new CustomFetchHandler(customFetch as any));
 		}
 
-		// Set the middleware chain
+		// Set the middleware handlers chain
 		this.setMiddleware(...middlewares);
 	}
 
