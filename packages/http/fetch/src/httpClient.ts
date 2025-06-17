@@ -31,10 +31,6 @@ export class HttpClient {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 			middlewares.push(new CustomFetchHandler(customFetch as any));
 		}
-		// eslint-disable-next-line no-console
-		console.debug("Registered middlewares: " + middlewares.map((m) => m.constructor.name).join(", "));
-		// eslint-disable-next-line no-console
-		console.debug("Hint: To improve performance, use MiddlewareFactory.getPerformanceMiddlewares(customFetch) instead of MiddlewareFactory.getDefaultMiddlewares(customFetch)");
 
 		// Set the middleware chain
 		this.setMiddleware(...middlewares);
