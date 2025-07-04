@@ -4,7 +4,7 @@
 // @ts-ignore
 import { InferenceClassificationRequestBuilderNavigationMetadata, InferenceClassificationRequestBuilderRequestsMetadata, type InferenceClassificationRequestBuilder } from './inferenceClassification/index.js';
 // @ts-ignore
-import { MailFoldersRequestBuilderNavigationMetadata, MailFoldersRequestBuilderRequestsMetadata, type MailFoldersRequestBuilder } from './mailFolders/index.js';
+import { MailFoldersRequestBuilderRequestsMetadata, type MailFoldersRequestBuilder } from './mailFolders/index.js';
 // @ts-ignore
 import { MessagesRequestBuilderNavigationMetadata, MessagesRequestBuilderRequestsMetadata, type MessagesRequestBuilder } from './messages/index.js';
 // @ts-ignore
@@ -41,7 +41,6 @@ export const UserItemRequestBuilderNavigationMetadata: Record<Exclude<keyof User
     },
     mailFolders: {
         requestsMetadata: MailFoldersRequestBuilderRequestsMetadata,
-        navigationMetadata: MailFoldersRequestBuilderNavigationMetadata,
     },
     messages: {
         requestsMetadata: MessagesRequestBuilderRequestsMetadata,

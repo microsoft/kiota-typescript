@@ -1,9 +1,10 @@
 {
-  "descriptionHash": "CE55775E5E36A748E59FB2BA5E63C392C63AA9CC15CE23D56FB5C14B92BBFA708FF5D4386EC1532D7A7BB74C8D9E80AE6482AB3806FB0393E1DD8151FAE8FE50",
+  "descriptionHash": "41750880E44F76BCBA946E86006E213F3D0750D8081BD877C3DB6BBBA61C7DAE670B3162C478A113F01C7F72D0F7321A36A382F887BEC110930BA12E21171EBB",
   "descriptionLocation": "https://raw.githubusercontent.com/microsoftgraph/msgraph-sdk-powershell/dev/openApiDocs/v1.0/Mail.yml",
   "lockFileVersion": "1.0.0",
-  "kiotaVersion": "1.18.0",
+  "kiotaVersion": "1.28.0",
   "clientClassName": "ApiClient",
+  "typeAccessModifier": "Public",
   "clientNamespaceName": "ApiSdk",
   "language": "TypeScript",
   "usesBackingStore": false,
@@ -28,6 +29,11 @@
     "multipart/form-data;q=0.1"
   ],
   "includePatterns": [],
-  "excludePatterns": [],
+  "excludePatterns": [
+    "**/childFolders/**",
+    "**/microsoftGraph*/**",
+    "**/microsoftGraph*",
+    "**/mailFolders/**"
+  ],
   "disabledValidationRules": []
 }

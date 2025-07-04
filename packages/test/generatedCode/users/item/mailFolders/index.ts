@@ -6,26 +6,12 @@ import { createMailFolderCollectionResponseFromDiscriminatorValue, createMailFol
 // @ts-ignore
 import { createODataErrorFromDiscriminatorValue, type ODataError } from '../../../models/oDataErrors/index.js';
 // @ts-ignore
-import { CountRequestBuilderRequestsMetadata, type CountRequestBuilder } from './count/index.js';
-// @ts-ignore
-import { MailFolderItemRequestBuilderNavigationMetadata, MailFolderItemRequestBuilderRequestsMetadata, type MailFolderItemRequestBuilder } from './item/index.js';
-// @ts-ignore
-import { type BaseRequestBuilder, type KeysToExcludeForNavigationMetadata, type NavigationMetadata, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
+import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type RequestConfiguration, type RequestInformation, type RequestsMetadata } from '@microsoft/kiota-abstractions';
 
 /**
  * Builds and executes requests for operations under /users/{user-id}/mailFolders
  */
 export interface MailFoldersRequestBuilder extends BaseRequestBuilder<MailFoldersRequestBuilder> {
-    /**
-     * The Count property
-     */
-    get count(): CountRequestBuilder;
-    /**
-     * Gets an item from the ApiSdk.users.item.mailFolders.item collection
-     * @param mailFolderId The unique identifier of mailFolder
-     * @returns {MailFolderItemRequestBuilder}
-     */
-     byMailFolderId(mailFolderId: string) : MailFolderItemRequestBuilder;
     /**
      * The user's mail folders. Read-only. Nullable.
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
@@ -112,19 +98,6 @@ const MailFoldersRequestBuilderGetQueryParametersMapper: Record<string, string> 
     "select": "%24select",
     "skip": "%24skip",
     "top": "%24top",
-};
-/**
- * Metadata for all the navigation properties in the request builder.
- */
-export const MailFoldersRequestBuilderNavigationMetadata: Record<Exclude<keyof MailFoldersRequestBuilder, KeysToExcludeForNavigationMetadata>, NavigationMetadata> = {
-    byMailFolderId: {
-        requestsMetadata: MailFolderItemRequestBuilderRequestsMetadata,
-        navigationMetadata: MailFolderItemRequestBuilderNavigationMetadata,
-        pathParametersMappings: ["mailFolder%2Did"],
-    },
-    count: {
-        requestsMetadata: CountRequestBuilderRequestsMetadata,
-    },
 };
 /**
  * Metadata for all the requests in the request builder.
