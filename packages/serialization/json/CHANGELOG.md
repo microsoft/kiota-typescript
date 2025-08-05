@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.0-preview.97](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-json@1.0.0-preview.96...@microsoft/kiota-serialization-json@1.0.0-preview.97) (2025-08-05)
+
+
+### Bug Fixes
+
+* Incorrect Deserialization of null Values in Primitive Collections ([f049fb4](https://github.com/microsoft/kiota-typescript/commit/f049fb4ceba98492c01e76031bf0436a9f5a6eb5))
+* json praser throws error on array with nullable properties ([3f739a7](https://github.com/microsoft/kiota-typescript/commit/3f739a78fa386d842ca4424af6bbea00f4c203fb))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.96 to ^1.0.0-preview.97
+
 ## [1.0.0-preview.96](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-json@1.0.0-preview.95...@microsoft/kiota-serialization-json@1.0.0-preview.96) (2025-06-17)
 
 
