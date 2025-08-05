@@ -35,7 +35,9 @@ export class JsonParseNode implements ParseNode {
 		return (this._jsonNode as unknown[]).map((x) => {
 			const currentParseNode = new JsonParseNode(x, this.backingStoreFactory);
 			const typeOfX = typeof x;
-			if (typeOfX === "boolean") {
+			if (x === null) {
+				return null as T;
+			} else if (typeOfX === "boolean") {
 				return currentParseNode.getBooleanValue() as unknown as T;
 			} else if (typeOfX === "string") {
 				return currentParseNode.getStringValue() as unknown as T;
