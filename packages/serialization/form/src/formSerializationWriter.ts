@@ -108,10 +108,10 @@ export class FormSerializationWriter implements SerializationWriter {
 			if (key) {
 				this.writePropertyName(key);
 			}
-			this.onBeforeObjectSerialization && this.onBeforeObjectSerialization(value);
-			this.onStartObjectSerialization && this.onStartObjectSerialization(value, this);
+			this.onBeforeObjectSerialization?.(value);
+			this.onStartObjectSerialization?.(value, this);
 			serializerMethod(this, value);
-			this.onAfterObjectSerialization && this.onAfterObjectSerialization(value);
+			this.onAfterObjectSerialization?.(value);
 			if (this.writer.length > 0 && this.writer[this.writer.length - 1] === FormSerializationWriter.propertySeparator) {
 				// removing the last separator
 				this.writer.pop();
