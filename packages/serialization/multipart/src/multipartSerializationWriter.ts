@@ -96,10 +96,10 @@ export class MultipartSerializationWriter implements SerializationWriter {
 		if (!serializerMethod) {
 			throw new Error(`serializer method cannot be undefined`);
 		}
-		this.onBeforeObjectSerialization && this.onBeforeObjectSerialization(value);
-		this.onStartObjectSerialization && this.onStartObjectSerialization(value, this);
+		this.onBeforeObjectSerialization?.(value);
+		this.onStartObjectSerialization?.(value, this);
 		serializerMethod(this, value);
-		this.onAfterObjectSerialization && this.onAfterObjectSerialization(value);
+		this.onAfterObjectSerialization?.(value);
 	};
 	public writeEnumValue = <T>(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
