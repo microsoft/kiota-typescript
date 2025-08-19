@@ -135,7 +135,7 @@ export const serializeMultipartBody = (writer: SerializationWriter, multipartBod
 			} else if (part.content instanceof ArrayBuffer) {
 				writer.writeByteArrayValue(undefined, new Uint8Array(part.content).buffer);
 			} else if (part.content instanceof Uint8Array) {
-				writer.writeByteArrayValue(undefined, part.content.buffer);
+				writer.writeByteArrayValue(undefined, part.content.buffer as ArrayBuffer);
 			} else if (part.serializationCallback) {
 				if (!multipartBody.requestAdapter) {
 					throw new Error("requestAdapter cannot be undefined");
