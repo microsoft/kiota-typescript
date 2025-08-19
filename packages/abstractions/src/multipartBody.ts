@@ -133,9 +133,9 @@ export const serializeMultipartBody = (writer: SerializationWriter, multipartBod
 			if (typeof part.content === "string") {
 				writer.writeStringValue(undefined, part.content);
 			} else if (part.content instanceof ArrayBuffer) {
-				writer.writeByteArrayValue(undefined, new Uint8Array(part.content));
+				writer.writeByteArrayValue(undefined, new Uint8Array(part.content).buffer);
 			} else if (part.content instanceof Uint8Array) {
-				writer.writeByteArrayValue(undefined, part.content);
+				writer.writeByteArrayValue(undefined, part.content.buffer);
 			} else if (part.serializationCallback) {
 				if (!multipartBody.requestAdapter) {
 					throw new Error("requestAdapter cannot be undefined");
@@ -150,7 +150,7 @@ export const serializeMultipartBody = (writer: SerializationWriter, multipartBod
 				}
 				partSerializationWriter.writeObjectValue(undefined, part.content as Parsable, part.serializationCallback);
 				const partContent = partSerializationWriter.getSerializedContent();
-				writer.writeByteArrayValue(undefined, new Uint8Array(partContent));
+				writer.writeByteArrayValue(undefined, new Uint8Array(partContent).buffer);
 			} else {
 				throw new Error("unsupported content type for multipart body: " + typeof part.content);
 			}
