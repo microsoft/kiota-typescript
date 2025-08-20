@@ -71,7 +71,7 @@ export class JsonParseNode implements ParseNode {
 			 * TODO: Consider standardizing on a cross-platform UInt8Array.fromBase64 (after the API is stabilized across browsers)
 			 * in the future instead of the current environment-specific approach
 			 */
-			return inNodeEnv() ? new Uint8Array(Buffer.from(strValue, "base64")).buffer : new TextEncoder().encode(strValue);
+			return inNodeEnv() ? new Uint8Array(Buffer.from(strValue, "base64")).buffer : new TextEncoder().encode(strValue).buffer;
 		}
 		return undefined;
 	}
