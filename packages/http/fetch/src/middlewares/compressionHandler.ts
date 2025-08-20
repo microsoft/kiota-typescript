@@ -180,7 +180,7 @@ export class CompressionHandler implements Middleware {
 	private async compressUsingCompressionStream(uint8ArrayStream: ReadableStream<Uint8Array>): Promise<{ body: ArrayBuffer; size: number }> {
 		const compressionStream = new CompressionStream("gzip");
 
-		const compressedStream = uint8ArrayStream.pipeThrough<Uint8Array>(compressionStream);
+		const compressedStream = uint8ArrayStream.pipeThrough<Uint8Array>(compressionStream as ReadableWritablePair<Uint8Array, Uint8Array>);
 
 		const reader = compressedStream.getReader();
 		const compressedChunks: Uint8Array[] = [];
