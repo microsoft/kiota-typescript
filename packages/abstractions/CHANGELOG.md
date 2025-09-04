@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-preview.98](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.97...@microsoft/kiota-abstractions@1.0.0-preview.98) (2025-09-04)
+
+
+### Bug Fixes
+
+* mismatched array buffer types ([4d23a03](https://github.com/microsoft/kiota-typescript/commit/4d23a03094c4897a3dde24947d0ff36181df6c08))
+
 ## [1.0.0-preview.97](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.96...@microsoft/kiota-abstractions@1.0.0-preview.97) (2025-08-05)
 
 
