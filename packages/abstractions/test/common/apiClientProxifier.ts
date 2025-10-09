@@ -98,5 +98,5 @@ describe("apiClientProxifier", () => {
 				"couldn't find navigation property unknownProperty",
 			);
 		});
-    });
+	});
 });
