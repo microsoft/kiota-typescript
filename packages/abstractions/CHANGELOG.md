@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0-preview.99](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.98...@microsoft/kiota-abstractions@1.0.0-preview.99) (2025-10-10)
+
+
+### Bug Fixes
+
+* adding handler for 'then' nav property on apiClientProxifier ([6a146b2](https://github.com/microsoft/kiota-typescript/commit/6a146b2ac71f6f97be0c8fa2fbb761171e41c88e))
+* adding handler for then nav property on apiClientProxifier ([fe427ef](https://github.com/microsoft/kiota-typescript/commit/fe427eff7679ae11ea1b9eabe67e9b3de3ab6559))
+
 ## [1.0.0-preview.98](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.97...@microsoft/kiota-abstractions@1.0.0-preview.98) (2025-09-04)
 
 
