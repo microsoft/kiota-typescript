@@ -204,6 +204,10 @@ export const apiClientProxifier = <T extends object>(requestAdapter: RequestAdap
 						return apiClientProxifier(requestAdapter, downWardPathParameters, navigationCandidate.navigationMetadata, navigationCandidate.requestsMetadata);
 					};
 				}
+				if (name === "then") {
+					// handle returning proxy from an async method
+					return undefined;
+				}
 				throw new Error(`couldn't find navigation property ${name} data: ${JSON.stringify(navigationMetadata)}`);
 			}
 		},
