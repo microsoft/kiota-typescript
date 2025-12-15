@@ -28,7 +28,7 @@ jobs:
     - run: npm run lint:eslint:loud
     - run: npm run prettier:check
     - name: Archive dist folders # archive dist folders to verify if they are transpiled correctly and available for publishing
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: dist folders ${{ matrix.node-version }}
         path: |
@@ -89,7 +89,7 @@ jobs:
         output: both
         badge: true
     - name: Archive coverage files
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: Coverage files for ${{ matrix.coverage.name }}
         path: ${{ matrix.coverage.path }}
