@@ -105,7 +105,6 @@ export class RedirectHandler implements Middleware {
 		return !url.includes("://");
 	}
 
-
 	/**
 	 * To execute the next middleware and to handle in case of redirect response returned by the server
 	 * @param url - The url string value

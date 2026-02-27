@@ -121,7 +121,6 @@ describe("RedirectHandler.ts", () => {
 		});
 	});
 
-
 	describe("set RedirectOptions in RequestInformation", () => {
 		it("Should set the RedirectOptions from the context object", async () => {
 			const defaultOptions = new RedirectHandlerOptions();
