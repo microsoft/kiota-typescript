@@ -131,7 +131,7 @@ describe("RedirectHandler.ts", () => {
 			const shouldRedirect = () => true;
 			const options = new RedirectHandlerOptions({ maxRedirects: maxRedirects, shouldRedirect: shouldRedirect });
 
-			const requestUrl = "url";
+			const requestUrl = "https://example.com";
 			const fetchRequestInit = {
 				method: "PUT",
 				headers: {
@@ -168,7 +168,7 @@ describe("RedirectHandler.ts", () => {
 			const dummyFetchHandler = new DummyFetchHandler();
 			handler.next = dummyFetchHandler;
 
-			const requestUrl = "url";
+			const requestUrl = "https://example.com";
 			const fetchRequestInit = {
 				method: "PUT",
 				headers: {
@@ -197,7 +197,7 @@ describe("RedirectHandler.ts", () => {
 	});
 
 	describe("executeWithRedirect", async () => {
-		const requestUrl = "/me";
+		const requestUrl = "https://example.com/me";
 		const fetchRequestInit = {
 			method: "GET",
 		};
@@ -257,7 +257,7 @@ describe("RedirectHandler.ts", () => {
 		});
 
 		it("Should not drop Authorization header for relative url redirect", async () => {
-			const requestUrl = "/me";
+			const requestUrl = "https://example.com/me";
 			const fetchRequestInit = {
 				method: "POST",
 				body: "dummy body",

@@ -69,15 +69,21 @@ export class RedirectHandlerOptions implements RequestOption {
 			return;
 		}
 
-		const originalUri = new URL(originalUrl);
-		const newUri = new URL(newUrl);
+		try {
+			const originalUri = new URL(originalUrl);
+			const newUri = new URL(newUrl);
 
-		// Remove Authorization and Cookie headers if the request's scheme or host changes
-		const isDifferentHostOrScheme = originalUri.host.toLowerCase() !== newUri.host.toLowerCase() || originalUri.protocol.toLowerCase() !== newUri.protocol.toLowerCase();
+			// Remove Authorization and Cookie headers if the request's scheme or host changes
+			const isDifferentHostOrScheme = originalUri.host.toLowerCase() !== newUri.host.toLowerCase() || originalUri.protocol.toLowerCase() !== newUri.protocol.toLowerCase();
 
-		if (isDifferentHostOrScheme) {
-			delete headers.Authorization;
-			delete headers.Cookie;
+			if (isDifferentHostOrScheme) {
+				delete headers.Authorization;
+				delete headers.Cookie;
+			}
+		} catch {
+			// If URL parsing fails, don't modify headers
+			// This handles cases where invalid URLs are passed
+			return;
 		}
 
 		// Note: Proxy-Authorization is not handled here as proxy configuration in Fetch API
