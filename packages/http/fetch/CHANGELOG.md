@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.0-preview.100](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.99...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.100) (2026-03-02)
+
+
+### Bug Fixes
+
+* redirect fix implementation as the dotnet version ([e2006c8](https://github.com/microsoft/kiota-typescript/commit/e2006c899705fe2795099fdfc0b7c4d4c5e41a46))
+* redirect fix implementation as the dotnet version ([e2006c8](https://github.com/microsoft/kiota-typescript/commit/e2006c899705fe2795099fdfc0b7c4d4c5e41a46))
+* redirect vulnerability fix implementation as the dotnet version of kiota ([74886cc](https://github.com/microsoft/kiota-typescript/commit/74886cc4c3ddc93a326d3bd091bc80757ab8b532))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.99 to ^1.0.0-preview.100
+
 ## [1.0.0-preview.99](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.98...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.99) (2025-10-10)
 
 
