@@ -46,11 +46,6 @@ export class RedirectHandler implements Middleware {
 	private static readonly LOCATION_HEADER = "Location";
 
 	/**
-	 * A member representing the authorization header name
-	 */
-	private static readonly AUTHORIZATION_HEADER = "Authorization";
-
-	/**
 	 * A member holding the manual redirect value
 	 */
 	private static readonly MANUAL_REDIRECT = "manual";
@@ -111,28 +106,6 @@ export class RedirectHandler implements Middleware {
 	}
 
 	/**
-	 *
-	 * To check whether the authorization header in the request should be dropped for consequent redirected requests
-	 * @param requestUrl - The request url value
-	 * @param redirectUrl - The redirect url value
-	 * @returns A boolean representing whether the authorization header in the request should be dropped for consequent redirected requests
-	 */
-	private shouldDropAuthorizationHeader(requestUrl: string, redirectUrl: string): boolean {
-		const schemeHostRegex = /^[A-Za-z].+?:\/\/.+?(?=\/|$)/;
-		const requestMatches: string[] = schemeHostRegex.exec(requestUrl) as string[];
-		let requestAuthority: string | undefined;
-		let redirectAuthority: string | undefined;
-		if (requestMatches !== null) {
-			requestAuthority = requestMatches[0];
-		}
-		const redirectMatches: string[] = schemeHostRegex.exec(redirectUrl) as string[];
-		if (redirectMatches !== null) {
-			redirectAuthority = redirectMatches[0];
-		}
-		return typeof requestAuthority !== "undefined" && typeof redirectAuthority !== "undefined" && requestAuthority !== redirectAuthority;
-	}
-
-	/**
 	 * To execute the next middleware and to handle in case of redirect response returned by the server
 	 * @param url - The url string value
 	 * @param fetchRequestInit - The Fetch RequestInit object
@@ -149,18 +122,26 @@ export class RedirectHandler implements Middleware {
 		}
 		if (redirectCount < currentOptions.maxRedirects && this.isRedirect(response) && this.hasLocationHeader(response) && currentOptions.shouldRedirect(response)) {
 			++redirectCount;
+			const redirectUrl = this.getLocationHeader(response);
+			if (!redirectUrl) {
+				return response;
+			}
+
+			// Resolve relative URLs
+			const newUrl = this.isRelativeURL(redirectUrl) ? new URL(redirectUrl, url).toString() : redirectUrl;
+
+			// Scrub sensitive headers before following the redirect
+			if (fetchRequestInit.headers) {
+				currentOptions.scrubSensitiveHeaders(fetchRequestInit.headers as Record<string, string>, url, newUrl);
+			}
+
+			// Handle 303 See Other: change POST to GET
 			if (response.status === RedirectHandler.STATUS_CODE_SEE_OTHER) {
 				fetchRequestInit.method = HttpMethod.GET;
 				delete fetchRequestInit.body;
-			} else {
-				const redirectUrl = this.getLocationHeader(response);
-				if (redirectUrl) {
-					if (fetchRequestInit.headers && !this.isRelativeURL(redirectUrl) && this.shouldDropAuthorizationHeader(url, redirectUrl)) {
-						delete fetchRequestInit.headers[RedirectHandler.AUTHORIZATION_HEADER];
-					}
-					url = redirectUrl;
-				}
 			}
+
+			url = newUrl;
 			if (tracerName) {
 				return trace.getTracer(tracerName).startActiveSpan(`redirectHandler - redirect ${redirectCount}`, (span) => {
 					try {

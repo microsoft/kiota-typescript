@@ -121,44 +121,6 @@ describe("RedirectHandler.ts", () => {
 		});
 	});
 
-	describe("shouldDropAuthorizationHeader", () => {
-		it("Should return true for urls with different domain", () => {
-			const requestUrl = "https://graph.microsoft.com/v1.0/me";
-			const redirectedUrl = "https://graphredirection.microsoft.com/v1.0/me";
-			assert.isTrue(redirectHandler["shouldDropAuthorizationHeader"](requestUrl, redirectedUrl));
-		});
-
-		it("Should return true for urls with different domain and one without path", () => {
-			const requestUrl = "https://graph.microsoft.com/v1.0/me";
-			const redirectedUrl = "https://graphredirection.microsoft.com/";
-			assert.isTrue(redirectHandler["shouldDropAuthorizationHeader"](requestUrl, redirectedUrl));
-		});
-
-		it("Should return true for urls with different domain without path", () => {
-			const requestUrl = "https://graph.microsoft.com/";
-			const redirectedUrl = "https://graphredirection.microsoft.com";
-			assert.isTrue(redirectHandler["shouldDropAuthorizationHeader"](requestUrl, redirectedUrl));
-		});
-
-		it("Should return false relative urls", () => {
-			const requestUrl = "/graph/me/";
-			const redirectedUrl = "/graphRedirection/me";
-			assert.isFalse(redirectHandler["shouldDropAuthorizationHeader"](requestUrl, redirectedUrl));
-		});
-
-		it("Should return false redirect url is relative", () => {
-			const requestUrl = "https://graph.microsoft.com/v1.0/me";
-			const redirectedUrl = "/graphRedirection";
-			assert.isFalse(redirectHandler["shouldDropAuthorizationHeader"](requestUrl, redirectedUrl));
-		});
-
-		it("Should return false for urls with same domain", () => {
-			const requestUrl = "https://graph.microsoft.com/v1.0/me";
-			const redirectedUrl = "https://graph.microsoft.com/v2.0/me";
-			assert.isFalse(redirectHandler["shouldDropAuthorizationHeader"](requestUrl, redirectedUrl));
-		});
-	});
-
 	describe("set RedirectOptions in RequestInformation", () => {
 		it("Should set the RedirectOptions from the context object", async () => {
 			const defaultOptions = new RedirectHandlerOptions();
@@ -169,7 +131,7 @@ describe("RedirectHandler.ts", () => {
 			const shouldRedirect = () => true;
 			const options = new RedirectHandlerOptions({ maxRedirects: maxRedirects, shouldRedirect: shouldRedirect });
 
-			const requestUrl = "url";
+			const requestUrl = "https://example.com";
 			const fetchRequestInit = {
 				method: "PUT",
 				headers: {
@@ -206,7 +168,7 @@ describe("RedirectHandler.ts", () => {
 			const dummyFetchHandler = new DummyFetchHandler();
 			handler.next = dummyFetchHandler;
 
-			const requestUrl = "url";
+			const requestUrl = "https://example.com";
 			const fetchRequestInit = {
 				method: "PUT",
 				headers: {
@@ -235,7 +197,7 @@ describe("RedirectHandler.ts", () => {
 	});
 
 	describe("executeWithRedirect", async () => {
-		const requestUrl = "/me";
+		const requestUrl = "https://example.com/me";
 		const fetchRequestInit = {
 			method: "GET",
 		};
@@ -295,12 +257,12 @@ describe("RedirectHandler.ts", () => {
 		});
 
 		it("Should not drop Authorization header for relative url redirect", async () => {
-			const requestUrl = "/me";
+			const requestUrl = "https://example.com/me";
 			const fetchRequestInit = {
 				method: "POST",
 				body: "dummy body",
 				headers: {
-					[RedirectHandler["AUTHORIZATION_HEADER"]]: "Bearer TEST",
+					Authorization: "Bearer TEST",
 				},
 			};
 
@@ -314,8 +276,8 @@ describe("RedirectHandler.ts", () => {
 				new Response("ok", { status: 200 }) as any,
 			]);
 			const response = await handler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, new RedirectHandlerOptions());
-			assert.isDefined(fetchRequestInit.headers[RedirectHandler["AUTHORIZATION_HEADER"]]);
-			assert.equal(fetchRequestInit.headers[RedirectHandler["AUTHORIZATION_HEADER"]], "Bearer TEST");
+			assert.isDefined(fetchRequestInit.headers["Authorization"]);
+			assert.equal(fetchRequestInit.headers["Authorization"], "Bearer TEST");
 
 			assert.equal(response.status, 200);
 		});
@@ -326,7 +288,7 @@ describe("RedirectHandler.ts", () => {
 				method: "POST",
 				body: "dummy body",
 				headers: {
-					[RedirectHandler["AUTHORIZATION_HEADER"]]: "Bearer TEST",
+					Authorization: "Bearer TEST",
 				},
 			};
 
@@ -340,7 +302,7 @@ describe("RedirectHandler.ts", () => {
 				new Response("ok", { status: 200 }),
 			] as any);
 			const response = await handler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, new RedirectHandlerOptions());
-			assert.isDefined(fetchRequestInit.headers[RedirectHandler["AUTHORIZATION_HEADER"]]);
+			assert.isDefined(fetchRequestInit.headers["Authorization"]);
 			assert.equal(response.status, 200);
 		});
 
@@ -361,6 +323,119 @@ describe("RedirectHandler.ts", () => {
 				new Response("ok", { status: 200 }),
 			] as any);
 			const response = await handler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, new RedirectHandlerOptions());
+			assert.equal(response.status, 200);
+		});
+
+		it("Should drop Authorization and Cookie headers for cross-host redirect", async () => {
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const fetchRequestInit = {
+				method: "POST",
+				body: "dummy body",
+				headers: {
+					Authorization: "Bearer TEST",
+					Cookie: "session=SECRET",
+				},
+			};
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "https://graphredirect.microsoft.com/v1.0/me",
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+			const response = await handler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, new RedirectHandlerOptions());
+			assert.isUndefined(fetchRequestInit.headers["Authorization"]);
+			assert.isUndefined(fetchRequestInit.headers["Cookie"]);
+			assert.equal(response.status, 200);
+		});
+
+		it("Should drop Authorization and Cookie headers for scheme change", async () => {
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const fetchRequestInit = {
+				method: "GET",
+				headers: {
+					Authorization: "Bearer TEST",
+					Cookie: "session=SECRET",
+				},
+			};
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "http://graph.microsoft.com/v1.0/me", // HTTPS -> HTTP
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+			const response = await handler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, new RedirectHandlerOptions());
+			assert.isUndefined(fetchRequestInit.headers["Authorization"]);
+			assert.isUndefined(fetchRequestInit.headers["Cookie"]);
+			assert.equal(response.status, 200);
+		});
+
+		it("Should keep Authorization and Cookie headers for same host and scheme", async () => {
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const fetchRequestInit = {
+				method: "GET",
+				headers: {
+					Authorization: "Bearer TEST",
+					Cookie: "session=SECRET",
+				},
+			};
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "https://graph.microsoft.com/v2.0/me",
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+			const response = await handler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, new RedirectHandlerOptions());
+			assert.isDefined(fetchRequestInit.headers["Authorization"]);
+			assert.equal(fetchRequestInit.headers["Authorization"], "Bearer TEST");
+			assert.isDefined(fetchRequestInit.headers["Cookie"]);
+			assert.equal(fetchRequestInit.headers["Cookie"], "session=SECRET");
+			assert.equal(response.status, 200);
+		});
+
+		it("Should use custom scrubber when provided", async () => {
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const fetchRequestInit = {
+				method: "GET",
+				headers: {
+					Authorization: "Bearer TEST",
+					Cookie: "session=SECRET",
+				},
+			};
+
+			// Custom scrubber that never removes headers
+			const customScrubber = (_headers: Record<string, string>, _originalUrl: string, _newUrl: string) => {
+				// Don't remove any headers
+			};
+
+			const options = new RedirectHandlerOptions({ scrubSensitiveHeaders: customScrubber });
+			const customHandler = new RedirectHandler(options);
+			customHandler.next = dummyFetchHandler;
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "https://evil.attacker.com/steal",
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+			const response = await customHandler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, options);
+			// Headers should be kept because custom scrubber doesn't remove them
+			assert.isDefined(fetchRequestInit.headers["Authorization"]);
+			assert.isDefined(fetchRequestInit.headers["Cookie"]);
 			assert.equal(response.status, 200);
 		});
 	});

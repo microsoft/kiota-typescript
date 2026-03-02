@@ -17,11 +17,20 @@ import type { RequestOption } from "@microsoft/kiota-abstractions";
  */
 export type ShouldRedirect = (response: Response) => boolean;
 
+/**
+ * A type declaration for scrubbing sensitive headers during redirects.
+ * @param headers - The headers object to modify
+ * @param originalUrl - The original request URL
+ * @param newUrl - The new redirect URL
+ */
+export type ScrubSensitiveHeaders = (headers: Record<string, string>, originalUrl: string, newUrl: string) => void;
+
 export const RedirectHandlerOptionKey = "RedirectHandlerOption";
 
 export interface RedirectHandlerOptionsParams {
 	maxRedirects?: number;
 	shouldRedirect?: ShouldRedirect;
+	scrubSensitiveHeaders?: ScrubSensitiveHeaders;
 }
 
 /**
@@ -47,6 +56,43 @@ export class RedirectHandlerOptions implements RequestOption {
 	private static readonly defaultShouldRetry: ShouldRedirect = () => true;
 
 	/**
+	 * The default implementation for scrubbing sensitive headers during redirects.
+	 * This method removes Authorization and Cookie headers when the host or scheme changes.
+	 * Note: Proxy-Authorization handling is not applicable in Fetch API as proxy configuration
+	 * is handled at a lower level by the browser/runtime and is not accessible to JavaScript.
+	 * @param headers - The headers object to modify
+	 * @param originalUrl - The original request URL
+	 * @param newUrl - The new redirect URL
+	 */
+	private static readonly defaultScrubSensitiveHeaders: ScrubSensitiveHeaders = (headers: Record<string, string>, originalUrl: string, newUrl: string) => {
+		if (!headers || !originalUrl || !newUrl) {
+			return;
+		}
+
+		try {
+			const originalUri = new URL(originalUrl);
+			const newUri = new URL(newUrl);
+
+			// Remove Authorization and Cookie headers if the request's scheme or host changes
+			const isDifferentHostOrScheme = originalUri.host.toLowerCase() !== newUri.host.toLowerCase() || originalUri.protocol.toLowerCase() !== newUri.protocol.toLowerCase();
+
+			if (isDifferentHostOrScheme) {
+				delete headers.Authorization;
+				delete headers.Cookie;
+			}
+		} catch {
+			// If URL parsing fails, don't modify headers
+			// This handles cases where invalid URLs are passed
+			return;
+		}
+
+		// Note: Proxy-Authorization is not handled here as proxy configuration in Fetch API
+		// is managed by the browser/runtime and not accessible to JavaScript code.
+		// In environments where this matters (e.g., Node.js with custom agents), the proxy
+		// configuration should be managed at the HTTP client level.
+	};
+
+	/**
 	 *
 	 * A member holding the max redirects value
 	 */
@@ -57,6 +103,11 @@ export class RedirectHandlerOptions implements RequestOption {
 	 * A member holding the should redirect callback
 	 */
 	public shouldRedirect: ShouldRedirect;
+
+	/**
+	 * A member holding the callback for scrubbing sensitive headers during redirects
+	 */
+	public scrubSensitiveHeaders: ScrubSensitiveHeaders;
 
 	/**
 	 *
@@ -79,6 +130,7 @@ export class RedirectHandlerOptions implements RequestOption {
 		}
 		this.maxRedirects = options.maxRedirects ?? RedirectHandlerOptions.DEFAULT_MAX_REDIRECTS;
 		this.shouldRedirect = options.shouldRedirect ?? RedirectHandlerOptions.defaultShouldRetry;
+		this.scrubSensitiveHeaders = options.scrubSensitiveHeaders ?? RedirectHandlerOptions.defaultScrubSensitiveHeaders;
 	}
 
 	public getKey(): string {
