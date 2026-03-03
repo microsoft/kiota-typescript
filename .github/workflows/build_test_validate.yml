@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
   push:
     branches: [ main ]
-    tags: [ '@microsoft/kiota-abstractions@*' ]
   pull_request:
 
 jobs:
@@ -93,25 +92,6 @@ jobs:
       with:
         name: Coverage files for ${{ matrix.coverage.name }}
         path: ${{ matrix.coverage.path }}
-
-
-  publish-npm:
-    if: startsWith(github.ref, 'refs/tags/')
-    needs: [build, check-typescript-version-matrix]
-    environment:
-      name: production_feed
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          registry-url: https://registry.npmjs.org/
-      - run: npm ci
-      - run: npm run build
-      - run: npx lerna publish from-package --no-push --yes
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
   # The check-typescript-version-matrix returns success if all matrix jobs in build are successful; otherwise, it returns a failure.
   # Use this as a PR status check for GitHub Policy Service instead of individual matrix entry checks.
