@@ -31,7 +31,8 @@
 		"test:browser": "vitest run --browser.name=chrome --browser.headless --browser.provider=webdriverio",
 		"test:node": "vitest --run",
 		"test:coverage": "vitest run --coverage.enabled --coverage.provider=istanbul",
-		"test": "npm run test:node && npm run test:browser"
+		"test": "npm run test:node && npm run test:browser",
+		"prepack": "node -e \"require('fs').copyFileSync(require('path').join(process.env.npm_config_local_prefix,'LICENSE'),'LICENSE')\""
 	},
 	"dependencies": {
 		"@microsoft/kiota-abstractions": "^1.0.0-preview.100",

@@ -1,0 +1,128 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Builds, packages, and publishes all @microsoft/kiota-* npm packages to npmjs.org via ESRP.
+# Triggered by release-please tags on the abstractions package (all kiota packages share linked versions and are released together).
+
+name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger:
+  tags:
+    include:
+      - '@microsoft/kiota-abstractions*'
+
+pr: none
+
+resources:
+  repositories:
+    - repository: 1ESPipelineTemplates
+      type: git
+      name: 1ESPipelineTemplates/1ESPipelineTemplates
+      ref: refs/tags/release
+
+extends:
+  template: v1/1ES.Official.PipelineTemplate.yml@1ESPipelineTemplates
+  parameters:
+    pool:
+      name: Azure-Pipelines-1ESPT-ExDShared
+      vmImage: windows-latest
+    stages:
+
+      - stage: build
+        displayName: 'Build and Package Kiota TypeScript Packages'
+        condition: or(contains(variables['Build.SourceBranch'], '@microsoft/kiota-'), eq(variables['Build.Reason'], 'Manual'))
+        jobs:
+          - job: build_typescript
+            displayName: 'Build, Test, and Pack All Kiota Packages'
+            pool:
+              name: Azure-Pipelines-1ESPT-ExDShared
+              vmImage: ubuntu-latest
+
+            steps:
+              - task: UseNode@1
+                displayName: 'Install Node.js 22.x'
+                inputs:
+                  version: '22.x'
+
+              - script: npm ci
+                displayName: 'Install npm dependencies'
+                workingDirectory: '$(Build.SourcesDirectory)'
+
+              - script: npm run build:@microsoft/*
+                displayName: 'Build all kiota packages'
+                workingDirectory: '$(Build.SourcesDirectory)'
+                condition: or(contains(variables['Build.SourceBranch'], '@microsoft/kiota-'), eq(variables['Build.Reason'], 'Manual'))
+
+              - script: npm run test:node
+                displayName: 'Run node tests for all kiota packages'
+                workingDirectory: '$(Build.SourcesDirectory)'
+                condition: or(contains(variables['Build.SourceBranch'], '@microsoft/kiota-'), eq(variables['Build.Reason'], 'Manual'))
+
+              - script: |
+                  npm pack \
+                    --workspace=packages/abstractions \
+                    --workspace=packages/authentication/azure \
+                    --workspace=packages/authentication/spfx \
+                    --workspace=packages/bundle \
+                    --workspace=packages/http/fetch \
+                    --workspace=packages/serialization/form \
+                    --workspace=packages/serialization/json \
+                    --workspace=packages/serialization/multipart \
+                    --workspace=packages/serialization/text \
+                    --pack-destination=$(Build.ArtifactStagingDirectory)/npm
+                displayName: 'Pack all kiota npm packages'
+                workingDirectory: '$(Build.SourcesDirectory)'
+                condition: or(contains(variables['Build.SourceBranch'], '@microsoft/kiota-'), eq(variables['Build.Reason'], 'Manual'))
+
+            templateContext:
+              outputs:
+                - output: pipelineArtifact
+                  displayName: 'Stage Kiota TypeScript package artifacts'
+                  artifactName: npm_kiota_packages
+                  targetPath: '$(Build.ArtifactStagingDirectory)/npm'
+                  condition: or(contains(variables['Build.SourceBranch'], '@microsoft/kiota-'), eq(variables['Build.Reason'], 'Manual'))
+
+      - stage: deploy
+        displayName: 'Publish npm Packages via ESRP'
+        dependsOn: build
+        # This condition allows the build to run for only tagged builds. Manual runs are temp and should be removed after validation.
+        condition: or(and(contains(variables['Build.SourceBranch'], '@microsoft/kiota-'), succeeded()), eq(variables['Build.Reason'], 'Manual'))
+        jobs:
+          - deployment: publish_npm_packages
+            displayName: 'Publish all kiota npm packages'
+            environment: msgraph-npm-org
+            pool:
+              name: Azure-Pipelines-1ESPT-ExDShared
+              image: ubuntu-latest
+              os: linux
+
+            templateContext:
+              type: releaseJob
+              isProduction: true
+              inputs:
+                - input: pipelineArtifact
+                  artifactName: npm_kiota_packages
+                  targetPath: '$(Build.ArtifactStagingDirectory)/npm'
+
+            strategy:
+              runOnce:
+                deploy:
+                  steps:
+                    - task: EsrpRelease@9
+                      displayName: 'Publish kiota npm packages via ESRP Release'
+                      inputs:
+                        connectedservicename: "Federated DevX ESRP Managed Identity Connection"
+                        usemanagedidentity: false
+                        keyvaultname: 'akv-prod-eastus'
+                        authcertname: 'ReferenceLibraryPrivateCert'
+                        signcertname: 'ReferencePackagePublisherCertificate'
+                        clientid: '65035b7f-7357-4f29-bf25-c5ee5c3949f8'
+                        intent: 'PackageDistribution'
+                        contenttype: 'npm'
+                        contentsource: 'Folder'
+                        folderlocation: '$(Build.ArtifactStagingDirectory)/npm'
+                        owners: $(NPM_OWNERS_LIST)
+                        approvers: $(NPM_APPROVERS_LIST)
+                        serviceendpointurl: 'https://api.esrp.microsoft.com'
+                        mainpublisher: 'ESRPRELPACMAN'
+                        domaintenantid: 'cdc5aeea-15c5-4db6-b079-fcadd2505dc2'

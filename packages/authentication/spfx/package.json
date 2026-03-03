@@ -15,7 +15,8 @@
 		"test:coverage": "vitest run --coverage.enabled --coverage.provider=istanbul",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
-		"clean": "rimraf ./dist"
+		"clean": "rimraf ./dist",
+		"prepack": "node -e \"require('fs').copyFileSync(require('path').join(process.env.npm_config_local_prefix,'LICENSE'),'LICENSE')\""
 	},
 	"repository": "git://github.com/microsoft/kiota-typescript.git",
 	"keywords": [
