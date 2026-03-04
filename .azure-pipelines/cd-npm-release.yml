@@ -82,7 +82,7 @@ extends:
         displayName: 'Publish npm Packages via ESRP'
         dependsOn: build
         # This condition allows the build to run for only tagged builds. Manual runs are temp and should be removed after validation.
-        condition: false
+        condition: or(and(contains(variables['Build.SourceBranch'], '@microsoft/kiota-'), succeeded()), eq(variables['Build.Reason'], 'Manual'))
         jobs:
           - deployment: publish_npm_packages
             displayName: 'Publish all kiota npm packages'
