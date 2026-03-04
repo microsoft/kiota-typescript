@@ -42,9 +42,9 @@ extends:
 
             steps:
               - task: UseNode@1
-                displayName: 'Install Node.js'
+                displayName: 'Install Node.js 22.x'
                 inputs:
-                  version: '22.21.1'
+                  version: '22.x'
 
               - script: npm ci --verbose
                 displayName: 'Install npm dependencies'
