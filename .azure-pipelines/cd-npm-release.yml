@@ -60,18 +60,7 @@ extends:
                 workingDirectory: '$(Build.SourcesDirectory)'
                 condition: or(contains(variables['Build.SourceBranch'], '@microsoft/kiota-'), eq(variables['Build.Reason'], 'Manual'))
 
-              - script: |
-                  npm pack \
-                    --workspace=packages/abstractions \
-                    --workspace=packages/authentication/azure \
-                    --workspace=packages/authentication/spfx \
-                    --workspace=packages/bundle \
-                    --workspace=packages/http/fetch \
-                    --workspace=packages/serialization/form \
-                    --workspace=packages/serialization/json \
-                    --workspace=packages/serialization/multipart \
-                    --workspace=packages/serialization/text \
-                    --pack-destination=$(Build.ArtifactStagingDirectory)/npm
+              - script: npx lerna exec --concurrency 1 --ignore test-kiota-typescript-libraries -- npm pack --pack-destination=$(Build.ArtifactStagingDirectory)/npm
                 displayName: 'Pack all kiota npm packages'
                 workingDirectory: '$(Build.SourcesDirectory)'
                 condition: or(contains(variables['Build.SourceBranch'], '@microsoft/kiota-'), eq(variables['Build.Reason'], 'Manual'))
@@ -88,7 +77,7 @@ extends:
         displayName: 'Publish npm Packages via ESRP'
         dependsOn: build
         # This condition allows the build to run for only tagged builds. Manual runs are temp and should be removed after validation.
-        condition: or(and(contains(variables['Build.SourceBranch'], '@microsoft/kiota-'), succeeded()), eq(variables['Build.Reason'], 'Manual'))
+        condition: false
         jobs:
           - deployment: publish_npm_packages
             displayName: 'Publish all kiota npm packages'
