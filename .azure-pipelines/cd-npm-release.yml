@@ -23,6 +23,8 @@ resources:
 extends:
   template: v1/1ES.Official.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
+    settings:
+      networkIsolationPolicy: Permissive
     pool:
       name: Azure-Pipelines-1ESPT-ExDShared
       vmImage: windows-latest
@@ -44,7 +46,7 @@ extends:
                 inputs:
                   version: '22.x'
 
-              - script: npm ci
+              - script: npm ci --verbose
                 displayName: 'Install npm dependencies'
                 workingDirectory: '$(Build.SourcesDirectory)'
 
@@ -58,18 +60,12 @@ extends:
                 workingDirectory: '$(Build.SourcesDirectory)'
                 condition: or(contains(variables['Build.SourceBranch'], '@microsoft/kiota-'), eq(variables['Build.Reason'], 'Manual'))
 
-              - script: |
-                  npm pack \
-                    --workspace=packages/abstractions \
-                    --workspace=packages/authentication/azure \
-                    --workspace=packages/authentication/spfx \
-                    --workspace=packages/bundle \
-                    --workspace=packages/http/fetch \
-                    --workspace=packages/serialization/form \
-                    --workspace=packages/serialization/json \
-                    --workspace=packages/serialization/multipart \
-                    --workspace=packages/serialization/text \
-                    --pack-destination=$(Build.ArtifactStagingDirectory)/npm
+              - script: mkdir -p "$(Build.ArtifactStagingDirectory)/npm"
+                displayName: 'Create npm pack destination'
+                workingDirectory: '$(Build.SourcesDirectory)'
+                condition: or(contains(variables['Build.SourceBranch'], '@microsoft/kiota-'), eq(variables['Build.Reason'], 'Manual'))
+
+              - script: npx lerna exec --concurrency 1 --ignore test-kiota-typescript-libraries -- npm pack --pack-destination=$(Build.ArtifactStagingDirectory)/npm
                 displayName: 'Pack all kiota npm packages'
                 workingDirectory: '$(Build.SourcesDirectory)'
                 condition: or(contains(variables['Build.SourceBranch'], '@microsoft/kiota-'), eq(variables['Build.Reason'], 'Manual'))
