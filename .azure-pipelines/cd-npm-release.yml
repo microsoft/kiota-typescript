@@ -60,6 +60,11 @@ extends:
                 workingDirectory: '$(Build.SourcesDirectory)'
                 condition: or(contains(variables['Build.SourceBranch'], '@microsoft/kiota-'), eq(variables['Build.Reason'], 'Manual'))
 
+              - script: mkdir -p "$(Build.ArtifactStagingDirectory)/npm"
+                displayName: 'Create npm pack destination'
+                workingDirectory: '$(Build.SourcesDirectory)'
+                condition: or(contains(variables['Build.SourceBranch'], '@microsoft/kiota-'), eq(variables['Build.Reason'], 'Manual'))
+
               - script: npx lerna exec --concurrency 1 --ignore test-kiota-typescript-libraries -- npm pack --pack-destination=$(Build.ArtifactStagingDirectory)/npm
                 displayName: 'Pack all kiota npm packages'
                 workingDirectory: '$(Build.SourcesDirectory)'
