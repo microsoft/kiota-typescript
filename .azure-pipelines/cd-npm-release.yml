@@ -23,6 +23,8 @@ resources:
 extends:
   template: v1/1ES.Official.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
+    settings:
+      networkIsolationPolicy: Permissive
     pool:
       name: Azure-Pipelines-1ESPT-ExDShared
       vmImage: windows-latest
@@ -40,11 +42,11 @@ extends:
 
             steps:
               - task: UseNode@1
-                displayName: 'Install Node.js 22.x'
+                displayName: 'Install Node.js'
                 inputs:
-                  version: '22.x'
+                  version: '22.21.1'
 
-              - script: npm ci
+              - script: npm ci --verbose
                 displayName: 'Install npm dependencies'
                 workingDirectory: '$(Build.SourcesDirectory)'
 
