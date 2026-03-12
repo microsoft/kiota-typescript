@@ -35,35 +35,62 @@ export class FormParseNode implements ParseNode {
 			});
 	}
 	private readonly normalizeKey = (key: string): string => decodeURIComponent(key).trim();
+	private readonly getStringValueFromRaw = (value: string): string => decodeURIComponent(value);
+	private readonly getBooleanValueFromRaw = (value: string): boolean | undefined => {
+		const decoded = this.getStringValueFromRaw(value).toLowerCase();
+		if (decoded === "true" || decoded === "1") {
+			return true;
+		} else if (decoded === "false" || decoded === "0") {
+			return false;
+		}
+		return undefined;
+	};
+	private readonly getNumberValueFromRaw = (value: string): number => parseFloat(this.getStringValueFromRaw(value));
+	private readonly getGuidValueFromRaw = (value: string): string | undefined => parseGuidString(this.getStringValueFromRaw(value));
+	private readonly getDateValueFromRaw = (value: string): Date => new Date(Date.parse(this.getStringValueFromRaw(value)));
+	private readonly getDateOnlyValueFromRaw = (value: string): DateOnly | undefined => DateOnly.parse(this.getStringValueFromRaw(value));
+	private readonly getTimeOnlyValueFromRaw = (value: string): TimeOnly | undefined => TimeOnly.parse(this.getStringValueFromRaw(value));
+	private readonly getDurationValueFromRaw = (value: string): Duration | undefined => Duration.parse(this.getStringValueFromRaw(value));
 	public getByteArrayValue(): ArrayBuffer | undefined {
 		throw new Error("serialization of byt arrays is not supported with URI encoding");
 	}
 	public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
 	public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
-	public getStringValue = (): string => decodeURIComponent(this._rawString);
+	public getStringValue = (): string => this.getStringValueFromRaw(this._rawString);
 	public getChildNode = (identifier: string): ParseNode | undefined => {
 		if (this._fields[identifier]) {
 			return new FormParseNode(this._fields[identifier], this.backingStoreFactory);
 		}
 		return undefined;
 	};
-	public getBooleanValue = () => {
-		const value = this.getStringValue()?.toLowerCase();
-		if (value === "true" || value === "1") {
-			return true;
-		} else if (value === "false" || value === "0") {
-			return false;
-		}
-		return undefined;
-	};
-	public getNumberValue = () => parseFloat(this.getStringValue());
-	public getGuidValue = () => parseGuidString(this.getStringValue());
-	public getDateValue = () => new Date(Date.parse(this.getStringValue()));
-	public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
-	public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
-	public getDurationValue = () => Duration.parse(this.getStringValue());
+	public getBooleanValue = () => this.getBooleanValueFromRaw(this._rawString);
+	public getNumberValue = () => this.getNumberValueFromRaw(this._rawString);
+	public getGuidValue = () => this.getGuidValueFromRaw(this._rawString);
+	public getDateValue = () => this.getDateValueFromRaw(this._rawString);
+	public getDateOnlyValue = () => this.getDateOnlyValueFromRaw(this._rawString);
+	public getTimeOnlyValue = () => this.getTimeOnlyValueFromRaw(this._rawString);
+	public getDurationValue = () => this.getDurationValueFromRaw(this._rawString);
 	public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
-		return this._rawString.split(",").map((x) => decodeURIComponent(x) as unknown as T);
+		return (this._rawString.split(",") as unknown[]).map((x) => {
+			const typeOfX = typeof x;
+			if (typeOfX === "boolean") {
+				return this.getBooleanValueFromRaw(x as string) as unknown as T;
+			} else if (typeOfX === "string") {
+				return this.getStringValueFromRaw(x as string) as unknown as T;
+			} else if (typeOfX === "number") {
+				return this.getNumberValueFromRaw(x as string) as unknown as T;
+			} else if (x instanceof Date) {
+				return this.getDateValueFromRaw(x as unknown as string) as unknown as T;
+			} else if (x instanceof DateOnly) {
+				return this.getDateValueFromRaw(x as unknown as string) as unknown as T;
+			} else if (x instanceof TimeOnly) {
+				return this.getDateValueFromRaw(x as unknown as string) as unknown as T;
+			} else if (x instanceof Duration) {
+				return this.getDateValueFromRaw(x as unknown as string) as unknown as T;
+			} else {
+				throw new Error(`encountered an unknown type during deserialization ${typeof x}`);
+			}
+		});
 	};
 	public getCollectionOfObjectValues = <T extends Parsable>(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
