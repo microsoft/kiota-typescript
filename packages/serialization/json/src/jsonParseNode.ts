@@ -33,24 +33,23 @@ export class JsonParseNode implements ParseNode {
 			return undefined;
 		}
 		return (this._jsonNode as unknown[]).map((x) => {
-			const currentParseNode = new JsonParseNode(x, this.backingStoreFactory);
 			const typeOfX = typeof x;
 			if (x === null) {
 				return null as T;
 			} else if (typeOfX === "boolean") {
-				return currentParseNode.getBooleanValue() as unknown as T;
+				return x as unknown as T;
 			} else if (typeOfX === "string") {
-				return currentParseNode.getStringValue() as unknown as T;
+				return x as unknown as T;
 			} else if (typeOfX === "number") {
-				return currentParseNode.getNumberValue() as unknown as T;
+				return x as unknown as T;
 			} else if (x instanceof Date) {
-				return currentParseNode.getDateValue() as unknown as T;
+				return new JsonParseNode(x, this.backingStoreFactory).getDateValue() as unknown as T;
 			} else if (x instanceof DateOnly) {
-				return currentParseNode.getDateValue() as unknown as T;
+				return new JsonParseNode(x, this.backingStoreFactory).getDateValue() as unknown as T;
 			} else if (x instanceof TimeOnly) {
-				return currentParseNode.getDateValue() as unknown as T;
+				return new JsonParseNode(x, this.backingStoreFactory).getDateValue() as unknown as T;
 			} else if (x instanceof Duration) {
-				return currentParseNode.getDateValue() as unknown as T;
+				return new JsonParseNode(x, this.backingStoreFactory).getDateValue() as unknown as T;
 			} else {
 				throw new Error(`encountered an unknown type during deserialization ${typeof x}`);
 			}
@@ -143,8 +142,10 @@ export class JsonParseNode implements ParseNode {
 		if (Array.isArray(this._jsonNode)) {
 			return this._jsonNode
 				.map((x) => {
-					const node = new JsonParseNode(x, this.backingStoreFactory);
-					return node.getEnumValue(type) as T;
+					if (typeof x === "string") {
+						return getEnumValueFromStringValue(x, type as Record<PropertyKey, PropertyKey>) as T;
+					}
+					return undefined as T;
 				})
 				.filter(Boolean);
 		}

@@ -63,27 +63,7 @@ export class FormParseNode implements ParseNode {
 	public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
 	public getDurationValue = () => Duration.parse(this.getStringValue());
 	public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
-		return (this._rawString.split(",") as unknown[]).map((x) => {
-			const currentParseNode = new FormParseNode(x as string, this.backingStoreFactory);
-			const typeOfX = typeof x;
-			if (typeOfX === "boolean") {
-				return currentParseNode.getBooleanValue() as unknown as T;
-			} else if (typeOfX === "string") {
-				return currentParseNode.getStringValue() as unknown as T;
-			} else if (typeOfX === "number") {
-				return currentParseNode.getNumberValue() as unknown as T;
-			} else if (x instanceof Date) {
-				return currentParseNode.getDateValue() as unknown as T;
-			} else if (x instanceof DateOnly) {
-				return currentParseNode.getDateValue() as unknown as T;
-			} else if (x instanceof TimeOnly) {
-				return currentParseNode.getDateValue() as unknown as T;
-			} else if (x instanceof Duration) {
-				return currentParseNode.getDateValue() as unknown as T;
-			} else {
-				throw new Error(`encountered an unknown type during deserialization ${typeof x}`);
-			}
-		});
+		return this._rawString.split(",").map((x) => decodeURIComponent(x) as unknown as T);
 	};
 	public getCollectionOfObjectValues = <T extends Parsable>(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
