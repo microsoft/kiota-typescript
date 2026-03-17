@@ -82,11 +82,11 @@ export class FormParseNode implements ParseNode {
 			} else if (x instanceof Date) {
 				return this.getDateValueFromRaw(x as unknown as string) as unknown as T;
 			} else if (x instanceof DateOnly) {
-				return this.getDateValueFromRaw(x as unknown as string) as unknown as T;
+				return this.getDateOnlyValueFromRaw(x as unknown as string) as unknown as T;
 			} else if (x instanceof TimeOnly) {
-				return this.getDateValueFromRaw(x as unknown as string) as unknown as T;
+				return this.getTimeOnlyValueFromRaw(x as unknown as string) as unknown as T;
 			} else if (x instanceof Duration) {
-				return this.getDateValueFromRaw(x as unknown as string) as unknown as T;
+				return this.getDurationValueFromRaw(x as unknown as string) as unknown as T;
 			} else {
 				throw new Error(`encountered an unknown type during deserialization ${typeof x}`);
 			}
