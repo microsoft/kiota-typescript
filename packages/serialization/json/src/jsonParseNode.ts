@@ -24,12 +24,9 @@ export class JsonParseNode implements ParseNode {
 	private readonly getNumberValueFromRaw = (value: unknown): number | undefined => (typeof value === "number" ? value : undefined);
 	private readonly getGuidValueFromRaw = (value: unknown): string | undefined => parseGuidString(this.getStringValueFromRaw(value));
 	private readonly getDateValueFromRaw = (value: unknown): Date | undefined => (value ? new Date(value as string) : undefined);
-	private readonly getDateOnlyValueFromRaw = (value: unknown): DateOnly | undefined =>
-		value instanceof DateOnly ? value : DateOnly.parse(this.getStringValueFromRaw(value));
-	private readonly getTimeOnlyValueFromRaw = (value: unknown): TimeOnly | undefined =>
-		value instanceof TimeOnly ? value : TimeOnly.parse(this.getStringValueFromRaw(value));
-	private readonly getDurationValueFromRaw = (value: unknown): Duration | undefined =>
-		value instanceof Duration ? value : Duration.parse(this.getStringValueFromRaw(value));
+	private readonly getDateOnlyValueFromRaw = (value: unknown): DateOnly | undefined => (value instanceof DateOnly ? value : DateOnly.parse(this.getStringValueFromRaw(value)));
+	private readonly getTimeOnlyValueFromRaw = (value: unknown): TimeOnly | undefined => (value instanceof TimeOnly ? value : TimeOnly.parse(this.getStringValueFromRaw(value)));
+	private readonly getDurationValueFromRaw = (value: unknown): Duration | undefined => (value instanceof Duration ? value : Duration.parse(this.getStringValueFromRaw(value)));
 	public getStringValue = () => this.getStringValueFromRaw(this._jsonNode);
 	public getChildNode = (identifier: string): ParseNode | undefined => (this._jsonNode && typeof this._jsonNode === "object" && (this._jsonNode as Record<string, unknown>)[identifier] !== undefined ? new JsonParseNode((this._jsonNode as Record<string, unknown>)[identifier], this.backingStoreFactory) : undefined);
 	public getBooleanValue = () => this.getBooleanValueFromRaw(this._jsonNode);
