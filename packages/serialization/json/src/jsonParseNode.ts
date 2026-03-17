@@ -152,13 +152,13 @@ export class JsonParseNode implements ParseNode {
 	public getCollectionOfEnumValues = <T>(type: unknown): T[] => {
 		if (Array.isArray(this._jsonNode)) {
 			return this._jsonNode
-				.map((x) => {
+				.map<T | undefined>((x) => {
 					if (typeof x === "string") {
 						return getEnumValueFromStringValue(x, type as Record<PropertyKey, PropertyKey>) as T;
 					}
-					return undefined as T;
+					return undefined;
 				})
-				.filter(Boolean);
+				.filter((value): value is T => value !== undefined);
 		}
 		return [];
 	};
