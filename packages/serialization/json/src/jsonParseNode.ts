@@ -56,11 +56,11 @@ export class JsonParseNode implements ParseNode {
 			if (x === null) {
 				return null as T;
 			} else if (typeOfX === "boolean") {
-				return this.getBooleanValueFromRaw(x) as unknown as T;
+				return x as unknown as T;
 			} else if (typeOfX === "string") {
-				return this.getStringValueFromRaw(x) as unknown as T;
+				return x as unknown as T;
 			} else if (typeOfX === "number") {
-				return this.getNumberValueFromRaw(x) as unknown as T;
+				return x as unknown as T;
 			} else if (x instanceof Date) {
 				return this.getDateValueFromRaw(x) as unknown as T;
 			} else if (x instanceof DateOnly) {
