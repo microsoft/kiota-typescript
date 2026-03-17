@@ -19,9 +19,7 @@ export class JsonParseNode implements ParseNode {
 	) {}
 	public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
 	public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
-	private readonly getBooleanValueFromRaw = (value: unknown): boolean | undefined => (typeof value === "boolean" ? value : undefined);
 	private readonly getStringValueFromRaw = (value: unknown): string | undefined => (typeof value === "string" ? value : undefined);
-	private readonly getNumberValueFromRaw = (value: unknown): number | undefined => (typeof value === "number" ? value : undefined);
 	private readonly getGuidValueFromRaw = (value: unknown): string | undefined => parseGuidString(this.getStringValueFromRaw(value));
 	private readonly getDateValueFromRaw = (value: unknown): Date | undefined => {
 		if (value instanceof Date) {
@@ -40,8 +38,8 @@ export class JsonParseNode implements ParseNode {
 	private readonly getDurationValueFromRaw = (value: unknown): Duration | undefined => (value instanceof Duration ? value : Duration.parse(this.getStringValueFromRaw(value)));
 	public getStringValue = () => this.getStringValueFromRaw(this._jsonNode);
 	public getChildNode = (identifier: string): ParseNode | undefined => (this._jsonNode && typeof this._jsonNode === "object" && (this._jsonNode as Record<string, unknown>)[identifier] !== undefined ? new JsonParseNode((this._jsonNode as Record<string, unknown>)[identifier], this.backingStoreFactory) : undefined);
-	public getBooleanValue = () => this.getBooleanValueFromRaw(this._jsonNode);
-	public getNumberValue = () => this.getNumberValueFromRaw(this._jsonNode);
+	public getBooleanValue = (): boolean | undefined => (typeof this._jsonNode === "boolean" ? this._jsonNode : undefined);
+	public getNumberValue = (): number | undefined => (typeof this._jsonNode === "number" ? this._jsonNode : undefined);
 	public getGuidValue = () => this.getGuidValueFromRaw(this._jsonNode);
 	public getDateValue = () => this.getDateValueFromRaw(this._jsonNode);
 	public getDateOnlyValue = () => this.getDateOnlyValueFromRaw(this._jsonNode);

@@ -73,9 +73,7 @@ export class FormParseNode implements ParseNode {
 	public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
 		// Each element from _rawString.split(",") is always a string, so we only need to
 		// decode the string values here. The result is effectively a string[].
-		const values = this._rawString
-			.split(",")
-			.map((x) => this.getStringValueFromRaw(x));
+		const values = this._rawString.split(",").map((x) => this.getStringValueFromRaw(x));
 		return values as unknown as T[];
 	};
 	public getCollectionOfObjectValues = <T extends Parsable>(
