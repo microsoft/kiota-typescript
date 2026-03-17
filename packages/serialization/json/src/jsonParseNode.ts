@@ -23,7 +23,18 @@ export class JsonParseNode implements ParseNode {
 	private readonly getStringValueFromRaw = (value: unknown): string | undefined => (typeof value === "string" ? value : undefined);
 	private readonly getNumberValueFromRaw = (value: unknown): number | undefined => (typeof value === "number" ? value : undefined);
 	private readonly getGuidValueFromRaw = (value: unknown): string | undefined => parseGuidString(this.getStringValueFromRaw(value));
-	private readonly getDateValueFromRaw = (value: unknown): Date | undefined => (value ? new Date(value as string) : undefined);
+	private readonly getDateValueFromRaw = (value: unknown): Date | undefined => {
+		if (value instanceof Date) {
+			return value;
+		}
+		if (typeof value === "number") {
+			return new Date(value);
+		}
+		if (typeof value === "string") {
+			return new Date(value);
+		}
+		return undefined;
+	};
 	private readonly getDateOnlyValueFromRaw = (value: unknown): DateOnly | undefined => (value instanceof DateOnly ? value : DateOnly.parse(this.getStringValueFromRaw(value)));
 	private readonly getTimeOnlyValueFromRaw = (value: unknown): TimeOnly | undefined => (value instanceof TimeOnly ? value : TimeOnly.parse(this.getStringValueFromRaw(value)));
 	private readonly getDurationValueFromRaw = (value: unknown): Duration | undefined => (value instanceof Duration ? value : Duration.parse(this.getStringValueFromRaw(value)));
