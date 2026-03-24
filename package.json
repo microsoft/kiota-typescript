@@ -24,7 +24,7 @@
     "rimraf": "^6.0.0",
     "sinon": "^21.0.0",
     "tsc-alias": "^1.8.10",
-    "typescript": "^5.3.3",
+    "typescript": "^6.0.2",
     "vitest": "^4.0.1",
     "webdriverio": "^9.0.1"
   },
