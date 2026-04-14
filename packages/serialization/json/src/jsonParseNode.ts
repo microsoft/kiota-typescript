@@ -23,7 +23,7 @@ export class JsonParseNode implements ParseNode {
 	private readonly getGuidValueFromRaw = (value: unknown): string | undefined => parseGuidString(this.getStringValueFromRaw(value));
 	private readonly getDateValueFromRaw = (value: unknown): Date | undefined => {
 		if (value instanceof Date) {
-			return value;
+			return new Date(value.getTime());
 		}
 		if (typeof value === "number") {
 			return new Date(value);
