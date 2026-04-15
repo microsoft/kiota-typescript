@@ -34,9 +34,13 @@ export class FormParseNode implements ParseNode {
 				}
 			});
 	}
-	private readonly normalizeKey = (key: string): string => decodeURIComponent(key).trim();
-	private readonly getStringValueFromRaw = (value: string): string => decodeURIComponent(value);
-	private readonly getBooleanValueFromRaw = (value: string): boolean | undefined => {
+	private normalizeKey(key: string): string {
+		return decodeURIComponent(key).trim();
+	}
+	private getStringValueFromRaw(value: string): string {
+		return decodeURIComponent(value);
+	}
+	private getBooleanValueFromRaw(value: string): boolean | undefined {
 		const decoded = this.getStringValueFromRaw(value).toLowerCase();
 		if (decoded === "true" || decoded === "1") {
 			return true;
@@ -44,13 +48,25 @@ export class FormParseNode implements ParseNode {
 			return false;
 		}
 		return undefined;
-	};
-	private readonly getNumberValueFromRaw = (value: string): number => parseFloat(this.getStringValueFromRaw(value));
-	private readonly getGuidValueFromRaw = (value: string): string | undefined => parseGuidString(this.getStringValueFromRaw(value));
-	private readonly getDateValueFromRaw = (value: string): Date => new Date(Date.parse(this.getStringValueFromRaw(value)));
-	private readonly getDateOnlyValueFromRaw = (value: string): DateOnly | undefined => DateOnly.parse(this.getStringValueFromRaw(value));
-	private readonly getTimeOnlyValueFromRaw = (value: string): TimeOnly | undefined => TimeOnly.parse(this.getStringValueFromRaw(value));
-	private readonly getDurationValueFromRaw = (value: string): Duration | undefined => Duration.parse(this.getStringValueFromRaw(value));
+	}
+	private getNumberValueFromRaw(value: string): number {
+		return parseFloat(this.getStringValueFromRaw(value));
+	}
+	private getGuidValueFromRaw(value: string): string | undefined {
+		return parseGuidString(this.getStringValueFromRaw(value));
+	}
+	private getDateValueFromRaw(value: string): Date {
+		return new Date(Date.parse(this.getStringValueFromRaw(value)));
+	}
+	private getDateOnlyValueFromRaw(value: string): DateOnly | undefined {
+		return DateOnly.parse(this.getStringValueFromRaw(value));
+	}
+	private getTimeOnlyValueFromRaw(value: string): TimeOnly | undefined {
+		return TimeOnly.parse(this.getStringValueFromRaw(value));
+	}
+	private getDurationValueFromRaw(value: string): Duration | undefined {
+		return Duration.parse(this.getStringValueFromRaw(value));
+	}
 	public getByteArrayValue(): ArrayBuffer | undefined {
 		throw new Error("serialization of byt arrays is not supported with URI encoding");
 	}
@@ -71,10 +87,27 @@ export class FormParseNode implements ParseNode {
 	public getTimeOnlyValue = () => this.getTimeOnlyValueFromRaw(this._rawString);
 	public getDurationValue = () => this.getDurationValueFromRaw(this._rawString);
 	public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
-		// Each element from _rawString.split(",") is always a string, so we only need to
-		// decode the string values here. The result is effectively a string[].
-		const values = this._rawString.split(",").map((x) => this.getStringValueFromRaw(x));
-		return values as unknown as T[];
+		const values = this._rawString.split(",");
+		return values.map((x) => {
+			const typeOfX = typeof x;
+			if (typeOfX === "boolean") {
+				return this.getBooleanValueFromRaw(x) as unknown as T;
+			} else if (typeOfX === "string") {
+				return this.getStringValueFromRaw(x) as unknown as T;
+			} else if (typeOfX === "number") {
+				return this.getNumberValueFromRaw(x) as unknown as T;
+			} else if (x instanceof Date) {
+				return this.getDateValueFromRaw(x as unknown as string) as unknown as T;
+			} else if (x instanceof DateOnly) {
+				return this.getDateOnlyValueFromRaw(x as unknown as string) as unknown as T;
+			} else if (x instanceof TimeOnly) {
+				return this.getTimeOnlyValueFromRaw(x as unknown as string) as unknown as T;
+			} else if (x instanceof Duration) {
+				return this.getDurationValueFromRaw(x as unknown as string) as unknown as T;
+			} else {
+				throw new Error(`encountered an unknown type during deserialization ${typeof x}`);
+			}
+		});
 	};
 	public getCollectionOfObjectValues = <T extends Parsable>(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -110,7 +143,7 @@ export class FormParseNode implements ParseNode {
 		}
 		return getEnumValueFromStringValue(rawValue, type as Record<PropertyKey, PropertyKey>) as T;
 	};
-	private readonly assignFieldValues = <T extends Parsable>(model: T, parsableFactory: ParsableFactory<T>): void => {
+	private assignFieldValues<T extends Parsable>(model: T, parsableFactory: ParsableFactory<T>): void {
 		const fields = parsableFactory(this)(model);
 		Object.entries(this._fields)
 			.filter((x) => !/^null$/i.test(x[1]))
@@ -122,5 +155,5 @@ export class FormParseNode implements ParseNode {
 					(model as Record<string, unknown>)[k] = v;
 				}
 			});
-	};
+	}
 }
