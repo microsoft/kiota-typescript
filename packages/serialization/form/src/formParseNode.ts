@@ -71,10 +71,26 @@ export class FormParseNode implements ParseNode {
 	public getTimeOnlyValue = () => this.getTimeOnlyValueFromRaw(this._rawString);
 	public getDurationValue = () => this.getDurationValueFromRaw(this._rawString);
 	public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
-		// Each element from _rawString.split(",") is always a string, so we only need to
-		// decode the string values here. The result is effectively a string[].
-		const values = this._rawString.split(",").map((x) => this.getStringValueFromRaw(x));
-		return values as unknown as T[];
+		return (this._rawString.split(",") as unknown[]).map((x) => {
+			const typeOfX = typeof x;
+			if (typeOfX === "boolean") {
+				return this.getBooleanValueFromRaw(x as string) as unknown as T;
+			} else if (typeOfX === "string") {
+				return this.getStringValueFromRaw(x as string) as unknown as T;
+			} else if (typeOfX === "number") {
+				return this.getNumberValueFromRaw(x as string) as unknown as T;
+			} else if (x instanceof Date) {
+				return this.getDateValueFromRaw(x as unknown as string) as unknown as T;
+			} else if (x instanceof DateOnly) {
+				return this.getDateOnlyValueFromRaw(x as unknown as string) as unknown as T;
+			} else if (x instanceof TimeOnly) {
+				return this.getTimeOnlyValueFromRaw(x as unknown as string) as unknown as T;
+			} else if (x instanceof Duration) {
+				return this.getDurationValueFromRaw(x as unknown as string) as unknown as T;
+			} else {
+				throw new Error(`encountered an unknown type during deserialization ${typeof x}`);
+			}
+		});
 	};
 	public getCollectionOfObjectValues = <T extends Parsable>(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
