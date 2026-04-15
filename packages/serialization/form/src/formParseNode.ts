@@ -88,14 +88,14 @@ export class FormParseNode implements ParseNode {
 	public getDurationValue = () => this.getDurationValueFromRaw(this._rawString);
 	public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
 		const values = this._rawString.split(",");
-		return values.map((x) => {
+		return (values as unknown[]).map((x) => {
 			const typeOfX = typeof x;
 			if (typeOfX === "boolean") {
-				return this.getBooleanValueFromRaw(x) as unknown as T;
+				return this.getBooleanValueFromRaw(x as string) as unknown as T;
 			} else if (typeOfX === "string") {
-				return this.getStringValueFromRaw(x) as unknown as T;
+				return this.getStringValueFromRaw(x as string) as unknown as T;
 			} else if (typeOfX === "number") {
-				return this.getNumberValueFromRaw(x) as unknown as T;
+				return this.getNumberValueFromRaw(x as string) as unknown as T;
 			} else if (x instanceof Date) {
 				return this.getDateValueFromRaw(x as unknown as string) as unknown as T;
 			} else if (x instanceof DateOnly) {
