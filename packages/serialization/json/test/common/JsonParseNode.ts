@@ -346,6 +346,27 @@ describe("JsonParseNode", () => {
 		assert.isUndefined(result5.getBooleanValue());
 	});
 
+	it("getCollectionOfPrimitiveValues returns string values", () => {
+		const result = new JsonParseNode(["one", "two", "three"], backingStoreFactory).getCollectionOfPrimitiveValues<string>();
+		assert.deepEqual(result, ["one", "two", "three"]);
+	});
+	it("getCollectionOfPrimitiveValues returns number values when elements are numbers", () => {
+		const result = new JsonParseNode([1, 2, 3], backingStoreFactory).getCollectionOfPrimitiveValues<number>();
+		assert.deepEqual(result, [1, 2, 3]);
+	});
+	it("getCollectionOfPrimitiveValues returns boolean values when elements are booleans", () => {
+		const result = new JsonParseNode([true, false, true], backingStoreFactory).getCollectionOfPrimitiveValues<boolean>();
+		assert.deepEqual(result, [true, false, true]);
+	});
+	it("getCollectionOfPrimitiveValues returns string values when elements are date-like strings", () => {
+		const result = new JsonParseNode(["2023-01-01", "2023-06-15"], backingStoreFactory).getCollectionOfPrimitiveValues<string>();
+		assert.deepEqual(result, ["2023-01-01", "2023-06-15"]);
+	});
+	it("getCollectionOfPrimitiveValues returns null for null elements in array", () => {
+		const result = new JsonParseNode(["hello", null, "world"], backingStoreFactory).getCollectionOfPrimitiveValues<string | null>();
+		assert.deepEqual(result, ["hello", null, "world"]);
+	});
+
 	it("should parse a union of objects and primitive values when value is primitive", async () => {
 		const result = new JsonParseNode(
 			{
