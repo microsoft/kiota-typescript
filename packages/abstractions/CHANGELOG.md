@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.0](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.100...@microsoft/kiota-abstractions@1.0.0) (2026-04-16)
+## [1.0.0-preview.101](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.100...@microsoft/kiota-abstractions@1.0.0-preview.101) (2026-04-16)
 
 
 ### Miscellaneous Chores
