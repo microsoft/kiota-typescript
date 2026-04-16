@@ -72,4 +72,24 @@ describe("FormParseNode", () => {
 		const enumValueResult3 = new FormParseNode("IN PROGRESS").getEnumValue(Test_statusObject) as Test_status;
 		assert.equal(enumValueResult3, Test_statusObject.INPROGRESS);
 	});
+	it("getCollectionOfPrimitiveValues returns decoded string values (only string collections are supported with URI encoding)", () => {
+		const result = new FormParseNode("one,two,three").getCollectionOfPrimitiveValues<string>();
+		assert.deepEqual(result, ["one", "two", "three"]);
+	});
+	it("getCollectionOfPrimitiveValues returns string values even when elements look like numbers (only string collections are supported)", () => {
+		const result = new FormParseNode("1,2,3").getCollectionOfPrimitiveValues<string>();
+		assert.deepEqual(result, ["1", "2", "3"]);
+	});
+	it("getCollectionOfPrimitiveValues returns string values even when elements look like booleans (only string collections are supported)", () => {
+		const result = new FormParseNode("true,false,true").getCollectionOfPrimitiveValues<string>();
+		assert.deepEqual(result, ["true", "false", "true"]);
+	});
+	it("getCollectionOfPrimitiveValues returns string values even when elements look like dates (only string collections are supported)", () => {
+		const result = new FormParseNode("2023-01-01,2023-06-15").getCollectionOfPrimitiveValues<string>();
+		assert.deepEqual(result, ["2023-01-01", "2023-06-15"]);
+	});
+	it("getCollectionOfPrimitiveValues URL-decodes percent-encoded characters", () => {
+		const result = new FormParseNode("hello%20world,foo%26bar").getCollectionOfPrimitiveValues<string>();
+		assert.deepEqual(result, ["hello world", "foo&bar"]);
+	});
 });

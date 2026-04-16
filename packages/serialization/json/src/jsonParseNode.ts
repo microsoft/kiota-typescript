@@ -19,38 +19,64 @@ export class JsonParseNode implements ParseNode {
 	) {}
 	public onBeforeAssignFieldValues: ((value: Parsable) => void) | undefined;
 	public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
-	public getStringValue = () => (typeof this._jsonNode === "string" ? this._jsonNode : undefined);
+	private getStringValueFromRaw(value: unknown): string | undefined {
+		return typeof value === "string" ? value : undefined;
+	}
+	private getGuidValueFromRaw(value: unknown): string | undefined {
+		return parseGuidString(this.getStringValueFromRaw(value));
+	}
+	private getDateValueFromRaw(value: unknown): Date | undefined {
+		if (value instanceof Date) {
+			return new Date(value.getTime());
+		}
+		if (typeof value === "number") {
+			return new Date(value);
+		}
+		if (typeof value === "string") {
+			return new Date(value);
+		}
+		return undefined;
+	}
+	private getDateOnlyValueFromRaw(value: unknown): DateOnly | undefined {
+		return value instanceof DateOnly ? value : DateOnly.parse(this.getStringValueFromRaw(value));
+	}
+	private getTimeOnlyValueFromRaw(value: unknown): TimeOnly | undefined {
+		return value instanceof TimeOnly ? value : TimeOnly.parse(this.getStringValueFromRaw(value));
+	}
+	private getDurationValueFromRaw(value: unknown): Duration | undefined {
+		return value instanceof Duration ? value : Duration.parse(this.getStringValueFromRaw(value));
+	}
+	public getStringValue = () => this.getStringValueFromRaw(this._jsonNode);
 	public getChildNode = (identifier: string): ParseNode | undefined => (this._jsonNode && typeof this._jsonNode === "object" && (this._jsonNode as Record<string, unknown>)[identifier] !== undefined ? new JsonParseNode((this._jsonNode as Record<string, unknown>)[identifier], this.backingStoreFactory) : undefined);
-	public getBooleanValue = () => (typeof this._jsonNode === "boolean" ? this._jsonNode : undefined);
-	public getNumberValue = () => (typeof this._jsonNode === "number" ? this._jsonNode : undefined);
-	public getGuidValue = () => parseGuidString(this.getStringValue());
-	public getDateValue = () => (this._jsonNode ? new Date(this._jsonNode as string) : undefined);
-	public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
-	public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
-	public getDurationValue = () => Duration.parse(this.getStringValue());
+	public getBooleanValue = (): boolean | undefined => (typeof this._jsonNode === "boolean" ? this._jsonNode : undefined);
+	public getNumberValue = (): number | undefined => (typeof this._jsonNode === "number" ? this._jsonNode : undefined);
+	public getGuidValue = () => this.getGuidValueFromRaw(this._jsonNode);
+	public getDateValue = () => this.getDateValueFromRaw(this._jsonNode);
+	public getDateOnlyValue = () => this.getDateOnlyValueFromRaw(this._jsonNode);
+	public getTimeOnlyValue = () => this.getTimeOnlyValueFromRaw(this._jsonNode);
+	public getDurationValue = () => this.getDurationValueFromRaw(this._jsonNode);
 	public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
 		if (!Array.isArray(this._jsonNode)) {
 			return undefined;
 		}
 		return (this._jsonNode as unknown[]).map((x) => {
-			const currentParseNode = new JsonParseNode(x, this.backingStoreFactory);
 			const typeOfX = typeof x;
 			if (x === null) {
 				return null as T;
 			} else if (typeOfX === "boolean") {
-				return currentParseNode.getBooleanValue() as unknown as T;
+				return x as unknown as T;
 			} else if (typeOfX === "string") {
-				return currentParseNode.getStringValue() as unknown as T;
+				return x as unknown as T;
 			} else if (typeOfX === "number") {
-				return currentParseNode.getNumberValue() as unknown as T;
+				return x as unknown as T;
 			} else if (x instanceof Date) {
-				return currentParseNode.getDateValue() as unknown as T;
+				return this.getDateValueFromRaw(x) as unknown as T;
 			} else if (x instanceof DateOnly) {
-				return currentParseNode.getDateValue() as unknown as T;
+				return this.getDateOnlyValueFromRaw(x) as unknown as T;
 			} else if (x instanceof TimeOnly) {
-				return currentParseNode.getDateValue() as unknown as T;
+				return this.getTimeOnlyValueFromRaw(x) as unknown as T;
 			} else if (x instanceof Duration) {
-				return currentParseNode.getDateValue() as unknown as T;
+				return this.getDurationValueFromRaw(x) as unknown as T;
 			} else {
 				throw new Error(`encountered an unknown type during deserialization ${typeof x}`);
 			}
@@ -142,11 +168,13 @@ export class JsonParseNode implements ParseNode {
 	public getCollectionOfEnumValues = <T>(type: unknown): T[] => {
 		if (Array.isArray(this._jsonNode)) {
 			return this._jsonNode
-				.map((x) => {
-					const node = new JsonParseNode(x, this.backingStoreFactory);
-					return node.getEnumValue(type) as T;
+				.map<T | undefined>((x) => {
+					if (typeof x === "string") {
+						return getEnumValueFromStringValue(x, type as Record<PropertyKey, PropertyKey>) as T;
+					}
+					return undefined;
 				})
-				.filter(Boolean);
+				.filter((value): value is T => value !== undefined);
 		}
 		return [];
 	};
