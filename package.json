@@ -2,7 +2,13 @@
   "name": "kiota-typescript",
   "private": true,
   "overrides": {
-    "string_decoder": "^1.3.0"
+    "string_decoder": "^1.3.0",
+    "lodash": "^4.18.1",
+    "basic-ftp": "^5.2.2",
+    "axios": "^1.15.1",
+    "vite": "^7.3.2",
+    "@azure/msal-node": "^5.1.5",
+    "keyv": "^5.5.3"
   },
   "devDependencies": {
     "@microsoft/eslint-config-msgraph": "^5.0.0",
