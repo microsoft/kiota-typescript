@@ -9,6 +9,7 @@
   "bump-patch-for-minor-pre-major": true,
   "versioning": "prerelease",
   "prerelease-type": "preview",
+  "prerelease": true,
   "packages": {
     "packages/abstractions": {
       "component": "@microsoft/kiota-abstractions",
