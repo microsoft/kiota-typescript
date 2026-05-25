@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.0-preview.102](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.101...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.102) (2026-05-25)
+
+
+### Bug Fixes
+
+* **http-fetchlibrary:** case-insensitive scrub of Authorization, Cookie, Proxy-Authorization on cross-origin redirect (GHSA-396q-4vc8-28x9) ([4dab0e2](https://github.com/microsoft/kiota-typescript/commit/4dab0e233e1196817b253006e69498db073b6296))
+* **http:** case insensitive header removal ([09f8bd9](https://github.com/microsoft/kiota-typescript/commit/09f8bd9b34d68bf412a9b78f6ca7e7961ef14974))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.101 to ^1.0.0-preview.102
+
 ## [1.0.0-preview.101](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.100...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.101) (2026-05-06)
 
 
