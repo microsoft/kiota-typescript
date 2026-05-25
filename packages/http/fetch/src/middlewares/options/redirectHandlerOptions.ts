@@ -73,12 +73,19 @@ export class RedirectHandlerOptions implements RequestOption {
 			const originalUri = new URL(originalUrl);
 			const newUri = new URL(newUrl);
 
-			// Remove Authorization and Cookie headers if the request's scheme or host changes
+			// Remove Authorization, Cookie, and Proxy-Authorization headers if the request's scheme or host changes.
+			// Header keys must be matched case-insensitively because FetchRequestAdapter.getRequestFromRequestInformation
+			// lower-cases every header key before the headers object reaches this middleware, so PascalCase
+			// property deletes such as `delete headers.Authorization` would otherwise be a no-op.
 			const isDifferentHostOrScheme = originalUri.host.toLowerCase() !== newUri.host.toLowerCase() || originalUri.protocol.toLowerCase() !== newUri.protocol.toLowerCase();
 
 			if (isDifferentHostOrScheme) {
-				delete headers.Authorization;
-				delete headers.Cookie;
+				for (const key of Object.keys(headers)) {
+					const lower = key.toLowerCase();
+					if (lower === "authorization" || lower === "cookie" || lower === "proxy-authorization") {
+						delete headers[key];
+					}
+				}
 			}
 		} catch {
 			// If URL parsing fails, don't modify headers

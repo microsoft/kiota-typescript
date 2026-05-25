@@ -352,6 +352,40 @@ describe("RedirectHandler.ts", () => {
 			assert.equal(response.status, 200);
 		});
 
+		it("Should drop authorization, cookie, and proxy-authorization headers regardless of key case for cross-host redirect", async () => {
+			// FetchRequestAdapter.getRequestFromRequestInformation lower-cases every header
+			// key before it reaches the redirect handler, so the default scrub must be
+			// case-insensitive when matching sensitive header names.
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const fetchRequestInit = {
+				method: "POST",
+				body: "dummy body",
+				headers: {
+					authorization: "Bearer TEST",
+					cookie: "session=SECRET",
+					"proxy-authorization": "Basic dXNlcjpwYXNz",
+					AUTHORIZATION: "Bearer SHOULDTY",
+				},
+			};
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "https://graphredirect.microsoft.com/v1.0/me",
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+			const response = await handler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, new RedirectHandlerOptions());
+			const finalHeaders = fetchRequestInit.headers as Record<string, string>;
+			assert.isUndefined(finalHeaders["authorization"]);
+			assert.isUndefined(finalHeaders["cookie"]);
+			assert.isUndefined(finalHeaders["proxy-authorization"]);
+			assert.isUndefined(finalHeaders["AUTHORIZATION"]);
+			assert.equal(response.status, 200);
+		});
+
 		it("Should drop Authorization and Cookie headers for scheme change", async () => {
 			const requestUrl = "https://graph.microsoft.com/v1.0/me";
 			const fetchRequestInit = {
