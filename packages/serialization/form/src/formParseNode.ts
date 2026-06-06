@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { BackingStoreFactory, createBackedModelProxyHandler, DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, isBackingStoreEnabled, getEnumValueFromStringValue } from "@microsoft/kiota-abstractions";
+import { BackingStoreFactory, createBackedModelProxyHandler, DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, isBackingStoreEnabled, getEnumValueFromStringValue, type PrimitiveTypesForDeserialization } from "@microsoft/kiota-abstractions";
 
 export class FormParseNode implements ParseNode {
 	private readonly _fields: Record<string, string> = {};
@@ -86,26 +86,26 @@ export class FormParseNode implements ParseNode {
 	public getDateOnlyValue = () => this.getDateOnlyValueFromRaw(this._rawString);
 	public getTimeOnlyValue = () => this.getTimeOnlyValueFromRaw(this._rawString);
 	public getDurationValue = () => this.getDurationValueFromRaw(this._rawString);
-	public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
+	public getCollectionOfPrimitiveValues = <T>(primitiveType: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer"> = "string"): T[] | undefined => {
 		const values = this._rawString.split(",");
-		return (values as unknown[]).map((x) => {
-			const typeOfX = typeof x;
-			if (typeOfX === "boolean") {
-				return this.getBooleanValueFromRaw(x as string) as unknown as T;
-			} else if (typeOfX === "string") {
-				return this.getStringValueFromRaw(x as string) as unknown as T;
-			} else if (typeOfX === "number") {
-				return this.getNumberValueFromRaw(x as string) as unknown as T;
-			} else if (x instanceof Date) {
-				return this.getDateValueFromRaw(x as unknown as string) as unknown as T;
-			} else if (x instanceof DateOnly) {
-				return this.getDateOnlyValueFromRaw(x as unknown as string) as unknown as T;
-			} else if (x instanceof TimeOnly) {
-				return this.getTimeOnlyValueFromRaw(x as unknown as string) as unknown as T;
-			} else if (x instanceof Duration) {
-				return this.getDurationValueFromRaw(x as unknown as string) as unknown as T;
-			} else {
-				throw new Error(`encountered an unknown type during deserialization ${typeof x}`);
+		return values.map((x) => {
+			switch (primitiveType) {
+				case "boolean":
+					return this.getBooleanValueFromRaw(x) as unknown as T;
+				case "number":
+					return this.getNumberValueFromRaw(x) as unknown as T;
+				case "Date":
+					return this.getDateValueFromRaw(x) as unknown as T;
+				case "DateOnly":
+					return this.getDateOnlyValueFromRaw(x) as unknown as T;
+				case "TimeOnly":
+					return this.getTimeOnlyValueFromRaw(x) as unknown as T;
+				case "Duration":
+					return this.getDurationValueFromRaw(x) as unknown as T;
+				case "string":
+					return this.getStringValueFromRaw(x) as unknown as T;
+				default:
+					throw new Error(`encountered an unsupported type during deserialization ${primitiveType as string}`);
 			}
 		});
 	};

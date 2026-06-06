@@ -354,6 +354,10 @@ describe("JsonParseNode", () => {
 		const result = new JsonParseNode([1, 2, 3], backingStoreFactory).getCollectionOfPrimitiveValues<number>();
 		assert.deepEqual(result, [1, 2, 3]);
 	});
+	it("getCollectionOfPrimitiveValues accepts a runtime primitive type without changing JSON values", () => {
+		const result = new JsonParseNode([1, 2, 3], backingStoreFactory).getCollectionOfPrimitiveValues<number>("number");
+		assert.deepEqual(result, [1, 2, 3]);
+	});
 	it("getCollectionOfPrimitiveValues returns boolean values when elements are booleans", () => {
 		const result = new JsonParseNode([true, false, true], backingStoreFactory).getCollectionOfPrimitiveValues<boolean>();
 		assert.deepEqual(result, [true, false, true]);

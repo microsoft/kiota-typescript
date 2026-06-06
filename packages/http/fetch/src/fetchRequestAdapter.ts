@@ -95,25 +95,28 @@ export class FetchRequestAdapter implements RequestAdapter {
 						case "number":
 						case "boolean":
 						case "Date":
+						case "Duration":
+						case "DateOnly":
+						case "TimeOnly":
 							// eslint-disable-next-line no-case-declarations
 							const rootNode = await this.getRootParseNode(response);
 							return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan(`getCollectionOf${responseType}Value`, (deserializeSpan) => {
 								try {
 									span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, responseType);
 									if (responseType === "string") {
-										return rootNode.getCollectionOfPrimitiveValues<string>() as unknown as ResponseType[];
+										return rootNode.getCollectionOfPrimitiveValues<string>(responseType) as unknown as ResponseType[];
 									} else if (responseType === "number") {
-										return rootNode.getCollectionOfPrimitiveValues<number>() as unknown as ResponseType[];
+										return rootNode.getCollectionOfPrimitiveValues<number>(responseType) as unknown as ResponseType[];
 									} else if (responseType === "boolean") {
-										return rootNode.getCollectionOfPrimitiveValues<boolean>() as unknown as ResponseType[];
+										return rootNode.getCollectionOfPrimitiveValues<boolean>(responseType) as unknown as ResponseType[];
 									} else if (responseType === "Date") {
-										return rootNode.getCollectionOfPrimitiveValues<Date>() as unknown as ResponseType[];
+										return rootNode.getCollectionOfPrimitiveValues<Date>(responseType) as unknown as ResponseType[];
 									} else if (responseType === "Duration") {
-										return rootNode.getCollectionOfPrimitiveValues<Duration>() as unknown as ResponseType[];
+										return rootNode.getCollectionOfPrimitiveValues<Duration>(responseType) as unknown as ResponseType[];
 									} else if (responseType === "DateOnly") {
-										return rootNode.getCollectionOfPrimitiveValues<DateOnly>() as unknown as ResponseType[];
+										return rootNode.getCollectionOfPrimitiveValues<DateOnly>(responseType) as unknown as ResponseType[];
 									} else if (responseType === "TimeOnly") {
-										return rootNode.getCollectionOfPrimitiveValues<TimeOnly>() as unknown as ResponseType[];
+										return rootNode.getCollectionOfPrimitiveValues<TimeOnly>(responseType) as unknown as ResponseType[];
 									} else {
 										throw new Error("unexpected type to deserialize");
 									}

@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, inNodeEnv, getEnumValueFromStringValue } from "@microsoft/kiota-abstractions";
+import { DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, inNodeEnv, getEnumValueFromStringValue, type PrimitiveTypesForDeserialization } from "@microsoft/kiota-abstractions";
 
 /**
  * This class represents a text parse node.
@@ -58,7 +58,7 @@ export class TextParseNode implements ParseNode {
 	public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
 	public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
 	public getDurationValue = () => Duration.parse(this.getStringValue());
-	public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
+	public getCollectionOfPrimitiveValues = <T>(_primitiveType?: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">): T[] | undefined => {
 		throw new Error(TextParseNode.noStructuredDataMessage);
 	};
 	/* eslint-disable @typescript-eslint/no-unused-vars */

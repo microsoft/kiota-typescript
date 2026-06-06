@@ -6,7 +6,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import type { DateOnly, Duration, Guid, Parsable, ParsableFactory, ParseNode, ParseNodeFactory, TimeOnly } from "@microsoft/kiota-abstractions";
+import type { DateOnly, Duration, Guid, Parsable, ParsableFactory, ParseNode, ParseNodeFactory, PrimitiveTypesForDeserialization, TimeOnly } from "@microsoft/kiota-abstractions";
 
 export class MockParseNodeFactory implements ParseNodeFactory {
 	parseNodeValue: ParseNode;
@@ -62,7 +62,7 @@ export class MockParseNode implements ParseNode {
 	getTimeOnlyValue(): TimeOnly | undefined {
 		throw new Error("Method not implemented.");
 	}
-	getCollectionOfPrimitiveValues<T>(): T[] | undefined {
+	getCollectionOfPrimitiveValues<T>(_primitiveType?: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">): T[] | undefined {
 		throw new Error("Method not implemented.");
 	}
 	getCollectionOfObjectValues<T extends Parsable>(type: ParsableFactory<T>): T[] | undefined {

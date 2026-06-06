@@ -8,6 +8,7 @@ import type { Guid } from "../utils/guidUtils";
 
 import type { DateOnly } from "../dateOnly";
 import type { Duration } from "../duration";
+import type { PrimitiveTypesForDeserialization } from "../requestAdapter";
 import type { TimeOnly } from "../timeOnly";
 import type { Parsable } from "./parsable";
 import type { ParsableFactory } from "./parsableFactory";
@@ -64,9 +65,10 @@ export interface ParseNode {
 	getTimeOnlyValue(): TimeOnly | undefined;
 	/**
 	 * Gets the collection of primitive values of the node.
+	 * @param primitiveType the runtime primitive type to deserialize collection items into.
 	 * @returns the collection of primitive values of the node.
 	 */
-	getCollectionOfPrimitiveValues<T>(): T[] | undefined;
+	getCollectionOfPrimitiveValues<T>(primitiveType?: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">): T[] | undefined;
 	/**
 	 * Gets the collection of object values of the node.
 	 * @returns the collection of object values of the node.

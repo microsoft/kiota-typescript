@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { BackingStoreFactory, DateOnly, Duration, TimeOnly, UntypedNode, createBackedModelProxyHandler, createUntypedArray, createUntypedBoolean, createUntypedNodeFromDiscriminatorValue, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString, inNodeEnv, isBackingStoreEnabled, isUntypedNode, parseGuidString, getEnumValueFromStringValue, type Parsable, type ParsableFactory, type ParseNode, AdditionalDataHolder } from "@microsoft/kiota-abstractions";
+import { BackingStoreFactory, DateOnly, Duration, TimeOnly, UntypedNode, createBackedModelProxyHandler, createUntypedArray, createUntypedBoolean, createUntypedNodeFromDiscriminatorValue, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString, inNodeEnv, isBackingStoreEnabled, isUntypedNode, parseGuidString, getEnumValueFromStringValue, type Parsable, type ParsableFactory, type ParseNode, AdditionalDataHolder, type PrimitiveTypesForDeserialization } from "@microsoft/kiota-abstractions";
 
 export class JsonParseNode implements ParseNode {
 	/**
@@ -55,7 +55,7 @@ export class JsonParseNode implements ParseNode {
 	public getDateOnlyValue = () => this.getDateOnlyValueFromRaw(this._jsonNode);
 	public getTimeOnlyValue = () => this.getTimeOnlyValueFromRaw(this._jsonNode);
 	public getDurationValue = () => this.getDurationValueFromRaw(this._jsonNode);
-	public getCollectionOfPrimitiveValues = <T>(): T[] | undefined => {
+	public getCollectionOfPrimitiveValues = <T>(_primitiveType?: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">): T[] | undefined => {
 		if (!Array.isArray(this._jsonNode)) {
 			return undefined;
 		}
