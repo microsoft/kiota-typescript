@@ -26,6 +26,7 @@ interface GetQueryParameters {
 	endDate?: DateOnly;
 	timeStamp?: Date;
 	duration?: Duration;
+	query?: Record<string, string | null>;
 }
 
 const getQueryParameterMapper: Record<string, string> = {
@@ -310,5 +311,98 @@ describe("RequestInformation", () => {
 		const contentTypeHeaderValue = requestInformation.headers.tryGetValue("Content-Type")![0];
 		assert.equal(contentTypeHeaderValue, `multipart/form-data; boundary=${mpBody.getBoundary()}`);
 		assert.isNotEmpty(mpBody.getBoundary());
+	});
+
+	it("Expands map query parameter as individual key-value pairs (RFC 6570 {?query*})", () => {
+		const requestInformation = new RequestInformation();
+		requestInformation.urlTemplate = "http://localhost/articles{?query*}";
+		requestInformation.setQueryStringParametersFromRawObject<GetQueryParameters>({
+			query: {
+				filter: "equals(published,true)",
+				sort: "-createdAt",
+			},
+		});
+		const url = requestInformation.URL;
+		// RFC 6570 {?query*} expands a map as individual key=value pairs; order is not guaranteed.
+		// JavaScript's encodeURIComponent does not encode ( or ) — only , becomes %2C.
+		assert.include(url, "?");
+		assert.include(url, "filter=equals(published%2Ctrue)");
+		assert.include(url, "sort=-createdAt");
+	});
+
+	it("Skips null values when expanding map query parameter", () => {
+		const requestInformation = new RequestInformation();
+		requestInformation.urlTemplate = "http://localhost/articles{?query*}";
+		requestInformation.setQueryStringParametersFromRawObject<GetQueryParameters>({
+			query: {
+				filter: "equals(published,true)",
+				sort: null,
+			},
+		});
+		const url = requestInformation.URL;
+		assert.include(url, "filter=equals(published%2Ctrue)");
+		assert.notInclude(url, "sort");
+	});
+
+	it("Preserves empty string values in map query parameter (sends ?key=)", () => {
+		const requestInformation = new RequestInformation();
+		requestInformation.urlTemplate = "http://localhost/articles{?query*}";
+		requestInformation.setQueryStringParametersFromRawObject<GetQueryParameters>({
+			query: { filter: "" },
+		});
+		const url = requestInformation.URL;
+		assert.include(url, "filter=");
+	});
+
+	it("Omits map query parameter entirely when all entries are null", () => {
+		const requestInformation = new RequestInformation();
+		requestInformation.urlTemplate = "http://localhost/articles{?query*}";
+		requestInformation.setQueryStringParametersFromRawObject<GetQueryParameters>({
+			query: { filter: null, sort: null },
+		});
+		assert.equal(requestInformation.URL, "http://localhost/articles");
+	});
+
+	it("Omits map query parameter entirely when the map is empty", () => {
+		const requestInformation = new RequestInformation();
+		requestInformation.urlTemplate = "http://localhost/articles{?query*}";
+		requestInformation.setQueryStringParametersFromRawObject<GetQueryParameters>({ query: {} });
+		assert.equal(requestInformation.URL, "http://localhost/articles");
+	});
+
+	it("Supports map query parameter set directly on queryParameters", () => {
+		const requestInformation = new RequestInformation();
+		requestInformation.urlTemplate = "http://localhost/articles{?query*}";
+		requestInformation.queryParameters["query"] = {
+			include: "author",
+			"page[size]": "10",
+		};
+		const url = requestInformation.URL;
+		assert.include(url, "include=author");
+		assert.include(url, "page%5Bsize%5D=10");
+	});
+
+	it("Does not throw when map query parameter contains null values set directly", () => {
+		const requestInformation = new RequestInformation();
+		requestInformation.urlTemplate = "http://localhost/articles{?query*}";
+		requestInformation.queryParameters["query"] = {
+			filter: "value",
+			sort: null,
+		};
+		assert.doesNotThrow(() => {
+			const url = requestInformation.URL;
+			assert.include(url, "filter=value");
+			assert.notInclude(url, "sort");
+		});
+	});
+
+	it("Mixes map query parameter with regular scalar query parameters", () => {
+		const requestInformation = new RequestInformation();
+		requestInformation.urlTemplate = "http://localhost/articles{?%24top,query*}";
+		requestInformation.queryParameters["%24top"] = 5;
+		requestInformation.queryParameters["query"] = { filter: "active" };
+		const url = requestInformation.URL;
+		assert.include(url, "%24top=5");
+		assert.include(url, "filter=active");
 	});
 });

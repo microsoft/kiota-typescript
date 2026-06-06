@@ -89,7 +89,9 @@ export class RequestInformation implements RequestInformationSetContent {
 	/** The Request Body. */
 	public content?: ArrayBuffer;
 	/** The Query Parameters of the request. */
-	public queryParameters: Record<string, string | number | boolean | string[] | number[] | undefined> = createRecordWithCaseInsensitiveKeys<string | number | boolean | string[] | number[] | undefined>();
+	public queryParameters: Record<string, string | number | boolean | string[] | number[] | Record<string, string | null> | undefined> = createRecordWithCaseInsensitiveKeys<
+		string | number | boolean | string[] | number[] | Record<string, string | null> | undefined
+	>();
 	/** The Request Headers. */
 	public headers: Headers = new Headers();
 	private _requestOptions: Record<string, RequestOption> = createRecordWithCaseInsensitiveKeys<RequestOption>();
@@ -249,7 +251,26 @@ export class RequestInformation implements RequestInformationSetContent {
 		if (Array.isArray(value)) {
 			return value.map((val) => this.normalizeValue(val));
 		}
+		if (typeof value === "object" && value !== null) {
+			return RequestInformation.sanitizeMapValue(value as Record<string, unknown>);
+		}
 		return value;
+	}
+
+	/**
+	 * Pre-processes a plain-object dictionary for StdUriTemplate expansion.
+	 * Null/undefined values are omitted: RFC 6570 §2.3 treats "undefined" variables
+	 * as absent (no output). Use "" to send ?key= (empty value).
+	 */
+	private static sanitizeMapValue(map: Record<string, unknown>): Record<string, string> {
+		const result: Record<string, string> = {};
+		for (const key in map) {
+			const v = map[key];
+			if (v !== null && v !== undefined) {
+				result[key] = String(v);
+			}
+		}
+		return result;
 	}
 	/**
 	 * Sets the query string parameters from a raw object.
@@ -270,6 +291,7 @@ export class RequestInformation implements RequestInformationSetContent {
 			else if (v instanceof DateOnly || v instanceof TimeOnly || v instanceof Duration) this.queryParameters[key] = v.toString();
 			else if (v instanceof Date) this.queryParameters[key] = v.toISOString();
 			else if (v === undefined) this.queryParameters[key] = undefined;
+			else if (typeof v === "object" && v !== null) this.queryParameters[key] = v as Record<string, string | null>;
 		});
 	}
 	/**
