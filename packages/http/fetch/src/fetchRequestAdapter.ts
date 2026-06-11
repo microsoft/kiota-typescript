@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, InMemoryBackingStoreFactory, type DateOnly, DefaultApiError, type Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, type ErrorMappings, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type PrimitiveTypesForDeserialization, type PrimitiveTypesForDeserializationType, type RequestAdapter, type RequestInformation, type ResponseHandler, type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
+import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, InMemoryBackingStoreFactory, type DateOnly, DefaultApiError, type Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, type ErrorMappings, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type PrimitiveTypesForDeserialization, type PrimitiveTypesForDeserializationForCollection, type PrimitiveTypesForDeserializationType, type PrimitiveTypesForDeserializationTypeForCollection, type RequestAdapter, type RequestInformation, type ResponseHandler, type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
 import { type Span, SpanStatusCode, trace } from "@opentelemetry/api";
 import { HttpClient } from "./httpClient";
 import { type ObservabilityOptions, ObservabilityOptionsImpl } from "./observabilityOptions";
@@ -76,7 +76,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		return responseHandlerOption?.responseHandler;
 	};
 	private static readonly responseTypeAttributeKey = "com.microsoft.kiota.response.type";
-	public sendCollectionOfPrimitive = <ResponseType extends Exclude<PrimitiveTypesForDeserializationType, ArrayBuffer>>(requestInfo: RequestInformation, responseType: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">, errorMappings: ErrorMappings | undefined): Promise<ResponseType[] | undefined> => {
+	public sendCollectionOfPrimitive = <ResponseType extends PrimitiveTypesForDeserializationTypeForCollection>(requestInfo: RequestInformation, responseType: PrimitiveTypesForDeserializationForCollection, errorMappings: ErrorMappings | undefined): Promise<ResponseType[] | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}

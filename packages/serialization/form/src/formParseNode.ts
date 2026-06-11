@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { BackingStoreFactory, createBackedModelProxyHandler, DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, isBackingStoreEnabled, getEnumValueFromStringValue, type PrimitiveTypesForDeserialization } from "@microsoft/kiota-abstractions";
+import { BackingStoreFactory, createBackedModelProxyHandler, DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidString, type ParseNode, TimeOnly, isBackingStoreEnabled, getEnumValueFromStringValue, type PrimitiveTypesForDeserializationForCollection } from "@microsoft/kiota-abstractions";
 
 export class FormParseNode implements ParseNode {
 	private readonly _fields: Record<string, string> = {};
@@ -86,7 +86,7 @@ export class FormParseNode implements ParseNode {
 	public getDateOnlyValue = () => this.getDateOnlyValueFromRaw(this._rawString);
 	public getTimeOnlyValue = () => this.getTimeOnlyValueFromRaw(this._rawString);
 	public getDurationValue = () => this.getDurationValueFromRaw(this._rawString);
-	public getCollectionOfPrimitiveValues = <T>(primitiveType: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer"> = "string"): T[] | undefined => {
+	public getCollectionOfPrimitiveValues = <T>(primitiveType: PrimitiveTypesForDeserializationForCollection = "string"): T[] | undefined => {
 		const values = this._rawString.split(",");
 		return values.map((x) => {
 			switch (primitiveType) {

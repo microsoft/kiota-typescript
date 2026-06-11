@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { BackingStoreFactory, DateOnly, Duration, TimeOnly, UntypedNode, createBackedModelProxyHandler, createUntypedArray, createUntypedBoolean, createUntypedNodeFromDiscriminatorValue, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString, inNodeEnv, isBackingStoreEnabled, isUntypedNode, parseGuidString, getEnumValueFromStringValue, type Parsable, type ParsableFactory, type ParseNode, AdditionalDataHolder, type PrimitiveTypesForDeserialization } from "@microsoft/kiota-abstractions";
+import { BackingStoreFactory, DateOnly, Duration, TimeOnly, UntypedNode, createBackedModelProxyHandler, createUntypedArray, createUntypedBoolean, createUntypedNodeFromDiscriminatorValue, createUntypedNull, createUntypedNumber, createUntypedObject, createUntypedString, inNodeEnv, isBackingStoreEnabled, isUntypedNode, parseGuidString, getEnumValueFromStringValue, type Parsable, type ParsableFactory, type ParseNode, AdditionalDataHolder, type PrimitiveTypesForDeserializationForCollection } from "@microsoft/kiota-abstractions";
 
 export class JsonParseNode implements ParseNode {
 	/**
@@ -55,11 +55,14 @@ export class JsonParseNode implements ParseNode {
 	public getDateOnlyValue = () => this.getDateOnlyValueFromRaw(this._jsonNode);
 	public getTimeOnlyValue = () => this.getTimeOnlyValueFromRaw(this._jsonNode);
 	public getDurationValue = () => this.getDurationValueFromRaw(this._jsonNode);
-	public getCollectionOfPrimitiveValues = <T>(_primitiveType?: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">): T[] | undefined => {
+	public getCollectionOfPrimitiveValues = <T>(primitiveType?: PrimitiveTypesForDeserializationForCollection): T[] | undefined => {
 		if (!Array.isArray(this._jsonNode)) {
 			return undefined;
 		}
 		return (this._jsonNode as unknown[]).map((x) => {
+			if (primitiveType) {
+				return this.getPrimitiveValue<T>(x, primitiveType);
+			}
 			const typeOfX = typeof x;
 			if (x === null) {
 				return null as T;
@@ -81,6 +84,38 @@ export class JsonParseNode implements ParseNode {
 				throw new Error(`encountered an unknown type during deserialization ${typeof x}`);
 			}
 		});
+	};
+	private getPrimitiveValue = <T>(value: unknown, primitiveType: PrimitiveTypesForDeserializationForCollection): T => {
+		if (value === null) {
+			return null as T;
+		}
+		switch (primitiveType) {
+			case "boolean":
+				if (typeof value !== "boolean") {
+					throw new Error(`encountered an unsupported type during deserialization ${typeof value}`);
+				}
+				return value as unknown as T;
+			case "number":
+				if (typeof value !== "number") {
+					throw new Error(`encountered an unsupported type during deserialization ${typeof value}`);
+				}
+				return value as unknown as T;
+			case "Date":
+				return this.getDateValueFromRaw(value) as unknown as T;
+			case "DateOnly":
+				return this.getDateOnlyValueFromRaw(value) as unknown as T;
+			case "TimeOnly":
+				return this.getTimeOnlyValueFromRaw(value) as unknown as T;
+			case "Duration":
+				return this.getDurationValueFromRaw(value) as unknown as T;
+			case "string":
+				if (typeof value !== "string") {
+					throw new Error(`encountered an unsupported type during deserialization ${typeof value}`);
+				}
+				return value as unknown as T;
+			default:
+				throw new Error(`encountered an unsupported type during deserialization ${primitiveType as string}`);
+		}
 	};
 	public getByteArrayValue(): ArrayBuffer | undefined {
 		const strValue = this.getStringValue();

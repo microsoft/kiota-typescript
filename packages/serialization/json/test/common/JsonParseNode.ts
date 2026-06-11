@@ -9,7 +9,7 @@ import { assert, beforeEach, describe, it } from "vitest";
 import { JsonParseNode } from "../../src/index";
 import { createTestParserFromDiscriminatorValue, type TestBackedModel, createTestBackedModelFromDiscriminatorValue, type TestParser, TestUnionObject, BarResponse } from "./testEntity";
 import { UntypedTestEntity, createUntypedTestEntityFromDiscriminatorValue } from "./untypedTestEntity";
-import { BackingStoreFactory, BackingStore, InMemoryBackingStoreFactory, UntypedNode, UntypedObject, isUntypedArray, isUntypedBoolean, isUntypedNode, isUntypedNumber, isUntypedObject } from "@microsoft/kiota-abstractions";
+import { BackingStoreFactory, BackingStore, InMemoryBackingStoreFactory, UntypedNode, UntypedObject, isUntypedArray, isUntypedBoolean, isUntypedNode, isUntypedNumber, isUntypedObject, DateOnly, TimeOnly, Duration } from "@microsoft/kiota-abstractions";
 
 describe("JsonParseNode", () => {
 	let backingStoreFactory: BackingStoreFactory;
@@ -365,6 +365,40 @@ describe("JsonParseNode", () => {
 	it("getCollectionOfPrimitiveValues returns string values when elements are date-like strings", () => {
 		const result = new JsonParseNode(["2023-01-01", "2023-06-15"], backingStoreFactory).getCollectionOfPrimitiveValues<string>();
 		assert.deepEqual(result, ["2023-01-01", "2023-06-15"]);
+	});
+	it("getCollectionOfPrimitiveValues returns Date values when requested", () => {
+		const result = new JsonParseNode(["2023-01-01T00:00:00.000Z", "2023-06-15T00:00:00.000Z"], backingStoreFactory).getCollectionOfPrimitiveValues<Date>("Date");
+		assert.deepEqual(
+			result?.map((x) => x.toISOString()),
+			["2023-01-01T00:00:00.000Z", "2023-06-15T00:00:00.000Z"],
+		);
+	});
+	it("getCollectionOfPrimitiveValues returns DateOnly values when requested", () => {
+		const result = new JsonParseNode(["2023-01-01", "2023-06-15"], backingStoreFactory).getCollectionOfPrimitiveValues<DateOnly>("DateOnly");
+		assert.deepEqual(
+			result?.map((x) => x.toString()),
+			["2023-01-01", "2023-06-15"],
+		);
+		assert.instanceOf(result?.[0], DateOnly);
+	});
+	it("getCollectionOfPrimitiveValues returns TimeOnly values when requested", () => {
+		const result = new JsonParseNode(["08:00:00.0000000", "17:30:00.0000000"], backingStoreFactory).getCollectionOfPrimitiveValues<TimeOnly>("TimeOnly");
+		assert.deepEqual(
+			result?.map((x) => x.toString()),
+			["08:00:00.0000000", "17:30:00.0000000"],
+		);
+		assert.instanceOf(result?.[0], TimeOnly);
+	});
+	it("getCollectionOfPrimitiveValues returns Duration values when requested", () => {
+		const result = new JsonParseNode(["PT1H", "PT2H"], backingStoreFactory).getCollectionOfPrimitiveValues<Duration>("Duration");
+		assert.deepEqual(
+			result?.map((x) => x.toString()),
+			["PT1H", "PT2H"],
+		);
+		assert.instanceOf(result?.[0], Duration);
+	});
+	it("getCollectionOfPrimitiveValues validates item types when requested", () => {
+		assert.throw(() => new JsonParseNode(["one", 2], backingStoreFactory).getCollectionOfPrimitiveValues<string>("string"), /unsupported type/);
 	});
 	it("getCollectionOfPrimitiveValues returns null for null elements in array", () => {
 		const result = new JsonParseNode(["hello", null, "world"], backingStoreFactory).getCollectionOfPrimitiveValues<string | null>();
