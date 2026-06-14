@@ -85,7 +85,7 @@ export class JsonParseNode implements ParseNode {
 			}
 		});
 	};
-	private getPrimitiveValue = <T>(value: unknown, primitiveType: PrimitiveTypesForDeserializationForCollection): T => {
+	private readonly getPrimitiveValue = <T>(value: unknown, primitiveType: PrimitiveTypesForDeserializationForCollection): T => {
 		if (value === null) {
 			return null as T;
 		}
