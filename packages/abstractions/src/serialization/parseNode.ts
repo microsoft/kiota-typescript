@@ -68,7 +68,7 @@ export interface ParseNode {
 	 * @param primitiveType the runtime primitive type to deserialize collection items into.
 	 * @returns the collection of primitive values of the node.
 	 */
-	getCollectionOfPrimitiveValues<T>(primitiveType?: PrimitiveTypesForDeserializationForCollection): T[] | undefined;
+	getCollectionOfPrimitiveValues<T>(primitiveType: PrimitiveTypesForDeserializationForCollection): T[] | undefined;
 	/**
 	 * Gets the collection of object values of the node.
 	 * @returns the collection of object values of the node.

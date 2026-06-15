@@ -62,7 +62,7 @@ export class MockParseNode implements ParseNode {
 	getTimeOnlyValue(): TimeOnly | undefined {
 		throw new Error("Method not implemented.");
 	}
-	getCollectionOfPrimitiveValues<T>(_primitiveType?: PrimitiveTypesForDeserializationForCollection): T[] | undefined {
+	getCollectionOfPrimitiveValues<T>(_primitiveType: PrimitiveTypesForDeserializationForCollection): T[] | undefined {
 		throw new Error("Method not implemented.");
 	}
 	getCollectionOfObjectValues<T extends Parsable>(type: ParsableFactory<T>): T[] | undefined {

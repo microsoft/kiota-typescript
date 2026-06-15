@@ -86,7 +86,7 @@ export class FormParseNode implements ParseNode {
 	public getDateOnlyValue = () => this.getDateOnlyValueFromRaw(this._rawString);
 	public getTimeOnlyValue = () => this.getTimeOnlyValueFromRaw(this._rawString);
 	public getDurationValue = () => this.getDurationValueFromRaw(this._rawString);
-	public getCollectionOfPrimitiveValues = <T>(primitiveType: PrimitiveTypesForDeserializationForCollection = "string"): T[] | undefined => {
+	public getCollectionOfPrimitiveValues = <T>(primitiveType: PrimitiveTypesForDeserializationForCollection): T[] | undefined => {
 		const values = this._rawString.split(",");
 		return values.map((x) => {
 			switch (primitiveType) {

@@ -347,7 +347,7 @@ describe("JsonParseNode", () => {
 	});
 
 	it("getCollectionOfPrimitiveValues returns string values", () => {
-		const result = new JsonParseNode(["one", "two", "three"], backingStoreFactory).getCollectionOfPrimitiveValues<string>();
+		const result = new JsonParseNode(["one", "two", "three"], backingStoreFactory).getCollectionOfPrimitiveValues<string>("string");
 		assert.deepEqual(result, ["one", "two", "three"]);
 	});
 	it("getCollectionOfPrimitiveValues returns number values when elements are numbers", () => {
@@ -363,7 +363,7 @@ describe("JsonParseNode", () => {
 		assert.deepEqual(result, [true, false, true]);
 	});
 	it("getCollectionOfPrimitiveValues returns string values when elements are date-like strings", () => {
-		const result = new JsonParseNode(["2023-01-01", "2023-06-15"], backingStoreFactory).getCollectionOfPrimitiveValues<string>();
+		const result = new JsonParseNode(["2023-01-01", "2023-06-15"], backingStoreFactory).getCollectionOfPrimitiveValues<string>("string");
 		assert.deepEqual(result, ["2023-01-01", "2023-06-15"]);
 	});
 	it("getCollectionOfPrimitiveValues returns Date values when requested", () => {
@@ -401,7 +401,7 @@ describe("JsonParseNode", () => {
 		assert.throw(() => new JsonParseNode(["one", 2], backingStoreFactory).getCollectionOfPrimitiveValues<string>("string"), /unsupported type/);
 	});
 	it("getCollectionOfPrimitiveValues returns null for null elements in array", () => {
-		const result = new JsonParseNode(["hello", null, "world"], backingStoreFactory).getCollectionOfPrimitiveValues<string | null>();
+		const result = new JsonParseNode(["hello", null, "world"], backingStoreFactory).getCollectionOfPrimitiveValues<string | null>("string");
 		assert.deepEqual(result, ["hello", null, "world"]);
 	});
 

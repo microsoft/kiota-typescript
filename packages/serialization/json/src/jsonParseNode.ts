@@ -55,7 +55,7 @@ export class JsonParseNode implements ParseNode {
 	public getDateOnlyValue = () => this.getDateOnlyValueFromRaw(this._jsonNode);
 	public getTimeOnlyValue = () => this.getTimeOnlyValueFromRaw(this._jsonNode);
 	public getDurationValue = () => this.getDurationValueFromRaw(this._jsonNode);
-	public getCollectionOfPrimitiveValues = <T>(primitiveType: PrimitiveTypesForDeserializationForCollection = "string"): T[] | undefined => {
+	public getCollectionOfPrimitiveValues = <T>(primitiveType: PrimitiveTypesForDeserializationForCollection): T[] | undefined => {
 		if (!Array.isArray(this._jsonNode)) {
 			return undefined;
 		}

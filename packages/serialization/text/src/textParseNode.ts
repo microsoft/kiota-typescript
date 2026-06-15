@@ -58,7 +58,7 @@ export class TextParseNode implements ParseNode {
 	public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
 	public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
 	public getDurationValue = () => Duration.parse(this.getStringValue());
-	public getCollectionOfPrimitiveValues = <T>(primitiveType: PrimitiveTypesForDeserializationForCollection = "string"): T[] | undefined => {
+	public getCollectionOfPrimitiveValues = <T>(primitiveType: PrimitiveTypesForDeserializationForCollection): T[] | undefined => {
 		return this.text.split(",").map((x) => {
 			const node = new TextParseNode(x);
 			switch (primitiveType) {

@@ -58,7 +58,7 @@ export function deserializeTestEntity(testEntity: TestEntity | undefined = {}): 
 			testEntity.officeLocation = n.getStringValue();
 		},
 		deviceNames: (n) => {
-			testEntity.deviceNames = n.getCollectionOfPrimitiveValues();
+			testEntity.deviceNames = n.getCollectionOfPrimitiveValues("string");
 		},
 		status: (n) => {
 			testEntity.status = n.getEnumValue<LongRunningOperationStatus>(LongRunningOperationStatusObject);

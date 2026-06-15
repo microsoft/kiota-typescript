@@ -73,12 +73,12 @@ describe("FormParseNode", () => {
 		const enumValueResult3 = new FormParseNode("IN PROGRESS").getEnumValue(Test_statusObject) as Test_status;
 		assert.equal(enumValueResult3, Test_statusObject.INPROGRESS);
 	});
-	it("getCollectionOfPrimitiveValues returns decoded string values by default", () => {
-		const result = new FormParseNode("one,two,three").getCollectionOfPrimitiveValues<string>();
+	it("getCollectionOfPrimitiveValues returns decoded string values for explicit string primitive", () => {
+		const result = new FormParseNode("one,two,three").getCollectionOfPrimitiveValues<string>("string");
 		assert.deepEqual(result, ["one", "two", "three"]);
 	});
-	it("getCollectionOfPrimitiveValues returns string values by default when elements look typed", () => {
-		const result = new FormParseNode("1,true,2023-01-01").getCollectionOfPrimitiveValues<string>();
+	it("getCollectionOfPrimitiveValues returns string values when requested and elements look typed", () => {
+		const result = new FormParseNode("1,true,2023-01-01").getCollectionOfPrimitiveValues<string>("string");
 		assert.deepEqual(result, ["1", "true", "2023-01-01"]);
 	});
 	it("getCollectionOfPrimitiveValues returns decoded string values when requested", () => {
