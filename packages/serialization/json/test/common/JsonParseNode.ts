@@ -351,7 +351,7 @@ describe("JsonParseNode", () => {
 		assert.deepEqual(result, ["one", "two", "three"]);
 	});
 	it("getCollectionOfPrimitiveValues returns number values when elements are numbers", () => {
-		const result = new JsonParseNode([1, 2, 3], backingStoreFactory).getCollectionOfPrimitiveValues<number>();
+		const result = new JsonParseNode([1, 2, 3], backingStoreFactory).getCollectionOfPrimitiveValues<number>("number");
 		assert.deepEqual(result, [1, 2, 3]);
 	});
 	it("getCollectionOfPrimitiveValues accepts a runtime primitive type without changing JSON values", () => {
@@ -359,7 +359,7 @@ describe("JsonParseNode", () => {
 		assert.deepEqual(result, [1, 2, 3]);
 	});
 	it("getCollectionOfPrimitiveValues returns boolean values when elements are booleans", () => {
-		const result = new JsonParseNode([true, false, true], backingStoreFactory).getCollectionOfPrimitiveValues<boolean>();
+		const result = new JsonParseNode([true, false, true], backingStoreFactory).getCollectionOfPrimitiveValues<boolean>("boolean");
 		assert.deepEqual(result, [true, false, true]);
 	});
 	it("getCollectionOfPrimitiveValues returns string values when elements are date-like strings", () => {

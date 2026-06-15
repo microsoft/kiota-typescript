@@ -58,9 +58,28 @@ export class TextParseNode implements ParseNode {
 	public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
 	public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
 	public getDurationValue = () => Duration.parse(this.getStringValue());
-	public getCollectionOfPrimitiveValues = <T>(primitiveType?: PrimitiveTypesForDeserializationForCollection): T[] | undefined => {
-		void primitiveType;
-		throw new Error(TextParseNode.noStructuredDataMessage);
+	public getCollectionOfPrimitiveValues = <T>(primitiveType: PrimitiveTypesForDeserializationForCollection = "string"): T[] | undefined => {
+		return this.text.split(",").map((x) => {
+			const node = new TextParseNode(x);
+			switch (primitiveType) {
+				case "boolean":
+					return node.getBooleanValue() as unknown as T;
+				case "number":
+					return node.getNumberValue() as unknown as T;
+				case "Date":
+					return node.getDateValue() as unknown as T;
+				case "DateOnly":
+					return node.getDateOnlyValue() as unknown as T;
+				case "TimeOnly":
+					return node.getTimeOnlyValue() as unknown as T;
+				case "Duration":
+					return node.getDurationValue() as unknown as T;
+				case "string":
+					return node.getStringValue() as unknown as T;
+				default:
+					throw new Error(`encountered an unsupported type during deserialization ${primitiveType as string}`);
+			}
+		});
 	};
 	/* eslint-disable @typescript-eslint/no-unused-vars */
 	public getCollectionOfObjectValues<T extends Parsable>(parsableFactory: ParsableFactory<T>): T[] | undefined {

@@ -110,8 +110,10 @@ export type PrimitiveTypesForDeserializationType = string | number | boolean | D
 
 export type PrimitiveTypesForDeserialization = "string" | "number" | "boolean" | "Date" | "DateOnly" | "TimeOnly" | "Duration" | "ArrayBuffer";
 
+/** Primitive value types supported for collection response deserialization. */
 export type PrimitiveTypesForDeserializationTypeForCollection = Exclude<PrimitiveTypesForDeserializationType, ArrayBuffer>;
 
+/** Runtime primitive type names supported for collection response deserialization. */
 export type PrimitiveTypesForDeserializationForCollection = Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">;
 
 export type SendMethods = Exclude<keyof RequestAdapter, "enableBackingStore" | "getSerializationWriterFactory" | "convertToNativeRequest" | "baseUrl">;
