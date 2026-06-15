@@ -5,6 +5,7 @@
 	"main": "index.js",
 	"private": true,
 	"scripts": {
+		"build": "tsc",
 		"test:integrated": "vitest run"
 	},
 	"dependencies": {

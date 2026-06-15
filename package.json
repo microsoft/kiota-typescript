@@ -54,6 +54,7 @@
     "test": "npm run test:node && npm run test:browser",
     "test:coverage": "lerna run test:coverage",
     "test:integrated": "lerna run test:integrated",
+    "build:integrated": "lerna run build --scope test-kiota-typescript-libraries",
     "tsc:version": "tsc --version",
     "prettier:base": "prettier --parser typescript",
     "prettier:check": "npm run prettier:base -- --check \"packages/**/*.{ts,tsx}\"",
