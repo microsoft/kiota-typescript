@@ -83,7 +83,7 @@ export function deserializeTestParser(testParser: TestParser | undefined = {}): 
 			testParser.testObject = n.getObjectValue<{ additionalData?: Record<string, unknown> }>(createTestObjectFromDiscriminatorValue);
 		},
 		"testCollection": (n) => {
-			testParser.testCollection = n.getCollectionOfPrimitiveValues();
+			testParser.testCollection = n.getCollectionOfPrimitiveValues("string");
 		},
 		"testString": (n) => {
 			testParser.testString = n.getStringValue();

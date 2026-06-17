@@ -6,7 +6,7 @@
  */
 import { getPathParameters } from "./getPathParameters";
 import { HttpMethod } from "./httpMethod";
-import type { ErrorMappings, PrimitiveTypesForDeserialization, PrimitiveTypesForDeserializationType, RequestAdapter, SendMethods } from "./requestAdapter";
+import type { ErrorMappings, PrimitiveTypesForDeserialization, PrimitiveTypesForDeserializationForCollection, PrimitiveTypesForDeserializationType, RequestAdapter, SendMethods } from "./requestAdapter";
 import type { RequestConfiguration } from "./requestConfiguration";
 import { RequestInformation, type RequestInformationSetContent } from "./requestInformation";
 import type { ModelSerializerFunction, Parsable, ParsableFactory } from "./serialization";
@@ -100,7 +100,7 @@ const send = (requestAdapter: RequestAdapter, requestInfo: RequestInformation, m
 			if (!metadata.responseBodyFactory) {
 				throw new Error("couldn't find response body factory");
 			}
-			return requestAdapter.sendCollectionOfPrimitive(requestInfo, metadata.responseBodyFactory as Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">, metadata.errorMappings);
+			return requestAdapter.sendCollectionOfPrimitive(requestInfo, metadata.responseBodyFactory as PrimitiveTypesForDeserializationForCollection, metadata.errorMappings);
 		case "sendPrimitive":
 			if (!metadata.responseBodyFactory) {
 				throw new Error("couldn't find response body factory");

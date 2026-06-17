@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, InMemoryBackingStoreFactory, type DateOnly, DefaultApiError, type Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, type ErrorMappings, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type PrimitiveTypesForDeserialization, type PrimitiveTypesForDeserializationType, type RequestAdapter, type RequestInformation, type ResponseHandler, type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
+import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, InMemoryBackingStoreFactory, type DateOnly, DefaultApiError, type Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, type ErrorMappings, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type PrimitiveTypesForDeserialization, type PrimitiveTypesForDeserializationForCollection, type PrimitiveTypesForDeserializationType, type PrimitiveTypesForDeserializationTypeForCollection, type RequestAdapter, type RequestInformation, type ResponseHandler, type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
 import { type Span, SpanStatusCode, trace } from "@opentelemetry/api";
 import { HttpClient } from "./httpClient";
 import { type ObservabilityOptions, ObservabilityOptionsImpl } from "./observabilityOptions";
@@ -76,7 +76,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		return responseHandlerOption?.responseHandler;
 	};
 	private static readonly responseTypeAttributeKey = "com.microsoft.kiota.response.type";
-	public sendCollectionOfPrimitive = <ResponseType extends Exclude<PrimitiveTypesForDeserializationType, ArrayBuffer>>(requestInfo: RequestInformation, responseType: Exclude<PrimitiveTypesForDeserialization, "ArrayBuffer">, errorMappings: ErrorMappings | undefined): Promise<ResponseType[] | undefined> => {
+	public sendCollectionOfPrimitive = <ResponseType extends PrimitiveTypesForDeserializationTypeForCollection>(requestInfo: RequestInformation, responseType: PrimitiveTypesForDeserializationForCollection, errorMappings: ErrorMappings | undefined): Promise<ResponseType[] | undefined> => {
 		if (!requestInfo) {
 			throw new Error("requestInfo cannot be null");
 		}
@@ -95,25 +95,28 @@ export class FetchRequestAdapter implements RequestAdapter {
 						case "number":
 						case "boolean":
 						case "Date":
+						case "Duration":
+						case "DateOnly":
+						case "TimeOnly":
 							// eslint-disable-next-line no-case-declarations
 							const rootNode = await this.getRootParseNode(response);
 							return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan(`getCollectionOf${responseType}Value`, (deserializeSpan) => {
 								try {
 									span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, responseType);
 									if (responseType === "string") {
-										return rootNode.getCollectionOfPrimitiveValues<string>() as unknown as ResponseType[];
+										return rootNode.getCollectionOfPrimitiveValues<string>(responseType) as unknown as ResponseType[];
 									} else if (responseType === "number") {
-										return rootNode.getCollectionOfPrimitiveValues<number>() as unknown as ResponseType[];
+										return rootNode.getCollectionOfPrimitiveValues<number>(responseType) as unknown as ResponseType[];
 									} else if (responseType === "boolean") {
-										return rootNode.getCollectionOfPrimitiveValues<boolean>() as unknown as ResponseType[];
+										return rootNode.getCollectionOfPrimitiveValues<boolean>(responseType) as unknown as ResponseType[];
 									} else if (responseType === "Date") {
-										return rootNode.getCollectionOfPrimitiveValues<Date>() as unknown as ResponseType[];
+										return rootNode.getCollectionOfPrimitiveValues<Date>(responseType) as unknown as ResponseType[];
 									} else if (responseType === "Duration") {
-										return rootNode.getCollectionOfPrimitiveValues<Duration>() as unknown as ResponseType[];
+										return rootNode.getCollectionOfPrimitiveValues<Duration>(responseType) as unknown as ResponseType[];
 									} else if (responseType === "DateOnly") {
-										return rootNode.getCollectionOfPrimitiveValues<DateOnly>() as unknown as ResponseType[];
+										return rootNode.getCollectionOfPrimitiveValues<DateOnly>(responseType) as unknown as ResponseType[];
 									} else if (responseType === "TimeOnly") {
-										return rootNode.getCollectionOfPrimitiveValues<TimeOnly>() as unknown as ResponseType[];
+										return rootNode.getCollectionOfPrimitiveValues<TimeOnly>(responseType) as unknown as ResponseType[];
 									} else {
 										throw new Error("unexpected type to deserialize");
 									}

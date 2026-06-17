@@ -608,7 +608,7 @@ export function deserializeIntoMessageRule(messageRule: Partial<MessageRule> | u
 // @ts-ignore
 export function deserializeIntoMessageRuleActions(messageRuleActions: Partial<MessageRuleActions> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "assignCategories": n => { messageRuleActions.assignCategories = n.getCollectionOfPrimitiveValues<string>(); },
+        "assignCategories": n => { messageRuleActions.assignCategories = n.getCollectionOfPrimitiveValues<string>("string"); },
         "copyToFolder": n => { messageRuleActions.copyToFolder = n.getStringValue(); },
         "delete": n => { messageRuleActions.delete = n.getBooleanValue(); },
         "forwardAsAttachmentTo": n => { messageRuleActions.forwardAsAttachmentTo = n.getCollectionOfObjectValues<Recipient>(createRecipientFromDiscriminatorValue); },
@@ -629,12 +629,12 @@ export function deserializeIntoMessageRuleActions(messageRuleActions: Partial<Me
 // @ts-ignore
 export function deserializeIntoMessageRulePredicates(messageRulePredicates: Partial<MessageRulePredicates> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
-        "bodyContains": n => { messageRulePredicates.bodyContains = n.getCollectionOfPrimitiveValues<string>(); },
-        "bodyOrSubjectContains": n => { messageRulePredicates.bodyOrSubjectContains = n.getCollectionOfPrimitiveValues<string>(); },
-        "categories": n => { messageRulePredicates.categories = n.getCollectionOfPrimitiveValues<string>(); },
+        "bodyContains": n => { messageRulePredicates.bodyContains = n.getCollectionOfPrimitiveValues<string>("string"); },
+        "bodyOrSubjectContains": n => { messageRulePredicates.bodyOrSubjectContains = n.getCollectionOfPrimitiveValues<string>("string"); },
+        "categories": n => { messageRulePredicates.categories = n.getCollectionOfPrimitiveValues<string>("string"); },
         "fromAddresses": n => { messageRulePredicates.fromAddresses = n.getCollectionOfObjectValues<Recipient>(createRecipientFromDiscriminatorValue); },
         "hasAttachments": n => { messageRulePredicates.hasAttachments = n.getBooleanValue(); },
-        "headerContains": n => { messageRulePredicates.headerContains = n.getCollectionOfPrimitiveValues<string>(); },
+        "headerContains": n => { messageRulePredicates.headerContains = n.getCollectionOfPrimitiveValues<string>("string"); },
         "importance": n => { messageRulePredicates.importance = n.getEnumValue<Importance>(ImportanceObject); },
         "isApprovalRequest": n => { messageRulePredicates.isApprovalRequest = n.getBooleanValue(); },
         "isAutomaticForward": n => { messageRulePredicates.isAutomaticForward = n.getBooleanValue(); },
@@ -649,15 +649,15 @@ export function deserializeIntoMessageRulePredicates(messageRulePredicates: Part
         "isVoicemail": n => { messageRulePredicates.isVoicemail = n.getBooleanValue(); },
         "messageActionFlag": n => { messageRulePredicates.messageActionFlag = n.getEnumValue<MessageActionFlag>(MessageActionFlagObject); },
         "notSentToMe": n => { messageRulePredicates.notSentToMe = n.getBooleanValue(); },
-        "recipientContains": n => { messageRulePredicates.recipientContains = n.getCollectionOfPrimitiveValues<string>(); },
-        "senderContains": n => { messageRulePredicates.senderContains = n.getCollectionOfPrimitiveValues<string>(); },
+        "recipientContains": n => { messageRulePredicates.recipientContains = n.getCollectionOfPrimitiveValues<string>("string"); },
+        "senderContains": n => { messageRulePredicates.senderContains = n.getCollectionOfPrimitiveValues<string>("string"); },
         "sensitivity": n => { messageRulePredicates.sensitivity = n.getEnumValue<Sensitivity>(SensitivityObject); },
         "sentCcMe": n => { messageRulePredicates.sentCcMe = n.getBooleanValue(); },
         "sentOnlyToMe": n => { messageRulePredicates.sentOnlyToMe = n.getBooleanValue(); },
         "sentToAddresses": n => { messageRulePredicates.sentToAddresses = n.getCollectionOfObjectValues<Recipient>(createRecipientFromDiscriminatorValue); },
         "sentToMe": n => { messageRulePredicates.sentToMe = n.getBooleanValue(); },
         "sentToOrCcMe": n => { messageRulePredicates.sentToOrCcMe = n.getBooleanValue(); },
-        "subjectContains": n => { messageRulePredicates.subjectContains = n.getCollectionOfPrimitiveValues<string>(); },
+        "subjectContains": n => { messageRulePredicates.subjectContains = n.getCollectionOfPrimitiveValues<string>("string"); },
         "withinSizeRange": n => { messageRulePredicates.withinSizeRange = n.getObjectValue<SizeRange>(createSizeRangeFromDiscriminatorValue); },
     }
 }
@@ -670,7 +670,7 @@ export function deserializeIntoMessageRulePredicates(messageRulePredicates: Part
 export function deserializeIntoMultiValueLegacyExtendedProperty(multiValueLegacyExtendedProperty: Partial<MultiValueLegacyExtendedProperty> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
         ...deserializeIntoEntity(multiValueLegacyExtendedProperty),
-        "value": n => { multiValueLegacyExtendedProperty.value = n.getCollectionOfPrimitiveValues<string>(); },
+        "value": n => { multiValueLegacyExtendedProperty.value = n.getCollectionOfPrimitiveValues<string>("string"); },
     }
 }
 /**
@@ -682,7 +682,7 @@ export function deserializeIntoMultiValueLegacyExtendedProperty(multiValueLegacy
 export function deserializeIntoOutlookItem(outlookItem: Partial<OutlookItem> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
         ...deserializeIntoEntity(outlookItem),
-        "categories": n => { outlookItem.categories = n.getCollectionOfPrimitiveValues<string>(); },
+        "categories": n => { outlookItem.categories = n.getCollectionOfPrimitiveValues<string>("string"); },
         "changeKey": n => { outlookItem.changeKey = n.getStringValue(); },
         "createdDateTime": n => { outlookItem.createdDateTime = n.getDateValue(); },
         "lastModifiedDateTime": n => { outlookItem.lastModifiedDateTime = n.getDateValue(); },
@@ -732,7 +732,7 @@ export function deserializeIntoSizeRange(sizeRange: Partial<SizeRange> | undefin
 export function deserializeIntoUploadSession(uploadSession: Partial<UploadSession> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
         "expirationDateTime": n => { uploadSession.expirationDateTime = n.getDateValue(); },
-        "nextExpectedRanges": n => { uploadSession.nextExpectedRanges = n.getCollectionOfPrimitiveValues<string>(); },
+        "nextExpectedRanges": n => { uploadSession.nextExpectedRanges = n.getCollectionOfPrimitiveValues<string>("string"); },
         "uploadUrl": n => { uploadSession.uploadUrl = n.getStringValue(); },
     }
 }

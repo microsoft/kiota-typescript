@@ -7,6 +7,7 @@
 
 import { assert, describe, it } from "vitest";
 
+import { DateOnly, TimeOnly } from "@microsoft/kiota-abstractions";
 import { FormParseNode } from "../../src/index";
 import { createTestParserFromDiscriminatorValue, type TestEntity } from "../testEntity";
 
@@ -72,24 +73,47 @@ describe("FormParseNode", () => {
 		const enumValueResult3 = new FormParseNode("IN PROGRESS").getEnumValue(Test_statusObject) as Test_status;
 		assert.equal(enumValueResult3, Test_statusObject.INPROGRESS);
 	});
-	it("getCollectionOfPrimitiveValues returns decoded string values (only string collections are supported with URI encoding)", () => {
-		const result = new FormParseNode("one,two,three").getCollectionOfPrimitiveValues<string>();
+	it("getCollectionOfPrimitiveValues returns decoded string values for explicit string primitive", () => {
+		const result = new FormParseNode("one,two,three").getCollectionOfPrimitiveValues<string>("string");
 		assert.deepEqual(result, ["one", "two", "three"]);
 	});
-	it("getCollectionOfPrimitiveValues returns string values even when elements look like numbers (only string collections are supported)", () => {
-		const result = new FormParseNode("1,2,3").getCollectionOfPrimitiveValues<string>();
-		assert.deepEqual(result, ["1", "2", "3"]);
+	it("getCollectionOfPrimitiveValues returns string values when requested and elements look typed", () => {
+		const result = new FormParseNode("1,true,2023-01-01").getCollectionOfPrimitiveValues<string>("string");
+		assert.deepEqual(result, ["1", "true", "2023-01-01"]);
 	});
-	it("getCollectionOfPrimitiveValues returns string values even when elements look like booleans (only string collections are supported)", () => {
-		const result = new FormParseNode("true,false,true").getCollectionOfPrimitiveValues<string>();
-		assert.deepEqual(result, ["true", "false", "true"]);
-	});
-	it("getCollectionOfPrimitiveValues returns string values even when elements look like dates (only string collections are supported)", () => {
-		const result = new FormParseNode("2023-01-01,2023-06-15").getCollectionOfPrimitiveValues<string>();
-		assert.deepEqual(result, ["2023-01-01", "2023-06-15"]);
-	});
-	it("getCollectionOfPrimitiveValues URL-decodes percent-encoded characters", () => {
-		const result = new FormParseNode("hello%20world,foo%26bar").getCollectionOfPrimitiveValues<string>();
+	it("getCollectionOfPrimitiveValues returns decoded string values when requested", () => {
+		const result = new FormParseNode("hello%20world,foo%26bar").getCollectionOfPrimitiveValues<string>("string");
 		assert.deepEqual(result, ["hello world", "foo&bar"]);
+	});
+	it("getCollectionOfPrimitiveValues returns number values when requested", () => {
+		const result = new FormParseNode("1,2.5,3").getCollectionOfPrimitiveValues<number>("number");
+		assert.deepEqual(result, [1, 2.5, 3]);
+	});
+	it("getCollectionOfPrimitiveValues returns boolean values when requested", () => {
+		const result = new FormParseNode("true,0,1,false").getCollectionOfPrimitiveValues<boolean>("boolean");
+		assert.deepEqual(result, [true, false, true, false]);
+	});
+	it("getCollectionOfPrimitiveValues returns Date values when requested", () => {
+		const result = new FormParseNode("2023-01-01T00%3A00%3A00.000Z,2023-06-15T00%3A00%3A00.000Z").getCollectionOfPrimitiveValues<Date>("Date");
+		assert.deepEqual(
+			result?.map((x) => x.toISOString()),
+			["2023-01-01T00:00:00.000Z", "2023-06-15T00:00:00.000Z"],
+		);
+	});
+	it("getCollectionOfPrimitiveValues returns DateOnly values when requested", () => {
+		const result = new FormParseNode("2023-01-01,2023-06-15").getCollectionOfPrimitiveValues<DateOnly>("DateOnly");
+		assert.deepEqual(
+			result?.map((x) => x.toString()),
+			["2023-01-01", "2023-06-15"],
+		);
+		assert.instanceOf(result?.[0], DateOnly);
+	});
+	it("getCollectionOfPrimitiveValues returns TimeOnly values when requested", () => {
+		const result = new FormParseNode("08%3A00%3A00.0000000,17%3A30%3A00.0000000").getCollectionOfPrimitiveValues<TimeOnly>("TimeOnly");
+		assert.deepEqual(
+			result?.map((x) => x.toString()),
+			["08:00:00.0000000", "17:30:00.0000000"],
+		);
+		assert.instanceOf(result?.[0], TimeOnly);
 	});
 });

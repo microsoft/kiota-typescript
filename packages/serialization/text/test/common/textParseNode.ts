@@ -15,6 +15,10 @@ describe("textParseNode", () => {
 		const textParseNode = new TextParseNode("Test");
 		assert.isDefined(textParseNode);
 	});
+	it("getCollectionOfPrimitiveValues returns number values when requested", () => {
+		const result = new TextParseNode("1,2,3").getCollectionOfPrimitiveValues<number>("number");
+		assert.deepEqual(result, [1, 2, 3]);
+	});
 	it("Test enum values with special or reserved characters", async () => {
 		type Test_status = (typeof Test_statusObject)[keyof typeof Test_statusObject];
 		const Test_statusObject = {
