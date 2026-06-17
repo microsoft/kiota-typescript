@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0-preview.103](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.102...@microsoft/kiota-abstractions@1.0.0-preview.103) (2026-06-17)
+
+
+### Bug Fixes
+
+* **serialization:** handle primitive collection type feedback ([5c9ebc3](https://github.com/microsoft/kiota-typescript/commit/5c9ebc319d9d9aff163661f7bbe899024dc2f05c))
+* **serialization:** pass primitive collection type ([500f75d](https://github.com/microsoft/kiota-typescript/commit/500f75dc3d8fc49e20c273de18525ec7c6bcb85e))
+* **serialization:** pass primitive collection type ([1bd4b46](https://github.com/microsoft/kiota-typescript/commit/1bd4b46ff801281625eb7a495d3b69cab0162b74))
+* **serialization:** rely on primitive collection type ([d699888](https://github.com/microsoft/kiota-typescript/commit/d699888ae5d4311812ee13b95d9d0cc2c6902029))
+* **serialization:** require primitive collection type ([ee567f8](https://github.com/microsoft/kiota-typescript/commit/ee567f8447f9315c25d112168792f97c6e8517d3))
+
 ## [1.0.0-preview.102](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.101...@microsoft/kiota-abstractions@1.0.0-preview.102) (2026-05-25)
 
 
