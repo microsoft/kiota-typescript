@@ -46,6 +46,17 @@ extends:
                 inputs:
                   version: '24.x'
 
+              - pwsh: |
+                  @"
+                  registry=https://microsoftgraph.pkgs.visualstudio.com/0985d294-5762-4bc2-a565-161ef349ca3e/_packaging/GraphDeveloperExperiences_Public/npm/registry/
+                  always-auth=true
+                  "@ | Set-Content -Path "$(Build.SourcesDirectory)/.npmrc" -Encoding UTF8
+                displayName: 'Create .npmrc (central feed)'
+
+              - task: npmAuthenticate@0
+                displayName: 'Authenticate to Azure Artifacts npm feed'
+                inputs:
+                  workingFile: '$(Build.SourcesDirectory)/.npmrc'
               - script: npm ci --verbose
                 displayName: 'Install npm dependencies'
                 workingDirectory: '$(Build.SourcesDirectory)'
