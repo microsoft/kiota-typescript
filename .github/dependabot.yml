@@ -1,155 +1,155 @@
 version: 2
 updates:
 - package-ecosystem: github-actions
-  directory: "/"
+  directory: /
   schedule:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-    # Prefix all commit messages with "npm"
-    prefix: "auto dependabot"
-
+    prefix: auto dependabot
+  cooldown:
+    default-days: 7
 - package-ecosystem: npm
-  directory: "/"
+  directory: /
   schedule:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-    # Prefix all commit messages with "npm"
-    prefix: "auto dependabot"
+    prefix: auto dependabot
   groups:
     eslint:
       patterns:
-        - "*eslint*"
+      - '*eslint*'
     vitest:
       patterns:
-        - "*vitest*"
-
+      - '*vitest*'
+  cooldown:
+    default-days: 7
 - package-ecosystem: npm
-  directory: "/packages/abstractions"
+  directory: /packages/abstractions
   schedule:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-    # Prefix all commit messages with "npm"
-    prefix: "auto dependabot"
+    prefix: auto dependabot
   groups:
     eslint:
       patterns:
-        - "*eslint*"
+      - '*eslint*'
     vitest:
       patterns:
-        - "*vitest*"
-
+      - '*vitest*'
+  cooldown:
+    default-days: 7
 - package-ecosystem: npm
-  directory: "/packages/authentication/azure"
+  directory: /packages/authentication/azure
   schedule:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-    # Prefix all commit messages with "npm"
-    prefix: "auto dependabot"
+    prefix: auto dependabot
   groups:
     eslint:
       patterns:
-        - "*eslint*"
+      - '*eslint*'
     vitest:
       patterns:
-        - "*vitest*"
-
+      - '*vitest*'
+  cooldown:
+    default-days: 7
 - package-ecosystem: npm
-  directory: "/packages/serialization/form"
+  directory: /packages/serialization/form
   schedule:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-    # Prefix all commit messages with "npm"
-    prefix: "auto dependabot"
+    prefix: auto dependabot
   groups:
     eslint:
       patterns:
-        - "*eslint*"
+      - '*eslint*'
     vitest:
       patterns:
-        - "*vitest*"
-
+      - '*vitest*'
+  cooldown:
+    default-days: 7
 - package-ecosystem: npm
-  directory: "/packages/serialization/multipart"
+  directory: /packages/serialization/multipart
   schedule:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-    # Prefix all commit messages with "npm"
-    prefix: "auto dependabot"
+    prefix: auto dependabot
   groups:
     eslint:
       patterns:
-        - "*eslint*"
+      - '*eslint*'
     vitest:
       patterns:
-        - "*vitest*"
-
+      - '*vitest*'
+  cooldown:
+    default-days: 7
 - package-ecosystem: npm
-  directory: "/packages/serialization/json"
+  directory: /packages/serialization/json
   schedule:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-    # Prefix all commit messages with "npm"
-    prefix: "auto dependabot"
+    prefix: auto dependabot
   groups:
     eslint:
       patterns:
-        - "*eslint*"
+      - '*eslint*'
     vitest:
       patterns:
-        - "*vitest*"
-
+      - '*vitest*'
+  cooldown:
+    default-days: 7
 - package-ecosystem: npm
-  directory: "/packages/serialization/text"
+  directory: /packages/serialization/text
   schedule:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-    # Prefix all commit messages with "npm"
-    prefix: "auto dependabot"
+    prefix: auto dependabot
   groups:
     eslint:
       patterns:
-        - "*eslint*"
+      - '*eslint*'
     vitest:
       patterns:
-        - "*vitest*"
-
+      - '*vitest*'
+  cooldown:
+    default-days: 7
 - package-ecosystem: npm
-  directory: "/packages/http/fetch"
+  directory: /packages/http/fetch
   schedule:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-    # Prefix all commit messages with "npm"
-    prefix: "auto dependabot"
+    prefix: auto dependabot
   groups:
     eslint:
       patterns:
-        - "*eslint*"
+      - '*eslint*'
     vitest:
       patterns:
-        - "*vitest*"
-
+      - '*vitest*'
+  cooldown:
+    default-days: 7
 - package-ecosystem: npm
-  directory: "/packages/test"
+  directory: /packages/test
   schedule:
     interval: daily
   open-pull-requests-limit: 10
   commit-message:
-    # Prefix all commit messages with "npm"
-    prefix: "auto dependabot"
+    prefix: auto dependabot
   groups:
     eslint:
       patterns:
-        - "*eslint*"
+      - '*eslint*'
     vitest:
       patterns:
-        - "*vitest*"
-
+      - '*vitest*'
+  cooldown:
+    default-days: 7
