@@ -26,7 +26,7 @@ interface GetQueryParameters {
 	endDate?: DateOnly;
 	timeStamp?: Date;
 	duration?: Duration;
-	query?: Record<string, string | null>;
+	query?: Record<string, unknown>;
 }
 
 const getQueryParameterMapper: Record<string, string> = {
@@ -404,5 +404,21 @@ describe("RequestInformation", () => {
 		const url = requestInformation.URL;
 		assert.include(url, "%24top=5");
 		assert.include(url, "filter=active");
+	});
+
+	it("Supports map query parameter with numbers, booleans, and Date objects", () => {
+		const requestInformation = new RequestInformation();
+		requestInformation.urlTemplate = "http://localhost/articles{?query*}";
+		requestInformation.setQueryStringParametersFromRawObject<GetQueryParameters>({
+			query: {
+				page: 2,
+				active: true,
+				created: new Date("2026-07-24T00:00:00.000Z"),
+			},
+		});
+		const url = requestInformation.URL;
+		assert.include(url, "page=2");
+		assert.include(url, "active=true");
+		assert.include(url, "created=2026-07-24T00%3A00%3A00.000Z");
 	});
 });
