@@ -65,12 +65,12 @@ export class RequestInformation implements RequestInformationSetContent {
 			const data = {} as Record<string, unknown>;
 			for (const key in this.queryParameters) {
 				if (this.queryParameters[key] !== null && this.queryParameters[key] !== undefined) {
-					data[key] = this.normalizeValue(this.queryParameters[key]);
+					data[key] = RequestInformation.normalizeValue(this.queryParameters[key]);
 				}
 			}
 			for (const key in this.pathParameters) {
 				if (this.pathParameters[key] !== null && this.pathParameters[key] !== undefined) {
-					data[key] = this.normalizeValue(this.pathParameters[key]);
+					data[key] = RequestInformation.normalizeValue(this.pathParameters[key]);
 				}
 			}
 			return StdUriTemplate.expand(this.urlTemplate, data);
@@ -89,7 +89,7 @@ export class RequestInformation implements RequestInformationSetContent {
 	/** The Request Body. */
 	public content?: ArrayBuffer;
 	/** The Query Parameters of the request. */
-	public queryParameters: Record<string, string | number | boolean | string[] | number[] | undefined> = createRecordWithCaseInsensitiveKeys<string | number | boolean | string[] | number[] | undefined>();
+	public queryParameters: Record<string, string | number | boolean | string[] | number[] | Record<string, unknown> | undefined> = createRecordWithCaseInsensitiveKeys<string | number | boolean | string[] | number[] | Record<string, unknown> | undefined>();
 	/** The Request Headers. */
 	public headers: Headers = new Headers();
 	private _requestOptions: Record<string, RequestOption> = createRecordWithCaseInsensitiveKeys<RequestOption>();
@@ -239,7 +239,12 @@ export class RequestInformation implements RequestInformationSetContent {
 		this.content = value;
 	};
 
-	private normalizeValue(value: unknown): unknown {
+	/**
+	 * Normalizes a value for URI template expansion.
+	 * @param value The value to normalize.
+	 * @returns The normalized value.
+	 */
+	private static normalizeValue(value: unknown): unknown {
 		if (value instanceof DateOnly || value instanceof TimeOnly || value instanceof Duration) {
 			return value.toString();
 		}
@@ -247,9 +252,29 @@ export class RequestInformation implements RequestInformationSetContent {
 			return value.toISOString();
 		}
 		if (Array.isArray(value)) {
-			return value.map((val) => this.normalizeValue(val));
+			return value.map((val) => RequestInformation.normalizeValue(val));
+		}
+		if (typeof value === "object" && value !== null) {
+			return RequestInformation.sanitizeMapValue(value as Record<string, unknown>);
 		}
 		return value;
+	}
+
+	/**
+	 * Pre-processes a plain-object dictionary for StdUriTemplate expansion.
+	 * Null/undefined values are omitted: RFC 6570 §2.3 treats "undefined" variables
+	 * as absent (no output). Use "" to send ?key= (empty value).
+	 * @param map The map to sanitize.
+	 * @returns The sanitized map with null/undefined values omitted and values normalized.
+	 */
+	private static sanitizeMapValue(map: Record<string, unknown>): Record<string, unknown> {
+		const result: Record<string, unknown> = {};
+		for (const [key, v] of Object.entries(map)) {
+			if (v !== null && v !== undefined) {
+				result[key] = RequestInformation.normalizeValue(v);
+			}
+		}
+		return result;
 	}
 	/**
 	 * Sets the query string parameters from a raw object.
@@ -270,6 +295,7 @@ export class RequestInformation implements RequestInformationSetContent {
 			else if (v instanceof DateOnly || v instanceof TimeOnly || v instanceof Duration) this.queryParameters[key] = v.toString();
 			else if (v instanceof Date) this.queryParameters[key] = v.toISOString();
 			else if (v === undefined) this.queryParameters[key] = undefined;
+			else if (typeof v === "object" && v !== null) this.queryParameters[key] = v as Record<string, unknown>;
 		});
 	}
 	/**
