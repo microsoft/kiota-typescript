@@ -34,6 +34,50 @@ export interface RedirectHandlerOptionsParams {
 }
 
 /**
+ * The default implementation for scrubbing sensitive headers during redirects.
+ * This function removes Authorization, Cookie, and Proxy-Authorization headers when the host or scheme changes.
+ *
+ * It is exported so that consumers providing a custom {@link ScrubSensitiveHeaders} callback can call it to
+ * retain the default behavior and then layer additional logic on top (e.g. removing custom headers such as
+ * `X-Api-Key`), matching the composable pattern available in the .NET and Python Kiota SDKs.
+ *
+ * Note: In browser environments, `Proxy-Authorization` is a forbidden header name and typically cannot be set;
+ * it is still removed here if present (e.g. in Node.js or other non-browser runtimes).
+ * @param headers - The headers object to modify
+ * @param originalUrl - The original request URL
+ * @param newUrl - The new redirect URL
+ */
+export const defaultScrubSensitiveHeaders: ScrubSensitiveHeaders = (headers: Record<string, string>, originalUrl: string, newUrl: string) => {
+	if (!headers || !originalUrl || !newUrl) {
+		return;
+	}
+
+	try {
+		const originalUri = new URL(originalUrl);
+		const newUri = new URL(newUrl);
+
+		// Remove Authorization, Cookie, and Proxy-Authorization headers if the request's scheme or host changes.
+		// Header keys must be matched case-insensitively because FetchRequestAdapter.getRequestFromRequestInformation
+		// lower-cases every header key before the headers object reaches this middleware, so PascalCase
+		// property deletes such as `delete headers.Authorization` would otherwise be a no-op.
+		const isDifferentHostOrScheme = originalUri.host.toLowerCase() !== newUri.host.toLowerCase() || originalUri.protocol.toLowerCase() !== newUri.protocol.toLowerCase();
+
+		if (isDifferentHostOrScheme) {
+			for (const key of Object.keys(headers)) {
+				const lower = key.toLowerCase();
+				if (lower === "authorization" || lower === "cookie" || lower === "proxy-authorization") {
+					delete headers[key];
+				}
+			}
+		}
+	} catch {
+		// If URL parsing fails, don't modify headers
+		// This handles cases where invalid URLs are passed
+		return;
+	}
+};
+
+/**
  * MiddlewareOptions
  * A class representing RedirectHandlerOptions
  */
@@ -56,48 +100,10 @@ export class RedirectHandlerOptions implements RequestOption {
 	private static readonly defaultShouldRetry: ShouldRedirect = () => true;
 
 	/**
-	 * The default implementation for scrubbing sensitive headers during redirects.
-	 * This method removes Authorization and Cookie headers when the host or scheme changes.
-	 * Note: Proxy-Authorization handling is not applicable in Fetch API as proxy configuration
-	 * is handled at a lower level by the browser/runtime and is not accessible to JavaScript.
-	 * @param headers - The headers object to modify
-	 * @param originalUrl - The original request URL
-	 * @param newUrl - The new redirect URL
+	 * The default {@link ScrubSensitiveHeaders} callback used when none is supplied.
+	 * Delegates to the exported {@link defaultScrubSensitiveHeaders} function.
 	 */
-	private static readonly defaultScrubSensitiveHeaders: ScrubSensitiveHeaders = (headers: Record<string, string>, originalUrl: string, newUrl: string) => {
-		if (!headers || !originalUrl || !newUrl) {
-			return;
-		}
-
-		try {
-			const originalUri = new URL(originalUrl);
-			const newUri = new URL(newUrl);
-
-			// Remove Authorization, Cookie, and Proxy-Authorization headers if the request's scheme or host changes.
-			// Header keys must be matched case-insensitively because FetchRequestAdapter.getRequestFromRequestInformation
-			// lower-cases every header key before the headers object reaches this middleware, so PascalCase
-			// property deletes such as `delete headers.Authorization` would otherwise be a no-op.
-			const isDifferentHostOrScheme = originalUri.host.toLowerCase() !== newUri.host.toLowerCase() || originalUri.protocol.toLowerCase() !== newUri.protocol.toLowerCase();
-
-			if (isDifferentHostOrScheme) {
-				for (const key of Object.keys(headers)) {
-					const lower = key.toLowerCase();
-					if (lower === "authorization" || lower === "cookie" || lower === "proxy-authorization") {
-						delete headers[key];
-					}
-				}
-			}
-		} catch {
-			// If URL parsing fails, don't modify headers
-			// This handles cases where invalid URLs are passed
-			return;
-		}
-
-		// Note: Proxy-Authorization is not handled here as proxy configuration in Fetch API
-		// is managed by the browser/runtime and not accessible to JavaScript code.
-		// In environments where this matters (e.g., Node.js with custom agents), the proxy
-		// configuration should be managed at the HTTP client level.
-	};
+	private static readonly defaultScrubSensitiveHeaders: ScrubSensitiveHeaders = defaultScrubSensitiveHeaders;
 
 	/**
 	 *
