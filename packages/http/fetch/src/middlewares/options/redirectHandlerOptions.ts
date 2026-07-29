@@ -76,11 +76,8 @@ export const defaultScrubSensitiveHeaders: ScrubSensitiveHeaders = (headers: Rec
 		return;
 	}
 
-	// Note: Proxy-Authorization is not handled here as proxy configuration in Fetch API
-	// is managed by the browser/runtime and not accessible to JavaScript code.
-	// In environments where this matters (e.g., Node.js with custom agents), the proxy
-	// configuration should be managed at the HTTP client level.
-};
+	// Note: In browser environments, `Proxy-Authorization` is a forbidden header name and typically cannot be set.
+	// The logic above still removes it if present (e.g., in Node.js or other non-browser runtimes).
 
 /**
  * MiddlewareOptions
