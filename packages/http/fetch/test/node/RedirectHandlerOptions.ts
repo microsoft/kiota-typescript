@@ -8,6 +8,7 @@
 import { assert, describe, it } from "vitest";
 
 import { RedirectHandlerOptions } from "../../src/middlewares/options/redirectHandlerOptions";
+import { defaultScrubSensitiveHeaders } from "../../src/middlewares/options/redirectHandlerOptions";
 
 describe("RedirectHandlerOptions.ts", () => {
 	describe("constructor", () => {
@@ -113,6 +114,61 @@ describe("RedirectHandlerOptions.ts", () => {
 			RedirectHandlerOptions["defaultScrubSensitiveHeaders"](null as any, "https://example.com", "https://other.com");
 			RedirectHandlerOptions["defaultScrubSensitiveHeaders"]({} as any, null as any, "https://other.com");
 			RedirectHandlerOptions["defaultScrubSensitiveHeaders"]({} as any, "https://example.com", null as any);
+		});
+	});
+
+	describe("exported defaultScrubSensitiveHeaders", () => {
+		it("Should be the same implementation used as the class default", () => {
+			const options = new RedirectHandlerOptions();
+			assert.equal(options.scrubSensitiveHeaders, defaultScrubSensitiveHeaders);
+		});
+
+		it("Should remove Authorization, Cookie and Proxy-Authorization headers when host changes", () => {
+			const headers = {
+				authorization: "******",
+				cookie: "session=SECRET",
+				"proxy-authorization": "******",
+				"content-type": "application/json",
+			};
+			defaultScrubSensitiveHeaders(headers, "https://graph.microsoft.com/v1.0/me", "https://evil.attacker.com/steal");
+			assert.isUndefined(headers.authorization);
+			assert.isUndefined(headers.cookie);
+			assert.isUndefined(headers["proxy-authorization"]);
+			assert.isDefined(headers["content-type"]); // Other headers should remain
+		});
+
+		it("Should be composable with custom scrubbing logic", () => {
+			const scrubSensitiveHeaders = (headers: Record<string, string>, originalUrl: string, newUrl: string) => {
+				// Preserve the default behavior
+				defaultScrubSensitiveHeaders(headers, originalUrl, newUrl);
+
+				// Then remove additional custom headers on host/scheme change
+				const originalUri = new URL(originalUrl);
+				const newUri = new URL(newUrl);
+				const isDifferentHostOrScheme = originalUri.host.toLowerCase() !== newUri.host.toLowerCase() || originalUri.protocol.toLowerCase() !== newUri.protocol.toLowerCase();
+				if (isDifferentHostOrScheme) {
+					for (const key of Object.keys(headers)) {
+						const lower = key.toLowerCase();
+						if (lower === "x-api-key" || lower === "x-custom-auth") {
+							delete headers[key];
+						}
+					}
+				}
+			};
+
+			const headers = {
+				authorization: "******",
+				cookie: "session=SECRET",
+				"x-api-key": "custom-secret",
+				"x-custom-auth": "custom-secret",
+				"content-type": "application/json",
+			};
+			scrubSensitiveHeaders(headers, "https://graph.microsoft.com/v1.0/me", "https://evil.attacker.com/steal");
+			assert.isUndefined(headers.authorization);
+			assert.isUndefined(headers.cookie);
+			assert.isUndefined(headers["x-api-key"]);
+			assert.isUndefined(headers["x-custom-auth"]);
+			assert.isDefined(headers["content-type"]);
 		});
 	});
 });
