@@ -41,8 +41,8 @@ export interface RedirectHandlerOptionsParams {
  * retain the default behavior and then layer additional logic on top (e.g. removing custom headers such as
  * `X-Api-Key`), matching the composable pattern available in the .NET and Python Kiota SDKs.
  *
- * Note: Proxy-Authorization handling is not applicable in Fetch API as proxy configuration
- * is handled at a lower level by the browser/runtime and is not accessible to JavaScript.
+ * Note: In browser environments, `Proxy-Authorization` is a forbidden header name and typically cannot be set;
+ * it is still removed here if present (e.g. in Node.js or other non-browser runtimes).
  * @param headers - The headers object to modify
  * @param originalUrl - The original request URL
  * @param newUrl - The new redirect URL
@@ -75,9 +75,7 @@ export const defaultScrubSensitiveHeaders: ScrubSensitiveHeaders = (headers: Rec
 		// This handles cases where invalid URLs are passed
 		return;
 	}
-
-	// Note: In browser environments, `Proxy-Authorization` is a forbidden header name and typically cannot be set.
-	// The logic above still removes it if present (e.g., in Node.js or other non-browser runtimes).
+};
 
 /**
  * MiddlewareOptions
