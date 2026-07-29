@@ -7,8 +7,7 @@
 
 import { assert, describe, it } from "vitest";
 
-import { RedirectHandlerOptions } from "../../src/middlewares/options/redirectHandlerOptions";
-import { defaultScrubSensitiveHeaders } from "../../src/middlewares/options/redirectHandlerOptions";
+import { RedirectHandlerOptions, defaultScrubSensitiveHeaders } from "../../src/middlewares/options/redirectHandlerOptions";
 
 describe("RedirectHandlerOptions.ts", () => {
 	describe("constructor", () => {
