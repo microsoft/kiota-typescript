@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.0-preview.104](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-multipart@1.0.0-preview.103...@microsoft/kiota-serialization-multipart@1.0.0-preview.104) (2026-08-07)
+
+
+### Miscellaneous Chores
+
+* **@microsoft/kiota-serialization-multipart:** Synchronize microsoft-kiota versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.103 to ^1.0.0-preview.104
+  * devDependencies
+    * @microsoft/kiota-serialization-json bumped from ^1.0.0-preview.103 to ^1.0.0-preview.104
+
 ## [1.0.0-preview.103](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-multipart@1.0.0-preview.102...@microsoft/kiota-serialization-multipart@1.0.0-preview.103) (2026-06-17)
 
 
