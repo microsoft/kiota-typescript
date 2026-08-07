@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.0.0-preview.104](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.103...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.104) (2026-08-07)
+
+
+### Features
+
+* **http-fetchlibrary:** export defaultScrubSensitiveHeaders for comp… ([6f067ed](https://github.com/microsoft/kiota-typescript/commit/6f067edb83af7e2a35cd06069591a16a0a12eb9e))
+* **http-fetchlibrary:** export defaultScrubSensitiveHeaders for composition ([511cd50](https://github.com/microsoft/kiota-typescript/commit/511cd503092f280f96a2371705574a934916d2a9))
+
+
+### Bug Fixes
+
+* **http-fetchlibrary:** restore closing brace and de-duplicate proxy-authorization note ([0235d3a](https://github.com/microsoft/kiota-typescript/commit/0235d3aebf0550ec6c3df67644f1c033a7abc171))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.103 to ^1.0.0-preview.104
+
 ## [1.0.0-preview.103](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.102...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.103) (2026-06-17)
 
 
