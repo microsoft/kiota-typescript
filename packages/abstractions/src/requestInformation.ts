@@ -205,13 +205,13 @@ export class RequestInformation implements RequestInformationSetContent {
 					} else if (valueType === "string") {
 						writer.writeStringValue(undefined, value as string);
 					} else if (value instanceof Date) {
-						writer.writeDateValue(undefined, value as unknown as Date);
+						writer.writeDateValue(undefined, value);
 					} else if (value instanceof DateOnly) {
-						writer.writeDateOnlyValue(undefined, value as unknown as DateOnly);
+						writer.writeDateOnlyValue(undefined, value);
 					} else if (value instanceof TimeOnly) {
-						writer.writeTimeOnlyValue(undefined, value as unknown as TimeOnly);
+						writer.writeTimeOnlyValue(undefined, value);
 					} else if (value instanceof Duration) {
-						writer.writeDurationValue(undefined, value as unknown as Duration);
+						writer.writeDurationValue(undefined, value);
 					} else if (valueType === "number") {
 						writer.writeNumberValue(undefined, value as number);
 					} else if (Array.isArray(value)) {
