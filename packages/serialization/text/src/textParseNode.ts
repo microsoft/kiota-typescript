@@ -91,14 +91,14 @@ export class TextParseNode implements ParseNode {
 		throw new Error(TextParseNode.noStructuredDataMessage);
 	}
 
-	public getCollectionOfEnumValues = <T>(type: any): T[] => {
+	public getCollectionOfEnumValues = <T>(type: never): T[] => {
 		throw new Error(TextParseNode.noStructuredDataMessage);
 	};
-	public getEnumValue = <T>(type: any): T | undefined => {
+	public getEnumValue = <T>(type: never): T | undefined => {
 		const rawValue = this.getStringValue();
 		if (!rawValue) {
 			return undefined;
 		}
-		return getEnumValueFromStringValue(rawValue, type as Record<PropertyKey, PropertyKey>) as T;
+		return getEnumValueFromStringValue(rawValue, type as Record<PropertyKey, PropertyKey>);
 	};
 }

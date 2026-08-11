@@ -193,7 +193,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 						try {
 							span.setAttribute(FetchRequestAdapter.responseTypeAttributeKey, "object");
 							const result = rootNode.getObjectValue(deserializer);
-							return result as unknown as ModelType;
+							return result;
 						} finally {
 							deserializeSpan.end();
 						}
@@ -202,7 +202,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 					await this.purgeResponseBody(response);
 				}
 			}
-		}) as Promise<ModelType>;
+		});
 	};
 	public sendPrimitive = <ResponseType extends PrimitiveTypesForDeserializationType>(requestInfo: RequestInformation, responseType: PrimitiveTypesForDeserialization, errorMappings: ErrorMappings | undefined): Promise<ResponseType | undefined> => {
 		if (!requestInfo) {
@@ -307,7 +307,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 					await this.purgeResponseBody(response);
 				}
 			}
-		}) as Promise<EnumObject[keyof EnumObject]>;
+		});
 	};
 	public sendCollectionOfEnum = <EnumObject extends Record<string, unknown>>(requestInfo: RequestInformation, enumObject: EnumObject, errorMappings: ErrorMappings | undefined): Promise<EnumObject[keyof EnumObject][] | undefined> => {
 		if (!requestInfo) {
@@ -419,7 +419,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 				});
 				spanForAttributes.setAttribute(FetchRequestAdapter.errorBodyFoundAttributeName, !!deserializedError);
 
-				if (!deserializedError) deserializedError = new DefaultApiError("unexpected error type" + typeof deserializedError) as unknown as Parsable;
+				if (!deserializedError) deserializedError = new DefaultApiError("unexpected error type" + typeof deserializedError);
 				const errorObject = deserializedError as ApiError;
 				errorObject.responseStatusCode = statusCode;
 				errorObject.responseHeaders = responseHeaders;
@@ -564,7 +564,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 
 		return this.startTracingSpan(requestInfo, "convertToNativeRequest", async (span) => {
 			const request = await this.getRequestFromRequestInformation(requestInfo, span);
-			return request as any as T;
+			return request as T;
 		});
 	};
 }

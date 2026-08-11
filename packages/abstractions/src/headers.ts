@@ -105,6 +105,7 @@ export class Headers extends Map<string, Set<string>> {
 	 * @param callbackfn A function that accepts up to three arguments. forEach calls the callbackfn function one time for each header in the dictionary.
 	 * @param thisArg An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public forEach(callbackfn: (value: Set<string>, key: string, map: Map<string, Set<string>>) => void, thisArg?: any): void {
 		for (const header in this.headers) {
 			if (Object.prototype.hasOwnProperty.call(this.headers, header)) {

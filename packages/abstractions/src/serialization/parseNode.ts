@@ -85,11 +85,13 @@ export interface ParseNode {
 	 * Gets the Enum values of the node.
 	 * @returns the Enum values of the node.
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	getCollectionOfEnumValues<T>(type: any): T[];
 	/**
 	 * Gets the Enum value of the node.
 	 * @returns the Enum value of the node.
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	getEnumValue<T>(type: any): T | undefined;
 	/**
 	 * Gets the callback called before the node is deserialized.

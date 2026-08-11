@@ -13,7 +13,7 @@ export const BackingStoreKey = "backingStoreEnabled";
  * @param fields The fields of the object
  * @returns boolean indicating if the object is a BackedModel
  */
-export function isBackingStoreEnabled(fields: Record<string, (node: ParseNode) => void>): boolean {
+export const isBackingStoreEnabled = (fields: Record<string, (node: ParseNode) => void>): boolean => {
 	// Check if the fields contain the backing store key
 	return Object.keys(fields).includes(BackingStoreKey);
-}
+};

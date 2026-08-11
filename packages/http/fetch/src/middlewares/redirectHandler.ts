@@ -132,7 +132,7 @@ export class RedirectHandler implements Middleware {
 
 			// Scrub sensitive headers before following the redirect
 			if (fetchRequestInit.headers) {
-				currentOptions.scrubSensitiveHeaders(fetchRequestInit.headers as Record<string, string>, url, newUrl);
+				currentOptions.scrubSensitiveHeaders(fetchRequestInit.headers, url, newUrl);
 			}
 
 			// Handle 303 See Other: change POST to GET

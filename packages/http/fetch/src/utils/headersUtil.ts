@@ -18,7 +18,7 @@ import type { FetchRequestInit } from "./fetchDefinitions";
  * @returns A header value for the given key from the request
  */
 export const getRequestHeader = (options: FetchRequestInit | undefined, key: string): string | undefined => {
-	if (options && options.headers) {
+	if (options?.headers) {
 		return options.headers[key];
 	}
 	return undefined;

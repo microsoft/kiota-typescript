@@ -46,8 +46,7 @@ export class KiotaClientFactory {
 	 * KiotaClientFactory.create();
 	 * ```
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-	public static create(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args) as any, middlewares?: Middleware[], authenticationProvider?: BaseBearerTokenAuthenticationProvider): HttpClient {
+	public static create(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args), middlewares?: Middleware[], authenticationProvider?: BaseBearerTokenAuthenticationProvider): HttpClient {
 		const middleware = middlewares || MiddlewareFactory.getDefaultMiddlewares(customFetch);
 		if (authenticationProvider) {
 			middleware.unshift(new AuthorizationHandler(authenticationProvider));

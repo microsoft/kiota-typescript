@@ -181,7 +181,7 @@ export class JsonParseNode implements ParseNode {
 			return this._jsonNode
 				.map<T | undefined>((x) => {
 					if (typeof x === "string") {
-						return getEnumValueFromStringValue(x, type as Record<PropertyKey, PropertyKey>) as T;
+						return getEnumValueFromStringValue(x, type as Record<PropertyKey, PropertyKey>);
 					}
 					return undefined;
 				})
@@ -195,6 +195,6 @@ export class JsonParseNode implements ParseNode {
 		if (!rawValue) {
 			return undefined;
 		}
-		return getEnumValueFromStringValue(rawValue, type as Record<PropertyKey, PropertyKey>) as T;
+		return getEnumValueFromStringValue(rawValue, type as Record<PropertyKey, PropertyKey>);
 	};
 }

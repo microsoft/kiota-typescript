@@ -16,6 +16,18 @@ const compat = new FlatCompat({
     recommendedConfig: js.configs.recommended,
     allConfig: js.configs.all
 });
+const extendedConfigs = compat.extends(
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended-type-checked",
+    "plugin:@typescript-eslint/stylistic-type-checked",
+    "prettier",
+    "@microsoft/eslint-config-msgraph/core",
+    "plugin:jsdoc/recommended-typescript-error"
+);
+const inheritedNamingConventionRule = extendedConfigs.reduce((rule, config) => {
+    const namingConventionRule = config.rules?.["@typescript-eslint/naming-convention"];
+    return Array.isArray(namingConventionRule) ? namingConventionRule : rule;
+}, []);
 
 export default [{
     ignores: [
@@ -28,14 +40,7 @@ export default [{
         "**/dist/",
     ],
     files: ["**/*.ts"],
-}, ...compat.extends(
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended-type-checked",
-    "plugin:@typescript-eslint/stylistic-type-checked",
-    "prettier",
-    "@microsoft/eslint-config-msgraph/core",
-    "plugin:jsdoc/recommended-typescript-error"
-), {
+}, ...extendedConfigs, {
     plugins: {
         "prefer-arrow": preferArrow,
         "@typescript-eslint": typescriptEslint,
@@ -70,6 +75,14 @@ export default [{
 
     rules: {
         "@typescript-eslint/class-literal-property-style": ["error", "fields"],
+        "@typescript-eslint/naming-convention": [
+            ...inheritedNamingConventionRule,
+            {
+                selector: "property",
+                modifiers: ["private", "static", "readonly"],
+                format: ["camelCase", "UPPER_CASE"],
+            },
+        ],
         "@typescript-eslint/no-explicit-any": "warn",
         "prefer-arrow/prefer-arrow-functions": "warn",
         "@typescript-eslint/prefer-nullish-coalescing": "off",

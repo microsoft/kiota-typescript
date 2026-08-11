@@ -19,17 +19,17 @@ export interface UntypedNull extends UntypedNode {
  * @param node The object to check.
  * @returns boolean indicating if the node is an UntypedNull.
  */
-export function isUntypedNull(node: UntypedNode): node is UntypedNull {
+export const isUntypedNull = (node: UntypedNode): node is UntypedNull => {
 	return node.value === null;
-}
+};
 
 /**
- * Factory to create an UntypedNull from a boolean.
+ * Factory to create an UntypedNull.
  * @returns The created UntypedNull.
  */
-export function createUntypedNull(): UntypedNull {
+export const createUntypedNull = (): UntypedNull => {
 	return {
 		value: null,
 		getValue: () => null,
 	};
-}
+};
