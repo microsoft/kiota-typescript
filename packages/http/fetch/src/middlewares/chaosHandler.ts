@@ -129,17 +129,16 @@ export class ChaosHandler implements Middleware {
 	}
 
 	/**
-	 * Generates a respondy for the chaoe response
+	 * Generates a response body for the chaos response
 	 * @param chaosHandlerOptions - The ChaosHandlerOptions object
 	 * @param statusCode - the status code for the response
 	 * @returns the response body
 	 */
-	private createResponseBody(chaosHandlerOptions: ChaosHandlerOptions, statusCode: number) {
+	private createResponseBody(chaosHandlerOptions: ChaosHandlerOptions, statusCode: number): unknown {
 		if (chaosHandlerOptions.responseBody) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 			return chaosHandlerOptions.responseBody;
 		}
-		let body: any;
+		let body: unknown;
 		if (statusCode >= 400) {
 			const codeMessage: string = httpStatusCode[statusCode];
 			const errMessage: string = chaosHandlerOptions.statusMessage;
@@ -153,7 +152,6 @@ export class ChaosHandler implements Middleware {
 		} else {
 			body = {};
 		}
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return body;
 	}
 
@@ -163,6 +161,7 @@ export class ChaosHandler implements Middleware {
 	 * @param fetchRequestInit The fetch request init object
 	 * @returns a response object with the configured parameters
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private createChaosResponse(url: string, fetchRequestInit: FetchRequestInit): any {
 		if (fetchRequestInit.method === undefined) {
 			throw new Error("Request method must be defined.");
@@ -170,7 +169,6 @@ export class ChaosHandler implements Middleware {
 
 		const requestMethod = fetchRequestInit.method as HttpMethod;
 		const statusCode = this.getStatusCode(this.options, url, requestMethod);
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		const responseBody = this.createResponseBody(this.options, statusCode);
 		const stringBody = typeof responseBody === "string" ? responseBody : JSON.stringify(responseBody);
 

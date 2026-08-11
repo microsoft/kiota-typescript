@@ -101,6 +101,6 @@ interface DateOnlyInterface {
  * @param digits The number of digits to pad
  * @returns The formatted segment
  */
-export function formatSegment(segment: number, digits = 2): string {
+export const formatSegment = (segment: number, digits = 2): string => {
 	return segment.toString().padStart(digits, "0");
-}
+};

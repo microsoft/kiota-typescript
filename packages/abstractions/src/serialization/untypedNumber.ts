@@ -19,19 +19,19 @@ export interface UntypedNumber extends UntypedNode {
  * @param node The object to check.
  * @returns boolean indicating if the node is an UntypedNumber.
  */
-export function isUntypedNumber(node: UntypedNode): node is UntypedNumber {
+export const isUntypedNumber = (node: UntypedNode): node is UntypedNumber => {
 	const proposedNode = node as UntypedNumber;
 	return proposedNode && typeof proposedNode.value === "number";
-}
+};
 
 /**
  * Factory to create an UntypedNumber from a number.
  * @param value The number value to create from.
  * @returns The created UntypedNumber.
  */
-export function createUntypedNumber(value: number): UntypedNumber {
+export const createUntypedNumber = (value: number): UntypedNumber => {
 	return {
 		value,
 		getValue: () => value,
 	};
-}
+};

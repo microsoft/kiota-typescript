@@ -55,7 +55,6 @@ export class TextSerializationWriter implements SerializationWriter {
 		}
 
 		if (value) {
-			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 			this.writeStringValue(key, `"${value}"`);
 		}
 	};

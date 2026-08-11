@@ -3,5 +3,8 @@
 		"kiota",
 		"opentelemetry",
 		"Spfx"
-	]
+	],
+   "eslint.validate": [
+    "typescript"
+  ]
 }

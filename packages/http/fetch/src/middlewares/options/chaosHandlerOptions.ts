@@ -47,6 +47,7 @@ export interface ChaosHandlerOptions {
 	/**
 	 * The response body to be returned in the response
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	responseBody?: any;
 
 	/**

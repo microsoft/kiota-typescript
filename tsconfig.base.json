@@ -2,7 +2,7 @@
     "compilerOptions": {
         "importHelpers": true,
         "noEmitOnError": true,
-        "moduleResolution": "Node",
+        "moduleResolution": "bundler",
         "strict": true,
         "skipLibCheck": true,
         "noImplicitAny": true,
@@ -20,9 +20,11 @@
             "dom",
             "es5",
             "es6",
+            "ES2019",
             "DOM.Iterable"
         ],
         "outDir": "dist/es",
+        "types": ["node"]
     },
     "references": [
         {

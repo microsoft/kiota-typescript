@@ -23,8 +23,8 @@
     "@tony.ganchev/eslint-plugin-header": "^3.1.2",
     "@types/node": "^26.0.0",
     "@types/sinon": "^22.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.1.0",
-    "@typescript-eslint/parser": "^8.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.67.0",
+    "@typescript-eslint/parser": "^8.67.0",
     "@vitest/browser": "^4.1.8",
     "@vitest/coverage-istanbul": "^4.0.1",
     "@vitest/coverage-v8": "^4.0.1",
@@ -41,7 +41,8 @@
     "rimraf": "^6.0.0",
     "sinon": "^22.0.0",
     "tsc-alias": "^1.8.10",
-    "typescript": "^5.3.3",
+    "typescript": "npm:@typescript/typescript6@^6.0.0",
+    "typescript-7": "npm:typescript@^7.0.0",
     "vitest": "^4.0.1",
     "webdriverio": "^9.0.1"
   },
@@ -71,6 +72,7 @@
     "lint:eslint": "eslint --quiet \"packages/*/src/**/*.ts\"",
     "lint:eslint:fix": "npm run lint:eslint -- --fix",
     "lint:eslint:loud": "eslint \"packages/*/src/**/*.ts\" \"packages/*/*/src/**/*.ts\"",
+    "lint:eslint:loud:fix": "eslint --fix \"packages/*/src/**/*.ts\" \"packages/*/*/src/**/*.ts\"",
     "prepare": "husky"
   }
 }

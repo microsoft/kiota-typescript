@@ -39,7 +39,7 @@ export class ObservabilityOptionsImpl implements ObservabilityOptions, Observabi
  * @param requestOptions The request options
  * @returns The observability options
  */
-export function getObservabilityOptionsFromRequest(requestOptions?: Record<string, RequestOption>): ObservabilityOptionsInternal | undefined {
+export const getObservabilityOptionsFromRequest = (requestOptions?: Record<string, RequestOption>): ObservabilityOptionsInternal | undefined => {
 	if (requestOptions) {
 		const observabilityOptions = requestOptions[ObservabilityOptionKey];
 		if (observabilityOptions instanceof ObservabilityOptionsImpl) {
@@ -47,4 +47,4 @@ export function getObservabilityOptionsFromRequest(requestOptions?: Record<strin
 		}
 	}
 	return undefined;
-}
+};

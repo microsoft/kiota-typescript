@@ -128,20 +128,19 @@ export class FormParseNode implements ParseNode {
 		}
 		return value;
 	};
-	public getCollectionOfEnumValues = <T>(type: any): T[] => {
+	public getCollectionOfEnumValues = <T>(type: unknown): T[] => {
 		const rawValues = this.getStringValue();
 		if (!rawValues) {
 			return [];
 		}
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-		return rawValues.split(",").map((x) => getEnumValueFromStringValue(x, type) as T);
+		return rawValues.split(",").map((x) => getEnumValueFromStringValue(x, type as Record<PropertyKey, PropertyKey>) as T);
 	};
-	public getEnumValue = <T>(type: any): T | undefined => {
+	public getEnumValue = <T>(type: unknown): T | undefined => {
 		const rawValue = this.getStringValue();
 		if (!rawValue) {
 			return undefined;
 		}
-		return getEnumValueFromStringValue(rawValue, type as Record<PropertyKey, PropertyKey>) as T;
+		return getEnumValueFromStringValue(rawValue, type as Record<PropertyKey, PropertyKey>);
 	};
 	private assignFieldValues<T extends Parsable>(model: T, parsableFactory: ParsableFactory<T>): void {
 		const fields = parsableFactory(this)(model);

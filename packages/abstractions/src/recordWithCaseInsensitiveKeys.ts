@@ -10,7 +10,7 @@
  * @param canon The function that canonicalizes the property name.
  * @returns A new object that can be used as a dictionary with case-insensitive keys.
  */
-function dictionaryWithCanonicalKeys<V>(canon: (prop: keyof any) => string) {
+const dictionaryWithCanonicalKeys = <V>(canon: (prop: string | symbol) => string) => {
 	const keysNormalizationMap = new Map<string, string>();
 	return new Proxy<Record<string, V>>(
 		{},
@@ -21,7 +21,7 @@ function dictionaryWithCanonicalKeys<V>(canon: (prop: keyof any) => string) {
 			 * @param prop The property to get.
 			 * @returns The value of the property.
 			 */
-			get(target, prop) {
+			get: (target, prop) => {
 				const normalKey = canon(prop);
 				return Reflect.get(target, normalKey);
 			},
@@ -32,7 +32,7 @@ function dictionaryWithCanonicalKeys<V>(canon: (prop: keyof any) => string) {
 			 * @param value The value to set.
 			 * @returns A boolean indicating whether the property was set.
 			 */
-			set(target, prop, value) {
+			set: (target, prop, value) => {
 				const nonNormalKey = prop.toString();
 				const normalKey = canon(prop);
 				keysNormalizationMap.set(normalKey, nonNormalKey);
@@ -44,7 +44,7 @@ function dictionaryWithCanonicalKeys<V>(canon: (prop: keyof any) => string) {
 			 * @param prop The property to check.
 			 * @returns A boolean indicating whether the property exists.
 			 */
-			has(_, prop) {
+			has: (_, prop) => {
 				const normalKey = canon(prop);
 				return keysNormalizationMap.has(normalKey);
 			},
@@ -55,7 +55,7 @@ function dictionaryWithCanonicalKeys<V>(canon: (prop: keyof any) => string) {
 			 * @param attribs The attributes of the property.
 			 * @returns A boolean indicating whether the property was defined.
 			 */
-			defineProperty(target, prop, attribs) {
+			defineProperty: (target, prop, attribs) => {
 				const nonNormalKey = prop.toString();
 				const normalKey = canon(prop);
 				keysNormalizationMap.set(normalKey, nonNormalKey);
@@ -67,7 +67,7 @@ function dictionaryWithCanonicalKeys<V>(canon: (prop: keyof any) => string) {
 			 * @param prop The property to delete.
 			 * @returns A boolean indicating whether the property was deleted.
 			 */
-			deleteProperty(target, prop) {
+			deleteProperty: (target, prop) => {
 				const normalKey = canon(prop);
 				keysNormalizationMap.delete(normalKey);
 				return Reflect.deleteProperty(target, normalKey);
@@ -78,21 +78,21 @@ function dictionaryWithCanonicalKeys<V>(canon: (prop: keyof any) => string) {
 			 * @param prop The property to gets its descriptor.
 			 * @returns The property descriptor.
 			 */
-			getOwnPropertyDescriptor(target, prop) {
+			getOwnPropertyDescriptor: (target, prop) => {
 				return Reflect.getOwnPropertyDescriptor(target, canon(prop));
 			},
-			ownKeys() {
+			ownKeys: () => {
 				return [...keysNormalizationMap.values()];
 			},
 		},
 	);
-}
+};
 
 /**
  * A wrapper for type Record that creates a Record with case insensitive keys
  * @returns A new object that can be used as a dictionary with case-insensitive keys.
  */
-export function createRecordWithCaseInsensitiveKeys<T>(): Record<string, T> {
+export const createRecordWithCaseInsensitiveKeys = <T>(): Record<string, T> => {
 	/**
 	 * A function that takes a property name and returns its canonical form.
 	 * @param prop The property name to be canonicalized.
@@ -100,4 +100,4 @@ export function createRecordWithCaseInsensitiveKeys<T>(): Record<string, T> {
 	 */
 	const record: Record<string, T> = dictionaryWithCanonicalKeys<T>((p) => (typeof p === "string" ? p.toLowerCase() : p.toString().toLowerCase()));
 	return record;
-}
+};

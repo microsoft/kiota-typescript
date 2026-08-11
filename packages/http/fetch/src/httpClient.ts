@@ -28,8 +28,7 @@ export class HttpClient {
 
 		// If a custom fetch function is provided, add a CustomFetchHandler to the end of the middleware chain
 		if (this.customFetch) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-			middlewares.push(new CustomFetchHandler(customFetch as any));
+			middlewares.push(new CustomFetchHandler(this.customFetch));
 		}
 
 		// Set the middleware handlers chain

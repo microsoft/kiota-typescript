@@ -143,7 +143,7 @@ export class CompressionHandler implements Middleware {
 
 		const uint8ArrayToStream = (uint8Array: Uint8Array): ReadableStream<Uint8Array> => {
 			return new ReadableStream({
-				start(controller) {
+				start: (controller) => {
 					controller.enqueue(uint8Array);
 					controller.close();
 				},

@@ -168,19 +168,19 @@ export class FormSerializationWriter implements SerializationWriter {
 		if (value !== undefined) {
 			const valueType = typeof value;
 			if (valueType === "boolean") {
-				this.writeBooleanValue(key, value as any as boolean);
+				this.writeBooleanValue(key, value as boolean);
 			} else if (valueType === "string") {
-				this.writeStringValue(key, value as any as string);
+				this.writeStringValue(key, value as string);
 			} else if (value instanceof Date) {
-				this.writeDateValue(key, value as any as Date);
+				this.writeDateValue(key, value);
 			} else if (value instanceof DateOnly) {
-				this.writeDateOnlyValue(key, value as any as DateOnly);
+				this.writeDateOnlyValue(key, value);
 			} else if (value instanceof TimeOnly) {
-				this.writeTimeOnlyValue(key, value as any as TimeOnly);
+				this.writeTimeOnlyValue(key, value);
 			} else if (value instanceof Duration) {
-				this.writeDurationValue(key, value as any as Duration);
+				this.writeDurationValue(key, value);
 			} else if (valueType === "number") {
-				this.writeNumberValue(key, value as any as number);
+				this.writeNumberValue(key, value as number);
 			} else {
 				// eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
 				throw new Error(`encountered unknown ${value} value type during serialization ${valueType} for key ${key}`);

@@ -21,6 +21,7 @@ export type FetchHeaders = Headers & {
 	get?(name: string): string | null;
 	has?(name: string): boolean;
 	set?(name: string, value: string): void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	forEach?(callbackfn: (value: string, key: string, parent: FetchHeaders) => void, thisArg?: any): void;
 	[Symbol.iterator]?(): IterableIterator<[string, string]>;
 	/**
