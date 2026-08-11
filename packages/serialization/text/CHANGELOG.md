@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.105](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-text@1.0.0-preview.104...@microsoft/kiota-serialization-text@1.0.0-preview.105) (2026-08-11)
+
+
+### Bug Fixes
+
+* bump typescript from 5.9.3 to 7.0.2 ([#2071](https://github.com/microsoft/kiota-typescript/issues/2071)) ([039f23a](https://github.com/microsoft/kiota-typescript/commit/039f23af4efa70de1cea9048b5480c85c4d829e9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.104 to ^1.0.0-preview.105
+
 ## [1.0.0-preview.104](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-text@1.0.0-preview.103...@microsoft/kiota-serialization-text@1.0.0-preview.104) (2026-08-07)
 
 
