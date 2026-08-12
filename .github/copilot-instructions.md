@@ -5,6 +5,9 @@
 This is a Lerna monorepo using npm workspaces. All packages are under `packages/`.
 
 ```bash
+# Restore the exact dependencies from package-lock.json
+npm ci
+
 # Full build (includes prettier check + clean)
 npm run build
 
@@ -27,6 +30,8 @@ npm run lint
 npm run prettier:check
 npm run prettier:write
 ```
+
+Always use `npm ci` to restore the dependencies required by the repository. Do not use `npm install` as a substitute for restoring the existing lockfile.
 
 Package dependencies are local (e.g., `kiota-http-fetchlibrary` depends on `kiota-abstractions`). Build dependent packages first when testing downstream packages.
 
