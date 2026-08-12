@@ -1,0 +1,62 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Verifies that every locked npm dependency can be restored through the authenticated
+# GraphDeveloperExperiences_Public Azure Artifacts feed.
+
+name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger: none
+
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+jobs:
+  - job: private_feed_dependency_validation
+    displayName: 'private-feed-dependency-validation'
+    steps:
+      - checkout: self
+        fetchDepth: 2
+
+      - pwsh: |
+          git diff --quiet HEAD^1 HEAD -- package-lock.json
+          $exitCode = $LASTEXITCODE
+          if ($exitCode -gt 1) {
+            throw "Unable to determine whether package-lock.json changed."
+          }
+
+          $lockfileChanged = ($exitCode -eq 1).ToString().ToLowerInvariant()
+          Write-Host "package-lock.json changed: $lockfileChanged"
+          Write-Host "##vso[task.setvariable variable=lockfileChanged]$lockfileChanged"
+          exit 0
+        displayName: 'Check for package-lock.json changes'
+
+      - task: UseNode@1
+        displayName: 'Install Node.js 24.x'
+        condition: eq(variables['lockfileChanged'], 'true')
+        inputs:
+          version: '24.x'
+
+      - pwsh: |
+          @"
+          registry=https://microsoftgraph.pkgs.visualstudio.com/0985d294-5762-4bc2-a565-161ef349ca3e/_packaging/GraphDeveloperExperiences_Public/npm/registry/
+          always-auth=true
+          "@ | Set-Content -Path "$(Build.SourcesDirectory)/.npmrc" -Encoding UTF8
+        displayName: 'Create .npmrc for the private feed'
+        condition: eq(variables['lockfileChanged'], 'true')
+
+      - task: npmAuthenticate@0
+        displayName: 'Authenticate to Azure Artifacts'
+        condition: eq(variables['lockfileChanged'], 'true')
+        inputs:
+          workingFile: '$(Build.SourcesDirectory)/.npmrc'
+
+      - script: npm ci --verbose
+        displayName: 'Restore npm dependencies from Azure Artifacts'
+        condition: eq(variables['lockfileChanged'], 'true')
+        workingDirectory: '$(Build.SourcesDirectory)'
