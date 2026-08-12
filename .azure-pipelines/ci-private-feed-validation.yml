@@ -37,10 +37,10 @@ jobs:
         displayName: 'Check for package-lock.json changes'
 
       - task: UseNode@1
-        displayName: 'Install Node.js 22.x'
+        displayName: 'Install Node.js 24.x'
         condition: eq(variables['lockfileChanged'], 'true')
         inputs:
-          version: '22.x'
+          version: '24.x'
 
       - pwsh: |
           @"
