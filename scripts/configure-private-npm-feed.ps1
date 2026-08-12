@@ -8,23 +8,25 @@ $ErrorActionPreference = "Stop"
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $npmrcPath = Join-Path $repositoryRoot ".npmrc"
 $privateRegistry = "https://microsoftgraph.pkgs.visualstudio.com/0985d294-5762-4bc2-a565-161ef349ca3e/_packaging/GraphDeveloperExperiences_Public/npm/registry/"
+$publicRegistry = "https://registry.npmjs.org/"
+
+if (Test-Path -LiteralPath $npmrcPath) {
+    Remove-Item -LiteralPath $npmrcPath -Force
+}
+
+& npm install --global ado-npm-auth "--registry=$publicRegistry"
+if ($LASTEXITCODE -ne 0) {
+    throw "Unable to install ado-npm-auth."
+}
 
 @"
 registry=$privateRegistry
 always-auth=true
 "@ | Set-Content -LiteralPath $npmrcPath -Encoding utf8
 
-$previousRegistry = $env:npm_config_registry
-$env:npm_config_registry = "https://registry.npmjs.org/"
-
-try {
-    & npx --yes ado-npm-auth -c $npmrcPath
-    if ($LASTEXITCODE -ne 0) {
-        throw "Unable to authenticate to the Azure Artifacts npm feed."
-    }
-}
-finally {
-    $env:npm_config_registry = $previousRegistry
+& ado-npm-auth -c $npmrcPath
+if ($LASTEXITCODE -ne 0) {
+    throw "Unable to authenticate to the Azure Artifacts npm feed."
 }
 
 & npm cache clean --force
