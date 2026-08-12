@@ -5,6 +5,7 @@ lib/
 kiota-linux-x64/
 kiota_tool/
 *.log
+.npmrc
 
 # Editor and IDE files
 .idea/
