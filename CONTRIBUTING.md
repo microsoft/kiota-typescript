@@ -16,6 +16,18 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 
 The best way to get started with a contribution is to start a dialog with the owners of this repository. Sometimes features will be under development or out of scope for this SDK and it's best to check before starting work on contribution.
 
+## Dependency changes
+
+Only core contributors may add or update dependencies. Other contributors should open an issue or contact the repository owners when a dependency change is needed.
+
+Core contributors must configure and authenticate to the private Azure Artifacts npm feed before changing dependencies:
+
+```powershell
+./scripts/configure-private-npm-feed.ps1
+```
+
+The script creates an ignored project-level `.npmrc`, authenticates using [`ado-npm-auth`](https://github.com/microsoft/ado-npm-auth/tree/main/packages/ado-npm-auth), and clears the npm cache. Use `npm ci` to restore the dependencies required by the existing `package-lock.json`.
+
 ## Commit message format
 
 To support our automated release process, pull requests are required to follow the [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/)
