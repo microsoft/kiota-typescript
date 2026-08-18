@@ -13,9 +13,9 @@ jobs:
       matrix:
         node-version: [20.x, 22.x, 24.x]
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v7
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
@@ -23,7 +23,7 @@ jobs:
     - run: npm run lint:eslint:loud
     - run: npm run prettier:check
     - name: Archive dist folders # archive dist folders to verify if they are transpiled correctly and available for publishing
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: dist folders ${{ matrix.node-version }}
         path: |
@@ -61,16 +61,16 @@ jobs:
           - name: "Bundle"
             path: "./packages/bundle/coverage"
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
     - name: Use Node.js 24.x
-      uses: actions/setup-node@v7
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
         node-version: 24.x
     - run: npm ci
     - run: npm run build
     - run: npm run test:coverage
     - name: Code Coverage Report ${{ matrix.coverage.name }}
-      uses: irongut/CodeCoverageSummary@v1.3.0
+      uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95 # v1.3.0
       with:
         filename: ${{ matrix.coverage.path }}/cobertura-coverage.xml
         format: markdown
@@ -78,7 +78,7 @@ jobs:
         output: both
         badge: true
     - name: Archive coverage files
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: Coverage files for ${{ matrix.coverage.name }}
         path: ${{ matrix.coverage.path }}
