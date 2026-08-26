@@ -9,7 +9,7 @@
 		"test:integrated": "vitest run"
 	},
 	"dependencies": {
-		"@azure/identity": "^4.0.1",
+		"@azure/identity": "^4.13.2",
 		"@microsoft/kiota-abstractions": "*",
 		"@microsoft/kiota-authentication-azure": "*",
 		"@microsoft/kiota-http-fetchlibrary": "*",
