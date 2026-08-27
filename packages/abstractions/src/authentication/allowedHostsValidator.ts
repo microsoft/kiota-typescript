@@ -17,7 +17,7 @@ export class AllowedHostsValidator {
 	 */
 	public constructor(allowedHosts: Set<string> = new Set<string>()) {
 		this.validateHosts(allowedHosts);
-		this.allowedHosts = allowedHosts ?? new Set<string>();
+		this.allowedHosts = this.normalizeHosts(allowedHosts);
 	}
 	/**
 	 * Gets the list of valid hosts.  If the list is empty, all hosts are valid.
@@ -32,7 +32,7 @@ export class AllowedHostsValidator {
 	 */
 	public setAllowedHosts(allowedHosts: Set<string>): void {
 		this.validateHosts(allowedHosts);
-		this.allowedHosts = allowedHosts;
+		this.allowedHosts = this.normalizeHosts(allowedHosts);
 	}
 	/**
 	 * Checks whether the provided host is valid.
@@ -53,7 +53,7 @@ export class AllowedHostsValidator {
 			return this.isHostAndPathValid(url);
 		}
 		if (window?.location?.host) {
-			return this.allowedHosts.has(window.location.host?.toLowerCase());
+			return this.isHostValid(window.location.host);
 		}
 		return false;
 	}
@@ -62,10 +62,20 @@ export class AllowedHostsValidator {
 		if (hostAndRest.length >= 2) {
 			const host = hostAndRest[0];
 			if (host) {
-				return this.allowedHosts.has(host.toLowerCase());
+				return this.isHostValid(host.split(":")[0]);
 			}
 		}
 		return false;
+	}
+	private isHostValid(host: string): boolean {
+		const normalizedHost = host.toLowerCase();
+		if (this.allowedHosts.has(normalizedHost)) {
+			return true;
+		}
+		return Array.from(this.allowedHosts).some((allowedHost) => allowedHost.startsWith(".") && normalizedHost.endsWith(allowedHost));
+	}
+	private normalizeHosts(hostsToNormalize: Set<string>): Set<string> {
+		return new Set(Array.from(hostsToNormalize, (host) => host.toLowerCase()));
 	}
 
 	private validateHosts(hostsToValidate: Set<string>) {

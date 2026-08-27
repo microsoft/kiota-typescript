@@ -41,6 +41,34 @@ describe("AllowedHostsValidator", () => {
 		expect(validator.isUrlHostValid("http://invalid.com/path")).to.be.false;
 	});
 
+	it("isUrlHostValid should return true for subdomain matching allowed suffix", () => {
+		validator = new AllowedHostsValidator(new Set([".fabric.microsoft.com"]));
+		expect(validator.isUrlHostValid("https://abc.123.graphql.fabric.microsoft.com/path")).to.be.true;
+	});
+
+	it("isUrlHostValid should return false for bare domain when allowed as suffix", () => {
+		validator = new AllowedHostsValidator(new Set([".fabric.microsoft.com"]));
+		expect(validator.isUrlHostValid("https://fabric.microsoft.com/path")).to.be.false;
+	});
+
+	it("isUrlHostValid suffix matching should be case insensitive", () => {
+		validator = new AllowedHostsValidator(new Set([".Fabric.Microsoft.COM"]));
+		expect(validator.isUrlHostValid("https://ABC.z2c.graphql.fabric.microsoft.com/path")).to.be.true;
+	});
+
+	it("isUrlHostValid should allow multiple valid hosts with suffix entries", () => {
+		validator = new AllowedHostsValidator(new Set(["example.com", "api.example.com", ".fabric.microsoft.com"]));
+		expect(validator.isUrlHostValid("https://example.com/path")).to.be.true;
+		expect(validator.isUrlHostValid("https://api.example.com/path")).to.be.true;
+		expect(validator.isUrlHostValid("https://other.com/path")).to.be.false;
+		expect(validator.isUrlHostValid("https://abc.123.graphql.fabric.microsoft.com/path")).to.be.true;
+	});
+
+	it("isUrlHostValid should allow suffix based hosts after update", () => {
+		validator.setAllowedHosts(new Set([".fabric.microsoft.com"]));
+		expect(validator.isUrlHostValid("https://abc.123.graphql.fabric.microsoft.com/path")).to.be.true;
+	});
+
 	it("isUrlHostValid should return false for invalid URLs", () => {
 		expect(validator.isUrlHostValid("invalid")).to.be.false;
 	});
