@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-preview.106](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.105...@microsoft/kiota-abstractions@1.0.0-preview.106) (2026-08-27)
+
+
+### Features
+
+* adds support for wildcard host validation ([#2112](https://github.com/microsoft/kiota-typescript/issues/2112)) ([7bab200](https://github.com/microsoft/kiota-typescript/commit/7bab2008b55c0096746997b903029e0d03ada047))
+
 ## [1.0.0-preview.105](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.104...@microsoft/kiota-abstractions@1.0.0-preview.105) (2026-08-11)
 
 
