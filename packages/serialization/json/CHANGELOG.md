@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.107](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-json@1.0.0-preview.106...@microsoft/kiota-serialization-json@1.0.0-preview.107) (2026-09-04)
+
+
+### Bug Fixes
+
+* additionalData as array  of objects serialization ([#2124](https://github.com/microsoft/kiota-typescript/issues/2124)) ([e04c281](https://github.com/microsoft/kiota-typescript/commit/e04c2819f9864b81c6bbc7ab6a9fbdd026db09c3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.106 to ^1.0.0-preview.107
+
 ## [1.0.0-preview.106](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-json@1.0.0-preview.105...@microsoft/kiota-serialization-json@1.0.0-preview.106) (2026-08-27)
 
 
