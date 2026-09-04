@@ -71,21 +71,24 @@ describe("JsonParseNode", () => {
 			testDate: testDate,
 		});
 	});
-	it("Test additionalObject as array serialization", async () => {
+	it("Test additionalData array of objects serialization", async () => {
 		const inputObject: TestParser = {
 			additionalData: {
-				payload: [{
-					testObjectName: "str1",
-					testObjectProp: {
-						someValue: 124,
+				payload: [
+					{
+						testObjectName: "str1",
+						testObjectProp: {
+							someValue: 124,
+						},
 					},
-				}, {
-					testObjectName: "str",
-					testObjectProp: {
-						someValue: 123,
+					{
+						testObjectName: "str",
+						testObjectProp: {
+							someValue: 123,
+						},
 					},
-				}],
-			}
+				],
+			},
 		};
 
 		const writer = new JsonSerializationWriter();
@@ -95,32 +98,38 @@ describe("JsonParseNode", () => {
 		const contentAsStr = decoder.decode(serializedContent);
 		const result = JSON.parse(contentAsStr);
 		assert.deepEqual(result, {
-			payload: [{
-				testObjectName: "str1",
-				testObjectProp: {
-					someValue: 124,
-				},
-			}, {
-				testObjectName: "str",
-				testObjectProp: {
-					someValue: 123,
-				},
-			}],
-		});
-		const parsedValueResult = new JsonParseNode(result, backingStoreFactory).getObjectValue(createTestParserFromDiscriminatorValue);
-		assert.deepEqual(parsedValueResult as object, {
-			additionalData: {
-				payload: [{
+			payload: [
+				{
 					testObjectName: "str1",
 					testObjectProp: {
 						someValue: 124,
 					},
-				}, {
+				},
+				{
 					testObjectName: "str",
 					testObjectProp: {
 						someValue: 123,
 					},
-				}],
+				},
+			],
+		});
+		const parsedValueResult = new JsonParseNode(result, backingStoreFactory).getObjectValue(createTestParserFromDiscriminatorValue);
+		assert.deepEqual(parsedValueResult as object, {
+			additionalData: {
+				payload: [
+					{
+						testObjectName: "str1",
+						testObjectProp: {
+							someValue: 124,
+						},
+					},
+					{
+						testObjectName: "str",
+						testObjectProp: {
+							someValue: 123,
+						},
+					},
+				],
 			},
 		});
 	});
