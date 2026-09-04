@@ -259,10 +259,9 @@ export class JsonSerializationWriter implements SerializationWriter {
 	};
 
 	private readonly writeNonParsableObjectValue = (key?: string, value?: object) => {
-		if (key) {
-			this.writePropertyName(key);
-		}
-		this.writer.push(JSON.stringify(value), JsonSerializationWriter.propertySeparator);
+		key && this.writePropertyName(key);
+		this.writer.push(JSON.stringify(value));
+		key && this.writer.push(JsonSerializationWriter.propertySeparator);
 	};
 	// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 	private readonly writeAnyValue = (key?: string, value?: unknown | null): void => {
