@@ -71,6 +71,68 @@ describe("JsonParseNode", () => {
 			testDate: testDate,
 		});
 	});
+	it("Test additionalData array of objects serialization", async () => {
+		const inputObject: TestParser = {
+			additionalData: {
+				payload: [
+					{
+						testObjectName: "str1",
+						testObjectProp: {
+							someValue: 124,
+						},
+					},
+					{
+						testObjectName: "str",
+						testObjectProp: {
+							someValue: 123,
+						},
+					},
+				],
+			},
+		};
+
+		const writer = new JsonSerializationWriter();
+		writer.writeObjectValue("", inputObject, serializeTestParser);
+		const serializedContent = writer.getSerializedContent();
+		const decoder = new TextDecoder();
+		const contentAsStr = decoder.decode(serializedContent);
+		const result = JSON.parse(contentAsStr);
+		assert.deepEqual(result, {
+			payload: [
+				{
+					testObjectName: "str1",
+					testObjectProp: {
+						someValue: 124,
+					},
+				},
+				{
+					testObjectName: "str",
+					testObjectProp: {
+						someValue: 123,
+					},
+				},
+			],
+		});
+		const parsedValueResult = new JsonParseNode(result, backingStoreFactory).getObjectValue(createTestParserFromDiscriminatorValue);
+		assert.deepEqual(parsedValueResult as object, {
+			additionalData: {
+				payload: [
+					{
+						testObjectName: "str1",
+						testObjectProp: {
+							someValue: 124,
+						},
+					},
+					{
+						testObjectName: "str",
+						testObjectProp: {
+							someValue: 123,
+						},
+					},
+				],
+			},
+		});
+	});
 
 	it("Test enum serialization", async () => {
 		const inputObject: TestParser = {
