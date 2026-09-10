@@ -25,10 +25,10 @@
     "@types/sinon": "^22.0.0",
     "@typescript-eslint/eslint-plugin": "^8.67.0",
     "@typescript-eslint/parser": "^8.67.0",
-    "@vitest/browser": "^4.1.8",
-    "@vitest/coverage-istanbul": "^4.0.1",
-    "@vitest/coverage-v8": "^4.0.1",
-    "@vitest/ui": "^4.0.1",
+    "@vitest/browser": "^5.0.0",
+    "@vitest/coverage-istanbul": "^5.0.0",
+    "@vitest/coverage-v8": "^5.0.0",
+    "@vitest/ui": "^5.0.0",
     "eslint": "^9.7.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jsdoc": "^56.1.2",
@@ -43,7 +43,7 @@
     "tsc-alias": "^1.8.10",
     "typescript": "npm:@typescript/typescript6@^6.0.0",
     "typescript-7": "npm:typescript@^7.0.0",
-    "vitest": "^4.0.1",
+    "vitest": "^5.0.0",
     "webdriverio": "^9.0.1"
   },
   "workspaces": [
