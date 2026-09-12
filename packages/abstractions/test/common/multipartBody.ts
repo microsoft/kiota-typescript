@@ -14,7 +14,7 @@ describe("multipartBody", () => {
 		const mpBody = new MultipartBody();
 		assert.throws(() => mpBody.addOrReplacePart("", "application/json", "test"), Error, "partName cannot be undefined");
 		assert.throws(() => mpBody.addOrReplacePart("test", "", "test"), Error, "partContentType cannot be undefined");
-		assert.throws(() => mpBody.addOrReplacePart("test", "application/json", ""), Error, "content cannot be undefined");
+		assert.throws(() => mpBody.addOrReplacePart("test", "application/json", undefined), Error, "content cannot be undefined");
 		assert.throws(() => mpBody.getPartValue(""), Error, "partName cannot be undefined");
 		assert.throws(() => mpBody.removePart(""), Error, "partName cannot be undefined");
 		assert.throws(() => serializeMultipartBody(undefined as any as SerializationWriter, mpBody), Error, "writer cannot be undefined");
@@ -37,6 +37,25 @@ describe("multipartBody", () => {
 		assert.strictEqual(mpBody.getPartValue("test"), "test");
 		mpBody.removePart("test");
 		assert.strictEqual(mpBody.getPartValue("test"), undefined);
+	});
+	it.each(["", 0, 0n, false, null])("adds defined falsy content: %s", (content) => {
+		const mpBody = new MultipartBody();
+		mpBody.addOrReplacePart("test", "application/json", content);
+		assert.strictEqual(mpBody.getPartValue("test"), content);
+		assert.isTrue(mpBody.removePart("test"));
+	});
+	it.each(["", 0, 0n, false, null])("replaces a part with defined falsy content: %s", (content) => {
+		const mpBody = new MultipartBody();
+		mpBody.addOrReplacePart("test", "application/json", "original");
+		mpBody.addOrReplacePart("TEST", "application/json", content);
+		assert.strictEqual(mpBody.getPartValue("test"), content);
+		assert.deepEqual(Object.keys(mpBody.listParts()), ["test"]);
+	});
+	it("preserves an existing part when undefined content is rejected", () => {
+		const mpBody = new MultipartBody();
+		mpBody.addOrReplacePart("test", "text/plain", "original");
+		assert.throws(() => mpBody.addOrReplacePart("test", "text/plain", undefined), Error, "content cannot be undefined");
+		assert.strictEqual(mpBody.getPartValue("test"), "original");
 	});
 	//serialize method is tested in the serialization library
 });
