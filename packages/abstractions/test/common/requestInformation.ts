@@ -232,29 +232,36 @@ describe("RequestInformation", () => {
 		assert.equal(requestInformation.URL, expected);
 	});
 
-	it("Sets a scalar content", () => {
+	it.each([false, 0, "", true, 1, "some content"])("Sets scalar content without changing %j", (value) => {
 		const requestInformation = new RequestInformation();
-		let writtenValue = "";
+		let writtenValue: string | number | boolean | null | undefined;
+		const writeValue = (_key?: string, scalarValue?: string | number | boolean | null): void => {
+			writtenValue = scalarValue;
+		};
 		const mockRequestAdapter = {
 			getSerializationWriterFactory: () => {
 				return {
 					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					getSerializationWriter: (_: string) => {
 						return {
-							writeStringValue: (key?: string | undefined, value?: string | undefined) => {
-								writtenValue = value as unknown as string;
+							writeStringValue: writeValue,
+							writeNumberValue: writeValue,
+							writeBooleanValue: writeValue,
+							writeNullValue: () => {
+								writtenValue = null;
 							},
 							getSerializedContent: () => {
-								return new ArrayBuffer(0);
+								return new TextEncoder().encode(JSON.stringify(writtenValue)).buffer;
 							},
 						} as unknown as SerializationWriter;
 					},
 				} as SerializationWriterFactory;
 			},
 		} as RequestAdapter;
-		requestInformation.setContentFromScalar(mockRequestAdapter, "application/json", "some content");
+		requestInformation.setContentFromScalar(mockRequestAdapter, "application/json", value);
 		requestInformation.addRequestHeaders({ ConsistencyLevel: "eventual" });
-		assert.equal(writtenValue, "some content");
+		assert.strictEqual(writtenValue, value);
+		assert.equal(new TextDecoder().decode(requestInformation.content), JSON.stringify(value));
 	});
 
 	it("Sets a scalar collection content", () => {

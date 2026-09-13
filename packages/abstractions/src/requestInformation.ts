@@ -198,7 +198,7 @@ export class RequestInformation implements RequestInformationSetContent {
 				} else {
 					const valueType = typeof value;
 					span.setAttribute(RequestInformation.requestTypeKey, valueType);
-					if (!value) {
+					if (value === null || value === undefined) {
 						writer.writeNullValue(undefined);
 					} else if (valueType === "boolean") {
 						writer.writeBooleanValue(undefined, value as boolean);
