@@ -43,7 +43,7 @@ const toRequestInformation = <QueryParametersType extends object>(urlTemplate: s
 	requestInfo.configure(requestConfiguration, metadata.queryParametersMapper);
 	addAcceptHeaderIfPresent(metadata, requestInfo);
 	if (metadata.requestBodySerializer) {
-		if (!body) throw new Error("body cannot be undefined");
+		if (body === null || body === undefined) throw new Error("body cannot be undefined");
 		if (typeof metadata.requestBodySerializer === "function") {
 			requestInfo.setContentFromParsable(requestAdapter, metadata.requestBodyContentType ? metadata.requestBodyContentType : bodyMediaType, body, metadata.requestBodySerializer);
 		} else {

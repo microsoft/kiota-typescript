@@ -264,6 +264,26 @@ describe("RequestInformation", () => {
 		assert.equal(new TextDecoder().decode(requestInformation.content), JSON.stringify(value));
 	});
 
+	it.each([null, undefined, NaN])("Writes null for scalar %s", (value) => {
+		const requestInformation = new RequestInformation();
+		let wroteNull = false;
+		const mockRequestAdapter = {
+			getSerializationWriterFactory: () => ({
+				getSerializationWriter: () => ({
+					writeNullValue: () => {
+						wroteNull = true;
+					},
+					writeNumberValue: () => assert.fail("Expected null serialization"),
+					getSerializedContent: () => new TextEncoder().encode(wroteNull ? "null" : "").buffer,
+				}),
+			}),
+		} as unknown as RequestAdapter;
+		// JavaScript callers can supply null or undefined despite the TypeScript signature.
+		requestInformation.setContentFromScalar(mockRequestAdapter, "application/json", value as number);
+		assert.isTrue(wroteNull);
+		assert.equal(new TextDecoder().decode(requestInformation.content), "null");
+	});
+
 	it("Sets a scalar collection content", () => {
 		const requestInformation = new RequestInformation();
 		let writtenValue = "";
