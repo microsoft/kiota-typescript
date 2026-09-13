@@ -25,7 +25,7 @@ export class MultipartBody implements Parsable {
 	 * Adds or replaces a part with the given name, content type and content.
 	 * @param partName the name of the part to add or replace.
 	 * @param partContentType the content type of the part to add or replace.
-	 * @param content the content of the part to add or replace.
+	 * @param content the content of the part to add or replace. Must not be undefined.
 	 * @param serializationCallback the serialization callback to use when serializing the part.
 	 * @param fileName the name of the file associated with this part.
 	 */
@@ -34,7 +34,7 @@ export class MultipartBody implements Parsable {
 		if (!partContentType) {
 			throw new Error("partContentType cannot be undefined");
 		}
-		if (!content) throw new Error("content cannot be undefined");
+		if (content === undefined) throw new Error("content cannot be undefined");
 		const normalizePartName = this.normalizePartName(partName);
 		this._parts[normalizePartName] = {
 			contentType: partContentType,

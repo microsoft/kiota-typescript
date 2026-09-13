@@ -65,6 +65,25 @@ describe("MultipartSerializationWriter", () => {
 		const expectedString = `--${mpBody.getBoundary()}\r\nContent-Type: text/plain\r\nContent-Disposition: form-data; name="testPart"\r\n\r\ntest content\r\n--${mpBody.getBoundary()}--\r\n`;
 		assert.equal(result, expectedString);
 	});
+	it("serializes an empty string part", () => {
+		const mpBody = new MultipartBody();
+		mpBody.addOrReplacePart("empty", "text/plain", "");
+		const writer = new MultipartSerializationWriter();
+		writer.writeObjectValue(undefined, mpBody, serializeMultipartBody);
+		const result = new TextDecoder().decode(writer.getSerializedContent());
+		assert.equal(result, `--${mpBody.getBoundary()}\r\nContent-Type: text/plain\r\nContent-Disposition: form-data; name="empty"\r\n\r\n\r\n--${mpBody.getBoundary()}--\r\n`);
+	});
+	it("preserves delimiters around an empty string part", () => {
+		const mpBody = new MultipartBody();
+		mpBody.addOrReplacePart("first", "text/plain", "before");
+		mpBody.addOrReplacePart("empty", "text/plain", "");
+		mpBody.addOrReplacePart("last", "text/plain", "after");
+		const writer = new MultipartSerializationWriter();
+		writer.writeObjectValue(undefined, mpBody, serializeMultipartBody);
+		const result = new TextDecoder().decode(writer.getSerializedContent());
+		const boundary = mpBody.getBoundary();
+		assert.equal(result, `--${boundary}\r\nContent-Type: text/plain\r\nContent-Disposition: form-data; name="first"\r\n\r\nbefore\r\n` + `--${boundary}\r\nContent-Type: text/plain\r\nContent-Disposition: form-data; name="empty"\r\n\r\n\r\n` + `--${boundary}\r\nContent-Type: text/plain\r\nContent-Disposition: form-data; name="last"\r\n\r\nafter\r\n--${boundary}--\r\n`);
+	});
 	it("writes a structured object", () => {
 		const testEntity = {} as TestEntity;
 		testEntity.id = "48d31887-5fad-4d73-a9f5-3c356e68a038";
