@@ -55,15 +55,31 @@ export class JsonParseNode implements ParseNode {
 	public getDateOnlyValue = () => this.getDateOnlyValueFromRaw(this._jsonNode);
 	public getTimeOnlyValue = () => this.getTimeOnlyValueFromRaw(this._jsonNode);
 	public getDurationValue = () => this.getDurationValueFromRaw(this._jsonNode);
-	public getCollectionOfPrimitiveValues = <T>(primitiveType: PrimitiveTypesForDeserializationForCollection): T[] | undefined => {
+	public getCollectionOfPrimitiveValues = <T>(primitiveType?: PrimitiveTypesForDeserializationForCollection): T[] | undefined => {
 		if (!Array.isArray(this._jsonNode)) {
 			return undefined;
 		}
 		return (this._jsonNode as unknown[]).map((x) => this.getPrimitiveValue<T>(x, primitiveType));
 	};
-	private readonly getPrimitiveValue = <T>(value: unknown, primitiveType: PrimitiveTypesForDeserializationForCollection): T => {
+	private readonly getPrimitiveValue = <T>(value: unknown, primitiveType?: PrimitiveTypesForDeserializationForCollection): T => {
 		if (value === null) {
 			return null as T;
+		}
+		if (primitiveType === undefined) {
+			const typeOfValue = typeof value;
+			if (typeOfValue === "boolean" || typeOfValue === "string" || typeOfValue === "number") {
+				return value as unknown as T;
+			} else if (value instanceof Date) {
+				return this.getDateValueFromRaw(value) as unknown as T;
+			} else if (value instanceof DateOnly) {
+				return this.getDateOnlyValueFromRaw(value) as unknown as T;
+			} else if (value instanceof TimeOnly) {
+				return this.getTimeOnlyValueFromRaw(value) as unknown as T;
+			} else if (value instanceof Duration) {
+				return this.getDurationValueFromRaw(value) as unknown as T;
+			} else {
+				throw new Error(`encountered an unknown type during deserialization ${typeOfValue}`);
+			}
 		}
 		switch (primitiveType) {
 			case "boolean":

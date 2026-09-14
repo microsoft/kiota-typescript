@@ -58,7 +58,7 @@ export class TextParseNode implements ParseNode {
 	public getDateOnlyValue = () => DateOnly.parse(this.getStringValue());
 	public getTimeOnlyValue = () => TimeOnly.parse(this.getStringValue());
 	public getDurationValue = () => Duration.parse(this.getStringValue());
-	public getCollectionOfPrimitiveValues = <T>(primitiveType: PrimitiveTypesForDeserializationForCollection): T[] | undefined => {
+	public getCollectionOfPrimitiveValues = <T>(primitiveType?: PrimitiveTypesForDeserializationForCollection): T[] | undefined => {
 		return this.text.split(",").map((x) => {
 			const node = new TextParseNode(x);
 			switch (primitiveType) {
@@ -75,6 +75,7 @@ export class TextParseNode implements ParseNode {
 				case "Duration":
 					return node.getDurationValue() as unknown as T;
 				case "string":
+				case undefined:
 					return node.getStringValue() as unknown as T;
 				default:
 					throw new Error(`encountered an unsupported type during deserialization ${primitiveType as string}`);

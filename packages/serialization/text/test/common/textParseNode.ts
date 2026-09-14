@@ -19,6 +19,10 @@ describe("textParseNode", () => {
 		const result = new TextParseNode("1,2,3").getCollectionOfPrimitiveValues<number>("number");
 		assert.deepEqual(result, [1, 2, 3]);
 	});
+	it("getCollectionOfPrimitiveValues supports no-argument call for backward compatibility", () => {
+		const result = new TextParseNode("one,two,three").getCollectionOfPrimitiveValues<string>();
+		assert.deepEqual(result, ["one", "two", "three"]);
+	});
 	it("Test enum values with special or reserved characters", async () => {
 		type Test_status = (typeof Test_statusObject)[keyof typeof Test_statusObject];
 		const Test_statusObject = {

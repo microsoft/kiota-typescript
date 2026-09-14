@@ -116,4 +116,8 @@ describe("FormParseNode", () => {
 		);
 		assert.instanceOf(result?.[0], TimeOnly);
 	});
+	it("getCollectionOfPrimitiveValues supports no-argument call for backward compatibility", () => {
+		const result = new FormParseNode("one,two,three").getCollectionOfPrimitiveValues<string>();
+		assert.deepEqual(result, ["one", "two", "three"]);
+	});
 });

@@ -404,6 +404,37 @@ describe("JsonParseNode", () => {
 		const result = new JsonParseNode(["hello", null, "world"], backingStoreFactory).getCollectionOfPrimitiveValues<string | null>("string");
 		assert.deepEqual(result, ["hello", null, "world"]);
 	});
+	it("getCollectionOfPrimitiveValues supports no-argument call for backward compatibility", () => {
+		const stringResult = new JsonParseNode(["one", "two", "three"], backingStoreFactory).getCollectionOfPrimitiveValues<string>();
+		assert.deepEqual(stringResult, ["one", "two", "three"]);
+
+		const numberResult = new JsonParseNode([1, 2, 3], backingStoreFactory).getCollectionOfPrimitiveValues<number>();
+		assert.deepEqual(numberResult, [1, 2, 3]);
+
+		const boolResult = new JsonParseNode([true, false, true], backingStoreFactory).getCollectionOfPrimitiveValues<boolean>();
+		assert.deepEqual(boolResult, [true, false, true]);
+
+		const mixedWithNull = new JsonParseNode(["hello", null, "world"], backingStoreFactory).getCollectionOfPrimitiveValues<string | null>();
+		assert.deepEqual(mixedWithNull, ["hello", null, "world"]);
+
+		const date = new Date("2023-01-01T00:00:00.000Z");
+		const dateResult = new JsonParseNode([date], backingStoreFactory).getCollectionOfPrimitiveValues<Date>();
+		assert.deepEqual(dateResult, [date]);
+
+		const dateOnly = new DateOnly({ year: 2023, month: 1, day: 1 });
+		const dateOnlyResult = new JsonParseNode([dateOnly], backingStoreFactory).getCollectionOfPrimitiveValues<DateOnly>();
+		assert.deepEqual(dateOnlyResult, [dateOnly]);
+
+		const timeOnly = new TimeOnly({ hours: 10, minutes: 30, seconds: 0 });
+		const timeOnlyResult = new JsonParseNode([timeOnly], backingStoreFactory).getCollectionOfPrimitiveValues<TimeOnly>();
+		assert.deepEqual(timeOnlyResult, [timeOnly]);
+
+		const duration = Duration.parse("PT1H");
+		const durationResult = new JsonParseNode([duration], backingStoreFactory).getCollectionOfPrimitiveValues<Duration>();
+		assert.deepEqual(durationResult, [duration]);
+
+		assert.throw(() => new JsonParseNode([{}], backingStoreFactory).getCollectionOfPrimitiveValues(), /encountered an unknown type/);
+	});
 
 	it("should parse a union of objects and primitive values when value is primitive", async () => {
 		const result = new JsonParseNode(

@@ -86,7 +86,7 @@ export class FormParseNode implements ParseNode {
 	public getDateOnlyValue = () => this.getDateOnlyValueFromRaw(this._rawString);
 	public getTimeOnlyValue = () => this.getTimeOnlyValueFromRaw(this._rawString);
 	public getDurationValue = () => this.getDurationValueFromRaw(this._rawString);
-	public getCollectionOfPrimitiveValues = <T>(primitiveType: PrimitiveTypesForDeserializationForCollection): T[] | undefined => {
+	public getCollectionOfPrimitiveValues = <T>(primitiveType?: PrimitiveTypesForDeserializationForCollection): T[] | undefined => {
 		const values = this._rawString.split(",");
 		return values.map((x) => {
 			switch (primitiveType) {
@@ -103,6 +103,7 @@ export class FormParseNode implements ParseNode {
 				case "Duration":
 					return this.getDurationValueFromRaw(x) as unknown as T;
 				case "string":
+				case undefined:
 					return this.getStringValueFromRaw(x) as unknown as T;
 				default:
 					throw new Error(`encountered an unsupported type during deserialization ${primitiveType as string}`);
