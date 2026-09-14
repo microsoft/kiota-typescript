@@ -62,6 +62,7 @@ export default [{
                 "packages/abstractions/tsconfig.json",
                 "packages/bundle/tsconfig.json",
                 "packages/authentication/azure/tsconfig.json",
+                "packages/authentication/msal-browser/tsconfig.json",
                 "packages/authentication/spfx/tsconfig.json",
                 "packages/http/fetch/tsconfig.json",
                 "packages/serialization/form/tsconfig.json",
