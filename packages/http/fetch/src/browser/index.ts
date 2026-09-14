@@ -24,6 +24,7 @@ export * from "../middlewares/options/chaosHandlerOptions";
 export * from "../middlewares/options/chaosStrategy";
 export * from "../middlewares/options/compressionHandlerOptions";
 export * from "../middlewares/options/headersInspectionOptions";
+export * from "../middlewares/options/fetchRequestOption";
 export * from "../middlewares/options/parametersNameDecodingOptions";
 export * from "../middlewares/options/redirectHandlerOptions";
 export * from "../middlewares/options/retryHandlerOptions";
