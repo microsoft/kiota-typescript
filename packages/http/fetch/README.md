@@ -12,6 +12,51 @@ Read more about Kiota [here](https://github.com/microsoft/kiota/blob/main/README
 
 1. `npm i @microsoft/kiota-http-fetchlibrary`.
 
+## Configuring Native Fetch Options (e.g., Cookies / Credentials)
+
+If your API requires sending cookies or credentials (such as `credentials: 'include'`), or custom options like `mode`, `cache`, or `keepalive`, you can configure them in two ways:
+
+### 1. Using `FetchRequestOption`
+
+Attach `FetchRequestOption` either globally on `FetchRequestAdapter` or per request:
+
+```typescript
+import { FetchRequestOption } from '@microsoft/kiota-http-fetchlibrary';
+
+// As default options on the adapter:
+const adapter = new FetchRequestAdapter(
+  authProvider,
+  undefined,
+  undefined,
+  httpClient,
+  undefined,
+  undefined,
+  new FetchRequestOption({ credentials: 'include' })
+);
+
+// Or dynamically set on an existing adapter:
+adapter.defaultFetchOptions = new FetchRequestOption({ credentials: 'include' });
+
+// Or per request on RequestInformation:
+requestInformation.addRequestOptions([new FetchRequestOption({ credentials: 'include' })]);
+```
+
+### 2. Using a Custom Fetch Function with `KiotaClientFactory`
+
+Pass a custom fetch wrapper to `KiotaClientFactory.create()`:
+
+```typescript
+import { KiotaClientFactory } from '@microsoft/kiota-http-fetchlibrary';
+
+const customFetch = (url: Parameters<typeof fetch>[0], init?: RequestInit) =>
+  fetch(url, {
+    ...init,
+    credentials: 'include',
+  });
+
+const httpClient = KiotaClientFactory.create(customFetch);
+```
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
