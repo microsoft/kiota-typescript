@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.108](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.107...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.108) (2026-09-15)
+
+
+### Miscellaneous Chores
+
+* **@microsoft/kiota-http-fetchlibrary:** Synchronize microsoft-kiota versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.107 to ^1.0.0-preview.108
+
 ## [1.0.0-preview.107](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.106...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.107) (2026-09-04)
 
 
