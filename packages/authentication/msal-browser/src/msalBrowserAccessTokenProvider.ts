@@ -51,9 +51,9 @@ export class MsalBrowserAccessTokenProvider implements AccessTokenProvider {
 	 * @inheritdoc
 	 */
 	public getAuthorizationToken = (url?: string, additionalAuthenticationContext?: Record<string, unknown>): Promise<string> => {
-		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getAuthorizationToken", (span) => {
+		return trace.getTracer(this.observabilityOptions.getTracerInstrumentationName()).startActiveSpan("getAuthorizationToken", async (span) => {
 			try {
-				return this.getAuthorizationTokenInternal(url, additionalAuthenticationContext, span);
+				return await this.getAuthorizationTokenInternal(url, additionalAuthenticationContext, span);
 			} finally {
 				span.end();
 			}
@@ -75,14 +75,15 @@ export class MsalBrowserAccessTokenProvider implements AccessTokenProvider {
 		}
 		span?.setAttribute("com.microsoft.kiota.authentication.additional_claims_provided", decodedClaims !== "");
 
-		if (this.scopes.length === 0) {
+		let scopes = this.scopes;
+		if (scopes.length === 0) {
 			const [scheme, host] = this.getSchemeAndHostFromUrl(url);
-			this.scopes.push(`${scheme}://${host}/.default`);
+			scopes = [`${scheme}://${host}/.default`];
 		}
-		span?.setAttribute("com.microsoft.kiota.authentication.scopes", this.scopes.join(","));
+		span?.setAttribute("com.microsoft.kiota.authentication.scopes", scopes.join(","));
 
 		const silentRequest: SilentRequest = {
-			scopes: this.scopes,
+			scopes,
 			account: this.account,
 			claims: decodedClaims || undefined,
 		};
@@ -94,14 +95,16 @@ export class MsalBrowserAccessTokenProvider implements AccessTokenProvider {
 			if (error instanceof InteractionRequiredAuthError) {
 				if (this.interactionType === InteractionType.Popup) {
 					const popupRequest: PopupRequest = {
-						scopes: this.scopes,
+						scopes,
+						account: this.account,
 						claims: decodedClaims || undefined,
 					};
 					const response: AuthenticationResult = await this.clientApplication.acquireTokenPopup(popupRequest);
 					return response?.accessToken ?? "";
 				} else if (this.interactionType === InteractionType.Redirect) {
 					const redirectRequest: RedirectRequest = {
-						scopes: this.scopes,
+						scopes,
+						account: this.account,
 						claims: decodedClaims || undefined,
 					};
 					await this.clientApplication.acquireTokenRedirect(redirectRequest);

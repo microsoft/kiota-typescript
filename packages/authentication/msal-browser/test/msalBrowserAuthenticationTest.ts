@@ -135,7 +135,7 @@ describe("MsalBrowserAccessTokenProvider and MsalBrowserAuthenticationProvider",
 			scopes,
 		});
 
-		const rawClaims = Buffer.from('{"access_token":{"nbf":{"essential":true,"value":"1652813508"}}}').toString("base64");
+		const rawClaims = btoa('{"access_token":{"nbf":{"essential":true,"value":"1652813508"}}}');
 		const token = await provider.getAuthorizationToken("https://graph.microsoft.com/v1.0/me", {
 			claims: rawClaims,
 		});
@@ -161,6 +161,49 @@ describe("MsalBrowserAccessTokenProvider and MsalBrowserAuthenticationProvider",
 		const token = await provider.getAuthorizationToken("https://graph.microsoft.com/v1.0/users");
 		assert.equal(token, "inferred_token");
 		assert.deepEqual(capturedScopes, ["https://graph.microsoft.com/.default"]);
+	});
+
+	it("Does not mutate shared scopes across different URL hosts", async () => {
+		const capturedScopesList: string[][] = [];
+		const mockApp = createMockClientApp({
+			acquireTokenSilent: (request) => {
+				capturedScopesList.push(request.scopes);
+				return Promise.resolve({ accessToken: "inferred_token" } as AuthenticationResult);
+			},
+		});
+
+		const provider = new MsalBrowserAccessTokenProvider({
+			clientApplication: mockApp,
+			scopes: [],
+		});
+
+		await provider.getAuthorizationToken("https://graph.microsoft.com/v1.0/users");
+		await provider.getAuthorizationToken("https://graph.microsoft.us/v1.0/users");
+
+		assert.deepEqual(capturedScopesList[0], ["https://graph.microsoft.com/.default"]);
+		assert.deepEqual(capturedScopesList[1], ["https://graph.microsoft.us/.default"]);
+	});
+
+	it("Passes configured account to popup request on fallback", async () => {
+		let capturedPopupRequest: any;
+		const mockApp = createMockClientApp({
+			acquireTokenSilent: () => Promise.reject(new InteractionRequiredAuthError("interaction required")),
+			acquireTokenPopup: (request) => {
+				capturedPopupRequest = request;
+				return Promise.resolve({ accessToken: "popup_token" } as AuthenticationResult);
+			},
+		});
+
+		const provider = new MsalBrowserAccessTokenProvider({
+			clientApplication: mockApp,
+			scopes,
+			account: dummyAccount,
+			interactionType: InteractionType.Popup,
+		});
+
+		const token = await provider.getAuthorizationToken("https://graph.microsoft.com/v1.0/me");
+		assert.equal(token, "popup_token");
+		assert.equal(capturedPopupRequest?.account, dummyAccount);
 	});
 
 	it("Returns empty string for non-allowed hosts or missing URL", async () => {
