@@ -78,7 +78,7 @@ export class BodyInspectionOptions implements RequestOption {
 		}
 		const data = new Uint8Array(this.requestBody);
 		return new ReadableStream<Uint8Array>({
-			start(controller) {
+			start: (controller) => {
 				controller.enqueue(data);
 				controller.close();
 			},
@@ -97,7 +97,7 @@ export class BodyInspectionOptions implements RequestOption {
 		}
 		const data = new Uint8Array(this.responseBody);
 		return new ReadableStream<Uint8Array>({
-			start(controller) {
+			start: (controller) => {
 				controller.enqueue(data);
 				controller.close();
 			},

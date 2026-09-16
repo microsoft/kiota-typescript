@@ -35,10 +35,10 @@ export class BodyInspectionHandler implements Middleware {
 		}
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
 		if (obsOptions) {
-			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("bodyInspectionHandler - execute", (span) => {
+			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("bodyInspectionHandler - execute", async (span) => {
 				try {
 					span.setAttribute("com.microsoft.kiota.handler.bodyInspection.enable", true);
-					return this.executeInternal(url, requestInit, requestOptions, currentOptions);
+					return await this.executeInternal(url, requestInit, requestOptions, currentOptions);
 				} finally {
 					span.end();
 				}
@@ -68,7 +68,7 @@ export class BodyInspectionHandler implements Middleware {
 	private async inspectRequestBody(requestInit: RequestInit, currentOptions: BodyInspectionOptions): Promise<void> {
 		const rawBody = requestInit.body;
 		if (typeof rawBody === "string") {
-			currentOptions.setRequestBody(new TextEncoder().encode(rawBody).buffer as ArrayBuffer);
+			currentOptions.setRequestBody(new TextEncoder().encode(rawBody).buffer);
 		} else if (rawBody instanceof ArrayBuffer) {
 			currentOptions.setRequestBody(rawBody.slice(0));
 		} else if (ArrayBuffer.isView(rawBody)) {
@@ -78,17 +78,21 @@ export class BodyInspectionHandler implements Middleware {
 			currentOptions.setRequestBody(buffer.slice(0));
 			requestInit.body = new Blob([buffer], { type: rawBody.type });
 		} else if (typeof ReadableStream !== "undefined" && rawBody instanceof ReadableStream) {
-			const [stream1, stream2] = rawBody.tee();
+			const stream = rawBody as ReadableStream<Uint8Array>;
+			const [stream1, stream2] = stream.tee();
 			requestInit.body = stream1;
 			const reader = stream2.getReader();
 			const chunks: Uint8Array[] = [];
 			let totalLength = 0;
 			while (true) {
-				const { done, value } = await reader.read();
-				if (done) break;
-				if (value) {
-					chunks.push(value);
-					totalLength += value.length;
+				const result = await reader.read();
+				if (result.done) {
+					break;
+				}
+				const chunk = result.value;
+				if (chunk) {
+					chunks.push(chunk);
+					totalLength += chunk.length;
 				}
 			}
 			const concatenated = new Uint8Array(totalLength);
@@ -99,7 +103,7 @@ export class BodyInspectionHandler implements Middleware {
 			}
 			currentOptions.setRequestBody(concatenated.buffer);
 		} else if (typeof URLSearchParams !== "undefined" && rawBody instanceof URLSearchParams) {
-			currentOptions.setRequestBody(new TextEncoder().encode(rawBody.toString()).buffer as ArrayBuffer);
+			currentOptions.setRequestBody(new TextEncoder().encode(rawBody.toString()).buffer);
 		}
 	}
 
