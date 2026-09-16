@@ -54,7 +54,7 @@ describe("FetchRequestOption", () => {
 		const requestInfo = new RequestInformation();
 		requestInfo.URL = "https://example.com/api";
 		requestInfo.httpMethod = HttpMethod.POST;
-		requestInfo.content = "test body";
+		requestInfo.content = new TextEncoder().encode("test body").buffer as ArrayBuffer;
 
 		const option = new FetchRequestOption({
 			credentials: "include",
@@ -109,5 +109,27 @@ describe("FetchRequestOption", () => {
 		const nativeRequest = await adapter.convertToNativeRequest<Record<string, unknown>>(requestInfo);
 		assert.equal(nativeRequest.credentials, "include"); // overridden
 		assert.equal(nativeRequest.mode, "same-origin"); // preserved from default
+	});
+
+	it("Should preserve empty referrer string when overriding default options", async () => {
+		const defaultOptions = new FetchRequestOption({
+			referrer: "https://example.com/default",
+			referrerPolicy: "origin",
+		});
+		const adapter = new FetchRequestAdapter(new AnonymousAuthenticationProvider(), undefined, undefined, undefined, undefined, undefined, defaultOptions);
+
+		const requestInfo = new RequestInformation();
+		requestInfo.URL = "https://example.com/api";
+		requestInfo.httpMethod = HttpMethod.GET;
+		requestInfo.addRequestOptions([
+			new FetchRequestOption({
+				referrer: "",
+				referrerPolicy: "no-referrer",
+			}),
+		]);
+
+		const nativeRequest = await adapter.convertToNativeRequest<Record<string, unknown>>(requestInfo);
+		assert.equal(nativeRequest.referrer, "");
+		assert.equal(nativeRequest.referrerPolicy, "no-referrer");
 	});
 });

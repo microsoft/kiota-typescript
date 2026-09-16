@@ -37,6 +37,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 	 * @param httpClient the http client to use to execute requests.
 	 * @param observabilityOptions the observability options to use.
 	 * @param backingStoreFactory the backing store factory to use.
+	 * @param defaultFetchOptions the default fetch options to use.
 	 */
 	public constructor(
 		public readonly authenticationProvider: AuthenticationProvider,
@@ -571,13 +572,13 @@ export class FetchRequestAdapter implements RequestAdapter {
 		if (fetchOption.keepalive !== undefined) {
 			req.keepalive = fetchOption.keepalive;
 		}
-		if (fetchOption.redirect) {
+		if (fetchOption.redirect !== undefined) {
 			req.redirect = fetchOption.redirect;
 		}
-		if (fetchOption.referrer) {
+		if (fetchOption.referrer !== undefined) {
 			req.referrer = fetchOption.referrer;
 		}
-		if (fetchOption.referrerPolicy) {
+		if (fetchOption.referrerPolicy !== undefined) {
 			req.referrerPolicy = fetchOption.referrerPolicy;
 		}
 		if (fetchOption.init) {

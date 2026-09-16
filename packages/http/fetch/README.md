@@ -21,7 +21,7 @@ If your API requires sending cookies or credentials (such as `credentials: 'incl
 Attach `FetchRequestOption` either globally on `FetchRequestAdapter` or per request:
 
 ```typescript
-import { FetchRequestOption } from '@microsoft/kiota-http-fetchlibrary';
+import { FetchRequestAdapter, FetchRequestOption } from '@microsoft/kiota-http-fetchlibrary';
 
 // As default options on the adapter:
 const adapter = new FetchRequestAdapter(
