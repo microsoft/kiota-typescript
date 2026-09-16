@@ -21,6 +21,7 @@ const msalInstance = new PublicClientApplication({
     clientId: "YOUR_CLIENT_ID",
   },
 });
+await msalInstance.initialize();
 
 const authProvider = new MsalBrowserAuthenticationProvider({
   clientApplication: msalInstance,

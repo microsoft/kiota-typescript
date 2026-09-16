@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { type AccountInfo, type AuthenticationResult, type IPublicClientApplication, InteractionRequiredAuthError, InteractionType, type PopupRequest, type RedirectRequest, type SilentRequest } from "@azure/msal-browser";
+import { type AccountInfo, type AuthenticationResult, type IPublicClientApplication, InteractionRequiredAuthError, InteractionRequiredAuthErrorCodes, InteractionType, type PopupRequest, type RedirectRequest, type SilentRequest } from "@azure/msal-browser";
 import { type AccessTokenProvider, AllowedHostsValidator, inNodeEnv, isLocalhostUrl, validateProtocol } from "@microsoft/kiota-abstractions";
 import { type Span, trace } from "@opentelemetry/api";
 
@@ -92,7 +92,7 @@ export class MsalBrowserAccessTokenProvider implements AccessTokenProvider {
 			const response: AuthenticationResult = await this.clientApplication.acquireTokenSilent(silentRequest);
 			return response?.accessToken ?? "";
 		} catch (error) {
-			if (error instanceof InteractionRequiredAuthError) {
+			if (this.isInteractionRequired(error)) {
 				if (this.interactionType === InteractionType.Popup) {
 					const popupRequest: PopupRequest = {
 						scopes,
@@ -113,6 +113,25 @@ export class MsalBrowserAccessTokenProvider implements AccessTokenProvider {
 			}
 			throw error;
 		}
+	};
+
+	private readonly isInteractionRequired = (error: unknown): boolean => {
+		if (error instanceof InteractionRequiredAuthError) {
+			return true;
+		}
+		if (error && typeof error === "object") {
+			const authErr = error as { name?: string; errorCode?: string };
+			if (authErr.name === "InteractionRequiredAuthError") {
+				return true;
+			}
+			if (typeof authErr.errorCode === "string") {
+				const errorCodes: string[] = Object.values(InteractionRequiredAuthErrorCodes);
+				if (errorCodes.includes(authErr.errorCode)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	};
 
 	private readonly validateRequestUrlProtocol = (url: string): void => {

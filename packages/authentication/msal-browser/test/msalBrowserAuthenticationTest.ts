@@ -79,6 +79,33 @@ describe("MsalBrowserAccessTokenProvider and MsalBrowserAuthenticationProvider",
 		assert.equal(token, "popup_token");
 	});
 
+	it("Falls back to popup when acquireTokenSilent throws cross-module InteractionRequiredAuthError object", async () => {
+		let popupCalled = false;
+		const crossModuleError = {
+			name: "InteractionRequiredAuthError",
+			errorCode: "interaction_required",
+			message: "need interaction",
+		};
+		const mockApp = createMockClientApp({
+			acquireTokenSilent: () => Promise.reject(crossModuleError),
+			acquireTokenPopup: (request) => {
+				popupCalled = true;
+				assert.deepEqual(request.scopes, scopes);
+				return Promise.resolve({ accessToken: "cross_module_popup_token" } as AuthenticationResult);
+			},
+		});
+
+		const provider = new MsalBrowserAccessTokenProvider({
+			clientApplication: mockApp,
+			scopes,
+			interactionType: InteractionType.Popup,
+		});
+
+		const token = await provider.getAuthorizationToken("https://graph.microsoft.com/v1.0/me");
+		assert.isTrue(popupCalled);
+		assert.equal(token, "cross_module_popup_token");
+	});
+
 	it("Triggers redirect when acquireTokenSilent throws InteractionRequiredAuthError and interactionType is Redirect", async () => {
 		let redirectCalled = false;
 		const mockApp = createMockClientApp({
