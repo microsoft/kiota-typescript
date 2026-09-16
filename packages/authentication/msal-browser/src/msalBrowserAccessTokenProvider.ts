@@ -6,7 +6,7 @@
  */
 
 import { type AccountInfo, type AuthenticationResult, type IPublicClientApplication, InteractionRequiredAuthError, InteractionType, type PopupRequest, type RedirectRequest, type SilentRequest } from "@azure/msal-browser";
-import { type AccessTokenProvider, AllowedHostsValidator, inNodeEnv, validateProtocol } from "@microsoft/kiota-abstractions";
+import { type AccessTokenProvider, AllowedHostsValidator, inNodeEnv, isLocalhostUrl, validateProtocol } from "@microsoft/kiota-abstractions";
 import { type Span, trace } from "@opentelemetry/api";
 
 import { type MsalBrowserAuthenticationConfig } from "./msalBrowserAuthenticationConfig";
@@ -65,7 +65,7 @@ export class MsalBrowserAccessTokenProvider implements AccessTokenProvider {
 			span?.setAttribute("com.microsoft.kiota.authentication.is_url_valid", false);
 			return "";
 		}
-		validateProtocol(url);
+		this.validateRequestUrlProtocol(url);
 		span?.setAttribute("com.microsoft.kiota.authentication.is_url_valid", true);
 
 		let decodedClaims = "";
@@ -112,6 +112,24 @@ export class MsalBrowserAccessTokenProvider implements AccessTokenProvider {
 				}
 			}
 			throw error;
+		}
+	};
+
+	private readonly validateRequestUrlProtocol = (url: string): void => {
+		validateProtocol(url);
+		let parsedUrl: URL | undefined;
+		try {
+			const baseUrl = !inNodeEnv() && typeof window !== "undefined" && window.location ? window.location.href : undefined;
+			parsedUrl = baseUrl ? new URL(url, baseUrl) : new URL(url);
+		} catch {
+			// URL cannot be parsed as absolute URL
+		}
+		if (parsedUrl) {
+			if (!isLocalhostUrl(parsedUrl.href) && parsedUrl.protocol.toLocaleLowerCase() !== "https:") {
+				throw new Error("Authentication scheme can only be used with https requests");
+			}
+		} else if (!isLocalhostUrl(url) && (url.toLocaleLowerCase().startsWith("http://") || !url.toLocaleLowerCase().startsWith("https://"))) {
+			throw new Error("Authentication scheme can only be used with https requests");
 		}
 	};
 

@@ -7,7 +7,7 @@
 
 import { type AccountInfo, type AuthenticationResult, type IPublicClientApplication, InteractionRequiredAuthError, InteractionType } from "@azure/msal-browser";
 import { RequestInformation } from "@microsoft/kiota-abstractions";
-import { assert, describe, it } from "vitest";
+import { assert, describe, expect, it } from "vitest";
 
 import { MsalBrowserAccessTokenProvider } from "../src/msalBrowserAccessTokenProvider";
 import { MsalBrowserAuthenticationProvider } from "../src/msalBrowserAuthenticationProvider";
@@ -244,5 +244,65 @@ describe("MsalBrowserAccessTokenProvider and MsalBrowserAuthenticationProvider",
 
 		assert.isDefined(provider.getAllowedHostsValidator());
 		assert.isTrue(provider.getAllowedHostsValidator().isUrlHostValid("https://graph.microsoft.com/v1.0"));
+	});
+
+	it("Throws error for non-https and non-localhost URLs", async () => {
+		const mockApp = createMockClientApp();
+		const provider = new MsalBrowserAccessTokenProvider({
+			clientApplication: mockApp,
+			scopes,
+		});
+
+		await expect(provider.getAuthorizationToken("http://graph.microsoft.com/v1.0/me")).rejects.toThrow("Authentication scheme can only be used with https requests");
+	});
+
+	it("Does not throw for localhost http URLs", async () => {
+		const mockApp = createMockClientApp({
+			acquireTokenSilent: () => Promise.resolve({ accessToken: "local_token" } as AuthenticationResult),
+		});
+		const provider = new MsalBrowserAccessTokenProvider(
+			{
+				clientApplication: mockApp,
+				scopes,
+			},
+			new Set(["localhost"]),
+		);
+
+		const token = await provider.getAuthorizationToken("http://localhost:3000/v1.0/me");
+		assert.equal(token, "local_token");
+	});
+
+	it("Rejects insecure http URL even when window.location.protocol is https in browser", async () => {
+		const mockApp = createMockClientApp();
+		const provider = new MsalBrowserAccessTokenProvider({
+			clientApplication: mockApp,
+			scopes,
+		});
+
+		let originalProtocolDesc: PropertyDescriptor | undefined;
+		if (typeof window !== "undefined" && window.location) {
+			try {
+				originalProtocolDesc = Object.getOwnPropertyDescriptor(window.location, "protocol");
+				Object.defineProperty(window.location, "protocol", {
+					value: "https:",
+					configurable: true,
+					writable: true,
+				});
+			} catch {
+				// Window.location property redefinition may be restricted in some browser engines
+			}
+		}
+
+		try {
+			await expect(provider.getAuthorizationToken("http://graph.microsoft.com/v1.0/me")).rejects.toThrow("Authentication scheme can only be used with https requests");
+		} finally {
+			if (originalProtocolDesc && typeof window !== "undefined") {
+				try {
+					Object.defineProperty(window.location, "protocol", originalProtocolDesc);
+				} catch {
+					// Ignore cleanup failure
+				}
+			}
+		}
 	});
 });
