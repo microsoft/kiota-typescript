@@ -8,6 +8,7 @@
 import { type ApiError, type AuthenticationProvider, type BackingStoreFactory, InMemoryBackingStoreFactory, type DateOnly, DefaultApiError, type Duration, enableBackingStoreForParseNodeFactory, enableBackingStoreForSerializationWriterFactory, type ErrorMappings, type Parsable, type ParsableFactory, type ParseNode, type ParseNodeFactory, ParseNodeFactoryRegistry, type PrimitiveTypesForDeserialization, type PrimitiveTypesForDeserializationForCollection, type PrimitiveTypesForDeserializationType, type PrimitiveTypesForDeserializationTypeForCollection, type RequestAdapter, type RequestInformation, type ResponseHandler, type ResponseHandlerOption, ResponseHandlerOptionKey, type SerializationWriterFactory, SerializationWriterFactoryRegistry, type TimeOnly } from "@microsoft/kiota-abstractions";
 import { type Span, SpanStatusCode, trace } from "@opentelemetry/api";
 import { HttpClient } from "./httpClient";
+import { FetchRequestOption, FetchRequestOptionKey } from "./middlewares/options/fetchRequestOption";
 import { type ObservabilityOptions, ObservabilityOptionsImpl } from "./observabilityOptions";
 
 /**
@@ -36,6 +37,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 	 * @param httpClient the http client to use to execute requests.
 	 * @param observabilityOptions the observability options to use.
 	 * @param backingStoreFactory the backing store factory to use.
+	 * @param defaultFetchOptions the default fetch options to use.
 	 */
 	public constructor(
 		public readonly authenticationProvider: AuthenticationProvider,
@@ -44,6 +46,7 @@ export class FetchRequestAdapter implements RequestAdapter {
 		private readonly httpClient: HttpClient = new HttpClient(),
 		observabilityOptions: ObservabilityOptions = new ObservabilityOptionsImpl(),
 		private backingStoreFactory = new InMemoryBackingStoreFactory(),
+		public defaultFetchOptions?: FetchRequestOption,
 	) {
 		if (!authenticationProvider) {
 			throw new Error("authentication provider cannot be null");
@@ -538,11 +541,49 @@ export class FetchRequestAdapter implements RequestAdapter {
 					headers,
 					body: requestInfo.content,
 				} as RequestInit;
+				if (this.defaultFetchOptions) {
+					this.applyFetchOptions(request, this.defaultFetchOptions);
+				}
+				const requestOptions = requestInfo.getRequestOptions();
+				const fetchOption = requestOptions[FetchRequestOptionKey] as FetchRequestOption;
+				if (fetchOption) {
+					this.applyFetchOptions(request, fetchOption);
+				}
 				return request;
 			} finally {
 				span.end();
 			}
 		});
+	};
+	private readonly applyFetchOptions = (request: RequestInit, fetchOption: FetchRequestOption): void => {
+		const req = request as Record<string, unknown>;
+		if (fetchOption.credentials) {
+			req.credentials = fetchOption.credentials;
+		}
+		if (fetchOption.mode) {
+			req.mode = fetchOption.mode;
+		}
+		if (fetchOption.cache) {
+			req.cache = fetchOption.cache;
+		}
+		if (fetchOption.integrity) {
+			req.integrity = fetchOption.integrity;
+		}
+		if (fetchOption.keepalive !== undefined) {
+			req.keepalive = fetchOption.keepalive;
+		}
+		if (fetchOption.redirect !== undefined) {
+			req.redirect = fetchOption.redirect;
+		}
+		if (fetchOption.referrer !== undefined) {
+			req.referrer = fetchOption.referrer;
+		}
+		if (fetchOption.referrerPolicy !== undefined) {
+			req.referrerPolicy = fetchOption.referrerPolicy;
+		}
+		if (fetchOption.init) {
+			Object.assign(request, fetchOption.init);
+		}
 	};
 	private readonly foldHeaderValue = (value: string[] | null): string => {
 		if (!value || value.length < 1) {
