@@ -5,6 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { BodyInspectionHandler } from "../bodyInspectionHandler";
 import { CustomFetchHandler } from "../customFetchHandler";
 import { HeadersInspectionHandler } from "../headersInspectionHandler";
 import { Middleware } from "../middleware";
@@ -27,7 +28,7 @@ export class MiddlewareFactory {
 
 	public static getDefaultMiddlewares(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args)): Middleware[] {
 		// Browsers handles redirection automatically and do not require the redirectionHandler
-		return [new RetryHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new HeadersInspectionHandler(), new UrlReplaceHandler(), new CustomFetchHandler(customFetch)];
+		return [new RetryHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new HeadersInspectionHandler(), new BodyInspectionHandler(), new UrlReplaceHandler(), new CustomFetchHandler(customFetch)];
 	}
 	/**
 	 * @param customFetch - The custom fetch implementation
@@ -37,7 +38,8 @@ export class MiddlewareFactory {
 
 	public static getPerformanceMiddlewares(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args)): Middleware[] {
 		const middlewares = MiddlewareFactory.getDefaultMiddlewares(customFetch);
-		middlewares.splice(middlewares.length - 3, 0, new CompressionHandler()); // insert CompressionHandler before HeadersInspectionHandler
+		const headersIndex = middlewares.findIndex((m) => m instanceof HeadersInspectionHandler);
+		middlewares.splice(headersIndex >= 0 ? headersIndex : middlewares.length - 4, 0, new CompressionHandler()); // insert CompressionHandler before HeadersInspectionHandler
 		return middlewares;
 	}
 }
