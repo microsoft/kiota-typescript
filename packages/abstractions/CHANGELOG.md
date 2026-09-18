@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0-preview.108](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.107...@microsoft/kiota-abstractions@1.0.0-preview.108) (2026-09-15)
+
+
+### Bug Fixes
+
+* **abstractions:** accept defined falsy multipart content ([#2132](https://github.com/microsoft/kiota-typescript/issues/2132)) ([4cbeab0](https://github.com/microsoft/kiota-typescript/commit/4cbeab09001546c85a2656e22d4306fbf52034c1))
+* **abstractions:** preserve falsy scalar request bodies ([#2133](https://github.com/microsoft/kiota-typescript/issues/2133)) ([b86c09a](https://github.com/microsoft/kiota-typescript/commit/b86c09a5d64c8574a05c7fa6f933a9a6856996f4))
+
 ## [1.0.0-preview.107](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.106...@microsoft/kiota-abstractions@1.0.0-preview.107) (2026-09-04)
 
 
