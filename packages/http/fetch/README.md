@@ -37,9 +37,6 @@ await client.users.get({
 
 // Access the inspected body as an ArrayBuffer:
 const responseBuffer = bodyInspectionOptions.getResponseBody();
-
-// Or access as a ReadableStream:
-const responseStream = bodyInspectionOptions.getResponseBodyStream();
 ```
 
 ### Memory and Stream-Lifecycle Considerations
@@ -47,7 +44,8 @@ const responseStream = bodyInspectionOptions.getResponseBodyStream();
 - **Memory / Buffering**: Inspecting request and response bodies creates in-memory copies (`ArrayBuffer`). For large payloads or file transfers, buffering the entire body into memory increases heap usage. Only enable inspection when necessary.
 - **Stream Lifecycle**: In JavaScript and browser fetch implementations, `ReadableStream` instances are single-use and can only be consumed once.
   - When request body inspection is enabled and the request body is a `ReadableStream`, `BodyInspectionHandler` branches the stream via `tee()` so that one branch is buffered in memory for inspection while the other continues downstream to the network request without disturbing payload transmission.
-  - When accessing bodies via `getRequestBodyStream()` or `getResponseBodyStream()`, a fresh, unconsumed `ReadableStream` is created from the underlying `ArrayBuffer` on each call. This guarantees that consumers can read or pipe the stream multiple times without stream depletion or interfering with downstream middleware or fetch execution.
+  - Node.js readable request bodies are buffered once and replaced with replayable bytes before the request continues downstream.
+  - The captured request and response bodies are exposed as `ArrayBuffer` values. Callers that need another representation can construct it explicitly from those bytes.
 
 ## Contributing
 

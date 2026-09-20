@@ -37,7 +37,7 @@ export class BodyInspectionHandler implements Middleware {
 		if (obsOptions) {
 			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("bodyInspectionHandler - execute", async (span) => {
 				try {
-					span.setAttribute("com.microsoft.kiota.handler.bodyInspection.enable", true);
+					span.setAttribute("com.microsoft.kiota.handler.bodyInspection.enable", currentOptions.inspectRequestBody || currentOptions.inspectResponseBody);
 					return await this.executeInternal(url, requestInit, requestOptions, currentOptions);
 				} finally {
 					span.end();
@@ -51,6 +51,9 @@ export class BodyInspectionHandler implements Middleware {
 		if (!this.next) {
 			throw new Error("next middleware is undefined.");
 		}
+
+		currentOptions.setRequestBody(undefined);
+		currentOptions.setResponseBody(undefined);
 
 		if (currentOptions.inspectRequestBody && requestInit.body !== undefined && requestInit.body !== null) {
 			await this.inspectRequestBody(requestInit, currentOptions);
@@ -95,16 +98,49 @@ export class BodyInspectionHandler implements Middleware {
 					totalLength += chunk.length;
 				}
 			}
-			const concatenated = new Uint8Array(totalLength);
-			let offset = 0;
-			for (const chunk of chunks) {
-				concatenated.set(chunk, offset);
-				offset += chunk.length;
-			}
+			const concatenated = this.concatenateChunks(chunks, totalLength);
 			currentOptions.setRequestBody(concatenated.buffer);
 		} else if (typeof URLSearchParams !== "undefined" && rawBody instanceof URLSearchParams) {
 			currentOptions.setRequestBody(new TextEncoder().encode(rawBody.toString()).buffer);
+		} else if (this.isAsyncIterable(rawBody)) {
+			const chunks: Uint8Array[] = [];
+			let totalLength = 0;
+			for await (const chunk of rawBody) {
+				const bytes = this.toBytes(chunk);
+				chunks.push(bytes);
+				totalLength += bytes.byteLength;
+			}
+			const concatenated = this.concatenateChunks(chunks, totalLength);
+			currentOptions.setRequestBody(concatenated.buffer);
+			requestInit.body = concatenated;
 		}
+	}
+
+	private isAsyncIterable(value: unknown): value is AsyncIterable<unknown> {
+		return typeof value === "object" && value !== null && Symbol.asyncIterator in value && typeof (value as AsyncIterable<unknown>)[Symbol.asyncIterator] === "function";
+	}
+
+	private toBytes(value: unknown): Uint8Array {
+		if (typeof value === "string") {
+			return new TextEncoder().encode(value);
+		}
+		if (value instanceof ArrayBuffer) {
+			return new Uint8Array(value);
+		}
+		if (ArrayBuffer.isView(value)) {
+			return new Uint8Array(value.buffer, value.byteOffset, value.byteLength);
+		}
+		throw new TypeError("Request body streams must emit strings or byte arrays.");
+	}
+
+	private concatenateChunks(chunks: readonly Uint8Array<ArrayBufferLike>[], totalLength: number): Uint8Array<ArrayBuffer> {
+		const concatenated = new Uint8Array(totalLength);
+		let offset = 0;
+		for (const chunk of chunks) {
+			concatenated.set(chunk, offset);
+			offset += chunk.byteLength;
+		}
+		return concatenated;
 	}
 
 	private async inspectResponseBody(response: Response, currentOptions: BodyInspectionOptions): Promise<void> {

@@ -67,44 +67,6 @@ export class BodyInspectionOptions implements RequestOption {
 	}
 
 	/**
-	 * Gets a new ReadableStream containing the request body.
-	 * Returns undefined if request body inspection was not enabled or if the request contains no body.
-	 * Each call returns a new, unconsumed stream.
-	 * @returns a ReadableStream of the request body
-	 */
-	public getRequestBodyStream(): ReadableStream<Uint8Array> | undefined {
-		if (!this.requestBody) {
-			return undefined;
-		}
-		const data = new Uint8Array(this.requestBody);
-		return new ReadableStream<Uint8Array>({
-			start: (controller) => {
-				controller.enqueue(data);
-				controller.close();
-			},
-		});
-	}
-
-	/**
-	 * Gets a new ReadableStream containing the response body.
-	 * Returns undefined if response body inspection was not enabled or if the response contains no body.
-	 * Each call returns a new, unconsumed stream.
-	 * @returns a ReadableStream of the response body
-	 */
-	public getResponseBodyStream(): ReadableStream<Uint8Array> | undefined {
-		if (!this.responseBody) {
-			return undefined;
-		}
-		const data = new Uint8Array(this.responseBody);
-		return new ReadableStream<Uint8Array>({
-			start: (controller) => {
-				controller.enqueue(data);
-				controller.close();
-			},
-		});
-	}
-
-	/**
 	 * @default false
 	 * Whether to inspect request body
 	 */

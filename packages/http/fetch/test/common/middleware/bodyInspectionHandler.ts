@@ -5,9 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { assert, describe, it } from "vitest";
+import { trace } from "@opentelemetry/api";
+import { assert, describe, it, vi } from "vitest";
 
-import { BodyInspectionHandler, BodyInspectionOptions, BodyInspectionOptionsKey } from "../../../src";
+import { BodyInspectionHandler, BodyInspectionOptions, BodyInspectionOptionsKey, ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src";
 import { DummyFetchHandler } from "./dummyFetchHandler";
 
 const defaultOptions = new BodyInspectionOptions();
@@ -26,6 +27,20 @@ describe("BodyInspectionHandler.ts", () => {
 	});
 
 	describe("request body inspection", () => {
+		it("Should clear a previous request capture when the next request has no body", async () => {
+			const options = new BodyInspectionOptions({ inspectRequestBody: true });
+			const handler = new BodyInspectionHandler(options);
+			const dummyFetchHandler = new DummyFetchHandler();
+			dummyFetchHandler.setResponses([new Response("ok"), new Response("ok")] as any);
+			handler.next = dummyFetchHandler;
+
+			await handler.execute("https://example.com", { method: "POST", body: "first body" });
+			assert.isDefined(options.getRequestBody());
+
+			await handler.execute("https://example.com", { method: "GET" });
+			assert.isUndefined(options.getRequestBody());
+		});
+
 		it("Should capture string request body and keep body intact for next middleware", async () => {
 			const options = new BodyInspectionOptions({ inspectRequestBody: true });
 			const handler = new BodyInspectionHandler(options);
@@ -45,12 +60,6 @@ describe("BodyInspectionHandler.ts", () => {
 			const capturedText = new TextDecoder().decode(capturedBuffer);
 			assert.equal(capturedText, bodyText);
 			assert.equal(receivedBody, bodyText);
-
-			const stream = options.getRequestBodyStream();
-			assert.isDefined(stream);
-			const reader = stream!.getReader();
-			const { value } = await reader.read();
-			assert.equal(new TextDecoder().decode(value), bodyText);
 		});
 
 		it("Should capture ArrayBuffer request body", async () => {
@@ -137,6 +146,49 @@ describe("BodyInspectionHandler.ts", () => {
 			assert.equal(new TextDecoder().decode(value), "streamed content");
 		});
 
+		it("Should capture a Node-style readable body and replace it with replayable bytes", async () => {
+			const options = new BodyInspectionOptions({ inspectRequestBody: true });
+			const handler = new BodyInspectionHandler(options);
+			let downstreamBody: unknown;
+			const dummyFetchHandler = new DummyFetchHandler();
+			dummyFetchHandler.execute = async (_url, requestInit) => {
+				downstreamBody = requestInit.body;
+				return new Response("ok", { status: 200 });
+			};
+			handler.next = dummyFetchHandler;
+
+			const nodeStyleBody = {
+				async *[Symbol.asyncIterator](): AsyncGenerator<Uint8Array | string> {
+					yield new TextEncoder().encode("node ");
+					yield "stream";
+				},
+			};
+
+			await handler.execute("https://example.com", { method: "POST", body: nodeStyleBody as any });
+
+			assert.equal(new TextDecoder().decode(options.getRequestBody()), "node stream");
+			assert.instanceOf(downstreamBody, Uint8Array);
+			assert.equal(new TextDecoder().decode(downstreamBody as Uint8Array), "node stream");
+		});
+
+		it("Should capture URLSearchParams request bodies", async () => {
+			const options = new BodyInspectionOptions({ inspectRequestBody: true });
+			const handler = new BodyInspectionHandler(options);
+			let downstreamBody: unknown;
+			const dummyFetchHandler = new DummyFetchHandler();
+			dummyFetchHandler.execute = async (_url, requestInit) => {
+				downstreamBody = requestInit.body;
+				return new Response("ok", { status: 200 });
+			};
+			handler.next = dummyFetchHandler;
+
+			const body = new URLSearchParams({ query: "hello world" });
+			await handler.execute("https://example.com", { method: "POST", body });
+
+			assert.equal(new TextDecoder().decode(options.getRequestBody()), "query=hello+world");
+			assert.equal(downstreamBody, body);
+		});
+
 		it("Should leave request body undefined when there is no body", async () => {
 			const options = new BodyInspectionOptions({ inspectRequestBody: true });
 			const handler = new BodyInspectionHandler(options);
@@ -146,7 +198,6 @@ describe("BodyInspectionHandler.ts", () => {
 
 			await handler.execute("https://example.com", { method: "GET" });
 			assert.isUndefined(options.getRequestBody());
-			assert.isUndefined(options.getRequestBodyStream());
 		});
 
 		it("Should not capture request body when inspectRequestBody is false", async () => {
@@ -162,6 +213,28 @@ describe("BodyInspectionHandler.ts", () => {
 	});
 
 	describe("response body inspection", () => {
+		it("Should clear a previous response capture when cloning the next response fails", async () => {
+			const options = new BodyInspectionOptions({ inspectResponseBody: true });
+			const handler = new BodyInspectionHandler(options);
+			let requestCount = 0;
+			const dummyFetchHandler = new DummyFetchHandler();
+			dummyFetchHandler.execute = async () => {
+				requestCount++;
+				const response = new Response(requestCount === 1 ? "first response" : "consumed response");
+				if (requestCount === 2) {
+					await response.text();
+				}
+				return response;
+			};
+			handler.next = dummyFetchHandler;
+
+			await handler.execute("https://example.com", { method: "GET" });
+			assert.isDefined(options.getResponseBody());
+
+			await handler.execute("https://example.com", { method: "GET" });
+			assert.isUndefined(options.getResponseBody());
+		});
+
 		it("Should capture response body and keep original response stream unconsumed for caller", async () => {
 			const options = new BodyInspectionOptions({ inspectResponseBody: true });
 			const handler = new BodyInspectionHandler(options);
@@ -180,13 +253,6 @@ describe("BodyInspectionHandler.ts", () => {
 			// Caller can still read the original response body!
 			const callerText = await response.text();
 			assert.equal(callerText, responseText);
-
-			// Stream helper returns a fresh stream
-			const stream = options.getResponseBodyStream();
-			assert.isDefined(stream);
-			const reader = stream!.getReader();
-			const { value } = await reader.read();
-			assert.equal(new TextDecoder().decode(value), responseText);
 		});
 
 		it("Should leave response body undefined for empty responses", async () => {
@@ -198,7 +264,6 @@ describe("BodyInspectionHandler.ts", () => {
 
 			await handler.execute("https://example.com", { method: "DELETE" });
 			assert.isUndefined(options.getResponseBody());
-			assert.isUndefined(options.getResponseBodyStream());
 		});
 
 		it("Should not capture response body when inspectResponseBody is false", async () => {
@@ -224,6 +289,78 @@ describe("BodyInspectionHandler.ts", () => {
 
 			assert.isDefined(perRequestOptions.getResponseBody());
 			assert.equal(new TextDecoder().decode(perRequestOptions.getResponseBody()), "scoped response");
+		});
+	});
+
+	describe("observability", () => {
+		it("Should keep the body inspection span active until downstream execution completes", async () => {
+			let spanEnded = false;
+			let enabledAttribute: unknown;
+			const testSpan = {
+				setAttribute: (name: string, value: unknown) => {
+					if (name === "com.microsoft.kiota.handler.bodyInspection.enable") {
+						enabledAttribute = value;
+					}
+				},
+				end: () => {
+					spanEnded = true;
+				},
+			};
+			const tracer = {
+				startActiveSpan: (_name: string, callback: (span: typeof testSpan) => Promise<Response>) => callback(testSpan),
+			};
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as unknown as ReturnType<typeof trace.getTracer>);
+
+			let releaseDownstream: (() => void) | undefined;
+			const downstreamBlocked = new Promise<void>((resolve) => {
+				releaseDownstream = resolve;
+			});
+			const dummyFetchHandler = new DummyFetchHandler();
+			dummyFetchHandler.execute = async () => {
+				await downstreamBlocked;
+				return new Response("ok");
+			};
+			const handler = new BodyInspectionHandler(new BodyInspectionOptions({ inspectResponseBody: true }));
+			handler.next = dummyFetchHandler;
+
+			try {
+				const execution = handler.execute("https://example.com", { method: "GET" }, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				await vi.waitFor(() => assert.isDefined(releaseDownstream));
+				assert.isFalse(spanEnded);
+				releaseDownstream?.();
+				await execution;
+				assert.isTrue(spanEnded);
+				assert.isTrue(enabledAttribute);
+			} finally {
+				getTracerSpy.mockRestore();
+			}
+		});
+
+		it("Should report body inspection as disabled when neither inspection option is enabled", async () => {
+			let enabledAttribute: unknown;
+			const testSpan = {
+				setAttribute: (name: string, value: unknown) => {
+					if (name === "com.microsoft.kiota.handler.bodyInspection.enable") {
+						enabledAttribute = value;
+					}
+				},
+				end: () => undefined,
+			};
+			const tracer = {
+				startActiveSpan: (_name: string, callback: (span: typeof testSpan) => Promise<Response>) => callback(testSpan),
+			};
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as unknown as ReturnType<typeof trace.getTracer>);
+			const handler = new BodyInspectionHandler();
+			const dummyFetchHandler = new DummyFetchHandler();
+			dummyFetchHandler.setResponses([new Response("ok")] as any);
+			handler.next = dummyFetchHandler;
+
+			try {
+				await handler.execute("https://example.com", { method: "GET" }, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				assert.isFalse(enabledAttribute);
+			} finally {
+				getTracerSpy.mockRestore();
+			}
 		});
 	});
 });
