@@ -131,6 +131,12 @@ describe("ChaosHandler.ts", () => {
 		});
 	});
 	describe("execute", async () => {
+		it.each([ChaosStrategy.RANDOM, ChaosStrategy.MANUAL])("Should generate a QUERY status code for strategy %s without a manual mapping", async (chaosStrategy) => {
+			const handler = new ChaosHandler({ chaosPercentage: 100, chaosStrategy });
+			const response = await handler.execute("/query", { method: HttpMethod.QUERY });
+			assert.include([429, 500, 502, 503, 504], response.status);
+		});
+
 		it("Should generate chaos in the reponse when chaos is defined", async () => {
 			const strategy = {
 				chaosPercentage: 100, // chaos set it { x : x ∈ 0 ⩽ 100} , it will always happen
