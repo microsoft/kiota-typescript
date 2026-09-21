@@ -10,6 +10,7 @@
  */
 export const methodStatusCode: Record<string, number[]> = {
 	GET: [429, 500, 502, 503, 504],
+	QUERY: [429, 500, 502, 503, 504],
 	POST: [429, 500, 502, 503, 504, 507],
 	PUT: [429, 500, 502, 503, 504, 507],
 	PATCH: [429, 500, 502, 503, 504],

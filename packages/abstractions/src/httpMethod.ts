@@ -27,4 +27,6 @@ export enum HttpMethod {
 	HEAD = "HEAD",
 	/** The HTTP PUT method */
 	PUT = "PUT",
+	/** The HTTP QUERY method (RFC 10008) */
+	QUERY = "QUERY",
 }
