@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.108](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.107...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.108) (2026-09-21)
+
+
+### Features
+
+* Add support for the HTTP QUERY verb (RFC 10008) ([#2143](https://github.com/microsoft/kiota-typescript/issues/2143)) ([6555067](https://github.com/microsoft/kiota-typescript/commit/6555067e1f4634042da0cd005da918ed720d671f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.107 to ^1.0.0-preview.108
+
 ## [1.0.0-preview.107](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.106...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.107) (2026-09-04)
 
 
