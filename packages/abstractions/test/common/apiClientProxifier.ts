@@ -81,6 +81,24 @@ describe("apiClientProxifier", () => {
 		assert.throws(() => proxy.toPostRequestInformation(value), "body cannot be undefined");
 	});
 
+	it("dispatches QUERY requests through the proxy", async () => {
+		const send = vi.fn((_: RequestInformation) => Promise.resolve());
+		requestAdapter.sendNoResponseContent = send;
+		const proxy = apiClientProxifier<{
+			toQueryRequestInformation: () => RequestInformation;
+			query: () => Promise<void>;
+		}>(requestAdapter, pathParameters, undefined, {
+			query: {
+				uriTemplate: "{+baseurl}/search",
+				adapterMethodName: "sendNoResponseContent",
+			},
+		});
+
+		assert.equal(proxy.toQueryRequestInformation().httpMethod, "QUERY");
+		await proxy.query();
+		assert.equal(send.mock.calls[0][0].httpMethod, "QUERY");
+	});
+
 	describe("then property handling", () => {
 		it("should return undefined when accessing 'then' property", () => {
 			const navigationMetadata = {
