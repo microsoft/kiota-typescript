@@ -29,24 +29,24 @@ export interface BodyInspectionOptionsParams {
  * Note that inspecting bodies creates in-memory copies which increases memory usage.
  */
 export class BodyInspectionOptions implements RequestOption {
-	private requestBody?: ArrayBuffer;
-	private responseBody?: ArrayBuffer;
+	private _requestBody?: ArrayBuffer;
+	private _responseBody?: ArrayBuffer;
 
 	/**
 	 * Gets the request body as an ArrayBuffer.
 	 * Returns undefined if request body inspection was not enabled or if the request contains no body.
 	 * @returns the request body buffer
 	 */
-	public getRequestBody(): ArrayBuffer | undefined {
-		return this.requestBody;
+	public get requestBody(): ArrayBuffer | undefined {
+		return this._requestBody;
 	}
 
 	/**
 	 * Sets the request body buffer
 	 * @param body the request body buffer
 	 */
-	public setRequestBody(body?: ArrayBuffer): void {
-		this.requestBody = body;
+	public set requestBody(body: ArrayBuffer | undefined) {
+		this._requestBody = body;
 	}
 
 	/**
@@ -54,16 +54,52 @@ export class BodyInspectionOptions implements RequestOption {
 	 * Returns undefined if response body inspection was not enabled or if the response contains no body.
 	 * @returns the response body buffer
 	 */
-	public getResponseBody(): ArrayBuffer | undefined {
-		return this.responseBody;
+	public get responseBody(): ArrayBuffer | undefined {
+		return this._responseBody;
 	}
 
 	/**
 	 * Sets the response body buffer
 	 * @param body the response body buffer
 	 */
+	public set responseBody(body: ArrayBuffer | undefined) {
+		this._responseBody = body;
+	}
+
+	/**
+	 * Gets the request body as an ArrayBuffer.
+	 * @deprecated Use the `requestBody` property instead.
+	 * @returns the request body buffer
+	 */
+	public getRequestBody(): ArrayBuffer | undefined {
+		return this._requestBody;
+	}
+
+	/**
+	 * Sets the request body buffer
+	 * @deprecated Use the `requestBody` property instead.
+	 * @param body the request body buffer
+	 */
+	public setRequestBody(body?: ArrayBuffer): void {
+		this._requestBody = body;
+	}
+
+	/**
+	 * Gets the response body as an ArrayBuffer.
+	 * @deprecated Use the `responseBody` property instead.
+	 * @returns the response body buffer
+	 */
+	public getResponseBody(): ArrayBuffer | undefined {
+		return this._responseBody;
+	}
+
+	/**
+	 * Sets the response body buffer
+	 * @deprecated Use the `responseBody` property instead.
+	 * @param body the response body buffer
+	 */
 	public setResponseBody(body?: ArrayBuffer): void {
-		this.responseBody = body;
+		this._responseBody = body;
 	}
 
 	/**

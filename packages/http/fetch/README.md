@@ -36,7 +36,7 @@ await client.users.get({
 });
 
 // Access the inspected body as an ArrayBuffer:
-const responseBuffer = bodyInspectionOptions.getResponseBody();
+const responseBuffer = bodyInspectionOptions.responseBody;
 ```
 
 ### Memory and Stream-Lifecycle Considerations

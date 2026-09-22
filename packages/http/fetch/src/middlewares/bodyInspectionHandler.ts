@@ -52,17 +52,22 @@ export class BodyInspectionHandler implements Middleware {
 			throw new Error("next middleware is undefined.");
 		}
 
-		currentOptions.setRequestBody(undefined);
-		currentOptions.setResponseBody(undefined);
-
-		if (currentOptions.inspectRequestBody && requestInit.body !== undefined && requestInit.body !== null) {
-			await this.inspectRequestBody(requestInit, currentOptions);
+		if (currentOptions.inspectRequestBody) {
+			if (requestInit.body !== undefined && requestInit.body !== null) {
+				await this.inspectRequestBody(requestInit, currentOptions);
+			} else {
+				currentOptions.requestBody = undefined;
+			}
 		}
 
 		const response = await this.next.execute(url, requestInit, requestOptions);
 
-		if (currentOptions.inspectResponseBody && response) {
-			await this.inspectResponseBody(response, currentOptions);
+		if (currentOptions.inspectResponseBody) {
+			if (response) {
+				await this.inspectResponseBody(response, currentOptions);
+			} else {
+				currentOptions.responseBody = undefined;
+			}
 		}
 
 		return response;
@@ -71,14 +76,14 @@ export class BodyInspectionHandler implements Middleware {
 	private async inspectRequestBody(requestInit: RequestInit, currentOptions: BodyInspectionOptions): Promise<void> {
 		const rawBody = requestInit.body;
 		if (typeof rawBody === "string") {
-			currentOptions.setRequestBody(new TextEncoder().encode(rawBody).buffer);
+			currentOptions.requestBody = new TextEncoder().encode(rawBody).buffer;
 		} else if (rawBody instanceof ArrayBuffer) {
-			currentOptions.setRequestBody(rawBody.slice(0));
+			currentOptions.requestBody = rawBody.slice(0);
 		} else if (ArrayBuffer.isView(rawBody)) {
-			currentOptions.setRequestBody(rawBody.buffer.slice(rawBody.byteOffset, rawBody.byteOffset + rawBody.byteLength));
+			currentOptions.requestBody = rawBody.buffer.slice(rawBody.byteOffset, rawBody.byteOffset + rawBody.byteLength);
 		} else if (typeof Blob !== "undefined" && rawBody instanceof Blob) {
 			const buffer = await rawBody.arrayBuffer();
-			currentOptions.setRequestBody(buffer.slice(0));
+			currentOptions.requestBody = buffer.slice(0);
 			requestInit.body = new Blob([buffer], { type: rawBody.type });
 		} else if (typeof ReadableStream !== "undefined" && rawBody instanceof ReadableStream) {
 			const stream = rawBody as ReadableStream<Uint8Array>;
@@ -99,9 +104,9 @@ export class BodyInspectionHandler implements Middleware {
 				}
 			}
 			const concatenated = this.concatenateChunks(chunks, totalLength);
-			currentOptions.setRequestBody(concatenated.buffer);
+			currentOptions.requestBody = concatenated.buffer;
 		} else if (typeof URLSearchParams !== "undefined" && rawBody instanceof URLSearchParams) {
-			currentOptions.setRequestBody(new TextEncoder().encode(rawBody.toString()).buffer);
+			currentOptions.requestBody = new TextEncoder().encode(rawBody.toString()).buffer;
 		} else if (this.isAsyncIterable(rawBody)) {
 			const chunks: Uint8Array[] = [];
 			let totalLength = 0;
@@ -111,7 +116,7 @@ export class BodyInspectionHandler implements Middleware {
 				totalLength += bytes.byteLength;
 			}
 			const concatenated = this.concatenateChunks(chunks, totalLength);
-			currentOptions.setRequestBody(concatenated.buffer);
+			currentOptions.requestBody = concatenated.buffer;
 			requestInit.body = concatenated;
 		}
 	}
@@ -149,12 +154,12 @@ export class BodyInspectionHandler implements Middleware {
 				const cloned = response.clone();
 				const buffer = await cloned.arrayBuffer();
 				if (buffer.byteLength > 0) {
-					currentOptions.setResponseBody(buffer);
+					currentOptions.responseBody = buffer;
 				} else {
-					currentOptions.setResponseBody(undefined);
+					currentOptions.responseBody = undefined;
 				}
 			} catch {
-				// Body might already be disturbed or unavailable
+				currentOptions.responseBody = undefined;
 			}
 		}
 	}

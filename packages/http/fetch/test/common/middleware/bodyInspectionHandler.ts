@@ -289,6 +289,71 @@ describe("BodyInspectionHandler.ts", () => {
 
 			assert.isDefined(perRequestOptions.getResponseBody());
 			assert.equal(new TextDecoder().decode(perRequestOptions.getResponseBody()), "scoped response");
+			assert.equal(new TextDecoder().decode(perRequestOptions.responseBody), "scoped response");
+		});
+
+		it("Should expose captured buffers via requestBody and responseBody getter and setter properties", async () => {
+			const options = new BodyInspectionOptions({ inspectRequestBody: true, inspectResponseBody: true });
+			const handler = new BodyInspectionHandler(options);
+			const dummyFetchHandler = new DummyFetchHandler();
+			dummyFetchHandler.setResponses([new Response("res text", { status: 200 })] as any);
+			handler.next = dummyFetchHandler;
+
+			await handler.execute("https://example.com", { method: "POST", body: "req text" });
+
+			assert.isDefined(options.requestBody);
+			assert.equal(new TextDecoder().decode(options.requestBody), "req text");
+			assert.isDefined(options.responseBody);
+			assert.equal(new TextDecoder().decode(options.responseBody), "res text");
+
+			const manualBuffer = new TextEncoder().encode("manual").buffer;
+			options.requestBody = manualBuffer;
+			assert.equal(options.requestBody, manualBuffer);
+			options.responseBody = manualBuffer;
+			assert.equal(options.responseBody, manualBuffer);
+		});
+
+		it("Should preserve independent captures for overlapping requests with scoped request options", async () => {
+			const handler = new BodyInspectionHandler();
+			let resolveReq1: (() => void) | undefined;
+			const req1Blocked = new Promise<void>((resolve) => {
+				resolveReq1 = resolve;
+			});
+
+			const dummyFetchHandler = new DummyFetchHandler();
+			dummyFetchHandler.execute = async (_url, requestInit) => {
+				if (requestInit.body === "body-1") {
+					await req1Blocked;
+					return new Response("response-1", { status: 200 });
+				}
+				return new Response("response-2", { status: 200 });
+			};
+			handler.next = dummyFetchHandler;
+
+			const options1 = new BodyInspectionOptions({ inspectRequestBody: true, inspectResponseBody: true });
+			const options2 = new BodyInspectionOptions({ inspectRequestBody: true, inspectResponseBody: true });
+
+			const req1Promise = handler.execute("https://example.com/1", { method: "POST", body: "body-1" }, { [BodyInspectionOptionsKey]: options1 });
+
+			assert.isDefined(options1.requestBody);
+			assert.equal(new TextDecoder().decode(options1.requestBody), "body-1");
+
+			await handler.execute("https://example.com/2", { method: "POST", body: "body-2" }, { [BodyInspectionOptionsKey]: options2 });
+
+			assert.isDefined(options2.requestBody);
+			assert.equal(new TextDecoder().decode(options2.requestBody), "body-2");
+			assert.isDefined(options2.responseBody);
+			assert.equal(new TextDecoder().decode(options2.responseBody), "response-2");
+
+			assert.equal(new TextDecoder().decode(options1.requestBody), "body-1");
+			assert.isUndefined(options1.responseBody);
+
+			resolveReq1?.();
+			await req1Promise;
+
+			assert.equal(new TextDecoder().decode(options1.requestBody), "body-1");
+			assert.isDefined(options1.responseBody);
+			assert.equal(new TextDecoder().decode(options1.responseBody), "response-1");
 		});
 	});
 
