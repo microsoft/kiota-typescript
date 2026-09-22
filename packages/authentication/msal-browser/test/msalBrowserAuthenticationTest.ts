@@ -214,7 +214,7 @@ describe("MsalBrowserAccessTokenProvider and MsalBrowserAuthenticationProvider",
 	it("Passes configured account to popup request on fallback", async () => {
 		let capturedPopupRequest: any;
 		const mockApp = createMockClientApp({
-			acquireTokenSilent: () => Promise.reject(new InteractionRequiredAuthError("interaction required")),
+			acquireTokenSilent: () => Promise.reject(new InteractionRequiredAuthError("interaction_required", "test-correlation-id")),
 			acquireTokenPopup: (request) => {
 				capturedPopupRequest = request;
 				return Promise.resolve({ accessToken: "popup_token" } as AuthenticationResult);
