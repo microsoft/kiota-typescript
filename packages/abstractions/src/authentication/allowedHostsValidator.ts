@@ -42,28 +42,22 @@ export class AllowedHostsValidator {
 	public isUrlHostValid(url: string): boolean {
 		if (!url) return false;
 		if (this.allowedHosts.size === 0) return true;
-		const schemeAndRest = url.split("://");
-		if (schemeAndRest.length >= 2) {
-			const rest = schemeAndRest[1];
-			if (rest) {
-				return this.isHostAndPathValid(rest);
+		const candidate = url.includes("://") ? url : !url.startsWith("http") ? `http://${url}` : undefined;
+		if (candidate) {
+			let parsed: URL;
+			try {
+				parsed = new URL(candidate);
+			} catch {
+				return false;
 			}
-		} else if (!url.startsWith("http")) {
-			// protocol relative URL domain.tld/path
-			return this.isHostAndPathValid(url);
+			// reject userinfo outright, it can be used to spoof the host
+			if (parsed.username || parsed.password) {
+				return false;
+			}
+			return this.isHostValid(parsed.hostname);
 		}
 		if (window?.location?.host) {
 			return this.isHostValid(window.location.host);
-		}
-		return false;
-	}
-	private isHostAndPathValid(rest: string): boolean {
-		const hostAndRest = rest.split("/");
-		if (hostAndRest.length >= 2) {
-			const host = hostAndRest[0];
-			if (host) {
-				return this.isHostValid(host.split(":")[0]);
-			}
 		}
 		return false;
 	}
