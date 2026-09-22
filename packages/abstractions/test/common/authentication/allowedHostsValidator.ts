@@ -73,12 +73,11 @@ describe("AllowedHostsValidator", () => {
 		expect(validator.isUrlHostValid("invalid")).to.be.false;
 	});
 
-	it("isUrlHostValid should not be bypassed by userinfo impersonating an allowed host", () => {
-		// authority is user:pass@host, so the real host is evil.com, not example.com
+	it("isUrlHostValid should return false for a mismatched host in the userinfo section", () => {
 		expect(validator.isUrlHostValid("https://example.com:443@evil.com/path")).to.be.false;
 	});
 
-	it("isUrlHostValid should reject urls containing userinfo even when the host is allowed", () => {
+	it("isUrlHostValid should return false when userinfo is present", () => {
 		expect(validator.isUrlHostValid("https://user:pass@example.com/path")).to.be.false;
 	});
 });
