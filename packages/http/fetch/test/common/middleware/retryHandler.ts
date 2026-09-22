@@ -4,6 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+import { HttpMethod } from "@microsoft/kiota-abstractions";
 import { assert, describe, it } from "vitest";
 
 import { RetryHandlerOptionKey, RetryHandlerOptions, type ShouldRetry } from "../../../src/middlewares/options/retryHandlerOptions";
@@ -195,6 +196,23 @@ describe("RetryHandler.ts", () => {
 	});
 
 	describe("executeWithRetry", async () => {
+		it.each([
+			["application/octet-stream", 429, 1],
+			["application/json", 200, 2],
+		] as const)("Should handle QUERY retries for %s", async (contentType, expectedStatus, expectedAttempts) => {
+			const handler = new RetryHandler();
+			const next = new DummyFetchHandler([new Response(null, { status: 429, headers: { "Retry-After": "0" } }), new Response("ok", { status: 200 })]);
+			handler.next = next;
+			const response = await handler.execute("/query", {
+				method: HttpMethod.QUERY,
+				headers: { "content-type": contentType },
+				body: "test",
+			});
+			assert.equal(response.status, expectedStatus);
+			assert.lengthOf(next.requests, expectedAttempts);
+			assert.equal(next.requests[0].body, "test");
+		});
+
 		handler.next = dummyFetchHandler;
 		const requestUrl = "url";
 		const fetchRequestInit = {
