@@ -6,7 +6,7 @@
  */
 
 import { assert, describe, it } from "vitest";
-import { CustomFetchHandler, HeadersInspectionHandler, BodyInspectionHandler, BodyInspectionOptions, HttpClient, MiddlewareFactory, ParametersNameDecodingHandler, RetryHandler, UrlReplaceHandler, UserAgentHandler, CompressionHandler } from "../../src/browser";
+import { CustomFetchHandler, HeadersInspectionHandler, HeadersInspectionOptions, BodyInspectionHandler, BodyInspectionOptions, HttpClient, MiddlewareFactory, ParametersNameDecodingHandler, RetryHandler, UrlReplaceHandler, UserAgentHandler, CompressionHandler } from "../../src/browser";
 
 describe("browser - MiddlewareFactory", () => {
 	it("Should return the default pipeline", () => {
@@ -57,5 +57,44 @@ describe("browser - MiddlewareFactory", () => {
 		assert.equal(sentEncoding, "gzip");
 		assert.instanceOf(sentBody, ArrayBuffer);
 		assert.equal(await new Response(new Blob([sentBody as ArrayBuffer]).stream().pipeThrough(new DecompressionStream("gzip"))).text(), "streamed payload");
+	});
+	it("Should preserve URL-encoded bodies and content type in the performance pipeline", async () => {
+		const options = new BodyInspectionOptions({ inspectRequestBody: true });
+		let sentBody: BodyInit | null | undefined;
+		let sentHeaders: HeadersInit | undefined;
+		const client = new HttpClient(
+			undefined,
+			...MiddlewareFactory.getPerformanceMiddlewares(async (_url, init) => {
+				sentBody = init.body;
+				sentHeaders = init.headers;
+				return new Response("ok");
+			}),
+		);
+
+		const response = await client.executeFetch("https://example.com", { method: "POST", body: new URLSearchParams({ query: "hello world", symbol: "é" }) }, { [options.getKey()]: options });
+		assert.equal(response.status, 200);
+		assert.equal(new TextDecoder().decode(options.requestBody), "query=hello+world&symbol=%C3%A9");
+		assert.equal(new Headers(sentHeaders).get("Content-Type"), "application/x-www-form-urlencoded;charset=UTF-8");
+		assert.equal(new Headers(sentHeaders).get("Content-Encoding"), "gzip");
+		assert.instanceOf(sentBody, ArrayBuffer);
+		assert.equal(await new Response(new Blob([sentBody as ArrayBuffer]).stream().pipeThrough(new DecompressionStream("gzip"))).text(), "query=hello+world&symbol=%C3%A9");
+	});
+	it("Should inspect headers alongside a compressed URL-encoded body", async () => {
+		const bodyOptions = new BodyInspectionOptions({ inspectRequestBody: true });
+		const headerOptions = new HeadersInspectionOptions({ inspectRequestHeaders: true });
+		let sentHeaders: HeadersInit | undefined;
+		const client = new HttpClient(
+			undefined,
+			...MiddlewareFactory.getPerformanceMiddlewares(async (_url, init) => {
+				sentHeaders = init.headers;
+				return new Response("ok");
+			}),
+		);
+		const response = await client.executeFetch("https://example.com", { method: "POST", body: new URLSearchParams({ query: "hello world" }), headers: new Headers({ "content-type": "application/x-www-form-urlencoded; charset=utf-8" }) }, { [bodyOptions.getKey()]: bodyOptions, [headerOptions.getKey()]: headerOptions });
+		assert.equal(response.status, 200);
+		assert.equal(new TextDecoder().decode(bodyOptions.requestBody), "query=hello+world");
+		assert.equal(new Headers(sentHeaders).get("Content-Type"), "application/x-www-form-urlencoded; charset=utf-8");
+		assert.equal(headerOptions.getRequestHeaders().tryGetValue("content-type")?.[0], "application/x-www-form-urlencoded; charset=utf-8");
+		assert.equal(headerOptions.getRequestHeaders().tryGetValue("content-encoding")?.[0], "gzip");
 	});
 });

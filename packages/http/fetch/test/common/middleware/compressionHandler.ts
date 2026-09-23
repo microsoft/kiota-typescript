@@ -81,6 +81,26 @@ describe("CompressionHandler", () => {
 		expect(response).toBeInstanceOf(Response);
 	});
 
+	it("should restore a URL-encoded body after compression is rejected", async () => {
+		const body = new URLSearchParams({ query: "hello world" });
+		const sent: { body: BodyInit | null | undefined; contentType: string | null; contentEncoding: string | null }[] = [];
+		nextMiddleware.execute = async (_url, init) => {
+			const headers = new Headers(init.headers);
+			sent.push({ body: init.body, contentType: headers.get("Content-Type"), contentEncoding: headers.get("Content-Encoding") });
+			return new Response(null, { status: sent.length === 1 ? 415 : 200 });
+		};
+
+		const response = await compressionHandler.execute("https://example.com", { method: "POST", body, headers: { "content-type": "application/x-www-form-urlencoded; charset=utf-8" } });
+		expect(response.status).toBe(200);
+		expect(sent).toHaveLength(2);
+		expect(sent[0].contentType).toBe("application/x-www-form-urlencoded; charset=utf-8");
+		expect(sent[0].contentEncoding).toBe("gzip");
+		expect(sent[0].body).toBeInstanceOf(ArrayBuffer);
+		expect(sent[1].body).toBe(body);
+		expect(sent[1].contentType).toBe("application/x-www-form-urlencoded; charset=utf-8");
+		expect(sent[1].contentEncoding).toBeNull();
+	});
+
 	it("original headers were maintained in request", async () => {
 		const url = "https://example.com";
 		const options = new CompressionHandlerOptions({ enableCompression: true });
