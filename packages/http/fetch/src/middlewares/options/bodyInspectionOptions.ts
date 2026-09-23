@@ -67,42 +67,6 @@ export class BodyInspectionOptions implements RequestOption {
 	}
 
 	/**
-	 * Gets the request body as an ArrayBuffer.
-	 * @deprecated Use the `requestBody` property instead.
-	 * @returns the request body buffer
-	 */
-	public getRequestBody(): ArrayBuffer | undefined {
-		return this._requestBody;
-	}
-
-	/**
-	 * Sets the request body buffer
-	 * @deprecated Use the `requestBody` property instead.
-	 * @param body the request body buffer
-	 */
-	public setRequestBody(body?: ArrayBuffer): void {
-		this._requestBody = body;
-	}
-
-	/**
-	 * Gets the response body as an ArrayBuffer.
-	 * @deprecated Use the `responseBody` property instead.
-	 * @returns the response body buffer
-	 */
-	public getResponseBody(): ArrayBuffer | undefined {
-		return this._responseBody;
-	}
-
-	/**
-	 * Sets the response body buffer
-	 * @deprecated Use the `responseBody` property instead.
-	 * @param body the response body buffer
-	 */
-	public setResponseBody(body?: ArrayBuffer): void {
-		this._responseBody = body;
-	}
-
-	/**
 	 * @default false
 	 * Whether to inspect request body
 	 */

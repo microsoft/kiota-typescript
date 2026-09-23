@@ -27,6 +27,28 @@ describe("BodyInspectionHandler.ts", () => {
 	});
 
 	describe("request body inspection", () => {
+		it("Should clear a previous request capture when inspection is disabled or the body is unsupported", async () => {
+			const options = new BodyInspectionOptions({ inspectRequestBody: true });
+			const handler = new BodyInspectionHandler(options);
+			const dummyFetchHandler = new DummyFetchHandler();
+			dummyFetchHandler.execute = async () => new Response("ok");
+			handler.next = dummyFetchHandler;
+
+			await handler.execute("https://example.com", { method: "POST", body: "first body" });
+			assert.isDefined(options.requestBody);
+
+			options.inspectRequestBody = false;
+			await handler.execute("https://example.com", { method: "POST", body: "second body" });
+			assert.isUndefined(options.requestBody);
+
+			options.inspectRequestBody = true;
+			await handler.execute("https://example.com", { method: "POST", body: "third body" });
+			assert.isDefined(options.requestBody);
+
+			await handler.execute("https://example.com", { method: "POST", body: new FormData() });
+			assert.isUndefined(options.requestBody);
+		});
+
 		it("Should clear a previous request capture when the next request has no body", async () => {
 			const options = new BodyInspectionOptions({ inspectRequestBody: true });
 			const handler = new BodyInspectionHandler(options);
@@ -35,10 +57,10 @@ describe("BodyInspectionHandler.ts", () => {
 			handler.next = dummyFetchHandler;
 
 			await handler.execute("https://example.com", { method: "POST", body: "first body" });
-			assert.isDefined(options.getRequestBody());
+			assert.isDefined(options.requestBody);
 
 			await handler.execute("https://example.com", { method: "GET" });
-			assert.isUndefined(options.getRequestBody());
+			assert.isUndefined(options.requestBody);
 		});
 
 		it("Should capture string request body and keep body intact for next middleware", async () => {
@@ -55,7 +77,7 @@ describe("BodyInspectionHandler.ts", () => {
 			const bodyText = JSON.stringify({ message: "hello world" });
 			await handler.execute("https://example.com", { method: "POST", body: bodyText });
 
-			const capturedBuffer = options.getRequestBody();
+			const capturedBuffer = options.requestBody;
 			assert.isDefined(capturedBuffer);
 			const capturedText = new TextDecoder().decode(capturedBuffer);
 			assert.equal(capturedText, bodyText);
@@ -72,7 +94,7 @@ describe("BodyInspectionHandler.ts", () => {
 			const sourceData = new Uint8Array([1, 2, 3, 4, 5]);
 			await handler.execute("https://example.com", { method: "POST", body: sourceData.buffer });
 
-			const captured = options.getRequestBody();
+			const captured = options.requestBody;
 			assert.isDefined(captured);
 			assert.deepEqual(Array.from(new Uint8Array(captured!)), [1, 2, 3, 4, 5]);
 		});
@@ -87,7 +109,7 @@ describe("BodyInspectionHandler.ts", () => {
 			const sourceData = new Uint8Array([10, 20, 30]);
 			await handler.execute("https://example.com", { method: "POST", body: sourceData });
 
-			const captured = options.getRequestBody();
+			const captured = options.requestBody;
 			assert.isDefined(captured);
 			assert.deepEqual(Array.from(new Uint8Array(captured!)), [10, 20, 30]);
 		});
@@ -106,7 +128,7 @@ describe("BodyInspectionHandler.ts", () => {
 			const blob = new Blob(["blob payload"], { type: "text/plain" });
 			await handler.execute("https://example.com", { method: "POST", body: blob });
 
-			const captured = options.getRequestBody();
+			const captured = options.requestBody;
 			assert.isDefined(captured);
 			assert.equal(new TextDecoder().decode(captured), "blob payload");
 
@@ -115,13 +137,13 @@ describe("BodyInspectionHandler.ts", () => {
 			assert.equal(downstreamText, "blob payload");
 		});
 
-		it("Should capture ReadableStream request body using tee", async () => {
+		it("Should capture ReadableStream request body and preserve downstream bytes", async () => {
 			const options = new BodyInspectionOptions({ inspectRequestBody: true });
 			const handler = new BodyInspectionHandler(options);
-			let downstreamStream: unknown;
+			let downstreamBody: unknown;
 			const dummyFetchHandler = new DummyFetchHandler();
 			dummyFetchHandler.execute = async (_url, requestInit) => {
-				downstreamStream = requestInit.body;
+				downstreamBody = requestInit.body;
 				return new Response("ok", { status: 200 });
 			};
 			handler.next = dummyFetchHandler;
@@ -136,14 +158,37 @@ describe("BodyInspectionHandler.ts", () => {
 
 			await handler.execute("https://example.com", { method: "POST", body: stream as any });
 
-			const captured = options.getRequestBody();
+			const captured = options.requestBody;
 			assert.isDefined(captured);
 			assert.equal(new TextDecoder().decode(captured), "streamed content");
 
-			// Downstream stream should still be readable
-			const downstreamReader = (downstreamStream as ReadableStream<Uint8Array>).getReader();
-			const { value } = await downstreamReader.read();
-			assert.equal(new TextDecoder().decode(value), "streamed content");
+			assert.instanceOf(downstreamBody, Uint8Array);
+			assert.equal(new TextDecoder().decode(downstreamBody as Uint8Array), "streamed content");
+		});
+
+		it("Should preserve a captured web stream body for a downstream retry", async () => {
+			const options = new BodyInspectionOptions({ inspectRequestBody: true });
+			const handler = new BodyInspectionHandler(options);
+			const received: string[] = [];
+			const dummyFetchHandler = new DummyFetchHandler();
+			dummyFetchHandler.execute = async (_url, requestInit) => {
+				received.push(await new Response(requestInit.body).text());
+				return new Response("ok");
+			};
+			handler.next = dummyFetchHandler;
+
+			const stream = new ReadableStream<Uint8Array>({
+				start(controller) {
+					controller.enqueue(new TextEncoder().encode("retry payload"));
+					controller.close();
+				},
+			});
+			const requestInit = { method: "POST", body: stream as any };
+
+			await handler.execute("https://example.com", requestInit);
+			await handler.execute("https://example.com", requestInit);
+			assert.deepEqual(received, ["retry payload", "retry payload"]);
+			assert.equal(new TextDecoder().decode(options.requestBody), "retry payload");
 		});
 
 		it("Should capture a Node-style readable body and replace it with replayable bytes", async () => {
@@ -166,7 +211,7 @@ describe("BodyInspectionHandler.ts", () => {
 
 			await handler.execute("https://example.com", { method: "POST", body: nodeStyleBody as any });
 
-			assert.equal(new TextDecoder().decode(options.getRequestBody()), "node stream");
+			assert.equal(new TextDecoder().decode(options.requestBody), "node stream");
 			assert.instanceOf(downstreamBody, Uint8Array);
 			assert.equal(new TextDecoder().decode(downstreamBody as Uint8Array), "node stream");
 		});
@@ -185,7 +230,7 @@ describe("BodyInspectionHandler.ts", () => {
 			const body = new URLSearchParams({ query: "hello world" });
 			await handler.execute("https://example.com", { method: "POST", body });
 
-			assert.equal(new TextDecoder().decode(options.getRequestBody()), "query=hello+world");
+			assert.equal(new TextDecoder().decode(options.requestBody), "query=hello+world");
 			assert.equal(downstreamBody, body);
 		});
 
@@ -197,7 +242,7 @@ describe("BodyInspectionHandler.ts", () => {
 			handler.next = dummyFetchHandler;
 
 			await handler.execute("https://example.com", { method: "GET" });
-			assert.isUndefined(options.getRequestBody());
+			assert.isUndefined(options.requestBody);
 		});
 
 		it("Should not capture request body when inspectRequestBody is false", async () => {
@@ -208,11 +253,34 @@ describe("BodyInspectionHandler.ts", () => {
 			handler.next = dummyFetchHandler;
 
 			await handler.execute("https://example.com", { method: "POST", body: "ignored" });
-			assert.isUndefined(options.getRequestBody());
+			assert.isUndefined(options.requestBody);
 		});
 	});
 
 	describe("response body inspection", () => {
+		it("Should clear a previous response capture when inspection is disabled or cloning is unavailable", async () => {
+			const options = new BodyInspectionOptions({ inspectResponseBody: true });
+			const handler = new BodyInspectionHandler(options);
+			const dummyFetchHandler = new DummyFetchHandler();
+			dummyFetchHandler.execute = async () => new Response("ok");
+			handler.next = dummyFetchHandler;
+
+			await handler.execute("https://example.com", { method: "GET" });
+			assert.isDefined(options.responseBody);
+
+			options.inspectResponseBody = false;
+			await handler.execute("https://example.com", { method: "GET" });
+			assert.isUndefined(options.responseBody);
+
+			options.inspectResponseBody = true;
+			await handler.execute("https://example.com", { method: "GET" });
+			assert.isDefined(options.responseBody);
+
+			dummyFetchHandler.execute = async () => ({ status: 200 }) as Response;
+			await handler.execute("https://example.com", { method: "GET" });
+			assert.isUndefined(options.responseBody);
+		});
+
 		it("Should clear a previous response capture when cloning the next response fails", async () => {
 			const options = new BodyInspectionOptions({ inspectResponseBody: true });
 			const handler = new BodyInspectionHandler(options);
@@ -229,10 +297,10 @@ describe("BodyInspectionHandler.ts", () => {
 			handler.next = dummyFetchHandler;
 
 			await handler.execute("https://example.com", { method: "GET" });
-			assert.isDefined(options.getResponseBody());
+			assert.isDefined(options.responseBody);
 
 			await handler.execute("https://example.com", { method: "GET" });
-			assert.isUndefined(options.getResponseBody());
+			assert.isUndefined(options.responseBody);
 		});
 
 		it("Should capture response body and keep original response stream unconsumed for caller", async () => {
@@ -246,7 +314,7 @@ describe("BodyInspectionHandler.ts", () => {
 			const response = await handler.execute("https://example.com", { method: "GET" });
 
 			// Option contains the inspected body
-			const captured = options.getResponseBody();
+			const captured = options.responseBody;
 			assert.isDefined(captured);
 			assert.equal(new TextDecoder().decode(captured), responseText);
 
@@ -263,7 +331,7 @@ describe("BodyInspectionHandler.ts", () => {
 			handler.next = dummyFetchHandler;
 
 			await handler.execute("https://example.com", { method: "DELETE" });
-			assert.isUndefined(options.getResponseBody());
+			assert.isUndefined(options.responseBody);
 		});
 
 		it("Should not capture response body when inspectResponseBody is false", async () => {
@@ -274,7 +342,7 @@ describe("BodyInspectionHandler.ts", () => {
 			handler.next = dummyFetchHandler;
 
 			const response = await handler.execute("https://example.com", { method: "GET" });
-			assert.isUndefined(options.getResponseBody());
+			assert.isUndefined(options.responseBody);
 			assert.equal(await response.text(), "ignored response");
 		});
 
@@ -287,8 +355,7 @@ describe("BodyInspectionHandler.ts", () => {
 			const perRequestOptions = new BodyInspectionOptions({ inspectResponseBody: true });
 			await handler.execute("https://example.com", { method: "GET" }, { [BodyInspectionOptionsKey]: perRequestOptions });
 
-			assert.isDefined(perRequestOptions.getResponseBody());
-			assert.equal(new TextDecoder().decode(perRequestOptions.getResponseBody()), "scoped response");
+			assert.isDefined(perRequestOptions.responseBody);
 			assert.equal(new TextDecoder().decode(perRequestOptions.responseBody), "scoped response");
 		});
 

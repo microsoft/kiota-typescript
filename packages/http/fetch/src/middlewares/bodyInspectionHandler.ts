@@ -52,11 +52,12 @@ export class BodyInspectionHandler implements Middleware {
 			throw new Error("next middleware is undefined.");
 		}
 
+		currentOptions.requestBody = undefined;
+		currentOptions.responseBody = undefined;
+
 		if (currentOptions.inspectRequestBody) {
 			if (requestInit.body !== undefined && requestInit.body !== null) {
 				await this.inspectRequestBody(requestInit, currentOptions);
-			} else {
-				currentOptions.requestBody = undefined;
 			}
 		}
 
@@ -65,8 +66,6 @@ export class BodyInspectionHandler implements Middleware {
 		if (currentOptions.inspectResponseBody) {
 			if (response) {
 				await this.inspectResponseBody(response, currentOptions);
-			} else {
-				currentOptions.responseBody = undefined;
 			}
 		}
 
@@ -87,9 +86,7 @@ export class BodyInspectionHandler implements Middleware {
 			requestInit.body = new Blob([buffer], { type: rawBody.type });
 		} else if (typeof ReadableStream !== "undefined" && rawBody instanceof ReadableStream) {
 			const stream = rawBody as ReadableStream<Uint8Array>;
-			const [stream1, stream2] = stream.tee();
-			requestInit.body = stream1;
-			const reader = stream2.getReader();
+			const reader = stream.getReader();
 			const chunks: Uint8Array[] = [];
 			let totalLength = 0;
 			while (true) {
@@ -105,6 +102,7 @@ export class BodyInspectionHandler implements Middleware {
 			}
 			const concatenated = this.concatenateChunks(chunks, totalLength);
 			currentOptions.requestBody = concatenated.buffer;
+			requestInit.body = concatenated;
 		} else if (typeof URLSearchParams !== "undefined" && rawBody instanceof URLSearchParams) {
 			currentOptions.requestBody = new TextEncoder().encode(rawBody.toString()).buffer;
 		} else if (this.isAsyncIterable(rawBody)) {
