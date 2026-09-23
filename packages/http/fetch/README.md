@@ -12,50 +12,24 @@ Read more about Kiota [here](https://github.com/microsoft/kiota/blob/main/README
 
 1. `npm i @microsoft/kiota-http-fetchlibrary`.
 
-## Configuring Native Fetch Options (e.g., Cookies / Credentials)
+## Send cookies with a custom fetch function
 
-If your API requires sending cookies or credentials (such as `credentials: 'include'`), or custom options like `mode`, `cache`, or `keepalive`, you can configure them in two ways:
-
-### 1. Using `FetchRequestOption`
-
-Attach `FetchRequestOption` either globally on `FetchRequestAdapter` or per request:
+To send cookies to an API from a browser, configure a custom fetch function with `credentials: "include"` and pass it to `KiotaClientFactory.create()`. Use the resulting HTTP client when constructing your request adapter:
 
 ```typescript
-import { FetchRequestAdapter, FetchRequestOption } from '@microsoft/kiota-http-fetchlibrary';
+import { AnonymousAuthenticationProvider } from "@microsoft/kiota-abstractions";
+import { DefaultRequestAdapter } from "@microsoft/kiota-bundle";
+import { KiotaClientFactory } from "@microsoft/kiota-http-fetchlibrary";
 
-// As default options on the adapter:
-const adapter = new FetchRequestAdapter(
-  authProvider,
-  undefined,
-  undefined,
-  httpClient,
-  undefined,
-  undefined,
-  new FetchRequestOption({ credentials: 'include' })
-);
-
-// Or dynamically set on an existing adapter:
-adapter.defaultFetchOptions = new FetchRequestOption({ credentials: 'include' });
-
-// Or per request on RequestInformation:
-requestInformation.addRequestOptions([new FetchRequestOption({ credentials: 'include' })]);
-```
-
-### 2. Using a Custom Fetch Function with `KiotaClientFactory`
-
-Pass a custom fetch wrapper to `KiotaClientFactory.create()`:
-
-```typescript
-import { KiotaClientFactory } from '@microsoft/kiota-http-fetchlibrary';
-
-const customFetch = (url: Parameters<typeof fetch>[0], init?: RequestInit) =>
-  fetch(url, {
-    ...init,
-    credentials: 'include',
-  });
+const customFetch = (url: string, init: RequestInit) =>
+	fetch(url, { ...init, credentials: "include" });
 
 const httpClient = KiotaClientFactory.create(customFetch);
+const authProvider = new AnonymousAuthenticationProvider();
+const adapter = new DefaultRequestAdapter(authProvider, undefined, undefined, httpClient);
 ```
+
+Use your API's authentication provider in place of `AnonymousAuthenticationProvider` when the API requires one. In browsers, cross-origin cookie requests also require the API to allow credentialed CORS requests and the cookies to have compatible attributes.
 
 ## Contributing
 
