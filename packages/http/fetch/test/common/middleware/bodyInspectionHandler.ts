@@ -6,7 +6,7 @@
  */
 
 import { trace } from "@opentelemetry/api";
-import { assert, describe, it, vi } from "vitest";
+import { assert, describe, expect, it, vi } from "vitest";
 
 import { BodyInspectionHandler, BodyInspectionOptions, BodyInspectionOptionsKey, ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src";
 import { DummyFetchHandler } from "./dummyFetchHandler";
@@ -157,6 +157,7 @@ describe("BodyInspectionHandler.ts", () => {
 			});
 
 			await handler.execute("https://example.com", { method: "POST", body: stream as any });
+			assert.isFalse(stream.locked);
 
 			const captured = options.requestBody;
 			assert.isDefined(captured);
@@ -189,6 +190,22 @@ describe("BodyInspectionHandler.ts", () => {
 			await handler.execute("https://example.com", requestInit);
 			assert.deepEqual(received, ["retry payload", "retry payload"]);
 			assert.equal(new TextDecoder().decode(options.requestBody), "retry payload");
+		});
+
+		it("Should release a web stream reader when reading fails", async () => {
+			const handler = new BodyInspectionHandler(new BodyInspectionOptions({ inspectRequestBody: true }));
+			const dummyFetchHandler = new DummyFetchHandler();
+			dummyFetchHandler.execute = async () => new Response("ok");
+			handler.next = dummyFetchHandler;
+
+			const stream = new ReadableStream<Uint8Array>({
+				pull() {
+					throw new Error("stream failed");
+				},
+			});
+
+			await expect(handler.execute("https://example.com", { method: "POST", body: stream as any })).rejects.toThrow("stream failed");
+			assert.isFalse(stream.locked);
 		});
 
 		it("Should capture a Node-style readable body and replace it with replayable bytes", async () => {

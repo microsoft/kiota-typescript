@@ -89,16 +89,20 @@ export class BodyInspectionHandler implements Middleware {
 			const reader = stream.getReader();
 			const chunks: Uint8Array[] = [];
 			let totalLength = 0;
-			while (true) {
-				const result = await reader.read();
-				if (result.done) {
-					break;
+			try {
+				while (true) {
+					const result = await reader.read();
+					if (result.done) {
+						break;
+					}
+					const chunk = result.value;
+					if (chunk) {
+						chunks.push(chunk);
+						totalLength += chunk.length;
+					}
 				}
-				const chunk = result.value;
-				if (chunk) {
-					chunks.push(chunk);
-					totalLength += chunk.length;
-				}
+			} finally {
+				reader.releaseLock();
 			}
 			const concatenated = this.concatenateChunks(chunks, totalLength);
 			currentOptions.requestBody = concatenated.buffer;
