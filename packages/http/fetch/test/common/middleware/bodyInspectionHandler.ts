@@ -8,7 +8,7 @@
 import { trace } from "@opentelemetry/api";
 import { assert, describe, expect, it, vi } from "vitest";
 
-import { BodyInspectionHandler, BodyInspectionOptions, BodyInspectionOptionsKey, ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src";
+import { BodyInspectionHandler, BodyInspectionOptions, BodyInspectionOptionsKey, ObservabilityOptionKey, ObservabilityOptionsImpl, RetryHandler, RetryHandlerOptions } from "../../../src";
 import { DummyFetchHandler } from "./dummyFetchHandler";
 
 const defaultOptions = new BodyInspectionOptions();
@@ -167,16 +167,18 @@ describe("BodyInspectionHandler.ts", () => {
 			assert.equal(new TextDecoder().decode(downstreamBody as Uint8Array), "streamed content");
 		});
 
-		it("Should preserve a captured web stream body for a downstream retry", async () => {
+		it("Should replay a captured web stream body when RetryHandler retries", async () => {
 			const options = new BodyInspectionOptions({ inspectRequestBody: true });
 			const handler = new BodyInspectionHandler(options);
+			const retryHandler = new RetryHandler(new RetryHandlerOptions({ delay: 0, maxRetries: 1 }));
 			const received: string[] = [];
 			const dummyFetchHandler = new DummyFetchHandler();
 			dummyFetchHandler.execute = async (_url, requestInit) => {
 				received.push(await new Response(requestInit.body).text());
-				return new Response("ok");
+				return received.length === 1 ? new Response(null, { status: 503, headers: { "Retry-After": "0" } }) : new Response("ok");
 			};
 			handler.next = dummyFetchHandler;
+			retryHandler.next = handler;
 
 			const stream = new ReadableStream<Uint8Array>({
 				start(controller) {
@@ -184,10 +186,10 @@ describe("BodyInspectionHandler.ts", () => {
 					controller.close();
 				},
 			});
-			const requestInit = { method: "POST", body: stream as any };
+			const requestInit = { method: "POST", headers: { "content-type": "application/json" }, body: stream as any };
 
-			await handler.execute("https://example.com", requestInit);
-			await handler.execute("https://example.com", requestInit);
+			const response = await retryHandler.execute("https://example.com", requestInit);
+			assert.equal(response.status, 200);
 			assert.deepEqual(received, ["retry payload", "retry payload"]);
 			assert.equal(new TextDecoder().decode(options.requestBody), "retry payload");
 		});
