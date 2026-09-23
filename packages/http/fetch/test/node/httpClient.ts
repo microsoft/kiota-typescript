@@ -88,9 +88,9 @@ describe("node - HTTPClient.ts", () => {
 			assert.isTrue(next instanceof RedirectHandler);
 			assert.isTrue(next?.next instanceof ParametersNameDecodingHandler);
 			assert.isTrue(next?.next?.next instanceof UserAgentHandler);
-			assert.isTrue(next?.next?.next?.next instanceof CompressionHandler);
-			assert.isTrue(next?.next?.next?.next?.next instanceof HeadersInspectionHandler);
-			assert.isTrue(next?.next?.next?.next?.next?.next instanceof BodyInspectionHandler);
+			assert.isTrue(next?.next?.next?.next instanceof BodyInspectionHandler);
+			assert.isTrue(next?.next?.next?.next?.next instanceof CompressionHandler);
+			assert.isTrue(next?.next?.next?.next?.next?.next instanceof HeadersInspectionHandler);
 			assert.isTrue(next?.next?.next?.next?.next?.next?.next instanceof UrlReplaceHandler);
 			assert.isTrue(next?.next?.next?.next?.next?.next?.next?.next instanceof CustomFetchHandler);
 		});

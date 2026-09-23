@@ -38,8 +38,10 @@ export class MiddlewareFactory {
 
 	public static getPerformanceMiddlewares(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args)): Middleware[] {
 		const middlewares = MiddlewareFactory.getDefaultMiddlewares(customFetch);
+		const bodyInspectionIndex = middlewares.findIndex((m) => m instanceof BodyInspectionHandler);
+		const [bodyInspection] = middlewares.splice(bodyInspectionIndex, 1);
 		const headersIndex = middlewares.findIndex((m) => m instanceof HeadersInspectionHandler);
-		middlewares.splice(headersIndex >= 0 ? headersIndex : middlewares.length - 4, 0, new CompressionHandler()); // insert CompressionHandler before HeadersInspectionHandler
+		middlewares.splice(headersIndex, 0, bodyInspection, new CompressionHandler());
 		return middlewares;
 	}
 }
