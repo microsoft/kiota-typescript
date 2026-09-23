@@ -41,6 +41,12 @@ describe("AllowedHostsValidator", () => {
 		expect(validator.isUrlHostValid("http://invalid.com/path")).to.be.false;
 	});
 
+	it("isUrlHostValid should validate protocol-relative urls without an explicit scheme", () => {
+		expect(validator.isUrlHostValid("example.com/path")).to.be.true;
+		expect(validator.isUrlHostValid("//example.com/path")).to.be.true;
+		expect(validator.isUrlHostValid("//invalid.com/path")).to.be.false;
+	});
+
 	it("isUrlHostValid should return true for subdomain matching allowed suffix", () => {
 		validator = new AllowedHostsValidator(new Set([".fabric.microsoft.com"]));
 		expect(validator.isUrlHostValid("https://abc.123.graphql.fabric.microsoft.com/path")).to.be.true;

@@ -42,7 +42,8 @@ export class AllowedHostsValidator {
 	public isUrlHostValid(url: string): boolean {
 		if (!url) return false;
 		if (this.allowedHosts.size === 0) return true;
-		const candidate = url.includes("://") ? url : !url.startsWith("http") ? `http://${url}` : undefined;
+		const defaultProtocol = typeof window !== "undefined" ? window.location.protocol : "https:";
+		const candidate = url.includes("://") ? url : !url.startsWith("http") ? `${defaultProtocol}//${url.replace(/^\/\//, "")}` : undefined;
 		if (candidate) {
 			let parsed: URL;
 			try {
@@ -56,7 +57,7 @@ export class AllowedHostsValidator {
 			}
 			return this.isHostValid(parsed.hostname);
 		}
-		if (window?.location?.host) {
+		if (typeof window !== "undefined" && window.location?.host) {
 			return this.isHostValid(window.location.host);
 		}
 		return false;
