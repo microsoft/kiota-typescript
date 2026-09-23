@@ -16,6 +16,10 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 
 The best way to get started with a contribution is to start a dialog with the owners of this repository. Sometimes features will be under development or out of scope for this SDK and it's best to check before starting work on contribution.
 
+## Changelog updates
+
+The changelog is generated automatically as part of the release process. Do not update `CHANGELOG.md` in pull requests.
+
 ## Dependency changes
 
 Only core contributors may add or update dependencies. Other contributors should open an issue or contact the repository owners when a dependency change is needed.

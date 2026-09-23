@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.0-preview.108](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-multipart@1.0.0-preview.107...@microsoft/kiota-serialization-multipart@1.0.0-preview.108) (2026-09-21)
+
+
+### Bug Fixes
+
+* **abstractions:** accept defined falsy multipart content ([#2132](https://github.com/microsoft/kiota-typescript/issues/2132)) ([4cbeab0](https://github.com/microsoft/kiota-typescript/commit/4cbeab09001546c85a2656e22d4306fbf52034c1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.107 to ^1.0.0-preview.108
+  * devDependencies
+    * @microsoft/kiota-serialization-json bumped from ^1.0.0-preview.107 to ^1.0.0-preview.108
+
 ## [1.0.0-preview.107](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-multipart@1.0.0-preview.106...@microsoft/kiota-serialization-multipart@1.0.0-preview.107) (2026-09-04)
 
 

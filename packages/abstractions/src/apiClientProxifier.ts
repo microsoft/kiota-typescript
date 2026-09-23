@@ -32,6 +32,8 @@ const getRequestMethod = (key: string): KeysOfRequestsMetadata | undefined => {
 			return "post";
 		case "put":
 			return "put";
+		case "query":
+			return "query";
 		default:
 			return undefined;
 	}
@@ -43,7 +45,7 @@ const toRequestInformation = <QueryParametersType extends object>(urlTemplate: s
 	requestInfo.configure(requestConfiguration, metadata.queryParametersMapper);
 	addAcceptHeaderIfPresent(metadata, requestInfo);
 	if (metadata.requestBodySerializer) {
-		if (!body) throw new Error("body cannot be undefined");
+		if (body === null || body === undefined) throw new Error("body cannot be undefined");
 		if (typeof metadata.requestBodySerializer === "function") {
 			requestInfo.setContentFromParsable(requestAdapter, metadata.requestBodyContentType ? metadata.requestBodyContentType : bodyMediaType, body, metadata.requestBodySerializer);
 		} else {
@@ -155,6 +157,11 @@ export const apiClientProxifier = <T extends object>(requestAdapter: RequestAdap
 									const requestInfo = toRequestInformation(metadata.uriTemplate, pathParameters, metadata, requestAdapter, HttpMethod.POST, args.length > 0 ? args[0] : undefined, getRequestMediaTypeUserDefinedValue(metadata, args), getRequestConfigurationValue(args));
 									return send(requestAdapter, requestInfo, metadata);
 								};
+							case "query":
+								return (...args: unknown[]) => {
+									const requestInfo = toRequestInformation(metadata.uriTemplate, pathParameters, metadata, requestAdapter, HttpMethod.QUERY, args.length > 0 ? args[0] : undefined, getRequestMediaTypeUserDefinedValue(metadata, args), getRequestConfigurationValue(args));
+									return send(requestAdapter, requestInfo, metadata);
+								};
 							case "toGetRequestInformation":
 								return (requestConfiguration?: RequestConfiguration<object>) => {
 									return toRequestInformation(metadata.uriTemplate, pathParameters, metadata, requestAdapter, HttpMethod.GET, undefined, undefined, requestConfiguration);
@@ -174,6 +181,10 @@ export const apiClientProxifier = <T extends object>(requestAdapter: RequestAdap
 							case "toPostRequestInformation":
 								return (...args: unknown[]) => {
 									return toRequestInformation(metadata.uriTemplate, pathParameters, metadata, requestAdapter, HttpMethod.POST, args.length > 0 ? args[0] : undefined, getRequestMediaTypeUserDefinedValue(metadata, args), getRequestConfigurationValue(args));
+								};
+							case "toQueryRequestInformation":
+								return (...args: unknown[]) => {
+									return toRequestInformation(metadata.uriTemplate, pathParameters, metadata, requestAdapter, HttpMethod.QUERY, args.length > 0 ? args[0] : undefined, getRequestMediaTypeUserDefinedValue(metadata, args), getRequestConfigurationValue(args));
 								};
 							default:
 								break;
@@ -234,6 +245,7 @@ export interface RequestsMetadata {
 	patch?: RequestMetadata;
 	post?: RequestMetadata;
 	put?: RequestMetadata;
+	query?: RequestMetadata;
 }
 
 type KeysOfRequestsMetadata = keyof RequestsMetadata;
@@ -246,4 +258,4 @@ export interface NavigationMetadata {
 
 type EnumObject<T extends Record<string, unknown> = Record<string, unknown>> = T;
 
-export type KeysToExcludeForNavigationMetadata = KeysOfRequestsMetadata | "toDeleteRequestInformation" | "toGetRequestInformation" | "toHeadRequestInformation" | "toOptionsRequestInformation" | "toPatchRequestInformation" | "toPostRequestInformation" | "toPutRequestInformation" | "withUrl";
+export type KeysToExcludeForNavigationMetadata = KeysOfRequestsMetadata | "toDeleteRequestInformation" | "toGetRequestInformation" | "toHeadRequestInformation" | "toOptionsRequestInformation" | "toPatchRequestInformation" | "toPostRequestInformation" | "toPutRequestInformation" | "toQueryRequestInformation" | "withUrl";
