@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.109](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-authentication-azure@1.0.0-preview.108...@microsoft/kiota-authentication-azure@1.0.0-preview.109) (2026-09-23)
+
+
+### Miscellaneous Chores
+
+* **@microsoft/kiota-authentication-azure:** Synchronize microsoft-kiota versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.108 to ^1.0.0-preview.109
+
 ## [1.0.0-preview.108](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-authentication-azure@1.0.0-preview.107...@microsoft/kiota-authentication-azure@1.0.0-preview.108) (2026-09-21)
 
 

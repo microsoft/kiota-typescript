@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0-preview.109](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.108...@microsoft/kiota-abstractions@1.0.0-preview.109) (2026-09-23)
+
+
+### Bug Fixes
+
+* correct host parsing in AllowedHostsValidator ([#2149](https://github.com/microsoft/kiota-typescript/issues/2149)) ([7f44e4b](https://github.com/microsoft/kiota-typescript/commit/7f44e4b2e7d28d0c2a7c709f0c33642f6b5e7023))
+
 ## [1.0.0-preview.108](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-abstractions@1.0.0-preview.107...@microsoft/kiota-abstractions@1.0.0-preview.108) (2026-09-21)
 
 
