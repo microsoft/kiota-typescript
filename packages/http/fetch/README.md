@@ -10,7 +10,7 @@ Read more about Kiota [here](https://github.com/microsoft/kiota/blob/main/README
 
 ## Using the Kiota Fetch library implementations
 
-1. `npm i @microsoft/kiota-http-fetchlibrary`.
+1. `npm i @microsoft/kiota-http-fetchlibrary @microsoft/kiota-bundle @microsoft/kiota-abstractions`.
 
 ## Send cookies with a custom fetch function
 
