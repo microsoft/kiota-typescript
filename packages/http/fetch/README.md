@@ -43,9 +43,9 @@ const responseBuffer = bodyInspectionOptions.responseBody;
 
 - **Memory / Buffering**: Inspecting request and response bodies creates in-memory copies (`ArrayBuffer`). For large payloads or file transfers, buffering the entire body into memory increases heap usage. Only enable inspection when necessary.
 - **Stream Lifecycle**: In JavaScript and browser fetch implementations, `ReadableStream` instances are single-use and can only be consumed once.
-  - When request body inspection is enabled and the request body is a `ReadableStream`, `BodyInspectionHandler` branches the stream via `tee()` so that one branch is buffered in memory for inspection while the other continues downstream to the network request without disturbing payload transmission.
-  - Node.js readable request bodies are buffered once and replaced with replayable bytes before the request continues downstream.
+  - Web `ReadableStream` and Node.js readable request bodies are buffered once and replaced with replayable bytes before the request continues downstream. This consumes the original stream and allows retries to reuse the inspected request body.
   - The captured request and response bodies are exposed as `ArrayBuffer` values. Callers that need another representation can construct it explicitly from those bytes.
+- **Concurrent requests**: Use a separate request-scoped `BodyInspectionOptions` instance for each request whose captured body you need to read. A handler's global options instance is shared across requests.
 
 ## Contributing
 
