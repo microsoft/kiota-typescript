@@ -10,7 +10,26 @@ Read more about Kiota [here](https://github.com/microsoft/kiota/blob/main/README
 
 ## Using the Kiota Fetch library implementations
 
-1. `npm i @microsoft/kiota-http-fetchlibrary`.
+1. `npm i @microsoft/kiota-http-fetchlibrary @microsoft/kiota-bundle @microsoft/kiota-abstractions`.
+
+## Send cookies with a custom fetch function
+
+To send cookies to an API from a browser, configure a custom fetch function with `credentials: "include"` and pass it to `KiotaClientFactory.create()`. Use the resulting HTTP client when constructing your request adapter:
+
+```typescript
+import { AnonymousAuthenticationProvider } from "@microsoft/kiota-abstractions";
+import { DefaultRequestAdapter } from "@microsoft/kiota-bundle";
+import { KiotaClientFactory } from "@microsoft/kiota-http-fetchlibrary";
+
+const customFetch = (url: string, init: RequestInit) =>
+	fetch(url, { ...init, credentials: "include" });
+
+const httpClient = KiotaClientFactory.create(customFetch);
+const authProvider = new AnonymousAuthenticationProvider();
+const adapter = new DefaultRequestAdapter(authProvider, undefined, undefined, httpClient);
+```
+
+Use your API's authentication provider in place of `AnonymousAuthenticationProvider` when the API requires one. In browsers, cross-origin cookie requests also require the API to allow credentialed CORS requests and the cookies to have compatible attributes.
 
 ## Contributing
 
