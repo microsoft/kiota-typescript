@@ -7,7 +7,7 @@
 
 import { assert, describe, it } from "vitest";
 
-import { CustomFetchHandler, HeadersInspectionHandler, HttpClient, MiddlewareFactory, ParametersNameDecodingHandler, RedirectHandler, RetryHandler, UrlReplaceHandler, UserAgentHandler, CompressionHandler } from "../../src";
+import { CustomFetchHandler, HeadersInspectionHandler, BodyInspectionHandler, HttpClient, MiddlewareFactory, ParametersNameDecodingHandler, RedirectHandler, RetryHandler, UrlReplaceHandler, UserAgentHandler, CompressionHandler } from "../../src";
 import { DummyFetchHandler } from "../common/middleware/dummyFetchHandler";
 
 describe("browser - HTTPClient.ts", () => {
@@ -40,8 +40,9 @@ describe("browser - HTTPClient.ts", () => {
 			assert.isTrue(next?.next instanceof ParametersNameDecodingHandler);
 			assert.isTrue(next?.next?.next instanceof UserAgentHandler);
 			assert.isTrue(next?.next?.next?.next instanceof HeadersInspectionHandler);
-			assert.isTrue(next?.next?.next?.next?.next instanceof UrlReplaceHandler);
-			assert.isTrue(next?.next?.next?.next?.next?.next instanceof CustomFetchHandler);
+			assert.isTrue(next?.next?.next?.next?.next instanceof BodyInspectionHandler);
+			assert.isTrue(next?.next?.next?.next?.next?.next instanceof UrlReplaceHandler);
+			assert.isTrue(next?.next?.next?.next?.next?.next?.next instanceof CustomFetchHandler);
 		});
 
 		it("Should set default middleware array with customFetchHandler if middleware parameter is undefined && customFetch is defined", () => {
@@ -56,8 +57,9 @@ describe("browser - HTTPClient.ts", () => {
 			assert.isTrue(next?.next instanceof ParametersNameDecodingHandler);
 			assert.isTrue(next?.next?.next instanceof UserAgentHandler);
 			assert.isTrue(next?.next?.next?.next instanceof HeadersInspectionHandler);
-			assert.isTrue(next?.next?.next?.next?.next instanceof UrlReplaceHandler);
-			assert.isTrue(next?.next?.next?.next?.next?.next instanceof CustomFetchHandler);
+			assert.isTrue(next?.next?.next?.next?.next instanceof BodyInspectionHandler);
+			assert.isTrue(next?.next?.next?.next?.next?.next instanceof UrlReplaceHandler);
+			assert.isTrue(next?.next?.next?.next?.next?.next?.next instanceof CustomFetchHandler);
 		});
 
 		it("Should set to default fetch handler middleware array if middleware parameter is null && customFetch is undefined", () => {
@@ -86,10 +88,11 @@ describe("browser - HTTPClient.ts", () => {
 			assert.isTrue(next instanceof RedirectHandler);
 			assert.isTrue(next?.next instanceof ParametersNameDecodingHandler);
 			assert.isTrue(next?.next?.next instanceof UserAgentHandler);
-			assert.isTrue(next?.next?.next?.next instanceof CompressionHandler);
-			assert.isTrue(next?.next?.next?.next?.next instanceof HeadersInspectionHandler);
-			assert.isTrue(next?.next?.next?.next?.next?.next instanceof UrlReplaceHandler);
-			assert.isTrue(next?.next?.next?.next?.next?.next?.next instanceof CustomFetchHandler);
+			assert.isTrue(next?.next?.next?.next instanceof BodyInspectionHandler);
+			assert.isTrue(next?.next?.next?.next?.next instanceof CompressionHandler);
+			assert.isTrue(next?.next?.next?.next?.next?.next instanceof HeadersInspectionHandler);
+			assert.isTrue(next?.next?.next?.next?.next?.next?.next instanceof UrlReplaceHandler);
+			assert.isTrue(next?.next?.next?.next?.next?.next?.next?.next instanceof CustomFetchHandler);
 		});
 	});
 });

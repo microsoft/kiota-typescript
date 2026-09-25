@@ -51,7 +51,7 @@ export class HeadersInspectionHandler implements Middleware {
 			throw new Error("next middleware is undefined.");
 		}
 		if (currentOptions.inspectRequestHeaders && requestInit.headers) {
-			for (const [key, value] of requestInit.headers as [string, string][]) {
+			for (const [key, value] of new Headers(requestInit.headers).entries()) {
 				currentOptions.getRequestHeaders().add(key, value);
 			}
 		}
