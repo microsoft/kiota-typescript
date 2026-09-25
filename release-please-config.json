@@ -26,6 +26,11 @@
       "release-type": "node",
       "changelog-path": "CHANGELOG.md"
     },
+    "packages/authentication/msal-browser": {
+      "component": "@microsoft/kiota-authentication-msal-browser",
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md"
+    },
     "packages/bundle": {
       "component": "@microsoft/kiota-bundle",
       "release-type": "node",
@@ -69,6 +74,7 @@
         "@microsoft/kiota-abstractions",
         "@microsoft/kiota-authentication-azure",
         "@microsoft/kiota-authentication-spfx",
+        "@microsoft/kiota-authentication-msal-browser",
         "@microsoft/kiota-bundle",
         "@microsoft/kiota-http-fetchlibrary",
         "@microsoft/kiota-serialization-form",
