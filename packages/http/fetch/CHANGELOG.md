@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.109](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.108...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.109) (2026-09-28)
+
+
+### Features
+
+* **http:** implement body inspection handler ([#2136](https://github.com/microsoft/kiota-typescript/issues/2136)) ([03330ef](https://github.com/microsoft/kiota-typescript/commit/03330ef083d72103c48c5a429a7f840e9390cfed))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.108 to ^1.0.0-preview.109
+
 ## [1.0.0-preview.108](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.107...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.108) (2026-09-21)
 
 
