@@ -75,6 +75,13 @@ export class CompressionHandler implements Middleware {
 
 		// compress the request body
 		const compressedBody = await this.compressRequestBody(unCompressedBody);
+		if (unCompressedBody instanceof URLSearchParams) {
+			const headers = new Headers(requestInit.headers);
+			if (!headers.has("Content-Type")) {
+				headers.set("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+			}
+			requestInit.headers = Object.fromEntries(headers.entries());
+		}
 
 		// add Content-Encoding to request header
 		setRequestHeader(requestInit, CompressionHandler.CONTENT_ENCODING_HEADER, "gzip");
@@ -121,6 +128,9 @@ export class CompressionHandler implements Middleware {
 		if (typeof body === "string") {
 			return body.length;
 		}
+		if (body instanceof URLSearchParams) {
+			return new TextEncoder().encode(body.toString()).byteLength;
+		}
 		if (body instanceof Blob) {
 			return body.size;
 		}
@@ -152,6 +162,10 @@ export class CompressionHandler implements Middleware {
 
 		if (typeof body === "string") {
 			return { stream: uint8ArrayToStream(new TextEncoder().encode(body)), size: body.length };
+		}
+		if (body instanceof URLSearchParams) {
+			const bytes = new TextEncoder().encode(body.toString());
+			return { stream: uint8ArrayToStream(bytes), size: bytes.byteLength };
 		}
 		if (body instanceof Blob) {
 			return { stream: body.stream(), size: body.size };

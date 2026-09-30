@@ -41,6 +41,12 @@ describe("AllowedHostsValidator", () => {
 		expect(validator.isUrlHostValid("http://invalid.com/path")).to.be.false;
 	});
 
+	it("isUrlHostValid should validate protocol-relative urls without an explicit scheme", () => {
+		expect(validator.isUrlHostValid("example.com/path")).to.be.true;
+		expect(validator.isUrlHostValid("//example.com/path")).to.be.true;
+		expect(validator.isUrlHostValid("//invalid.com/path")).to.be.false;
+	});
+
 	it("isUrlHostValid should return true for subdomain matching allowed suffix", () => {
 		validator = new AllowedHostsValidator(new Set([".fabric.microsoft.com"]));
 		expect(validator.isUrlHostValid("https://abc.123.graphql.fabric.microsoft.com/path")).to.be.true;
@@ -71,5 +77,13 @@ describe("AllowedHostsValidator", () => {
 
 	it("isUrlHostValid should return false for invalid URLs", () => {
 		expect(validator.isUrlHostValid("invalid")).to.be.false;
+	});
+
+	it("isUrlHostValid should return false for a mismatched host in the userinfo section", () => {
+		expect(validator.isUrlHostValid("https://example.com:443@evil.com/path")).to.be.false;
+	});
+
+	it("isUrlHostValid should return false when userinfo is present", () => {
+		expect(validator.isUrlHostValid("https://user:pass@example.com/path")).to.be.false;
 	});
 });
