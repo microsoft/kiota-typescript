@@ -1,0 +1,16 @@
+.eslint**
+.prettier**
+*.log
+*.tgz
+**/test/**/*
+test/
+coverage/
+docs/
+node_modules/
+rollup.config.js
+src/
+tsconfig.**.json
+tsconfig.json
+**/*.tsbuildinfo
+vite.config.mts
+vitest.config.mts
