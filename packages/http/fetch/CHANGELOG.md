@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.110](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.109...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.110) (2026-10-06)
+
+
+### Bug Fixes
+
+* Fixing redirect handler 301 handling ([#2162](https://github.com/microsoft/kiota-typescript/issues/2162)) ([f4ea74c](https://github.com/microsoft/kiota-typescript/commit/f4ea74ca87bc0f203ff6de2dfcb7f7181c74eb23))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.109 to ^1.0.0-preview.110
+
 ## [1.0.0-preview.109](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.108...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.109) (2026-09-28)
 
 
