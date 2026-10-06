@@ -14,6 +14,7 @@ import { trace } from "@opentelemetry/api";
 
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import type { FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions";
+import { deleteRequestHeader } from "../utils/headersUtil";
 import type { Middleware } from "./middleware";
 import { RedirectHandlerOptionKey, RedirectHandlerOptions } from "./options/redirectHandlerOptions";
 
@@ -39,6 +40,16 @@ export class RedirectHandler implements Middleware {
 	 * A member holding SeeOther status code
 	 */
 	private static readonly STATUS_CODE_SEE_OTHER = 303;
+
+	/**
+	 * A member holding redirect status codes that change POST requests to GET
+	 */
+	private static readonly STATUS_CODES_POST_TO_GET = new Set<number>([301, 302]);
+
+	/**
+	 * A member holding headers that describe a request body
+	 */
+	private static readonly BODY_HEADERS = new Set<string>(["content-length", "transfer-encoding", "content-type", "content-encoding", "content-language"]);
 
 	/**
 	 * A member holding the name of the location header
@@ -106,6 +117,29 @@ export class RedirectHandler implements Middleware {
 	}
 
 	/**
+	 * Updates the request method and body to match Fetch redirect semantics.
+	 * @param responseStatus - The redirect response status code
+	 * @param fetchRequestInit - The Fetch RequestInit object
+	 */
+	private updateRequestForRedirect(responseStatus: number, fetchRequestInit: FetchRequestInit): void {
+		const method = fetchRequestInit.method?.toUpperCase() ?? HttpMethod.GET;
+		const shouldChangePostToGet = RedirectHandler.STATUS_CODES_POST_TO_GET.has(responseStatus) && method === "POST";
+		const shouldChangeToGetForSeeOther = responseStatus === RedirectHandler.STATUS_CODE_SEE_OTHER && method !== "GET" && method !== "HEAD";
+
+		if (!shouldChangePostToGet && !shouldChangeToGetForSeeOther) {
+			return;
+		}
+
+		fetchRequestInit.method = HttpMethod.GET;
+		delete fetchRequestInit.body;
+		for (const header of Object.keys(fetchRequestInit.headers ?? {})) {
+			if (RedirectHandler.BODY_HEADERS.has(header.toLowerCase())) {
+				deleteRequestHeader(fetchRequestInit, header);
+			}
+		}
+	}
+
+	/**
 	 * To execute the next middleware and to handle in case of redirect response returned by the server
 	 * @param url - The url string value
 	 * @param fetchRequestInit - The Fetch RequestInit object
@@ -135,11 +169,7 @@ export class RedirectHandler implements Middleware {
 				currentOptions.scrubSensitiveHeaders(fetchRequestInit.headers, url, newUrl);
 			}
 
-			// Handle 303 See Other: change POST to GET
-			if (response.status === RedirectHandler.STATUS_CODE_SEE_OTHER) {
-				fetchRequestInit.method = HttpMethod.GET;
-				delete fetchRequestInit.body;
-			}
+			this.updateRequestForRedirect(response.status, fetchRequestInit);
 
 			url = newUrl;
 			if (tracerName) {

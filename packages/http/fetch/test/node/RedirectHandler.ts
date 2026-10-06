@@ -240,20 +240,63 @@ describe("RedirectHandler.ts", () => {
 			assert.equal(response.status, 301);
 		});
 
-		it("Should drop body and change method to get for SEE_OTHER status code", async () => {
-			dummyFetchHandler.setResponses([
-				new Response("", {
-					status: 303,
+		it("Should apply Fetch method, body, and body-header semantics for redirects", async () => {
+			const redirectCases = [
+				{ status: 301, method: "POST", expectedMethod: "GET", dropsBody: true },
+				{ status: 301, method: "PUT", expectedMethod: "PUT", dropsBody: false },
+				{ status: 302, method: "POST", expectedMethod: "GET", dropsBody: true },
+				{ status: 302, method: "PATCH", expectedMethod: "PATCH", dropsBody: false },
+				{ status: 303, method: "PATCH", expectedMethod: "GET", dropsBody: true },
+				{ status: 303, method: "GET", expectedMethod: "GET", dropsBody: false },
+				{ status: 303, method: "HEAD", expectedMethod: "HEAD", dropsBody: false },
+				{ status: 307, method: "POST", expectedMethod: "POST", dropsBody: false },
+				{ status: 308, method: "POST", expectedMethod: "POST", dropsBody: false },
+			];
+
+			for (const { status, method, expectedMethod, dropsBody } of redirectCases) {
+				const fetchRequestInit = {
+					method,
+					body: "dummy body",
 					headers: {
-						[RedirectHandler["LOCATION_HEADER"]]: "/location",
+						"content-length": "10",
+						"Transfer-Encoding": "chunked",
+						"Content-Type": "text/plain",
+						"Content-Encoding": "gzip",
+						"Content-Language": "en-US",
+						"X-Custom-Header": "preserved",
 					},
-				}),
-				new Response("ok", { status: 200 }),
-			] as any);
-			const response = await handler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, new RedirectHandlerOptions());
-			assert.isUndefined(fetchRequestInit["body"]);
-			assert.equal(fetchRequestInit.method, "GET");
-			assert.equal(response.status, 200);
+				};
+				dummyFetchHandler.setResponses([
+					new Response("", {
+						status,
+						headers: {
+							[RedirectHandler["LOCATION_HEADER"]]: "/location",
+						},
+					}),
+					new Response("ok", { status: 200 }),
+				] as any);
+
+				const response = await handler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, new RedirectHandlerOptions());
+
+				assert.equal(fetchRequestInit.method, expectedMethod);
+				assert.equal(fetchRequestInit.headers["X-Custom-Header"], "preserved");
+				if (dropsBody) {
+					assert.isUndefined(fetchRequestInit.body);
+					assert.notProperty(fetchRequestInit.headers, "content-length");
+					assert.notProperty(fetchRequestInit.headers, "Transfer-Encoding");
+					assert.notProperty(fetchRequestInit.headers, "Content-Type");
+					assert.notProperty(fetchRequestInit.headers, "Content-Encoding");
+					assert.notProperty(fetchRequestInit.headers, "Content-Language");
+				} else {
+					assert.equal(fetchRequestInit.body, "dummy body");
+					assert.equal(fetchRequestInit.headers["content-length"], "10");
+					assert.equal(fetchRequestInit.headers["Transfer-Encoding"], "chunked");
+					assert.equal(fetchRequestInit.headers["Content-Type"], "text/plain");
+					assert.equal(fetchRequestInit.headers["Content-Encoding"], "gzip");
+					assert.equal(fetchRequestInit.headers["Content-Language"], "en-US");
+				}
+				assert.equal(response.status, 200);
+			}
 		});
 
 		it("Should not drop Authorization header for relative url redirect", async () => {
@@ -334,6 +377,7 @@ describe("RedirectHandler.ts", () => {
 				headers: {
 					Authorization: "Bearer TEST",
 					Cookie: "session=SECRET",
+					"Content-Type": "text/plain",
 				},
 			};
 
@@ -349,6 +393,9 @@ describe("RedirectHandler.ts", () => {
 			const response = await handler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, new RedirectHandlerOptions());
 			assert.isUndefined(fetchRequestInit.headers["Authorization"]);
 			assert.isUndefined(fetchRequestInit.headers["Cookie"]);
+			assert.isUndefined(fetchRequestInit.headers["Content-Type"]);
+			assert.isUndefined(fetchRequestInit.body);
+			assert.equal(fetchRequestInit.method, "GET");
 			assert.equal(response.status, 200);
 		});
 
