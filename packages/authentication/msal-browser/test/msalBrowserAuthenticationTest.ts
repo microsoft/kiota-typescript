@@ -190,6 +190,19 @@ describe("MsalBrowserAccessTokenProvider and MsalBrowserAuthenticationProvider",
 		assert.deepEqual(capturedScopes, ["https://graph.microsoft.com/.default"]);
 	});
 
+	it.each(["//graph.microsoft.com/v1.0", "graph.microsoft.com/v1.0", "https://graph.microsoft.com?x=1", "https://graph.microsoft.com#fragment", "https://GRAPH.MICROSOFT.COM/v1.0"])("Infers scope from normalized URL %s", async (url) => {
+		let capturedScopes: string[] | undefined;
+		const mockApp = createMockClientApp({
+			acquireTokenSilent: (request) => {
+				capturedScopes = request.scopes;
+				return Promise.resolve({ accessToken: "inferred_token" } as AuthenticationResult);
+			},
+		});
+		const provider = new MsalBrowserAccessTokenProvider({ clientApplication: mockApp, scopes: [] });
+		assert.equal(await provider.getAuthorizationToken(url), "inferred_token");
+		assert.deepEqual(capturedScopes, ["https://graph.microsoft.com/.default"]);
+	});
+
 	it("Does not mutate shared scopes across different URL hosts", async () => {
 		const capturedScopesList: string[][] = [];
 		const mockApp = createMockClientApp({

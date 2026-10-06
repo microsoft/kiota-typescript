@@ -65,7 +65,8 @@ export class MsalBrowserAccessTokenProvider implements AccessTokenProvider {
 			span?.setAttribute("com.microsoft.kiota.authentication.is_url_valid", false);
 			return "";
 		}
-		this.validateRequestUrlProtocol(url);
+		const normalizedUrl = url.includes("://") ? url : `${this.getSchemeFromLocation()}://${url.replace(/^\/\//, "")}`;
+		this.validateRequestUrlProtocol(normalizedUrl);
 		span?.setAttribute("com.microsoft.kiota.authentication.is_url_valid", true);
 
 		let decodedClaims = "";
@@ -77,7 +78,7 @@ export class MsalBrowserAccessTokenProvider implements AccessTokenProvider {
 
 		let scopes = this.scopes;
 		if (scopes.length === 0) {
-			const [scheme, host] = this.getSchemeAndHostFromUrl(url);
+			const [scheme, host] = this.getSchemeAndHostFromUrl(normalizedUrl);
 			scopes = [`${scheme}://${host}/.default`];
 		}
 		span?.setAttribute("com.microsoft.kiota.authentication.scopes", scopes.join(","));
@@ -153,16 +154,8 @@ export class MsalBrowserAccessTokenProvider implements AccessTokenProvider {
 	};
 
 	private readonly getSchemeAndHostFromUrl = (url: string): string[] => {
-		const urlParts = url.split("://");
-		if (urlParts.length === 0) {
-			return [this.getSchemeFromLocation(), this.getHostFromLocation()];
-		} else if (urlParts.length === 1) {
-			return [this.getSchemeFromLocation(), urlParts[0].split("/")[0]];
-		} else if (urlParts.length >= 2) {
-			return [urlParts[0], urlParts[1].split("/")[0]];
-		} else {
-			throw new Error("invalid url");
-		}
+		const parsedUrl = new URL(url);
+		return [parsedUrl.protocol.replace(":", ""), parsedUrl.host];
 	};
 
 	private readonly getSchemeFromLocation = (): string => {
@@ -170,13 +163,6 @@ export class MsalBrowserAccessTokenProvider implements AccessTokenProvider {
 			return window.location.protocol.replace(":", "");
 		}
 		return "https";
-	};
-
-	private readonly getHostFromLocation = (): string => {
-		if (!inNodeEnv() && typeof window !== "undefined" && window.location) {
-			return window.location.host;
-		}
-		return "";
 	};
 
 	/**
