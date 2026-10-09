@@ -30,6 +30,18 @@ const authProvider = new MsalBrowserAuthenticationProvider({
 });
 ```
 
+## Browser tests
+
+The HTTPS regression runs in a browser and checks the page's actual protocol before testing HTTP request rejection. Node tests skip this browser-only case. The CI `msal-browser` job configures an ephemeral localhost TLS certificate and runs the suite in actual Chromium on Node.js 22/24/26. Browser-provider tools are installed in the runner's temporary directory, separately from the library dependencies.
+
+For a browser-enabled Vitest configuration, set both `KIOTA_TEST_TLS_KEY` and `KIOTA_TEST_TLS_CERT` to local certificate paths. For example, with OpenSSL:
+
+```sh
+openssl req -x509 -newkey rsa:2048 -nodes -keyout /tmp/kiota-test-key.pem -out /tmp/kiota-test-cert.pem -days 1 -subj /CN=localhost -addext subjectAltName=DNS:localhost
+```
+
+Use paths appropriate to your platform, keep the key outside the repository, and trust the localhost test certificate in your browser automation environment. The browser regression fails if served over HTTP; it does not override `window.location` or silently ignore setup errors.
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a

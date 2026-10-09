@@ -312,37 +312,9 @@ describe("MsalBrowserAccessTokenProvider and MsalBrowserAuthenticationProvider",
 		assert.equal(token, "local_token");
 	});
 
-	it("Rejects insecure http URL even when window.location.protocol is https in browser", async () => {
-		const mockApp = createMockClientApp();
-		const provider = new MsalBrowserAccessTokenProvider({
-			clientApplication: mockApp,
-			scopes,
-		});
-
-		let originalProtocolDesc: PropertyDescriptor | undefined;
-		if (typeof window !== "undefined" && window.location) {
-			try {
-				originalProtocolDesc = Object.getOwnPropertyDescriptor(window.location, "protocol");
-				Object.defineProperty(window.location, "protocol", {
-					value: "https:",
-					configurable: true,
-					writable: true,
-				});
-			} catch {
-				// Window.location property redefinition may be restricted in some browser engines
-			}
-		}
-
-		try {
-			await expect(provider.getAuthorizationToken("http://graph.microsoft.com/v1.0/me")).rejects.toThrow("Authentication scheme can only be used with https requests");
-		} finally {
-			if (originalProtocolDesc && typeof window !== "undefined") {
-				try {
-					Object.defineProperty(window.location, "protocol", originalProtocolDesc);
-				} catch {
-					// Ignore cleanup failure
-				}
-			}
-		}
+	it.runIf(typeof window !== "undefined")("Rejects insecure http URL from an HTTPS browser page", async () => {
+		assert.equal(window.location.protocol, "https:", "This regression must run from an HTTPS page");
+		const provider = new MsalBrowserAccessTokenProvider({ clientApplication: createMockClientApp(), scopes });
+		await expect(provider.getAuthorizationToken("http://graph.microsoft.com/v1.0/me")).rejects.toThrow("Authentication scheme can only be used with https requests");
 	});
 });
