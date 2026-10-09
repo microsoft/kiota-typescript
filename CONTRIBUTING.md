@@ -22,6 +22,8 @@ The changelog is generated automatically as part of the release process. Do not 
 
 ## Dependency changes
 
+Use Node.js 22.x, 24.x, or 26.x when contributing. Node.js 20 is no longer supported. See the [building and testing instructions](./README.md#building-and-testing) for local validation commands.
+
 Only core contributors may add or update dependencies. Other contributors should open an issue or contact the repository owners when a dependency change is needed.
 
 Core contributors must configure and authenticate to the private Azure Artifacts npm feed before changing dependencies:
