@@ -6,6 +6,10 @@ A [Kiota](https://github.com/microsoft/kiota) generated project uses these runti
 
 Read more about Kiota [here](https://github.com/microsoft/kiota/blob/main/README.md).
 
+## Supported runtimes
+
+The libraries support Node.js 22.x, 24.x, and 26.x, as well as browsers. Node.js 20 is no longer supported.
+
 ## Build Status
 
 [![Build and test](https://github.com/microsoft/kiota-typescript/actions/workflows/build_test_validate.yml/badge.svg?branch=main)](https://github.com/microsoft/kiota-typescript/actions/workflows/build_test_validate.yml)
@@ -43,6 +47,8 @@ Release notes are available in each library's `CHANGELOG.md` alongside its READM
 ## Building and testing
 
 This repository is a Lerna monorepo using npm workspaces, with libraries under `packages/`.
+
+Use a supported Node.js version (22.x, 24.x, or 26.x) for local development. CI builds and tests all three versions; coverage and Azure Pipelines use Node.js 26.x.
 
 ```sh
 # Restore the exact dependencies from the lockfile
