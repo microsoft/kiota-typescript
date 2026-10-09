@@ -10,7 +10,11 @@ Read more about Kiota [here](https://github.com/microsoft/kiota/blob/main/README
 
 ## Using the Kiota Authentication MSAL Browser
 
-1. `npm i @microsoft/kiota-authentication-msal-browser -S`.
+Install the authentication provider and MSAL Browser, which the application uses to create its `PublicClientApplication`:
+
+```sh
+npm install @microsoft/kiota-authentication-msal-browser @azure/msal-browser
+```
 
 ```typescript
 import { PublicClientApplication, InteractionType } from "@azure/msal-browser";
