@@ -46,6 +46,9 @@
             "path": "./packages/authentication/azure/tsconfig.json"
         },
         {
+            "path": "./packages/authentication/msal-browser/tsconfig.json"
+        },
+        {
             "path": "./packages/authentication/spfx/tsconfig.json"
         }
     ],
