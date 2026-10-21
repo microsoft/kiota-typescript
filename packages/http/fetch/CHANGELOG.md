@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.111](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.110...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.111) (2026-10-21)
+
+
+### Bug Fixes
+
+* **http:** fix span name, lifecycle and header isolation in headersInspectionHandler ([#2190](https://github.com/microsoft/kiota-typescript/issues/2190)) ([1c5e90d](https://github.com/microsoft/kiota-typescript/commit/1c5e90d3d6ab4b1eecb1d24a80276e9556b5d7da))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.110 to ^1.0.0-preview.111
+
 ## [1.0.0-preview.110](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.109...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.110) (2026-10-06)
 
 
