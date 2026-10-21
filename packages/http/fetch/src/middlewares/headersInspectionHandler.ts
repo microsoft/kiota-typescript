@@ -35,10 +35,10 @@ export class HeadersInspectionHandler implements Middleware {
 		}
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
 		if (obsOptions) {
-			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("retryHandler - execute", (span) => {
+			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("headersInspectionHandler - execute", async (span) => {
 				try {
-					span.setAttribute("com.microsoft.kiota.handler.headersInspection.enable", true);
-					return this.executeInternal(url, requestInit, requestOptions, currentOptions);
+					span.setAttribute("com.microsoft.kiota.handler.headersInspection.enable", currentOptions.inspectRequestHeaders || currentOptions.inspectResponseHeaders);
+					return await this.executeInternal(url, requestInit, requestOptions, currentOptions);
 				} finally {
 					span.end();
 				}
@@ -50,16 +50,22 @@ export class HeadersInspectionHandler implements Middleware {
 		if (!this.next) {
 			throw new Error("next middleware is undefined.");
 		}
-		if (currentOptions.inspectRequestHeaders && requestInit.headers) {
-			for (const [key, value] of new Headers(requestInit.headers).entries()) {
-				currentOptions.getRequestHeaders().add(key, value);
+		if (currentOptions.inspectRequestHeaders) {
+			currentOptions.getRequestHeaders().clear();
+			if (requestInit.headers) {
+				for (const [key, value] of new Headers(requestInit.headers).entries()) {
+					currentOptions.getRequestHeaders().add(key, value);
+				}
 			}
 		}
 
 		const response = await this.next.execute(url, requestInit, requestOptions);
-		if (currentOptions.inspectResponseHeaders && response.headers) {
-			for (const [key, value] of response.headers.entries()) {
-				currentOptions.getResponseHeaders().add(key, value);
+		if (currentOptions.inspectResponseHeaders) {
+			currentOptions.getResponseHeaders().clear();
+			if (response.headers) {
+				for (const [key, value] of response.headers.entries()) {
+					currentOptions.getResponseHeaders().add(key, value);
+				}
 			}
 		}
 
