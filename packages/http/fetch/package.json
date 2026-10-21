@@ -28,7 +28,7 @@
 		"clean": "rimraf ./dist",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "eslint . --ext .ts --fix",
-		"test:browser": "vitest run --browser.name=chrome --browser.headless --browser.provider=webdriverio",
+		"test:browser": "vitest run --browser --browser.headless",
 		"test:node": "vitest --run",
 		"test:coverage": "vitest run --coverage.enabled --coverage.provider=istanbul",
 		"test": "npm run test:node && npm run test:browser",
