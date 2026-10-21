@@ -8,7 +8,7 @@
 import { assert, describe, it, vi } from "vitest";
 import { trace } from "@opentelemetry/api";
 
-import { HeadersInspectionHandler, HeadersInspectionOptions, ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src";
+import { HeadersInspectionHandler, HeadersInspectionOptions, HeadersInspectionOptionsKey, ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src";
 import { DummyFetchHandler } from "./dummyFetchHandler";
 const defaultOptions = new HeadersInspectionOptions();
 describe("HeadersInspectionHandler.ts", () => {
@@ -203,6 +203,50 @@ describe("HeadersInspectionHandler.ts", () => {
 				releaseDownstream?.();
 				await execution;
 				assert.isTrue(spanEnded);
+			} finally {
+				getTracerSpy.mockRestore();
+			}
+		});
+
+		it("Should set telemetry enabled attribute to false when inspection flags are disabled", async () => {
+			let enabledAttribute: unknown;
+			const testSpan = {
+				setAttribute: (name: string, value: unknown) => {
+					if (name === "com.microsoft.kiota.handler.headersInspection.enable") {
+						enabledAttribute = value;
+					}
+				},
+				end: () => {},
+			};
+
+			const tracer = {
+				startActiveSpan: (_name: string, callback: (span: typeof testSpan) => Promise<Response>) => {
+					return callback(testSpan);
+				},
+			};
+
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as unknown as ReturnType<typeof trace.getTracer>);
+			const dummyFetchHandler = new DummyFetchHandler();
+			dummyFetchHandler.execute = async () => new Response("ok");
+
+			const options = new HeadersInspectionOptions({ inspectRequestHeaders: false, inspectResponseHeaders: false });
+			const handler = new HeadersInspectionHandler(options);
+			handler.next = dummyFetchHandler;
+
+			try {
+				await handler.execute("https://example.com", { method: "GET" }, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				assert.isFalse(enabledAttribute);
+
+				const requestOptions = new HeadersInspectionOptions({ inspectRequestHeaders: false, inspectResponseHeaders: false });
+				await handler.execute(
+					"https://example.com",
+					{ method: "GET" },
+					{
+						[ObservabilityOptionKey]: new ObservabilityOptionsImpl(),
+						[HeadersInspectionOptionsKey]: requestOptions,
+					},
+				);
+				assert.isFalse(enabledAttribute);
 			} finally {
 				getTracerSpy.mockRestore();
 			}
