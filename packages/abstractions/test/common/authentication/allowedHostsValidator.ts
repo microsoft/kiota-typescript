@@ -19,8 +19,18 @@ describe("AllowedHostsValidator", () => {
 		expect(() => new AllowedHostsValidator(new Set(["http://invalid.com"]))).to.throw("host should not contain http or https prefix");
 	});
 
+	it("constructor should validate hosts with leading/trailing whitespace", () => {
+		expect(() => new AllowedHostsValidator(new Set(["  http://invalid.com  "]))).to.throw("host should not contain http or https prefix");
+		expect(() => new AllowedHostsValidator(new Set(["  https://invalid.com  "]))).to.throw("host should not contain http or https prefix");
+	});
+
 	it("getAllowedHosts should return correct hosts", () => {
 		expect(JSON.stringify(validator.getAllowedHosts())).to.equal(JSON.stringify(["example.com", "test.com"]));
+	});
+
+	it("getAllowedHosts should trim hosts", () => {
+		const trimmedValidator = new AllowedHostsValidator(new Set(["  example.com  ", "  test.com "]));
+		expect(JSON.stringify(trimmedValidator.getAllowedHosts())).to.equal(JSON.stringify(["example.com", "test.com"]));
 	});
 
 	it("setAllowedHosts should update allowed hosts", () => {
@@ -30,11 +40,16 @@ describe("AllowedHostsValidator", () => {
 
 	it("setAllowedHosts should validate new hosts", () => {
 		expect(() => validator.setAllowedHosts(new Set(["https://invalid.com"]))).to.throw("host should not contain http or https prefix");
+		expect(() => validator.setAllowedHosts(new Set(["  https://invalid.com  "]))).to.throw("host should not contain http or https prefix");
 	});
 
 	it("isUrlHostValid should return true for valid hosts", () => {
 		expect(validator.isUrlHostValid("http://example.com/path")).to.be.true;
 		expect(validator.isUrlHostValid("http://test.com/path")).to.be.true;
+	});
+
+	it("isUrlHostValid should handle url with whitespace", () => {
+		expect(validator.isUrlHostValid("  http://example.com/path  ")).to.be.true;
 	});
 
 	it("isUrlHostValid should return false for invalid hosts", () => {
@@ -85,5 +100,11 @@ describe("AllowedHostsValidator", () => {
 
 	it("isUrlHostValid should return false when userinfo is present", () => {
 		expect(validator.isUrlHostValid("https://user:pass@example.com/path")).to.be.false;
+	});
+
+	it("isUrlHostValid should reject userinfo even when allowedHosts is empty", () => {
+		const emptyValidator = new AllowedHostsValidator();
+		expect(emptyValidator.isUrlHostValid("https://user:pass@example.com/path")).to.be.false;
+		expect(emptyValidator.isUrlHostValid("https://example.com/path")).to.be.true;
 	});
 });
