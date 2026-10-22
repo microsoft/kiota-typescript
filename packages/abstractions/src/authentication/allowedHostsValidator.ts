@@ -41,9 +41,10 @@ export class AllowedHostsValidator {
 	 */
 	public isUrlHostValid(url: string): boolean {
 		if (!url) return false;
-		if (this.allowedHosts.size === 0) return true;
+		const trimmedUrl = url.trim();
+		if (!trimmedUrl) return false;
 		const defaultProtocol = typeof window !== "undefined" ? window.location.protocol : "https:";
-		const candidate = url.includes("://") ? url : !url.startsWith("http") ? `${defaultProtocol}//${url.replace(/^\/\//, "")}` : undefined;
+		const candidate = trimmedUrl.includes("://") ? trimmedUrl : !trimmedUrl.startsWith("http") ? `${defaultProtocol}//${trimmedUrl.replace(/^\/\//, "")}` : undefined;
 		if (candidate) {
 			let parsed: URL;
 			try {
@@ -55,9 +56,15 @@ export class AllowedHostsValidator {
 			if (parsed.username || parsed.password) {
 				return false;
 			}
+			if (this.allowedHosts.size === 0) {
+				return true;
+			}
 			return this.isHostValid(parsed.hostname);
 		}
 		if (typeof window !== "undefined" && window.location?.host) {
+			if (this.allowedHosts.size === 0) {
+				return true;
+			}
 			return this.isHostValid(window.location.host);
 		}
 		return false;
@@ -70,7 +77,7 @@ export class AllowedHostsValidator {
 		return Array.from(this.allowedHosts).some((allowedHost) => allowedHost.startsWith(".") && normalizedHost.endsWith(allowedHost));
 	}
 	private normalizeHosts(hostsToNormalize: Set<string>): Set<string> {
-		return new Set(Array.from(hostsToNormalize, (host) => host.toLowerCase()));
+		return new Set(Array.from(hostsToNormalize, (host) => host.trim().toLowerCase()).filter((host) => host.length > 0));
 	}
 
 	private validateHosts(hostsToValidate: Set<string>) {
@@ -78,7 +85,8 @@ export class AllowedHostsValidator {
 			throw new Error("hostsToValidate cannot be null");
 		}
 		hostsToValidate.forEach((host) => {
-			if (host.toLowerCase().startsWith("http://") || host.toLowerCase().startsWith("https://")) {
+			const trimmedHost = host?.trim().toLowerCase();
+			if (trimmedHost.startsWith("http://") || trimmedHost.startsWith("https://")) {
 				throw new Error("host should not contain http or https prefix");
 			}
 		});
