@@ -38,10 +38,13 @@ export class UrlReplaceHandler implements Middleware {
 		}
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
 		if (obsOptions) {
-			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("urlReplaceHandler - execute", (span) => {
+			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("urlReplaceHandler - execute", async (span) => {
 				try {
 					span.setAttribute("com.microsoft.kiota.handler.urlReplace.enable", currentOptions.enabled);
-					return this.replaceTokensInUrl(currentOptions, url, requestInit, requestOptions);
+					return await this.replaceTokensInUrl(currentOptions, url, requestInit, requestOptions);
+				} catch (error) {
+					span.recordException(error as Error);
+					throw error;
 				} finally {
 					span.end();
 				}

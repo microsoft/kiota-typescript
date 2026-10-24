@@ -1,3 +1,5 @@
+import { trace } from "@opentelemetry/api";
+import { ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src/observabilityOptions";
 /**
  * -------------------------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
@@ -5,7 +7,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { assert, describe, it } from "vitest";
+import { assert, describe, it, vi } from "vitest";
 
 import { UserAgentHandler, UserAgentHandlerOptions } from "../../../src";
 import { getResponse } from "../../testUtils";
@@ -55,6 +57,75 @@ describe("userAgentHandler.ts", function () {
 			};
 			await handler.execute(requestUrl, fetchRequestInit, undefined);
 			assert.isUndefined((fetchRequestInit as any).headers);
+		});
+	});
+	describe("observability", () => {
+		it("encloses downstream execution and records exception on failure", async () => {
+			let spanEnded = false;
+			let recordedException: unknown;
+			const testSpan = {
+				setAttribute: () => {},
+				recordException: (err: unknown) => {
+					recordedException = err;
+				},
+				end: () => {
+					spanEnded = true;
+				},
+			};
+			const tracer = {
+				startActiveSpan: (_name: string, callback: (span: typeof testSpan) => Promise<Response>) => {
+					return callback(testSpan);
+				},
+			};
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as any);
+			const dummyFetch = new DummyFetchHandler();
+			dummyFetch.execute = async () => {
+				assert.isFalse(spanEnded);
+				throw new Error("transport failed");
+			};
+			const handler = new UserAgentHandler();
+			handler.next = dummyFetch;
+
+			try {
+				await handler.execute("https://example.com", { method: "GET" }, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				assert.fail("should have thrown");
+			} catch (err: any) {
+				assert.equal(err.message, "transport failed");
+				assert.isTrue(spanEnded);
+				assert.isDefined(recordedException);
+			} finally {
+				getTracerSpy.mockRestore();
+			}
+		});
+
+		it("sets enabled attribute based on options", async () => {
+			let enabledAttribute: unknown;
+			const testSpan = {
+				setAttribute: (name: string, value: unknown) => {
+					if (name === "com.microsoft.kiota.handler.useragent.enable") {
+						enabledAttribute = value;
+					}
+				},
+				recordException: () => {},
+				end: () => {},
+			};
+			const tracer = {
+				startActiveSpan: (_name: string, callback: (span: typeof testSpan) => Promise<Response>) => {
+					return callback(testSpan);
+				},
+			};
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as any);
+			const dummyFetch = new DummyFetchHandler();
+			dummyFetch.execute = async () => new Response("ok", { status: 200 });
+			const handler = new UserAgentHandler(new UserAgentHandlerOptions({ enable: false }));
+			handler.next = dummyFetch;
+
+			try {
+				await handler.execute("https://example.com", { method: "GET" }, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				assert.isFalse(enabledAttribute);
+			} finally {
+				getTracerSpy.mockRestore();
+			}
 		});
 	});
 });
