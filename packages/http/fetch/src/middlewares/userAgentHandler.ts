@@ -29,25 +29,28 @@ export class UserAgentHandler implements Middleware {
 	next: Middleware | undefined;
 	/** @inheritdoc */
 	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
+		let currentOptions = this._options;
+		if (requestOptions?.[UserAgentHandlerOptionsKey]) {
+			currentOptions = requestOptions[UserAgentHandlerOptionsKey] as UserAgentHandlerOptions;
+		}
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
 		if (obsOptions) {
-			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("userAgentHandler - execute", (span) => {
+			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("userAgentHandler - execute", async (span) => {
 				try {
-					span.setAttribute("com.microsoft.kiota.handler.useragent.enable", true);
-					return this.addValue(url, requestInit, requestOptions);
+					span.setAttribute("com.microsoft.kiota.handler.useragent.enable", Boolean(currentOptions.enable));
+					return await this.addValue(currentOptions, url, requestInit, requestOptions);
+				} catch (error) {
+					span.recordException(error as Error);
+					throw error;
 				} finally {
 					span.end();
 				}
 			});
 		} else {
-			return this.addValue(url, requestInit, requestOptions);
+			return this.addValue(currentOptions, url, requestInit, requestOptions);
 		}
 	}
-	private async addValue(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
-		let currentOptions = this._options;
-		if (requestOptions?.[UserAgentHandlerOptionsKey]) {
-			currentOptions = requestOptions[UserAgentHandlerOptionsKey] as UserAgentHandlerOptions;
-		}
+	private async addValue(currentOptions: UserAgentHandlerOptions, url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		if (currentOptions.enable) {
 			const additionalValue = `${currentOptions.productName}/${currentOptions.productVersion}`;
 			const currentValue = getRequestHeader(requestInit as FetchRequestInit, USER_AGENT_HEADER_KEY);
