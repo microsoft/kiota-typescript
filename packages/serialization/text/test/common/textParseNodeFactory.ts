@@ -24,4 +24,17 @@ describe("textParseNodeFactory", () => {
 
 		assert.equal(outputText, expectedText);
 	});
+
+	it("supports content type with parameters and whitespace", () => {
+		const textParseNodeFactory = new TextParseNodeFactory();
+		const sampleArrayBuffer = new TextEncoder().encode("hello serializer");
+
+		const node1 = textParseNodeFactory.getRootParseNode("text/plain; charset=utf-8", sampleArrayBuffer);
+		assert.isDefined(node1);
+		assert.equal(node1.getStringValue(), "hello serializer");
+
+		const node2 = textParseNodeFactory.getRootParseNode("  TEXT/PLAIN; charset=utf-8  ", sampleArrayBuffer);
+		assert.isDefined(node2);
+		assert.equal(node2.getStringValue(), "hello serializer");
+	});
 });
