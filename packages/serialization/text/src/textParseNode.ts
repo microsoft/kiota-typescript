@@ -12,9 +12,9 @@ import { DateOnly, Duration, type Parsable, type ParsableFactory, parseGuidStrin
  */
 export class TextParseNode implements ParseNode {
 	private static readonly noStructuredDataMessage = "text does not support structured data";
-	constructor(private readonly text: string) {
+	constructor(private text: string) {
 		if (this.text && this.text.length > 1 && this.text.startsWith('"') && this.text.endsWith('"')) {
-			this.text = this.text.substring(1, this.text.length - 2);
+			this.text = this.text.slice(1, -1);
 		}
 	}
 	public getByteArrayValue(): ArrayBuffer | undefined {
