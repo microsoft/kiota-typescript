@@ -1,5 +1,3 @@
-import { trace } from "@opentelemetry/api";
-import { ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src/observabilityOptions";
 /**
  * -------------------------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
@@ -7,9 +5,11 @@ import { ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src/o
  * -------------------------------------------------------------------------------------------
  */
 
+import { trace } from "@opentelemetry/api";
 import { assert, describe, it, vi } from "vitest";
 
 import { UserAgentHandler, UserAgentHandlerOptions } from "../../../src";
+import { ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src/observabilityOptions";
 import { getResponse } from "../../testUtils";
 import { DummyFetchHandler } from "./dummyFetchHandler";
 

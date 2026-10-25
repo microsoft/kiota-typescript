@@ -1,5 +1,3 @@
-import { trace } from "@opentelemetry/api";
-import { ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src/observabilityOptions";
 /**
  * -------------------------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
@@ -7,10 +5,12 @@ import { ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src/o
  * -------------------------------------------------------------------------------------------
  */
 
+import { trace } from "@opentelemetry/api";
 import { assert, describe, it, vi } from "vitest";
 
 import { UrlReplaceHandlerOptions } from "../../../src/middlewares/options/urlReplaceHandlerOptions";
 import { UrlReplaceHandler } from "../../../src/middlewares/urlReplaceHandler";
+import { ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src/observabilityOptions";
 import { getResponse } from "../../testUtils";
 import { DummyFetchHandler } from "./dummyFetchHandler";
 // eslint-disable-next-line no-var
@@ -86,7 +86,7 @@ describe("UrlReplaceHandler.ts", function () {
 				assert.isFalse(spanEnded);
 				throw new Error("network reset");
 			};
-			const handler = new UrlReplaceHandler(new UrlReplaceHandlerOptions(true, { "/old": "/new" }));
+			const handler = new UrlReplaceHandler(new UrlReplaceHandlerOptions({ enabled: true, urlReplacements: { "/old": "/new" } }));
 			handler.next = dummyFetch;
 
 			try {
