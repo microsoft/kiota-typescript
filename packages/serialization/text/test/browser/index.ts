@@ -6,3 +6,4 @@
  */
 
 export * from "../common/textParseNode";
+export * from "../common/textParseNodeFactory";

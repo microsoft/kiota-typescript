@@ -8,6 +8,7 @@
 import { assert, describe, it } from "vitest";
 
 import { TextParseNodeFactory } from "../../src/index";
+import { TextParseNodeFactory as BrowserTextParseNodeFactory } from "../../src/browser";
 
 describe("textParseNodeFactory", () => {
 	it("textParseNodeFactory", async () => {
@@ -36,5 +37,18 @@ describe("textParseNodeFactory", () => {
 		const node2 = textParseNodeFactory.getRootParseNode("  TEXT/PLAIN; charset=utf-8  ", sampleArrayBuffer);
 		assert.isDefined(node2);
 		assert.equal(node2.getStringValue(), "hello serializer");
+	});
+
+	it("browser factory supports content type with parameters and whitespace", () => {
+		const browserFactory = new BrowserTextParseNodeFactory();
+		const sampleArrayBuffer = new TextEncoder().encode("hello browser serializer");
+
+		const node1 = browserFactory.getRootParseNode("text/plain; charset=utf-8", sampleArrayBuffer);
+		assert.isDefined(node1);
+		assert.equal(node1.getStringValue(), "hello browser serializer");
+
+		const node2 = browserFactory.getRootParseNode("  TEXT/PLAIN; charset=utf-8  ", sampleArrayBuffer);
+		assert.isDefined(node2);
+		assert.equal(node2.getStringValue(), "hello browser serializer");
 	});
 });
