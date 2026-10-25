@@ -76,14 +76,34 @@ export class JsonParseNode implements ParseNode {
 					throw new Error(`encountered an unsupported type during deserialization ${typeof value}`);
 				}
 				return value as unknown as T;
-			case "Date":
-				return this.getDateValueFromRaw(value) as unknown as T;
-			case "DateOnly":
-				return this.getDateOnlyValueFromRaw(value) as unknown as T;
-			case "TimeOnly":
-				return this.getTimeOnlyValueFromRaw(value) as unknown as T;
-			case "Duration":
-				return this.getDurationValueFromRaw(value) as unknown as T;
+			case "Date": {
+				const date = this.getDateValueFromRaw(value);
+				if (date === undefined || isNaN(date.getTime())) {
+					throw new Error(`encountered an unsupported type during deserialization ${typeof value}`);
+				}
+				return date as unknown as T;
+			}
+			case "DateOnly": {
+				const dateOnly = this.getDateOnlyValueFromRaw(value);
+				if (dateOnly === undefined) {
+					throw new Error(`encountered an unsupported type during deserialization ${typeof value}`);
+				}
+				return dateOnly as unknown as T;
+			}
+			case "TimeOnly": {
+				const timeOnly = this.getTimeOnlyValueFromRaw(value);
+				if (timeOnly === undefined) {
+					throw new Error(`encountered an unsupported type during deserialization ${typeof value}`);
+				}
+				return timeOnly as unknown as T;
+			}
+			case "Duration": {
+				const duration = this.getDurationValueFromRaw(value);
+				if (duration === undefined) {
+					throw new Error(`encountered an unsupported type during deserialization ${typeof value}`);
+				}
+				return duration as unknown as T;
+			}
 			case "string":
 				if (typeof value !== "string") {
 					throw new Error(`encountered an unsupported type during deserialization ${typeof value}`);

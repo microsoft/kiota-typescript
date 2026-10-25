@@ -404,6 +404,33 @@ describe("JsonParseNode", () => {
 		const result = new JsonParseNode(["hello", null, "world"], backingStoreFactory).getCollectionOfPrimitiveValues<string | null>("string");
 		assert.deepEqual(result, ["hello", null, "world"]);
 	});
+	it("getCollectionOfPrimitiveValues throws for invalid temporal element shapes", () => {
+		assert.throw(() => new JsonParseNode([{}], backingStoreFactory).getCollectionOfPrimitiveValues<Date>("Date"), /unsupported type/);
+		assert.throw(() => new JsonParseNode(["not-a-date"], backingStoreFactory).getCollectionOfPrimitiveValues<Date>("Date"), /unsupported type/);
+		assert.throw(() => new JsonParseNode([{}], backingStoreFactory).getCollectionOfPrimitiveValues<DateOnly>("DateOnly"), /unsupported type/);
+		assert.throw(() => new JsonParseNode([""], backingStoreFactory).getCollectionOfPrimitiveValues<DateOnly>("DateOnly"), /unsupported type/);
+		assert.throw(() => new JsonParseNode([{}], backingStoreFactory).getCollectionOfPrimitiveValues<TimeOnly>("TimeOnly"), /unsupported type/);
+		assert.throw(() => new JsonParseNode([""], backingStoreFactory).getCollectionOfPrimitiveValues<TimeOnly>("TimeOnly"), /unsupported type/);
+		assert.throw(() => new JsonParseNode([{}], backingStoreFactory).getCollectionOfPrimitiveValues<Duration>("Duration"), /unsupported type/);
+		assert.throw(() => new JsonParseNode([""], backingStoreFactory).getCollectionOfPrimitiveValues<Duration>("Duration"), /unsupported type/);
+	});
+	it("getCollectionOfPrimitiveValues preserves null elements for nullable temporal collections", () => {
+		const dateResult = new JsonParseNode(["2023-01-01T00:00:00.000Z", null], backingStoreFactory).getCollectionOfPrimitiveValues<Date | null>("Date");
+		assert.isNotNull(dateResult?.[0]);
+		assert.isNull(dateResult?.[1]);
+
+		const dateOnlyResult = new JsonParseNode(["2023-01-01", null], backingStoreFactory).getCollectionOfPrimitiveValues<DateOnly | null>("DateOnly");
+		assert.instanceOf(dateOnlyResult?.[0], DateOnly);
+		assert.isNull(dateOnlyResult?.[1]);
+
+		const timeOnlyResult = new JsonParseNode(["08:00:00.0000000", null], backingStoreFactory).getCollectionOfPrimitiveValues<TimeOnly | null>("TimeOnly");
+		assert.instanceOf(timeOnlyResult?.[0], TimeOnly);
+		assert.isNull(timeOnlyResult?.[1]);
+
+		const durationResult = new JsonParseNode(["PT1H", null], backingStoreFactory).getCollectionOfPrimitiveValues<Duration | null>("Duration");
+		assert.instanceOf(durationResult?.[0], Duration);
+		assert.isNull(durationResult?.[1]);
+	});
 
 	it("should parse a union of objects and primitive values when value is primitive", async () => {
 		const result = new JsonParseNode(
