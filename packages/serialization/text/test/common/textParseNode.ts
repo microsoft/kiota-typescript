@@ -55,4 +55,18 @@ describe("textParseNode", () => {
 		const v5Guid = new TextParseNode(v5);
 		assert.isDefined(v5Guid.getGuidValue());
 	});
+
+	it("unquotes quoted strings correctly", () => {
+		const regularQuoted = new TextParseNode('"hello"');
+		assert.equal(regularQuoted.getStringValue(), "hello");
+
+		const emptyQuoted = new TextParseNode('""');
+		assert.equal(emptyQuoted.getStringValue(), "");
+
+		const unquoted = new TextParseNode("hello");
+		assert.equal(unquoted.getStringValue(), "hello");
+
+		const singleQuote = new TextParseNode('"');
+		assert.equal(singleQuote.getStringValue(), '"');
+	});
 });
