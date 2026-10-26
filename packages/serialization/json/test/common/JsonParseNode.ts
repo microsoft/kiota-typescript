@@ -404,15 +404,42 @@ describe("JsonParseNode", () => {
 		const result = new JsonParseNode(["hello", null, "world"], backingStoreFactory).getCollectionOfPrimitiveValues<string | null>("string");
 		assert.deepEqual(result, ["hello", null, "world"]);
 	});
-	it("getCollectionOfPrimitiveValues throws for invalid temporal element shapes", () => {
+	it("getCollectionOfPrimitiveValues throws for invalid temporal element shapes and formats", () => {
 		assert.throw(() => new JsonParseNode([{}], backingStoreFactory).getCollectionOfPrimitiveValues<Date>("Date"), /unsupported type/);
-		assert.throw(() => new JsonParseNode(["not-a-date"], backingStoreFactory).getCollectionOfPrimitiveValues<Date>("Date"), /unsupported type/);
+		assert.throw(() => new JsonParseNode(["not-a-date"], backingStoreFactory).getCollectionOfPrimitiveValues<Date>("Date"), /not a valid date representation/);
 		assert.throw(() => new JsonParseNode([{}], backingStoreFactory).getCollectionOfPrimitiveValues<DateOnly>("DateOnly"), /unsupported type/);
-		assert.throw(() => new JsonParseNode([""], backingStoreFactory).getCollectionOfPrimitiveValues<DateOnly>("DateOnly"), /unsupported type/);
+		assert.throw(() => new JsonParseNode([""], backingStoreFactory).getCollectionOfPrimitiveValues<DateOnly>("DateOnly"), /not a valid date-only representation/);
+		assert.throw(() => new JsonParseNode(["not-a-date"], backingStoreFactory).getCollectionOfPrimitiveValues<DateOnly>("DateOnly"), /not a valid date-only representation/);
 		assert.throw(() => new JsonParseNode([{}], backingStoreFactory).getCollectionOfPrimitiveValues<TimeOnly>("TimeOnly"), /unsupported type/);
-		assert.throw(() => new JsonParseNode([""], backingStoreFactory).getCollectionOfPrimitiveValues<TimeOnly>("TimeOnly"), /unsupported type/);
+		assert.throw(() => new JsonParseNode([""], backingStoreFactory).getCollectionOfPrimitiveValues<TimeOnly>("TimeOnly"), /not a valid time-only representation/);
+		assert.throw(() => new JsonParseNode(["not-a-time"], backingStoreFactory).getCollectionOfPrimitiveValues<TimeOnly>("TimeOnly"), /not a valid time-only representation/);
 		assert.throw(() => new JsonParseNode([{}], backingStoreFactory).getCollectionOfPrimitiveValues<Duration>("Duration"), /unsupported type/);
-		assert.throw(() => new JsonParseNode([""], backingStoreFactory).getCollectionOfPrimitiveValues<Duration>("Duration"), /unsupported type/);
+		assert.throw(() => new JsonParseNode([""], backingStoreFactory).getCollectionOfPrimitiveValues<Duration>("Duration"), /not a valid duration representation/);
+		assert.throw(() => new JsonParseNode(["not-a-duration"], backingStoreFactory).getCollectionOfPrimitiveValues<Duration>("Duration"), /Invalid duration/);
+	});
+	it("scalar temporal getters validate types and formats consistently with collections", () => {
+		assert.throw(() => new JsonParseNode({}, backingStoreFactory).getDateValue(), /unsupported type/);
+		assert.throw(() => new JsonParseNode("not-a-date", backingStoreFactory).getDateValue(), /not a valid date representation/);
+		assert.isUndefined(new JsonParseNode(null, backingStoreFactory).getDateValue());
+		assert.isUndefined(new JsonParseNode(undefined, backingStoreFactory).getDateValue());
+
+		assert.throw(() => new JsonParseNode({}, backingStoreFactory).getDateOnlyValue(), /unsupported type/);
+		assert.throw(() => new JsonParseNode("", backingStoreFactory).getDateOnlyValue(), /not a valid date-only representation/);
+		assert.throw(() => new JsonParseNode("not-a-date", backingStoreFactory).getDateOnlyValue(), /not a valid date-only representation/);
+		assert.isUndefined(new JsonParseNode(null, backingStoreFactory).getDateOnlyValue());
+		assert.isUndefined(new JsonParseNode(undefined, backingStoreFactory).getDateOnlyValue());
+
+		assert.throw(() => new JsonParseNode({}, backingStoreFactory).getTimeOnlyValue(), /unsupported type/);
+		assert.throw(() => new JsonParseNode("", backingStoreFactory).getTimeOnlyValue(), /not a valid time-only representation/);
+		assert.throw(() => new JsonParseNode("not-a-time", backingStoreFactory).getTimeOnlyValue(), /not a valid time-only representation/);
+		assert.isUndefined(new JsonParseNode(null, backingStoreFactory).getTimeOnlyValue());
+		assert.isUndefined(new JsonParseNode(undefined, backingStoreFactory).getTimeOnlyValue());
+
+		assert.throw(() => new JsonParseNode({}, backingStoreFactory).getDurationValue(), /unsupported type/);
+		assert.throw(() => new JsonParseNode("", backingStoreFactory).getDurationValue(), /not a valid duration representation/);
+		assert.throw(() => new JsonParseNode("not-a-duration", backingStoreFactory).getDurationValue(), /Invalid duration/);
+		assert.isUndefined(new JsonParseNode(null, backingStoreFactory).getDurationValue());
+		assert.isUndefined(new JsonParseNode(undefined, backingStoreFactory).getDurationValue());
 	});
 	it("getCollectionOfPrimitiveValues preserves null elements for nullable temporal collections", () => {
 		const dateResult = new JsonParseNode(["2023-01-01T00:00:00.000Z", null], backingStoreFactory).getCollectionOfPrimitiveValues<Date | null>("Date");
