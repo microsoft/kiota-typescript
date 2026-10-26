@@ -78,8 +78,13 @@ describe("userAgentHandler.ts", function () {
 				},
 			};
 			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as any);
+			let releaseDownstream: (() => void) | undefined;
+			const downstreamBlocked = new Promise<void>((resolve) => {
+				releaseDownstream = resolve;
+			});
 			const dummyFetch = new DummyFetchHandler();
 			dummyFetch.execute = async () => {
+				await downstreamBlocked;
 				assert.isFalse(spanEnded);
 				throw new Error("transport failed");
 			};
@@ -87,7 +92,11 @@ describe("userAgentHandler.ts", function () {
 			handler.next = dummyFetch;
 
 			try {
-				await handler.execute("https://example.com", { method: "GET" }, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				const execution = handler.execute("https://example.com", { method: "GET" }, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				await vi.waitFor(() => assert.isDefined(releaseDownstream));
+				assert.isFalse(spanEnded);
+				releaseDownstream?.();
+				await execution;
 				assert.fail("should have thrown");
 			} catch (err: any) {
 				assert.equal(err.message, "transport failed");
