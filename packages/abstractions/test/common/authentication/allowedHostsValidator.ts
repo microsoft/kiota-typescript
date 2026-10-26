@@ -24,6 +24,16 @@ describe("AllowedHostsValidator", () => {
 		expect(() => new AllowedHostsValidator(new Set(["  https://invalid.com  "]))).to.throw("host should not contain http or https prefix");
 	});
 
+	it("constructor should reject nonempty allowlist that normalizes to empty", () => {
+		expect(() => new AllowedHostsValidator(new Set(["   "]))).to.throw("hostsToValidate cannot normalize to an empty set from a non-empty allowlist");
+		expect(() => new AllowedHostsValidator(new Set([""]))).to.throw("hostsToValidate cannot normalize to an empty set from a non-empty allowlist");
+	});
+
+	it("constructor should preserve unrestricted access for explicitly empty allowlist", () => {
+		const emptyValidator = new AllowedHostsValidator(new Set());
+		expect(emptyValidator.getAllowedHosts()).to.deep.equal([]);
+	});
+
 	it("getAllowedHosts should return correct hosts", () => {
 		expect(JSON.stringify(validator.getAllowedHosts())).to.equal(JSON.stringify(["example.com", "test.com"]));
 	});
@@ -41,6 +51,16 @@ describe("AllowedHostsValidator", () => {
 	it("setAllowedHosts should validate new hosts", () => {
 		expect(() => validator.setAllowedHosts(new Set(["https://invalid.com"]))).to.throw("host should not contain http or https prefix");
 		expect(() => validator.setAllowedHosts(new Set(["  https://invalid.com  "]))).to.throw("host should not contain http or https prefix");
+	});
+
+	it("setAllowedHosts should reject nonempty allowlist that normalizes to empty", () => {
+		expect(() => validator.setAllowedHosts(new Set(["   "]))).to.throw("hostsToValidate cannot normalize to an empty set from a non-empty allowlist");
+		expect(() => validator.setAllowedHosts(new Set([""]))).to.throw("hostsToValidate cannot normalize to an empty set from a non-empty allowlist");
+	});
+
+	it("setAllowedHosts should preserve unrestricted access for explicitly empty allowlist", () => {
+		validator.setAllowedHosts(new Set());
+		expect(validator.getAllowedHosts()).to.deep.equal([]);
 	});
 
 	it("isUrlHostValid should return true for valid hosts", () => {
@@ -106,5 +126,26 @@ describe("AllowedHostsValidator", () => {
 		const emptyValidator = new AllowedHostsValidator();
 		expect(emptyValidator.isUrlHostValid("https://user:pass@example.com/path")).to.be.false;
 		expect(emptyValidator.isUrlHostValid("https://example.com/path")).to.be.true;
+	});
+
+	it("isUrlHostValid should return false in browser for unparsed URLs when allowlist is empty", () => {
+		const emptyValidator = new AllowedHostsValidator();
+		if (typeof window === "undefined") {
+			try {
+				(globalThis as any).window = {
+					location: {
+						protocol: "https:",
+						host: "example.com",
+					},
+				};
+				expect(emptyValidator.isUrlHostValid("http%")).to.be.false;
+				expect(emptyValidator.isUrlHostValid("https:user:pass@example.com/path")).to.be.false;
+			} finally {
+				delete (globalThis as any).window;
+			}
+		} else {
+			expect(emptyValidator.isUrlHostValid("http%")).to.be.false;
+			expect(emptyValidator.isUrlHostValid("https:user:pass@example.com/path")).to.be.false;
+		}
 	});
 });

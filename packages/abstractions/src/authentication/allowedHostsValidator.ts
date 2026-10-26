@@ -63,7 +63,7 @@ export class AllowedHostsValidator {
 		}
 		if (typeof window !== "undefined" && window.location?.host) {
 			if (this.allowedHosts.size === 0) {
-				return true;
+				return false;
 			}
 			return this.isHostValid(window.location.host);
 		}
@@ -83,6 +83,9 @@ export class AllowedHostsValidator {
 	private validateHosts(hostsToValidate: Set<string>) {
 		if (!hostsToValidate) {
 			throw new Error("hostsToValidate cannot be null");
+		}
+		if (hostsToValidate.size > 0 && this.normalizeHosts(hostsToValidate).size === 0) {
+			throw new Error("hostsToValidate cannot normalize to an empty set from a non-empty allowlist");
 		}
 		hostsToValidate.forEach((host) => {
 			const trimmedHost = host?.trim().toLowerCase();
