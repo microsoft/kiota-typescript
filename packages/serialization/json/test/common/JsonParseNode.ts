@@ -404,6 +404,15 @@ describe("JsonParseNode", () => {
 		const result = new JsonParseNode(["hello", null, "world"], backingStoreFactory).getCollectionOfPrimitiveValues<string | null>("string");
 		assert.deepEqual(result, ["hello", null, "world"]);
 	});
+	it("getCollectionOfPrimitiveValues rejects explicit undefined elements across all types", () => {
+		assert.throw(() => new JsonParseNode([undefined], backingStoreFactory).getCollectionOfPrimitiveValues<Date>("Date"), /unsupported type/);
+		assert.throw(() => new JsonParseNode([undefined], backingStoreFactory).getCollectionOfPrimitiveValues<DateOnly>("DateOnly"), /unsupported type/);
+		assert.throw(() => new JsonParseNode([undefined], backingStoreFactory).getCollectionOfPrimitiveValues<TimeOnly>("TimeOnly"), /unsupported type/);
+		assert.throw(() => new JsonParseNode([undefined], backingStoreFactory).getCollectionOfPrimitiveValues<Duration>("Duration"), /unsupported type/);
+		assert.throw(() => new JsonParseNode([undefined], backingStoreFactory).getCollectionOfPrimitiveValues<string>("string"), /unsupported type/);
+		assert.throw(() => new JsonParseNode([undefined], backingStoreFactory).getCollectionOfPrimitiveValues<number>("number"), /unsupported type/);
+		assert.throw(() => new JsonParseNode([undefined], backingStoreFactory).getCollectionOfPrimitiveValues<boolean>("boolean"), /unsupported type/);
+	});
 	it("getCollectionOfPrimitiveValues throws for invalid temporal element shapes and formats", () => {
 		assert.throw(() => new JsonParseNode([{}], backingStoreFactory).getCollectionOfPrimitiveValues<Date>("Date"), /unsupported type/);
 		assert.throw(() => new JsonParseNode(["not-a-date"], backingStoreFactory).getCollectionOfPrimitiveValues<Date>("Date"), /not a valid date representation/);

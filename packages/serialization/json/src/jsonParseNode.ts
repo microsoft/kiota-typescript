@@ -115,6 +115,9 @@ export class JsonParseNode implements ParseNode {
 		if (value === null) {
 			return null as T;
 		}
+		if (value === undefined) {
+			throw new Error(`encountered an unsupported type during deserialization ${typeof value}`);
+		}
 		switch (primitiveType) {
 			case "boolean":
 				if (typeof value !== "boolean") {
