@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.112](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-text@1.0.0-preview.111...@microsoft/kiota-serialization-text@1.0.0-preview.112) (2026-10-27)
+
+
+### Bug Fixes
+
+* **text:** support content-type parameters and unquote strings without truncation ([#2197](https://github.com/microsoft/kiota-typescript/issues/2197)) ([53dc3f4](https://github.com/microsoft/kiota-typescript/commit/53dc3f4f69221b8bfdb9565975175ffe61a8366b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.111 to ^1.0.0-preview.112
+
 ## [1.0.0-preview.111](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-text@1.0.0-preview.110...@microsoft/kiota-serialization-text@1.0.0-preview.111) (2026-10-21)
 
 
