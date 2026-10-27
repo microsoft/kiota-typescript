@@ -43,31 +43,35 @@ export class AllowedHostsValidator {
 		if (!url) return false;
 		const trimmedUrl = url.trim();
 		if (!trimmedUrl) return false;
-		const defaultProtocol = typeof window !== "undefined" ? window.location.protocol : "https:";
-		const candidate = trimmedUrl.includes("://") ? trimmedUrl : !trimmedUrl.startsWith("http") ? `${defaultProtocol}//${trimmedUrl.replace(/^\/\//, "")}` : undefined;
-		if (candidate) {
-			let parsed: URL;
-			try {
+
+		const hasWindow = typeof window !== "undefined";
+		const defaultProtocol = hasWindow && window.location?.protocol ? window.location.protocol : "https:";
+		const browserBase = hasWindow && window.location ? window.location.href || (window.location.protocol && window.location.host ? `${window.location.protocol}//${window.location.host}` : undefined) : undefined;
+
+		let parsed: URL;
+		try {
+			const isBrowserRelative = Boolean(browserBase) && ((trimmedUrl.startsWith("/") && !trimmedUrl.startsWith("//")) || trimmedUrl.startsWith("?") || trimmedUrl.startsWith("#") || trimmedUrl.startsWith("./") || trimmedUrl.startsWith("../"));
+
+			if (isBrowserRelative) {
+				parsed = new URL(trimmedUrl, browserBase);
+			} else {
+				const hasScheme = trimmedUrl.includes("://") || /^https?:/i.test(trimmedUrl);
+				const candidate = hasScheme ? trimmedUrl : trimmedUrl.startsWith("//") ? `${defaultProtocol}${trimmedUrl}` : `${defaultProtocol}//${trimmedUrl}`;
+
 				parsed = new URL(candidate);
-			} catch {
-				return false;
 			}
-			// reject userinfo outright, it can be used to spoof the host
-			if (parsed.username || parsed.password) {
-				return false;
-			}
-			if (this.allowedHosts.size === 0) {
-				return true;
-			}
-			return this.isHostValid(parsed.hostname);
+		} catch {
+			return false;
 		}
-		if (typeof window !== "undefined" && window.location?.host) {
-			if (this.allowedHosts.size === 0) {
-				return false;
-			}
-			return this.isHostValid(window.location.host);
+
+		// reject userinfo outright, it can be used to spoof the host
+		if (!parsed.hostname || parsed.username || parsed.password) {
+			return false;
 		}
-		return false;
+		if (this.allowedHosts.size === 0) {
+			return true;
+		}
+		return this.isHostValid(parsed.hostname);
 	}
 	private isHostValid(host: string): boolean {
 		const normalizedHost = host.toLowerCase();

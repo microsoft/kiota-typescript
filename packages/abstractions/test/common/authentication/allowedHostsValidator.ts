@@ -148,4 +148,61 @@ describe("AllowedHostsValidator", () => {
 			expect(emptyValidator.isUrlHostValid("https:user:pass@example.com/path")).to.be.false;
 		}
 	});
+
+	it("isUrlHostValid should handle scheme-less hosts beginning with http", () => {
+		const emptyValidator = new AllowedHostsValidator();
+		expect(emptyValidator.isUrlHostValid("httpbin.org/path")).to.be.true;
+		expect(emptyValidator.isUrlHostValid("httpbin.org")).to.be.true;
+		expect(emptyValidator.isUrlHostValid("//httpbin.org/path")).to.be.true;
+		expect(emptyValidator.isUrlHostValid("https-service.internal/path")).to.be.true;
+
+		const httpbinValidator = new AllowedHostsValidator(new Set(["httpbin.org"]));
+		expect(httpbinValidator.isUrlHostValid("httpbin.org/path")).to.be.true;
+		expect(httpbinValidator.isUrlHostValid("http://httpbin.org/path")).to.be.true;
+		expect(httpbinValidator.isUrlHostValid("https://httpbin.org/path")).to.be.true;
+		expect(httpbinValidator.isUrlHostValid("//httpbin.org/path")).to.be.true;
+		expect(httpbinValidator.isUrlHostValid("example.com/path")).to.be.false;
+	});
+
+	it("isUrlHostValid should resolve browser-relative URLs against browser location", () => {
+		const emptyValidator = new AllowedHostsValidator();
+		const relativeUrls = ["/", "/?q=1", "?q=1", "/api/v1/users", "./path/to/resource"];
+
+		if (typeof window === "undefined") {
+			try {
+				(globalThis as any).window = {
+					location: {
+						protocol: "https:",
+						host: "example.com",
+					},
+				};
+				for (const relUrl of relativeUrls) {
+					expect(emptyValidator.isUrlHostValid(relUrl)).to.be.true;
+					expect(validator.isUrlHostValid(relUrl)).to.be.true;
+				}
+				const otherValidator = new AllowedHostsValidator(new Set(["other.com"]));
+				for (const relUrl of relativeUrls) {
+					expect(otherValidator.isUrlHostValid(relUrl)).to.be.false;
+				}
+				expect(emptyValidator.isUrlHostValid("httpbin.org/path")).to.be.true;
+				expect(emptyValidator.isUrlHostValid("//httpbin.org/path")).to.be.true;
+				expect(otherValidator.isUrlHostValid("other.com/path")).to.be.true;
+				expect(otherValidator.isUrlHostValid("example.com/path")).to.be.false;
+			} finally {
+				delete (globalThis as any).window;
+			}
+		} else {
+			const currentHost = window.location.hostname;
+			const matchingValidator = new AllowedHostsValidator(new Set([currentHost]));
+			const nonMatchingValidator = new AllowedHostsValidator(new Set(["non-matching-domain.internal"]));
+
+			for (const relUrl of relativeUrls) {
+				expect(emptyValidator.isUrlHostValid(relUrl)).to.be.true;
+				expect(matchingValidator.isUrlHostValid(relUrl)).to.be.true;
+				expect(nonMatchingValidator.isUrlHostValid(relUrl)).to.be.false;
+			}
+			expect(emptyValidator.isUrlHostValid("httpbin.org/path")).to.be.true;
+			expect(emptyValidator.isUrlHostValid("//httpbin.org/path")).to.be.true;
+		}
+	});
 });
