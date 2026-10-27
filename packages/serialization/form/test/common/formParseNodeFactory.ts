@@ -46,4 +46,12 @@ describe("formParseNodeFactory", () => {
 			factory.getRootParseNode(undefined as unknown as string, sampleArrayBuffer);
 		});
 	});
+	it("formParseNodeFactory:getsWriterForFormContentTypeWithParameters", () => {
+		const factory = new FormParseNodeFactory(backingStoreFactory);
+		const sampleArrayBuffer = new TextEncoder().encode("subject=subject-value");
+
+		assert.isDefined(factory.getRootParseNode("application/x-www-form-urlencoded; charset=utf-8", sampleArrayBuffer));
+		assert.isDefined(factory.getRootParseNode("APPLICATION/X-WWW-FORM-URLENCODED", sampleArrayBuffer));
+		assert.isDefined(factory.getRootParseNode(" application/x-www-form-urlencoded ; charset=UTF-8 ", sampleArrayBuffer));
+	});
 });

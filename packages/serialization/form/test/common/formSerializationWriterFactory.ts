@@ -30,4 +30,11 @@ describe("formSerializationWriterFactory", () => {
 
 		assert.throw(() => factory.getSerializationWriter(""));
 	});
+	it("formSerializationWriterFactory:getsWriterForFormContentTypeWithParameters", () => {
+		const factory = new FormSerializationWriterFactory();
+
+		assert.isDefined(factory.getSerializationWriter("application/x-www-form-urlencoded; charset=utf-8"));
+		assert.isDefined(factory.getSerializationWriter("APPLICATION/X-WWW-FORM-URLENCODED"));
+		assert.isDefined(factory.getSerializationWriter(" application/x-www-form-urlencoded ; charset=UTF-8 "));
+	});
 });

@@ -116,4 +116,30 @@ describe("FormParseNode", () => {
 		);
 		assert.instanceOf(result?.[0], TimeOnly);
 	});
+	it("decodesPlusSignsAsSpacesInStringValuesAndKeys", () => {
+		const raw = "first+name=Megan+Bowen&last+name=Smith&formula=1%2B1%3D2";
+		const parseNode = new FormParseNode(raw);
+
+		const firstName = parseNode.getChildNode("first name")?.getStringValue();
+		assert.equal(firstName, "Megan Bowen");
+
+		const lastName = parseNode.getChildNode("last name")?.getStringValue();
+		assert.equal(lastName, "Smith");
+
+		const formula = parseNode.getChildNode("formula")?.getStringValue();
+		assert.equal(formula, "1+1=2");
+	});
+	it("decodesMixedPercentEncodingAndPlusSignsCorrectly", () => {
+		const raw = "query=search+terms%20with%20spaces%2Bplus&user+address%20line=123+Main+St.";
+		const parseNode = new FormParseNode(raw);
+
+		const query = parseNode.getChildNode("query")?.getStringValue();
+		assert.equal(query, "search terms with spaces+plus");
+
+		const address = parseNode.getChildNode("user address line")?.getStringValue();
+		assert.equal(address, "123 Main St.");
+
+		const collection = new FormParseNode("one+two,three+four").getCollectionOfPrimitiveValues<string>("string");
+		assert.deepEqual(collection, ["one two", "three four"]);
+	});
 });
