@@ -35,10 +35,10 @@ export class FormParseNode implements ParseNode {
 			});
 	}
 	private normalizeKey(key: string): string {
-		return decodeURIComponent(key).trim();
+		return decodeURIComponent(key.replace(/\+/g, " ")).trim();
 	}
 	private getStringValueFromRaw(value: string): string {
-		return decodeURIComponent(value);
+		return decodeURIComponent(value.replace(/\+/g, " "));
 	}
 	private getBooleanValueFromRaw(value: string): boolean | undefined {
 		const decoded = this.getStringValueFromRaw(value).toLowerCase();
