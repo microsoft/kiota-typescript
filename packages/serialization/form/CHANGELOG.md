@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.112](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-form@1.0.0-preview.111...@microsoft/kiota-serialization-form@1.0.0-preview.112) (2026-10-27)
+
+
+### Bug Fixes
+
+* **form:** support content-type parameters and decode plus signs as spaces ([#2204](https://github.com/microsoft/kiota-typescript/issues/2204)) ([55d1f73](https://github.com/microsoft/kiota-typescript/commit/55d1f7329e8c7c96934d01986cbf1c552a6d6861))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.111 to ^1.0.0-preview.112
+
 ## [1.0.0-preview.111](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-form@1.0.0-preview.110...@microsoft/kiota-serialization-form@1.0.0-preview.111) (2026-10-21)
 
 
