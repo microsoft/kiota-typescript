@@ -116,4 +116,17 @@ describe("FormParseNode", () => {
 		);
 		assert.instanceOf(result?.[0], TimeOnly);
 	});
+	it("decodesPlusSignsAsSpacesInStringValuesAndKeys", () => {
+		const raw = "first+name=Megan+Bowen&last+name=Smith&formula=1%2B1%3D2";
+		const parseNode = new FormParseNode(raw);
+
+		const firstName = parseNode.getChildNode("first name")?.getStringValue();
+		assert.equal(firstName, "Megan Bowen");
+
+		const lastName = parseNode.getChildNode("last name")?.getStringValue();
+		assert.equal(lastName, "Smith");
+
+		const formula = parseNode.getChildNode("formula")?.getStringValue();
+		assert.equal(formula, "1+1=2");
+	});
 });
