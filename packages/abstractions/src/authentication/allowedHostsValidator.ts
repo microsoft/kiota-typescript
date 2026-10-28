@@ -41,16 +41,29 @@ export class AllowedHostsValidator {
 	 */
 	public isUrlHostValid(url: string): boolean {
 		if (!url) return false;
-		const trimmedUrl = url.trim();
+		// Strip leading and trailing C0 controls (0x00-0x1F) and ASCII space (0x20) per WHATWG URL parsing.
+		// Preserves Unicode whitespace (e.g. \u00a0 NBSP) so it is not stripped before validation.
+		const trimmedUrl = this.trimC0AndAsciiWhitespace(url);
 		if (!trimmedUrl) return false;
 
 		if (/^https?:(?!\/\/)/i.test(trimmedUrl)) {
 			return false;
 		}
 
+		const hasDocument = typeof document !== "undefined";
 		const hasWindow = typeof window !== "undefined";
-		const defaultProtocol = hasWindow && window.location?.protocol ? window.location.protocol : "https:";
-		const browserBase = hasWindow && window.location ? window.location.href || (window.location.protocol && window.location.host ? `${window.location.protocol}//${window.location.host}` : undefined) : undefined;
+		const browserBase = (hasDocument && document.baseURI) || (hasWindow && window.location ? window.location.href || (window.location.protocol && window.location.host ? `${window.location.protocol}//${window.location.host}` : undefined) : undefined);
+
+		let defaultProtocol = "https:";
+		if (browserBase) {
+			try {
+				defaultProtocol = new URL(browserBase).protocol || "https:";
+			} catch {
+				defaultProtocol = hasWindow && window.location?.protocol ? window.location.protocol : "https:";
+			}
+		} else if (hasWindow && window.location?.protocol) {
+			defaultProtocol = window.location.protocol;
+		}
 
 		let parsed: URL;
 		try {
@@ -59,7 +72,7 @@ export class AllowedHostsValidator {
 			if (isBrowserRelative) {
 				parsed = new URL(trimmedUrl, browserBase);
 			} else {
-				const hasScheme = trimmedUrl.includes("://");
+				const hasScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//i.test(trimmedUrl);
 				const candidate = hasScheme ? trimmedUrl : trimmedUrl.startsWith("//") ? `${defaultProtocol}${trimmedUrl}` : `${defaultProtocol}//${trimmedUrl}`;
 
 				parsed = new URL(candidate);
@@ -101,5 +114,17 @@ export class AllowedHostsValidator {
 				throw new Error("host should not contain http or https prefix");
 			}
 		});
+	}
+
+	private trimC0AndAsciiWhitespace(value: string): string {
+		let start = 0;
+		let end = value.length;
+		while (start < end && value.charCodeAt(start) <= 0x20) {
+			start++;
+		}
+		while (end > start && value.charCodeAt(end - 1) <= 0x20) {
+			end--;
+		}
+		return start > 0 || end < value.length ? value.slice(start, end) : value;
 	}
 }
