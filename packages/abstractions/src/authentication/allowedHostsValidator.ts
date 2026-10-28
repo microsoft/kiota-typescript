@@ -44,6 +44,10 @@ export class AllowedHostsValidator {
 		const trimmedUrl = url.trim();
 		if (!trimmedUrl) return false;
 
+		if (/^https?:(?!\/\/)/i.test(trimmedUrl)) {
+			return false;
+		}
+
 		const hasWindow = typeof window !== "undefined";
 		const defaultProtocol = hasWindow && window.location?.protocol ? window.location.protocol : "https:";
 		const browserBase = hasWindow && window.location ? window.location.href || (window.location.protocol && window.location.host ? `${window.location.protocol}//${window.location.host}` : undefined) : undefined;
@@ -55,7 +59,7 @@ export class AllowedHostsValidator {
 			if (isBrowserRelative) {
 				parsed = new URL(trimmedUrl, browserBase);
 			} else {
-				const hasScheme = trimmedUrl.includes("://") || /^https?:/i.test(trimmedUrl);
+				const hasScheme = trimmedUrl.includes("://");
 				const candidate = hasScheme ? trimmedUrl : trimmedUrl.startsWith("//") ? `${defaultProtocol}${trimmedUrl}` : `${defaultProtocol}//${trimmedUrl}`;
 
 				parsed = new URL(candidate);

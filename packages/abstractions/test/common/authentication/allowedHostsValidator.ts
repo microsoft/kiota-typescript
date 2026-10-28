@@ -205,4 +205,46 @@ describe("AllowedHostsValidator", () => {
 			expect(emptyValidator.isUrlHostValid("//httpbin.org/path")).to.be.true;
 		}
 	});
+
+	it("isUrlHostValid should reject HTTP(S) URLs without // to prevent credential leakage", () => {
+		const allowedValidator = new AllowedHostsValidator(new Set(["allowed.example"]));
+
+		expect(allowedValidator.isUrlHostValid("https:allowed.example/api")).to.be.false;
+		expect(allowedValidator.isUrlHostValid("https:/allowed.example/api")).to.be.false;
+		expect(allowedValidator.isUrlHostValid("http:allowed.example/api")).to.be.false;
+		expect(allowedValidator.isUrlHostValid("http:/allowed.example/api")).to.be.false;
+		expect(allowedValidator.isUrlHostValid("https://allowed.example/api")).to.be.true;
+
+		const emptyValidator = new AllowedHostsValidator();
+		expect(emptyValidator.isUrlHostValid("https:allowed.example/api")).to.be.false;
+		expect(emptyValidator.isUrlHostValid("https:/allowed.example/api")).to.be.false;
+		expect(emptyValidator.isUrlHostValid("http:allowed.example/api")).to.be.false;
+		expect(emptyValidator.isUrlHostValid("http:/allowed.example/api")).to.be.false;
+
+		if (typeof window === "undefined") {
+			try {
+				(globalThis as any).window = {
+					location: {
+						protocol: "https:",
+						host: "other.example",
+						hostname: "other.example",
+						href: "https://other.example/page",
+					},
+				};
+				expect(allowedValidator.isUrlHostValid("https:allowed.example/api")).to.be.false;
+				expect(allowedValidator.isUrlHostValid("https:/allowed.example/api")).to.be.false;
+				expect(allowedValidator.isUrlHostValid("http:allowed.example/api")).to.be.false;
+				expect(allowedValidator.isUrlHostValid("http:/allowed.example/api")).to.be.false;
+				expect(allowedValidator.isUrlHostValid("https://allowed.example/api")).to.be.true;
+			} finally {
+				delete (globalThis as any).window;
+			}
+		} else {
+			expect(allowedValidator.isUrlHostValid("https:allowed.example/api")).to.be.false;
+			expect(allowedValidator.isUrlHostValid("https:/allowed.example/api")).to.be.false;
+			expect(allowedValidator.isUrlHostValid("http:allowed.example/api")).to.be.false;
+			expect(allowedValidator.isUrlHostValid("http:/allowed.example/api")).to.be.false;
+			expect(allowedValidator.isUrlHostValid("https://allowed.example/api")).to.be.true;
+		}
+	});
 });
