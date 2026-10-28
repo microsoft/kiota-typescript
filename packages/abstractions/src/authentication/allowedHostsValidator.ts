@@ -45,6 +45,9 @@ export class AllowedHostsValidator {
 		// Preserves Unicode whitespace (e.g. \u00a0 NBSP) so it is not stripped before validation.
 		const trimmedUrl = this.trimC0AndAsciiWhitespace(url);
 		if (!trimmedUrl) return false;
+		// WHATWG URL parsing removes these characters anywhere in the input. Reject them
+		// before parsing so validation sees the same destination that fetch would use.
+		if (/[\t\r\n]/.test(trimmedUrl)) return false;
 
 		if (/^https?:(?!\/\/)/i.test(trimmedUrl)) {
 			return false;

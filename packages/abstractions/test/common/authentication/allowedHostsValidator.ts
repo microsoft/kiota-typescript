@@ -258,40 +258,41 @@ describe("AllowedHostsValidator", () => {
 		expect(emptyValidator.isUrlHostValid("\u00a0https://allowed.example/api")).to.be.false;
 	});
 
+	it("isUrlHostValid should reject embedded URL whitespace that browsers remove", () => {
+		const validator = new AllowedHostsValidator(new Set(["https"]));
+		expect(validator.isUrlHostValid("ht\ttps://evil.example/api")).to.be.false;
+		expect(validator.isUrlHostValid("ht\ntps://evil.example/api")).to.be.false;
+		expect(validator.isUrlHostValid("ht\r\ntps://evil.example/api")).to.be.false;
+	});
+
 	it("isUrlHostValid should resolve relative URLs against document.baseURI when available", () => {
 		const allowedValidator = new AllowedHostsValidator(new Set(["allowed.example"]));
 		const otherValidator = new AllowedHostsValidator(new Set(["other.example"]));
 
-		const originalDocument = (globalThis as any).document;
-		const originalWindow = (globalThis as any).window;
+		if (typeof document === "undefined") {
+			const originalWindow = (globalThis as any).window;
+			try {
+				(globalThis as any).document = { baseURI: "https://other.example/" };
+				(globalThis as any).window = { location: { protocol: "https:", host: "allowed.example", hostname: "allowed.example", href: "https://allowed.example/page" } };
+				expect(allowedValidator.isUrlHostValid("/api")).to.be.false;
+				expect(otherValidator.isUrlHostValid("/api")).to.be.true;
+			} finally {
+				delete (globalThis as any).document;
+				if (originalWindow === undefined) delete (globalThis as any).window;
+				else (globalThis as any).window = originalWindow;
+			}
+			return;
+		}
 
+		// In browsers document is read-only; insert a temporary <base> to control baseURI.
+		const baseElement = document.createElement("base");
+		baseElement.href = "https://other.example/";
+		document.head.prepend(baseElement);
 		try {
-			(globalThis as any).document = {
-				baseURI: "https://other.example/",
-			};
-			(globalThis as any).window = {
-				location: {
-					protocol: "https:",
-					host: "allowed.example",
-					hostname: "allowed.example",
-					href: "https://allowed.example/page",
-				},
-			};
-
-			// When document.baseURI is other.example, /api resolves to other.example, NOT allowed.example
 			expect(allowedValidator.isUrlHostValid("/api")).to.be.false;
 			expect(otherValidator.isUrlHostValid("/api")).to.be.true;
 		} finally {
-			if (originalDocument === undefined) {
-				delete (globalThis as any).document;
-			} else {
-				(globalThis as any).document = originalDocument;
-			}
-			if (originalWindow === undefined) {
-				delete (globalThis as any).window;
-			} else {
-				(globalThis as any).window = originalWindow;
-			}
+			baseElement.remove();
 		}
 	});
 });
