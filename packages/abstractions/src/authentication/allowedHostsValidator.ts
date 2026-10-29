@@ -41,26 +41,57 @@ export class AllowedHostsValidator {
 	 */
 	public isUrlHostValid(url: string): boolean {
 		if (!url) return false;
-		if (this.allowedHosts.size === 0) return true;
-		const defaultProtocol = typeof window !== "undefined" ? window.location.protocol : "https:";
-		const candidate = url.includes("://") ? url : !url.startsWith("http") ? `${defaultProtocol}//${url.replace(/^\/\//, "")}` : undefined;
-		if (candidate) {
-			let parsed: URL;
+		// Strip leading and trailing C0 controls (0x00-0x1F) and ASCII space (0x20) per WHATWG URL parsing.
+		// Preserves Unicode whitespace (e.g. \u00a0 NBSP) so it is not stripped before validation.
+		const trimmedUrl = this.trimC0AndAsciiWhitespace(url);
+		if (!trimmedUrl) return false;
+		// WHATWG URL parsing removes these characters anywhere in the input. Reject them
+		// before parsing so validation sees the same destination that fetch would use.
+		if (/[\t\r\n]/.test(trimmedUrl)) return false;
+
+		if (/^https?:(?!\/\/)/i.test(trimmedUrl)) {
+			return false;
+		}
+
+		const hasDocument = typeof document !== "undefined";
+		const hasWindow = typeof window !== "undefined";
+		const browserBase = (hasDocument && document.baseURI) || (hasWindow && window.location ? window.location.href || (window.location.protocol && window.location.host ? `${window.location.protocol}//${window.location.host}` : undefined) : undefined);
+
+		let defaultProtocol = "https:";
+		if (browserBase) {
 			try {
-				parsed = new URL(candidate);
+				defaultProtocol = new URL(browserBase).protocol || "https:";
 			} catch {
-				return false;
+				defaultProtocol = hasWindow && window.location?.protocol ? window.location.protocol : "https:";
 			}
-			// reject userinfo outright, it can be used to spoof the host
-			if (parsed.username || parsed.password) {
-				return false;
+		} else if (hasWindow && window.location?.protocol) {
+			defaultProtocol = window.location.protocol;
+		}
+
+		let parsed: URL;
+		try {
+			const isBrowserRelative = Boolean(browserBase) && ((trimmedUrl.startsWith("/") && !trimmedUrl.startsWith("//")) || trimmedUrl.startsWith("?") || trimmedUrl.startsWith("#") || trimmedUrl.startsWith("./") || trimmedUrl.startsWith("../"));
+
+			if (isBrowserRelative) {
+				parsed = new URL(trimmedUrl, browserBase);
+			} else {
+				const hasScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//i.test(trimmedUrl);
+				const candidate = hasScheme ? trimmedUrl : trimmedUrl.startsWith("//") ? `${defaultProtocol}${trimmedUrl}` : `${defaultProtocol}//${trimmedUrl}`;
+
+				parsed = new URL(candidate);
 			}
-			return this.isHostValid(parsed.hostname);
+		} catch {
+			return false;
 		}
-		if (typeof window !== "undefined" && window.location?.host) {
-			return this.isHostValid(window.location.host);
+
+		// reject userinfo outright, it can be used to spoof the host
+		if (!parsed.hostname || parsed.username || parsed.password) {
+			return false;
 		}
-		return false;
+		if (this.allowedHosts.size === 0) {
+			return true;
+		}
+		return this.isHostValid(parsed.hostname);
 	}
 	private isHostValid(host: string): boolean {
 		const normalizedHost = host.toLowerCase();
@@ -70,17 +101,33 @@ export class AllowedHostsValidator {
 		return Array.from(this.allowedHosts).some((allowedHost) => allowedHost.startsWith(".") && normalizedHost.endsWith(allowedHost));
 	}
 	private normalizeHosts(hostsToNormalize: Set<string>): Set<string> {
-		return new Set(Array.from(hostsToNormalize, (host) => host.toLowerCase()));
+		return new Set(Array.from(hostsToNormalize, (host) => host.trim().toLowerCase()).filter((host) => host.length > 0));
 	}
 
 	private validateHosts(hostsToValidate: Set<string>) {
 		if (!hostsToValidate) {
 			throw new Error("hostsToValidate cannot be null");
 		}
+		if (hostsToValidate.size > 0 && this.normalizeHosts(hostsToValidate).size === 0) {
+			throw new Error("hostsToValidate cannot normalize to an empty set from a non-empty allowlist");
+		}
 		hostsToValidate.forEach((host) => {
-			if (host.toLowerCase().startsWith("http://") || host.toLowerCase().startsWith("https://")) {
+			const trimmedHost = host?.trim().toLowerCase();
+			if (trimmedHost.startsWith("http://") || trimmedHost.startsWith("https://")) {
 				throw new Error("host should not contain http or https prefix");
 			}
 		});
+	}
+
+	private trimC0AndAsciiWhitespace(value: string): string {
+		let start = 0;
+		let end = value.length;
+		while (start < end && value.charCodeAt(start) <= 0x20) {
+			start++;
+		}
+		while (end > start && value.charCodeAt(end - 1) <= 0x20) {
+			end--;
+		}
+		return start > 0 || end < value.length ? value.slice(start, end) : value;
 	}
 }
