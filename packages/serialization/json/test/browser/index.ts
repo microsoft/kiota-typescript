@@ -6,3 +6,4 @@
  */
 
 export * from "../common/jsonParseNodeFactory";
+export * from "../common/jsonSerializationWriterFactory";
