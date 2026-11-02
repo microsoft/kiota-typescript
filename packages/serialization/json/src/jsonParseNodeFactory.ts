@@ -24,7 +24,7 @@ export class JsonParseNodeFactory implements ParseNodeFactory {
 			throw new Error("content cannot be undefined of empty");
 		} else if (!contentType) {
 			throw new Error("content type cannot be undefined or empty");
-		} else if (this.getValidContentType() !== contentType) {
+		} else if (contentType.split(";")[0].trim().toLowerCase() !== this.getValidContentType()) {
 			throw new Error(`expected a ${this.getValidContentType()} content type`);
 		}
 		return new JsonParseNode(this.convertArrayBufferToJson(content), this.backingStoreFactory);

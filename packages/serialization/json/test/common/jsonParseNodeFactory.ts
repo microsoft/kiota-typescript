@@ -24,4 +24,38 @@ describe("jsonParseNodeFactory", () => {
 
 		assert.equal(outputJson.subject, JSON.parse(expectedJson).subject);
 	});
+	it("jsonParseNodeFactory:getsRootParseNodeForJsonContentType", () => {
+		const factory = new JsonParseNodeFactory();
+		const sampleArrayBuffer = new TextEncoder().encode('{ "subject": "subject-value" }');
+
+		const parseNode = factory.getRootParseNode(factory.getValidContentType(), sampleArrayBuffer);
+		assert.isDefined(parseNode);
+	});
+	it("jsonParseNodeFactory:throwsForInvalidContentType", () => {
+		const factory = new JsonParseNodeFactory();
+		const sampleArrayBuffer = new TextEncoder().encode('{ "subject": "subject-value" }');
+
+		assert.throw(() => factory.getRootParseNode("text/plain", sampleArrayBuffer));
+	});
+	it("jsonParseNodeFactory:throwsForNoContentType", () => {
+		const factory = new JsonParseNodeFactory();
+		const sampleArrayBuffer = new TextEncoder().encode('{ "subject": "subject-value" }');
+
+		assert.throw(() => factory.getRootParseNode("", sampleArrayBuffer));
+		assert.throw(() => factory.getRootParseNode(undefined as unknown as string, sampleArrayBuffer));
+	});
+	it("jsonParseNodeFactory:throwsForEmptyContent", () => {
+		const factory = new JsonParseNodeFactory();
+
+		assert.throw(() => factory.getRootParseNode(factory.getValidContentType(), undefined as unknown as ArrayBuffer));
+	});
+	it("jsonParseNodeFactory:getsRootParseNodeForJsonContentTypeWithParameters", () => {
+		const factory = new JsonParseNodeFactory();
+		const sampleArrayBuffer = new TextEncoder().encode('{ "subject": "subject-value" }');
+
+		assert.isDefined(factory.getRootParseNode("application/json; charset=utf-8", sampleArrayBuffer));
+		assert.isDefined(factory.getRootParseNode("APPLICATION/JSON", sampleArrayBuffer));
+		assert.isDefined(factory.getRootParseNode(" application/json ; charset=UTF-8 ", sampleArrayBuffer));
+		assert.isDefined(factory.getRootParseNode("application/json;odata.metadata=minimal", sampleArrayBuffer));
+	});
 });
