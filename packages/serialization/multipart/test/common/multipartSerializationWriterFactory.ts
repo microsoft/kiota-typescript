@@ -24,10 +24,20 @@ describe("multipartSerializationWriterFactory", () => {
 		const factory = new MultipartSerializationWriterFactory();
 
 		assert.throw(() => factory.getSerializationWriter("application/json"));
+		assert.throw(() => factory.getSerializationWriter("application/json; charset=utf-8"));
 	});
 	it("multipartSerializationWriterFactory:throwsForNoContentType", () => {
 		const factory = new MultipartSerializationWriterFactory();
 
 		assert.throw(() => factory.getSerializationWriter(""));
+	});
+	it("multipartSerializationWriterFactory:getsWriterForMultipartContentTypeWithParameters", () => {
+		const factory = new MultipartSerializationWriterFactory();
+
+		assert.isDefined(factory.getSerializationWriter("multipart/form-data; boundary=---------------------------974767299852498929531610575"));
+		assert.isDefined(factory.getSerializationWriter("multipart/form-data; charset=utf-8"));
+		assert.isDefined(factory.getSerializationWriter("MULTIPART/FORM-DATA"));
+		assert.isDefined(factory.getSerializationWriter("MULTIPART/FORM-DATA; BOUNDARY=xyz"));
+		assert.isDefined(factory.getSerializationWriter(" multipart/form-data ; boundary=abc "));
 	});
 });
