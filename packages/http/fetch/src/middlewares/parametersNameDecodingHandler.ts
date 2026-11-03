@@ -43,10 +43,13 @@ export class ParametersNameDecodingHandler implements Middleware {
 		}
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
 		if (obsOptions) {
-			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("parametersNameDecodingHandler - execute", (span) => {
+			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("parametersNameDecodingHandler - execute", async (span) => {
 				try {
-					span.setAttribute("com.microsoft.kiota.handler.parameters_name_decoding.enable", currentOptions.enable);
-					return this.decodeParameters(url, requestInit, currentOptions, requestOptions);
+					span.setAttribute("com.microsoft.kiota.handler.parameters_name_decoding.enable", Boolean(currentOptions.enable));
+					return await this.decodeParameters(url, requestInit, currentOptions, requestOptions);
+				} catch (error) {
+					span.recordException(error as Error);
+					throw error;
 				} finally {
 					span.end();
 				}
