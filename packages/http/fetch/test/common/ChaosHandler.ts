@@ -6,9 +6,10 @@
  */
 
 import { HttpMethod } from "@microsoft/kiota-abstractions";
-import { assert, describe, it } from "vitest";
+import { trace } from "@opentelemetry/api";
+import { assert, describe, it, vi } from "vitest";
 
-import { ChaosHandler, ChaosStrategy, type FetchRequestInit } from "../../src";
+import { ChaosHandler, ChaosStrategy, type FetchRequestInit, ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../src";
 import { DummyFetchHandler } from "./middleware/dummyFetchHandler";
 
 describe("ChaosHandler.ts", () => {
@@ -151,6 +152,86 @@ describe("ChaosHandler.ts", () => {
 			const response = await handler.execute(requestUrl, fetchRequestInit);
 			assert.isTrue(response.status > 400);
 			assert.isTrue(response.status < 599);
+		});
+	});
+	describe("observability", () => {
+		it("records triggered event and completes span when chaos is triggered", async () => {
+			let spanEnded = false;
+			const recordedEvents: string[] = [];
+			const testSpan = {
+				setAttribute: () => {},
+				addEvent: (name: string) => {
+					recordedEvents.push(name);
+				},
+				recordException: () => {},
+				end: () => {
+					spanEnded = true;
+				},
+			};
+			const tracer = {
+				startActiveSpan: (_name: string, callback: (span: typeof testSpan) => Promise<Response>) => {
+					return callback(testSpan);
+				},
+			};
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as any);
+			const handler = new ChaosHandler({ chaosPercentage: 100 });
+
+			try {
+				const response = await handler.execute("https://example.com/me", { method: "GET" }, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				assert.isTrue(response.status > 400);
+				assert.isTrue(spanEnded);
+				assert.include(recordedEvents, ChaosHandler.chaosHandlerTriggeredEventKey);
+			} finally {
+				getTracerSpy.mockRestore();
+			}
+		});
+
+		it("encloses downstream execution and records exception when chaos is skipped and downstream throws", async () => {
+			let spanEnded = false;
+			let recordedException: unknown;
+			const testSpan = {
+				setAttribute: () => {},
+				addEvent: () => {},
+				recordException: (err: unknown) => {
+					recordedException = err;
+				},
+				end: () => {
+					spanEnded = true;
+				},
+			};
+			const tracer = {
+				startActiveSpan: (_name: string, callback: (span: typeof testSpan) => Promise<Response>) => {
+					return callback(testSpan);
+				},
+			};
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as any);
+			let releaseDownstream: (() => void) | undefined;
+			const downstreamBlocked = new Promise<void>((resolve) => {
+				releaseDownstream = resolve;
+			});
+			const dummyFetch = new DummyFetchHandler();
+			dummyFetch.execute = async () => {
+				await downstreamBlocked;
+				assert.isFalse(spanEnded);
+				throw new Error("downstream chaos pass-through error");
+			};
+			const handler = new ChaosHandler({ chaosPercentage: 0 });
+			handler.next = dummyFetch;
+
+			try {
+				const execution = handler.execute("https://example.com/me", { method: "GET" }, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				await vi.waitFor(() => assert.isDefined(releaseDownstream));
+				assert.isFalse(spanEnded);
+				releaseDownstream?.();
+				await execution;
+				assert.fail("should have thrown");
+			} catch (err: any) {
+				assert.equal(err.message, "downstream chaos pass-through error");
+				assert.isTrue(spanEnded);
+				assert.isDefined(recordedException);
+			} finally {
+				getTracerSpy.mockRestore();
+			}
 		});
 	});
 });

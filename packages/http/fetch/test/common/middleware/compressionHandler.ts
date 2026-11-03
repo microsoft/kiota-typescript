@@ -1,10 +1,17 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+import { trace } from "@opentelemetry/api";
+import { assert, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { CompressionHandler, CompressionHandlerOptions, ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src";
 import { DummyFetchHandler } from "./dummyFetchHandler";
-import { CompressionHandlerOptions } from "../../../src/middlewares/options/compressionHandlerOptions";
-import { CompressionHandler } from "../../../src/middlewares/compressionHandler";
 
 const defaultOptions = new CompressionHandlerOptions();
-
-import { assert, describe, it, expect, beforeEach, vi } from "vitest";
 
 describe("CompressionHandler", () => {
 	let compressionHandler: CompressionHandler;
@@ -119,6 +126,81 @@ describe("CompressionHandler", () => {
 		expect((requestInit.headers as Record<string, string>)["Content-Encoding"]).toBe("gzip");
 		expect((nextMiddleware.requests[0].headers as Record<string, string>)["test"]).toBe("test");
 		expect(response).toBeInstanceOf(Response);
+	});
+
+	describe("observability", () => {
+		it("encloses downstream execution and records exception on failure", async () => {
+			let spanEnded = false;
+			let recordedException: unknown;
+			const testSpan = {
+				setAttribute: () => {},
+				recordException: (err: unknown) => {
+					recordedException = err;
+				},
+				end: () => {
+					spanEnded = true;
+				},
+			};
+			const tracer = {
+				startActiveSpan: (_name: string, callback: (span: typeof testSpan) => Promise<Response>) => {
+					return callback(testSpan);
+				},
+			};
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as any);
+			let releaseDownstream: (() => void) | undefined;
+			const downstreamBlocked = new Promise<void>((resolve) => {
+				releaseDownstream = resolve;
+			});
+			nextMiddleware.execute = async () => {
+				await downstreamBlocked;
+				assert.isFalse(spanEnded);
+				throw new Error("compression downstream transport failure");
+			};
+
+			try {
+				const execution = compressionHandler.execute("https://example.com", { method: "POST", body: "payload" }, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				await vi.waitFor(() => assert.isDefined(releaseDownstream));
+				assert.isFalse(spanEnded);
+				releaseDownstream?.();
+				await execution;
+				assert.fail("should have thrown");
+			} catch (err: any) {
+				assert.equal(err.message, "compression downstream transport failure");
+				assert.isTrue(spanEnded);
+				assert.isDefined(recordedException);
+			} finally {
+				getTracerSpy.mockRestore();
+			}
+		});
+
+		it("sets enabled attribute based on options", async () => {
+			let enabledAttribute: unknown;
+			const testSpan = {
+				setAttribute: (name: string, value: unknown) => {
+					if (name === "com.microsoft.kiota.handler.compression.enable") {
+						enabledAttribute = value;
+					}
+				},
+				recordException: () => {},
+				end: () => {},
+			};
+			const tracer = {
+				startActiveSpan: (_name: string, callback: (span: typeof testSpan) => Promise<Response>) => {
+					return callback(testSpan);
+				},
+			};
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as any);
+			nextMiddleware.setResponses([new Response("ok", { status: 200 })]);
+			const disabledHandler = new CompressionHandler(new CompressionHandlerOptions({ enableCompression: false }));
+			disabledHandler.next = nextMiddleware;
+
+			try {
+				await disabledHandler.execute("https://example.com", { method: "POST", body: "payload" }, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				assert.isFalse(enabledAttribute);
+			} finally {
+				getTracerSpy.mockRestore();
+			}
+		});
 	});
 });
 

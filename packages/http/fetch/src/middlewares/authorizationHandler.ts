@@ -31,10 +31,13 @@ export class AuthorizationHandler implements Middleware {
 	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
 		if (obsOptions) {
-			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("authorizationHandler - execute", (span) => {
+			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("authorizationHandler - execute", async (span) => {
 				try {
 					span.setAttribute("com.microsoft.kiota.handler.authorization.enable", true);
-					return this.executeInternal(url, requestInit as FetchRequestInit, requestOptions, span);
+					return await this.executeInternal(url, requestInit as FetchRequestInit, requestOptions, span);
+				} catch (error) {
+					span.recordException(error as Error);
+					throw error;
 				} finally {
 					span.end();
 				}

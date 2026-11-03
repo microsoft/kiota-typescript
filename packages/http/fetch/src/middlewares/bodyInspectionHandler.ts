@@ -39,6 +39,9 @@ export class BodyInspectionHandler implements Middleware {
 				try {
 					span.setAttribute("com.microsoft.kiota.handler.bodyInspection.enable", currentOptions.inspectRequestBody || currentOptions.inspectResponseBody);
 					return await this.executeInternal(url, requestInit, requestOptions, currentOptions);
+				} catch (error) {
+					span.recordException(error as Error);
+					throw error;
 				} finally {
 					span.end();
 				}
