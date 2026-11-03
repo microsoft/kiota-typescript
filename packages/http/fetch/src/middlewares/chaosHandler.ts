@@ -184,10 +184,13 @@ export class ChaosHandler implements Middleware {
 	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
 		if (obsOptions) {
-			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("chaosHandler - execute", (span) => {
+			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("chaosHandler - execute", async (span) => {
 				try {
 					span.setAttribute("com.microsoft.kiota.handler.chaos.enable", true);
-					return this.runChaos(url, requestInit, requestOptions);
+					return await this.runChaos(url, requestInit, requestOptions, span);
+				} catch (error) {
+					span.recordException(error as Error);
+					throw error;
 				} finally {
 					span.end();
 				}

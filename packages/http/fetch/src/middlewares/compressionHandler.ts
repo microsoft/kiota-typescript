@@ -51,10 +51,13 @@ export class CompressionHandler implements Middleware {
 		}
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
 		if (obsOptions) {
-			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("compressionHandler - execute", (span) => {
+			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("compressionHandler - execute", async (span) => {
 				try {
-					span.setAttribute("com.microsoft.kiota.handler.compression.enable", currentOptions.ShouldCompress);
-					return this.executeInternal(currentOptions, url, requestInit as FetchRequestInit, requestOptions, span);
+					span.setAttribute("com.microsoft.kiota.handler.compression.enable", Boolean(currentOptions.ShouldCompress));
+					return await this.executeInternal(currentOptions, url, requestInit as FetchRequestInit, requestOptions, span);
+				} catch (error) {
+					span.recordException(error as Error);
+					throw error;
 				} finally {
 					span.end();
 				}
