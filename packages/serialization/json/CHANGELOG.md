@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.112](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-json@1.0.0-preview.111...@microsoft/kiota-serialization-json@1.0.0-preview.112) (2026-11-03)
+
+
+### Bug Fixes
+
+* **json:** support content-type parameters and case-insensitivity in json factories ([#2208](https://github.com/microsoft/kiota-typescript/issues/2208)) ([67e8102](https://github.com/microsoft/kiota-typescript/commit/67e8102de100e58bdb766c0d4ae627e8474a7d36))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.111 to ^1.0.0-preview.112
+
 ## [1.0.0-preview.111](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-json@1.0.0-preview.110...@microsoft/kiota-serialization-json@1.0.0-preview.111) (2026-10-21)
 
 
