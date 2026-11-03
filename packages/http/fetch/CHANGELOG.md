@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.0-preview.112](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.111...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.112) (2026-11-03)
+
+
+### Bug Fixes
+
+* **http:** align authorization, chaos, compression, and bodyInspection handlers with async span lifecycle ([#2213](https://github.com/microsoft/kiota-typescript/issues/2213)) ([e088dfc](https://github.com/microsoft/kiota-typescript/commit/e088dfcd9ba994ada9766e11122d4d72f55c9115))
+* **http:** align userAgentHandler and urlReplaceHandler with async span lifecycle and exception recording ([#2196](https://github.com/microsoft/kiota-typescript/issues/2196)) ([bb15061](https://github.com/microsoft/kiota-typescript/commit/bb150619cd11deda78d898b452c0b070478ae290))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.111 to ^1.0.0-preview.112
+
 ## [1.0.0-preview.111](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.110...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.111) (2026-10-21)
 
 
