@@ -11,7 +11,7 @@
 
 import type { RequestOption } from "@microsoft/kiota-abstractions";
 
-export const ParametersNameDecodingHandlerOptionsKey = "RetryHandlerOptionKey";
+export const ParametersNameDecodingHandlerOptionsKey = "ParametersNameDecodingHandlerOptionKey";
 
 /**
  * Signature to define the ParametersNameDecodingHandlerOptions constructor parameters

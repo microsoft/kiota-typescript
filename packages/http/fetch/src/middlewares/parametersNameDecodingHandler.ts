@@ -40,6 +40,8 @@ export class ParametersNameDecodingHandler implements Middleware {
 		let currentOptions = this.options;
 		if (requestOptions?.[ParametersNameDecodingHandlerOptionsKey]) {
 			currentOptions = requestOptions[ParametersNameDecodingHandlerOptionsKey] as ParametersNameDecodingHandlerOptions;
+		} else if (requestOptions?.["RetryHandlerOptionKey"] instanceof ParametersNameDecodingHandlerOptions) {
+			currentOptions = requestOptions["RetryHandlerOptionKey"] as ParametersNameDecodingHandlerOptions;
 		}
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
 		if (obsOptions) {
