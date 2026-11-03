@@ -87,43 +87,6 @@ describe("parametersNameDecodingHandler", function () {
 			assert.equal(passedUrl, "http://localhost?%24select=displayName");
 		});
 
-		it("supports legacy RetryHandlerOptionKey fallback when mapped to ParametersNameDecodingHandlerOptions", async () => {
-			let passedUrl = "";
-			const testHandler = new ParametersNameDecodingHandler();
-			testHandler.next = new TestCallBackMiddleware((url: string) => {
-				passedUrl = url;
-			});
-			await testHandler.execute(
-				"http://localhost?%24select=displayName",
-				{ method: "GET" },
-				{
-					[RetryHandlerOptionKey]: new ParametersNameDecodingHandlerOptions({ enable: false }),
-				},
-			);
-			assert.equal(passedUrl, "http://localhost?%24select=displayName");
-		});
-
-		it("supports duck-typed legacy RetryHandlerOptionKey fallback across package versions", async () => {
-			let passedUrl = "";
-			const testHandler = new ParametersNameDecodingHandler();
-			testHandler.next = new TestCallBackMiddleware((url: string) => {
-				passedUrl = url;
-			});
-			const duckTypedOptions = {
-				enable: false,
-				charactersToDecode: [".", "-", "~", "$"],
-				getKey: () => RetryHandlerOptionKey,
-			};
-			await testHandler.execute(
-				"http://localhost?%24select=displayName",
-				{ method: "GET" },
-				{
-					[RetryHandlerOptionKey]: duckTypedOptions as any,
-				},
-			);
-			assert.equal(passedUrl, "http://localhost?%24select=displayName");
-		});
-
 		it("ignores actual RetryHandlerOptions passed under RetryHandlerOptionKey", async () => {
 			let passedUrl = "";
 			const testHandler = new ParametersNameDecodingHandler();

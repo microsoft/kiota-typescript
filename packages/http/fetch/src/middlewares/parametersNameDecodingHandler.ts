@@ -11,7 +11,6 @@ import { trace } from "@opentelemetry/api";
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import type { Middleware } from "./middleware";
 import { ParametersNameDecodingHandlerOptions, ParametersNameDecodingHandlerOptionsKey } from "./options/parametersNameDecodingOptions";
-import { RetryHandlerOptionKey } from "./options/retryHandlerOptions";
 
 /**
  * @module ParametersNameDecodingHandler
@@ -41,11 +40,6 @@ export class ParametersNameDecodingHandler implements Middleware {
 		let currentOptions = this.options;
 		if (requestOptions?.[ParametersNameDecodingHandlerOptionsKey]) {
 			currentOptions = requestOptions[ParametersNameDecodingHandlerOptionsKey] as ParametersNameDecodingHandlerOptions;
-		} else {
-			const fallbackOption = requestOptions?.[RetryHandlerOptionKey];
-			if (fallbackOption && (fallbackOption instanceof ParametersNameDecodingHandlerOptions || (typeof fallbackOption === "object" && "charactersToDecode" in fallbackOption))) {
-				currentOptions = fallbackOption as ParametersNameDecodingHandlerOptions;
-			}
 		}
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
 		if (obsOptions) {
