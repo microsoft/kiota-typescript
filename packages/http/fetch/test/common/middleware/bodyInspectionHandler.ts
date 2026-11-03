@@ -513,5 +513,41 @@ describe("BodyInspectionHandler.ts", () => {
 				getTracerSpy.mockRestore();
 			}
 		});
+
+		it("Should record exception on active span when downstream execution throws", async () => {
+			let spanEnded = false;
+			let recordedException: unknown;
+			const testSpan = {
+				setAttribute: () => undefined,
+				recordException: (err: unknown) => {
+					recordedException = err;
+				},
+				end: () => {
+					spanEnded = true;
+				},
+			};
+			const tracer = {
+				startActiveSpan: (_name: string, callback: (span: typeof testSpan) => Promise<Response>) => callback(testSpan),
+			};
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as unknown as ReturnType<typeof trace.getTracer>);
+			const handler = new BodyInspectionHandler();
+			const dummyFetchHandler = new DummyFetchHandler();
+			dummyFetchHandler.execute = async () => {
+				assert.isFalse(spanEnded);
+				throw new Error("body inspection downstream network fault");
+			};
+			handler.next = dummyFetchHandler;
+
+			try {
+				await handler.execute("https://example.com", { method: "GET" }, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				assert.fail("should have thrown");
+			} catch (err: any) {
+				assert.equal(err.message, "body inspection downstream network fault");
+				assert.isTrue(spanEnded);
+				assert.isDefined(recordedException);
+			} finally {
+				getTracerSpy.mockRestore();
+			}
+		});
 	});
 });
