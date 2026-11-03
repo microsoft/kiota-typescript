@@ -15,11 +15,7 @@ import { getResponse } from "../../testUtils";
 import { DummyFetchHandler } from "./dummyFetchHandler";
 import { TestCallBackMiddleware } from "./testCallBackMiddleware";
 
-// eslint-disable-next-line no-var
-var Response = Response;
-if (typeof Response !== "object") {
-	Response = getResponse();
-}
+const ResponseCtor: typeof Response = typeof globalThis.Response === "function" ? globalThis.Response : (getResponse() as unknown as typeof Response);
 
 describe("parametersNameDecodingHandler", function () {
 	const handler = new ParametersNameDecodingHandler();
@@ -106,6 +102,43 @@ describe("parametersNameDecodingHandler", function () {
 			);
 			assert.equal(passedUrl, "http://localhost?%24select=displayName");
 		});
+
+		it("supports duck-typed legacy RetryHandlerOptionKey fallback across package versions", async () => {
+			let passedUrl = "";
+			const testHandler = new ParametersNameDecodingHandler();
+			testHandler.next = new TestCallBackMiddleware((url: string) => {
+				passedUrl = url;
+			});
+			const duckTypedOptions = {
+				enable: false,
+				charactersToDecode: [".", "-", "~", "$"],
+				getKey: () => RetryHandlerOptionKey,
+			};
+			await testHandler.execute(
+				"http://localhost?%24select=displayName",
+				{ method: "GET" },
+				{
+					[RetryHandlerOptionKey]: duckTypedOptions as any,
+				},
+			);
+			assert.equal(passedUrl, "http://localhost?%24select=displayName");
+		});
+
+		it("ignores actual RetryHandlerOptions passed under RetryHandlerOptionKey", async () => {
+			let passedUrl = "";
+			const testHandler = new ParametersNameDecodingHandler();
+			testHandler.next = new TestCallBackMiddleware((url: string) => {
+				passedUrl = url;
+			});
+			await testHandler.execute(
+				"http://localhost?%24select=displayName",
+				{ method: "GET" },
+				{
+					[RetryHandlerOptionKey]: new RetryHandlerOptions(),
+				},
+			);
+			assert.equal(passedUrl, "http://localhost?$select=displayName");
+		});
 	});
 
 	describe("observability", () => {
@@ -174,7 +207,7 @@ describe("parametersNameDecodingHandler", function () {
 			};
 			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as any);
 			const dummyFetch = new DummyFetchHandler();
-			dummyFetch.execute = async () => new Response("ok", { status: 200 });
+			dummyFetch.execute = async () => new ResponseCtor("ok", { status: 200 });
 			const testHandler = new ParametersNameDecodingHandler(new ParametersNameDecodingHandlerOptions({ enable: false }));
 			testHandler.next = dummyFetch;
 
