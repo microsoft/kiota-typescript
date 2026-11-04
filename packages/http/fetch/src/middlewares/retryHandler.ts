@@ -160,21 +160,24 @@ export class RetryHandler implements Middleware {
 				await this.sleep(delay);
 			}
 			if (tracerName) {
-				return await trace.getTracer(tracerName).startActiveSpan(`retryHandler - attempt ${retryAttempts}`, (span) => {
+				return await trace.getTracer(tracerName).startActiveSpan(`retryHandler - attempt ${retryAttempts}`, async (span) => {
 					try {
 						span.setAttribute("http.request.resend_count", retryAttempts);
 						if (delay) {
 							span.setAttribute("http.request.resend_delay", delay);
 						}
 						span.setAttribute("http.response.status_code", response.status);
-						return this.executeWithRetry(url, fetchRequestInit, retryAttempts, currentOptions, requestOptions);
+						return await this.executeWithRetry(url, fetchRequestInit, retryAttempts, currentOptions, requestOptions, tracerName);
+					} catch (error) {
+						span.recordException(error as Error);
+						throw error;
 					} finally {
 						span.end();
 					}
 				});
 			}
 
-			return await this.executeWithRetry(url, fetchRequestInit, retryAttempts, currentOptions, requestOptions);
+			return await this.executeWithRetry(url, fetchRequestInit, retryAttempts, currentOptions, requestOptions, tracerName);
 		} else {
 			return response;
 		}
@@ -196,10 +199,13 @@ export class RetryHandler implements Middleware {
 		}
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
 		if (obsOptions) {
-			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("retryHandler - execute", (span) => {
+			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("retryHandler - execute", async (span) => {
 				try {
 					span.setAttribute("com.microsoft.kiota.handler.retry.enable", true);
-					return this.executeWithRetry(url, requestInit as FetchRequestInit, retryAttempts, currentOptions, requestOptions, obsOptions.getTracerInstrumentationName());
+					return await this.executeWithRetry(url, requestInit as FetchRequestInit, retryAttempts, currentOptions, requestOptions, obsOptions.getTracerInstrumentationName());
+				} catch (error) {
+					span.recordException(error as Error);
+					throw error;
 				} finally {
 					span.end();
 				}

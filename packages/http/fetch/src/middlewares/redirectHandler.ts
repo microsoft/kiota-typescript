@@ -173,17 +173,20 @@ export class RedirectHandler implements Middleware {
 
 			url = newUrl;
 			if (tracerName) {
-				return trace.getTracer(tracerName).startActiveSpan(`redirectHandler - redirect ${redirectCount}`, (span) => {
+				return await trace.getTracer(tracerName).startActiveSpan(`redirectHandler - redirect ${redirectCount}`, async (span) => {
 					try {
 						span.setAttribute("com.microsoft.kiota.handler.redirect.count", redirectCount);
 						span.setAttribute("http.response.status_code", response.status);
-						return this.executeWithRedirect(url, fetchRequestInit, redirectCount, currentOptions, requestOptions);
+						return await this.executeWithRedirect(url, fetchRequestInit, redirectCount, currentOptions, requestOptions, tracerName);
+					} catch (error) {
+						span.recordException(error as Error);
+						throw error;
 					} finally {
 						span.end();
 					}
 				});
 			}
-			return await this.executeWithRedirect(url, fetchRequestInit, redirectCount, currentOptions, requestOptions);
+			return await this.executeWithRedirect(url, fetchRequestInit, redirectCount, currentOptions, requestOptions, tracerName);
 		} else {
 			return response;
 		}
@@ -205,10 +208,13 @@ export class RedirectHandler implements Middleware {
 		(requestInit as FetchRequestInit).redirect = RedirectHandler.MANUAL_REDIRECT;
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
 		if (obsOptions) {
-			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("redirectHandler - execute", (span) => {
+			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("redirectHandler - execute", async (span) => {
 				try {
 					span.setAttribute("com.microsoft.kiota.handler.redirect.enable", true);
-					return this.executeWithRedirect(url, requestInit as FetchRequestInit, redirectCount, currentOptions, requestOptions, obsOptions.getTracerInstrumentationName());
+					return await this.executeWithRedirect(url, requestInit as FetchRequestInit, redirectCount, currentOptions, requestOptions, obsOptions.getTracerInstrumentationName());
+				} catch (error) {
+					span.recordException(error as Error);
+					throw error;
 				} finally {
 					span.end();
 				}
