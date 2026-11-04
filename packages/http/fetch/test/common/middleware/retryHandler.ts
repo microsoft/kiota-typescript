@@ -5,7 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 import { HttpMethod } from "@microsoft/kiota-abstractions";
-import { assert, describe, it } from "vitest";
+import { trace } from "@opentelemetry/api";
+import { assert, describe, it, vi } from "vitest";
+
+import { ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src";
 
 import { RetryHandlerOptionKey, RetryHandlerOptions, type ShouldRetry } from "../../../src/middlewares/options/retryHandlerOptions";
 import { RetryHandler } from "../../../src/middlewares/retryHandler";
@@ -271,5 +274,107 @@ describe("RetryHandler.ts", () => {
 			},
 			20 * 1000,
 		);
+	});
+	describe("Observability", () => {
+		it("maintains active span lifecycle until async retry completes and records exception on failure", async () => {
+			let spanEnded = false;
+			let recordedException: unknown;
+			const spanAttributes: Record<string, unknown> = {};
+
+			const testSpan = {
+				setAttribute: (key: string, value: unknown) => {
+					spanAttributes[key] = value;
+				},
+				recordException: (err: unknown) => {
+					recordedException = err;
+				},
+				end: () => {
+					spanEnded = true;
+				},
+			};
+
+			const tracer = {
+				startActiveSpan: (_name: string, callback: (span: typeof testSpan) => Promise<Response>) => {
+					return callback(testSpan);
+				},
+			};
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as any);
+
+			let releaseDownstream: (() => void) | undefined;
+			const downstreamBlocked = new Promise<void>((resolve) => {
+				releaseDownstream = resolve;
+			});
+
+			const handler = new RetryHandler();
+			const dummyNext = new DummyFetchHandler();
+			dummyNext.execute = async () => {
+				await downstreamBlocked;
+				assert.isFalse(spanEnded);
+				throw new Error("retry network error");
+			};
+			handler.next = dummyNext;
+
+			try {
+				const execution = handler.execute("https://example.com", {}, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				await vi.waitFor(() => assert.isDefined(releaseDownstream));
+				assert.isFalse(spanEnded);
+				releaseDownstream?.();
+				await execution;
+				assert.fail("should have thrown");
+			} catch (err: any) {
+				assert.equal(err.message, "retry network error");
+				assert.isTrue(spanEnded);
+				assert.isDefined(recordedException);
+				assert.isTrue(spanAttributes["com.microsoft.kiota.handler.retry.enable"]);
+			} finally {
+				getTracerSpy.mockRestore();
+			}
+		});
+
+		it("creates retry attempt spans with propagated tracerName across multiple retry attempts", async () => {
+			const spanNames: string[] = [];
+			const resendCounts: number[] = [];
+			const tracer = {
+				startActiveSpan: (name: string, callback: (span: any) => Promise<Response>) => {
+					spanNames.push(name);
+					return callback({
+						setAttribute: (k: string, v: unknown) => {
+							if (k === "http.request.resend_count") {
+								resendCounts.push(v as number);
+							}
+						},
+						recordException: () => {},
+						end: () => {},
+					});
+				},
+			};
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as any);
+
+			const handler = new RetryHandler(new RetryHandlerOptions({ delay: 0, maxRetries: 3 }));
+			(handler as any).sleep = () => Promise.resolve();
+			let callCount = 0;
+			const dummyNext = new DummyFetchHandler();
+			dummyNext.execute = async () => {
+				callCount++;
+				if (callCount <= 2) {
+					return new Response("", { status: 503 });
+				}
+				return new Response("OK", { status: 200 });
+			};
+			handler.next = dummyNext;
+
+			try {
+				const response = await handler.execute("https://example.com/retry", {}, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				assert.equal(response.status, 200);
+				assert.deepEqual(spanNames, [
+					"retryHandler - execute",
+					"retryHandler - attempt 1",
+					"retryHandler - attempt 2",
+				]);
+				assert.deepEqual(resendCounts, [1, 2]);
+			} finally {
+				getTracerSpy.mockRestore();
+			}
+		});
 	});
 });
