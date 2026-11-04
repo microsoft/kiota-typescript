@@ -366,12 +366,92 @@ describe("RetryHandler.ts", () => {
 			try {
 				const response = await handler.execute("https://example.com/retry", {}, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
 				assert.equal(response.status, 200);
-				assert.deepEqual(spanNames, [
-					"retryHandler - execute",
-					"retryHandler - attempt 1",
-					"retryHandler - attempt 2",
-				]);
+				assert.deepEqual(spanNames, ["retryHandler - execute", "retryHandler - attempt 1", "retryHandler - attempt 2"]);
 				assert.deepEqual(resendCounts, [1, 2]);
+			} finally {
+				getTracerSpy.mockRestore();
+			}
+		});
+
+		it("maintains retry attempt span lifecycle until async retried request settles and records exception on attempt failure", async () => {
+			let attemptSpanEnded = false;
+			let attemptSpanEndCount = 0;
+			let attemptRecordedException: unknown;
+			const attemptAttributes: Record<string, unknown> = {};
+
+			let parentSpanEnded = false;
+			let parentSpanEndCount = 0;
+			let parentRecordedException: unknown;
+
+			const tracer = {
+				startActiveSpan: (name: string, callback: (span: any) => Promise<Response>) => {
+					if (name === "retryHandler - execute") {
+						const parentSpan = {
+							setAttribute: () => {},
+							recordException: (err: unknown) => {
+								parentRecordedException = err;
+							},
+							end: () => {
+								parentSpanEnded = true;
+								parentSpanEndCount++;
+							},
+						};
+						return callback(parentSpan);
+					}
+					const attemptSpan = {
+						setAttribute: (key: string, value: unknown) => {
+							attemptAttributes[key] = value;
+						},
+						recordException: (err: unknown) => {
+							attemptRecordedException = err;
+						},
+						end: () => {
+							attemptSpanEnded = true;
+							attemptSpanEndCount++;
+						},
+					};
+					return callback(attemptSpan);
+				},
+			};
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as any);
+
+			let releaseRetried: (() => void) | undefined;
+			const retriedBlocked = new Promise<void>((resolve) => {
+				releaseRetried = resolve;
+			});
+
+			const handler = new RetryHandler(new RetryHandlerOptions({ delay: 0, maxRetries: 3 }));
+			(handler as any).sleep = () => Promise.resolve();
+
+			let callCount = 0;
+			const dummyNext = new DummyFetchHandler();
+			dummyNext.execute = async () => {
+				callCount++;
+				if (callCount === 1) {
+					return new Response("", { status: 503 });
+				}
+				await retriedBlocked;
+				assert.isFalse(attemptSpanEnded);
+				throw new Error("retried request failed");
+			};
+			handler.next = dummyNext;
+
+			try {
+				const execution = handler.execute("https://example.com/retry", {}, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				await vi.waitFor(() => assert.isDefined(releaseRetried));
+				assert.isFalse(attemptSpanEnded);
+				releaseRetried?.();
+				await execution;
+				assert.fail("should have thrown");
+			} catch (err: any) {
+				assert.equal(err.message, "retried request failed");
+				assert.isTrue(attemptSpanEnded);
+				assert.equal(attemptSpanEndCount, 1);
+				assert.equal((attemptRecordedException as Error)?.message, "retried request failed");
+				assert.equal(attemptAttributes["http.request.resend_count"], 1);
+				assert.isTrue(parentSpanEnded);
+				assert.equal(parentSpanEndCount, 1);
+				assert.equal((parentRecordedException as Error)?.message, "retried request failed");
 			} finally {
 				getTracerSpy.mockRestore();
 			}
