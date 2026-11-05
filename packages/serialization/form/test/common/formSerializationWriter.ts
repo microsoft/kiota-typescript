@@ -101,4 +101,32 @@ describe("FormSerializationWriter", () => {
 		const formSerializationWriter = new FormSerializationWriter();
 		assert.throw(() => formSerializationWriter.writeCollectionOfObjectValues(undefined, [testEntity]));
 	});
+
+	it("writesZeroNumberValue", () => {
+		const writer = new FormSerializationWriter();
+		writer.writeNumberValue("count", 0);
+		const formContent = writer.getSerializedContent();
+		const form = new TextDecoder().decode(formContent);
+		assert.equal(form, "count=0&");
+	});
+
+	it("writesEmptyStringValue", () => {
+		const writer = new FormSerializationWriter();
+		writer.writeStringValue("filter", "");
+		const formContent = writer.getSerializedContent();
+		const form = new TextDecoder().decode(formContent);
+		assert.equal(form, "filter=&");
+	});
+
+	it("writesZeroAndEmptyInAdditionalData", () => {
+		const writer = new FormSerializationWriter();
+		writer.writeAdditionalData({
+			zeroCount: 0,
+			emptyString: "",
+		});
+		const formContent = writer.getSerializedContent();
+		const form = new TextDecoder().decode(formContent);
+		assert.include(form, "zeroCount=0&");
+		assert.include(form, "emptyString=&");
+	});
 });
