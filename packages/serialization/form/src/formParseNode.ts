@@ -50,8 +50,12 @@ export class FormParseNode implements ParseNode {
 		}
 		return undefined;
 	}
-	private getNumberValueFromRaw(value: string): number {
-		return parseFloat(this.getStringValueFromRaw(value));
+	private getNumberValueFromRaw(value: string): number | undefined {
+		if (!value || value.trim() === "") {
+			return undefined;
+		}
+		const num = parseFloat(this.getStringValueFromRaw(value));
+		return Number.isNaN(num) ? undefined : num;
 	}
 	private getGuidValueFromRaw(value: string): string | undefined {
 		return parseGuidString(this.getStringValueFromRaw(value));
