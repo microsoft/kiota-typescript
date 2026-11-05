@@ -5,7 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { assert, describe, it } from "vitest";
+import { trace } from "@opentelemetry/api";
+import { assert, describe, it, vi } from "vitest";
+
+import { ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../src";
 
 import { RedirectHandlerOptionKey, RedirectHandlerOptions } from "../../src/middlewares/options/redirectHandlerOptions";
 import { RedirectHandler } from "../../src/middlewares/redirectHandler";
@@ -534,6 +537,188 @@ describe("RedirectHandler.ts", () => {
 			dummyFetchHandler.setResponses([new Response("", { status: 200 })] as any);
 			await handler.execute(requestUrl, fetchRequestInit);
 			assert.equal(fetchRequestInit.redirect, RedirectHandler["MANUAL_REDIRECT"]);
+		});
+	});
+	describe("Observability", () => {
+		it("maintains active span lifecycle until async redirect completes and records exception on failure", async () => {
+			let spanEnded = false;
+			let recordedException: unknown;
+			const spanAttributes: Record<string, unknown> = {};
+
+			const testSpan = {
+				setAttribute: (key: string, value: unknown) => {
+					spanAttributes[key] = value;
+				},
+				recordException: (err: unknown) => {
+					recordedException = err;
+				},
+				end: () => {
+					spanEnded = true;
+				},
+			};
+
+			const tracer = {
+				startActiveSpan: (_name: string, callback: (span: typeof testSpan) => Promise<Response>) => {
+					return callback(testSpan);
+				},
+			};
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as any);
+
+			let releaseDownstream: (() => void) | undefined;
+			const downstreamBlocked = new Promise<void>((resolve) => {
+				releaseDownstream = resolve;
+			});
+
+			const handler = new RedirectHandler();
+			const dummyNext = new DummyFetchHandler();
+			dummyNext.execute = async () => {
+				await downstreamBlocked;
+				assert.isFalse(spanEnded);
+				throw new Error("redirect network error");
+			};
+			handler.next = dummyNext;
+
+			try {
+				const execution = handler.execute("https://example.com", {}, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				await vi.waitFor(() => assert.isDefined(releaseDownstream));
+				assert.isFalse(spanEnded);
+				releaseDownstream?.();
+				await execution;
+				assert.fail("should have thrown");
+			} catch (err: any) {
+				assert.equal(err.message, "redirect network error");
+				assert.isTrue(spanEnded);
+				assert.isDefined(recordedException);
+				assert.isTrue(spanAttributes["com.microsoft.kiota.handler.redirect.enable"]);
+			} finally {
+				getTracerSpy.mockRestore();
+			}
+		});
+
+		it("creates redirect child spans with propagated tracerName across multiple redirects", async () => {
+			const spanNames: string[] = [];
+			const spanCounts: number[] = [];
+			const tracer = {
+				startActiveSpan: (name: string, callback: (span: any) => Promise<Response>) => {
+					spanNames.push(name);
+					return callback({
+						setAttribute: (k: string, v: unknown) => {
+							if (k === "com.microsoft.kiota.handler.redirect.count") {
+								spanCounts.push(v as number);
+							}
+						},
+						recordException: () => {},
+						end: () => {},
+					});
+				},
+			};
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as any);
+
+			const handler = new RedirectHandler();
+			let callCount = 0;
+			const dummyNext = new DummyFetchHandler();
+			dummyNext.execute = async (_url: string) => {
+				callCount++;
+				if (callCount === 1) {
+					return new Response("", { status: 302, headers: { Location: "https://example.com/step2" } });
+				}
+				if (callCount === 2) {
+					return new Response("", { status: 302, headers: { Location: "https://example.com/step3" } });
+				}
+				return new Response("OK", { status: 200 });
+			};
+			handler.next = dummyNext;
+
+			try {
+				const response = await handler.execute("https://example.com/start", {}, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				assert.equal(response.status, 200);
+				assert.deepEqual(spanNames, ["redirectHandler - execute", "redirectHandler - redirect 1", "redirectHandler - redirect 2"]);
+				assert.deepEqual(spanCounts, [1, 2]);
+			} finally {
+				getTracerSpy.mockRestore();
+			}
+		});
+
+		it("maintains child redirect span lifecycle until async redirected request settles and records exception on child failure", async () => {
+			let childSpanEnded = false;
+			let childSpanEndCount = 0;
+			let childRecordedException: unknown;
+			const childAttributes: Record<string, unknown> = {};
+
+			let parentSpanEnded = false;
+			let parentSpanEndCount = 0;
+			let parentRecordedException: unknown;
+
+			const tracer = {
+				startActiveSpan: (name: string, callback: (span: any) => Promise<Response>) => {
+					if (name === "redirectHandler - execute") {
+						const parentSpan = {
+							setAttribute: () => {},
+							recordException: (err: unknown) => {
+								parentRecordedException = err;
+							},
+							end: () => {
+								parentSpanEnded = true;
+								parentSpanEndCount++;
+							},
+						};
+						return callback(parentSpan);
+					}
+					const childSpan = {
+						setAttribute: (key: string, value: unknown) => {
+							childAttributes[key] = value;
+						},
+						recordException: (err: unknown) => {
+							childRecordedException = err;
+						},
+						end: () => {
+							childSpanEnded = true;
+							childSpanEndCount++;
+						},
+					};
+					return callback(childSpan);
+				},
+			};
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as any);
+
+			let releaseRedirected: (() => void) | undefined;
+			const redirectedBlocked = new Promise<void>((resolve) => {
+				releaseRedirected = resolve;
+			});
+
+			let callCount = 0;
+			const handler = new RedirectHandler();
+			const dummyNext = new DummyFetchHandler();
+			dummyNext.execute = async (_url: string) => {
+				callCount++;
+				if (callCount === 1) {
+					return new Response("", { status: 302, headers: { Location: "https://example.com/redirected" } });
+				}
+				await redirectedBlocked;
+				assert.isFalse(childSpanEnded);
+				throw new Error("redirected request failed");
+			};
+			handler.next = dummyNext;
+
+			try {
+				const execution = handler.execute("https://example.com/start", {}, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				await vi.waitFor(() => assert.isDefined(releaseRedirected));
+				assert.isFalse(childSpanEnded);
+				releaseRedirected?.();
+				await execution;
+				assert.fail("should have thrown");
+			} catch (err: any) {
+				assert.equal(err.message, "redirected request failed");
+				assert.isTrue(childSpanEnded);
+				assert.equal(childSpanEndCount, 1);
+				assert.equal((childRecordedException as Error)?.message, "redirected request failed");
+				assert.equal(childAttributes["com.microsoft.kiota.handler.redirect.count"], 1);
+				assert.isTrue(parentSpanEnded);
+				assert.equal(parentSpanEndCount, 1);
+				assert.equal((parentRecordedException as Error)?.message, "redirected request failed");
+			} finally {
+				getTracerSpy.mockRestore();
+			}
 		});
 	});
 });
