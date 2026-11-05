@@ -18,7 +18,7 @@ export class FormParseNode implements ParseNode {
 		private readonly _rawString: string,
 		private readonly backingStoreFactory?: BackingStoreFactory,
 	) {
-		if (!_rawString) {
+		if (_rawString === undefined || _rawString === null) {
 			throw new Error("rawString cannot be undefined");
 		}
 		_rawString.split("&").forEach((x) => {
@@ -28,7 +28,7 @@ export class FormParseNode implements ParseNode {
 			}
 			const key = this.normalizeKey(x.substring(0, separatorIndex));
 			const value = x.substring(separatorIndex + 1);
-			if (this._fields[key]) {
+			if (this._fields[key] !== undefined) {
 				this._fields[key] += "," + value;
 			} else {
 				this._fields[key] = value;
@@ -75,7 +75,7 @@ export class FormParseNode implements ParseNode {
 	public onAfterAssignFieldValues: ((value: Parsable) => void) | undefined;
 	public getStringValue = (): string => this.getStringValueFromRaw(this._rawString);
 	public getChildNode = (identifier: string): ParseNode | undefined => {
-		if (this._fields[identifier]) {
+		if (this._fields[identifier] !== undefined) {
 			return new FormParseNode(this._fields[identifier], this.backingStoreFactory);
 		}
 		return undefined;
