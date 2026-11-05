@@ -21,18 +21,19 @@ export class FormParseNode implements ParseNode {
 		if (!_rawString) {
 			throw new Error("rawString cannot be undefined");
 		}
-		_rawString
-			.split("&")
-			.map((x) => x.split("="))
-			.filter((x) => x.length === 2)
-			.forEach((x) => {
-				const key = this.normalizeKey(x[0]);
-				if (this._fields[key]) {
-					this._fields[key] += "," + x[1];
-				} else {
-					this._fields[key] = x[1];
-				}
-			});
+		_rawString.split("&").forEach((x) => {
+			const separatorIndex = x.indexOf("=");
+			if (separatorIndex === -1) {
+				return;
+			}
+			const key = this.normalizeKey(x.substring(0, separatorIndex));
+			const value = x.substring(separatorIndex + 1);
+			if (this._fields[key]) {
+				this._fields[key] += "," + value;
+			} else {
+				this._fields[key] = value;
+			}
+		});
 	}
 	private normalizeKey(key: string): string {
 		return decodeURIComponent(key.replace(/\+/g, " ")).trim();
