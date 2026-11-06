@@ -26,25 +26,75 @@ export class JsonParseNode implements ParseNode {
 		return parseGuidString(this.getStringValueFromRaw(value));
 	}
 	private getDateValueFromRaw(value: unknown): Date | undefined {
+		if (value === null || value === undefined) {
+			return undefined;
+		}
 		if (value instanceof Date) {
 			return new Date(value.getTime());
 		}
 		if (typeof value === "number") {
-			return new Date(value);
+			const date = new Date(value);
+			if (isNaN(date.getTime())) {
+				throw new Error(`Value is not a valid date representation: ${value}`);
+			}
+			return date;
 		}
 		if (typeof value === "string") {
-			return new Date(value);
+			const date = new Date(value);
+			if (isNaN(date.getTime())) {
+				throw new Error(`Value is not a valid date representation: ${value}`);
+			}
+			return date;
 		}
-		return undefined;
+		throw new Error(`encountered an unsupported type during deserialization ${typeof value}`);
 	}
 	private getDateOnlyValueFromRaw(value: unknown): DateOnly | undefined {
-		return value instanceof DateOnly ? value : DateOnly.parse(this.getStringValueFromRaw(value));
+		if (value === null || value === undefined) {
+			return undefined;
+		}
+		if (value instanceof DateOnly) {
+			return value;
+		}
+		if (typeof value !== "string") {
+			throw new Error(`encountered an unsupported type during deserialization ${typeof value}`);
+		}
+		const dateOnly = DateOnly.parse(value);
+		if (!dateOnly) {
+			throw new Error(`Value is not a valid date-only representation: ${value}`);
+		}
+		return dateOnly;
 	}
 	private getTimeOnlyValueFromRaw(value: unknown): TimeOnly | undefined {
-		return value instanceof TimeOnly ? value : TimeOnly.parse(this.getStringValueFromRaw(value));
+		if (value === null || value === undefined) {
+			return undefined;
+		}
+		if (value instanceof TimeOnly) {
+			return value;
+		}
+		if (typeof value !== "string") {
+			throw new Error(`encountered an unsupported type during deserialization ${typeof value}`);
+		}
+		const timeOnly = TimeOnly.parse(value);
+		if (!timeOnly) {
+			throw new Error(`Value is not a valid time-only representation: ${value}`);
+		}
+		return timeOnly;
 	}
 	private getDurationValueFromRaw(value: unknown): Duration | undefined {
-		return value instanceof Duration ? value : Duration.parse(this.getStringValueFromRaw(value));
+		if (value === null || value === undefined) {
+			return undefined;
+		}
+		if (value instanceof Duration) {
+			return value;
+		}
+		if (typeof value !== "string") {
+			throw new Error(`encountered an unsupported type during deserialization ${typeof value}`);
+		}
+		const duration = Duration.parse(value);
+		if (!duration) {
+			throw new Error(`Value is not a valid duration representation: ${value}`);
+		}
+		return duration;
 	}
 	public getStringValue = () => this.getStringValueFromRaw(this._jsonNode);
 	public getChildNode = (identifier: string): ParseNode | undefined => (this._jsonNode && typeof this._jsonNode === "object" && (this._jsonNode as Record<string, unknown>)[identifier] !== undefined ? new JsonParseNode((this._jsonNode as Record<string, unknown>)[identifier], this.backingStoreFactory) : undefined);
@@ -64,6 +114,9 @@ export class JsonParseNode implements ParseNode {
 	private readonly getPrimitiveValue = <T>(value: unknown, primitiveType: PrimitiveTypesForDeserializationForCollection): T => {
 		if (value === null) {
 			return null as T;
+		}
+		if (value === undefined) {
+			throw new Error(`encountered an unsupported type during deserialization ${typeof value}`);
 		}
 		switch (primitiveType) {
 			case "boolean":
