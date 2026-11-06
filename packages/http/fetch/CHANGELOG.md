@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.0-preview.113](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.112...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.113) (2026-11-06)
+
+
+### Bug Fixes
+
+* **http:** align redirect and retry handlers with async span lifecycle and propagate tracerName ([#2215](https://github.com/microsoft/kiota-typescript/issues/2215)) ([0434366](https://github.com/microsoft/kiota-typescript/commit/0434366d2e357546da4abc2ebf00715ffa9ee5d3))
+* **http:** isolate parameters name decoding option key and align span lifecycle ([#2212](https://github.com/microsoft/kiota-typescript/issues/2212)) ([3028d9f](https://github.com/microsoft/kiota-typescript/commit/3028d9f955257d5041a1e26901a9f1195db94ed3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.112 to ^1.0.0-preview.113
+
 ## [1.0.0-preview.112](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.111...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.112) (2026-11-03)
 
 
