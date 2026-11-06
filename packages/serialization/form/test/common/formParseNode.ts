@@ -173,6 +173,15 @@ describe("FormParseNode", () => {
 		const emptyNode = new FormParseNode("");
 		assert.equal(emptyNode.getStringValue(), "");
 	});
+	it("preservesEmptyValuesInRepeatedKeys", () => {
+		const parseNodeWithValues = new FormParseNode("items=&items=value");
+		const itemsWithValues = parseNodeWithValues.getChildNode("items")?.getCollectionOfPrimitiveValues<string>("string");
+		assert.deepEqual(itemsWithValues, ["", "value"]);
+
+		const parseNodeBothEmpty = new FormParseNode("items=&items=");
+		const itemsBothEmpty = parseNodeBothEmpty.getChildNode("items")?.getCollectionOfPrimitiveValues<string>("string");
+		assert.deepEqual(itemsBothEmpty, ["", ""]);
+	});
 	it("deserializesObjectWithEmptyFieldsWithoutThrowing", () => {
 		const raw = "id=&officeLocation=&jobTitle=Auditor";
 		const parseNode = new FormParseNode(raw);
