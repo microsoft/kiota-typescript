@@ -41,7 +41,7 @@
 	"homepage": "https://github.com/microsoft/kiota-typescript#readme",
 	"dependencies": {
 		"@microsoft/kiota-abstractions": "^1.0.0-preview.112",
-		"tslib": "^2.6.2"
+		"tslib": "^2.9.1"
 	},
 	"publishConfig": {
 		"access": "public"

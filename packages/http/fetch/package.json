@@ -37,7 +37,7 @@
 	"dependencies": {
 		"@microsoft/kiota-abstractions": "^1.0.0-preview.112",
 		"@opentelemetry/api": "^1.10.0",
-		"tslib": "^2.6.2"
+		"tslib": "^2.9.1"
 	},
 	"publishConfig": {
 		"access": "public"

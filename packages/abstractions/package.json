@@ -35,7 +35,7 @@
 		"@opentelemetry/api": "^1.10.0",
 		"@std-uritemplate/std-uritemplate": "^2.0.0",
 		"tinyduration": "^3.3.0",
-		"tslib": "^2.6.2"
+		"tslib": "^2.9.1"
 	},
 	"publishConfig": {
 		"access": "public"
