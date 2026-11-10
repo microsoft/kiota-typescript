@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.113](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-form@1.0.0-preview.112...@microsoft/kiota-serialization-form@1.0.0-preview.113) (2026-11-10)
+
+
+### Miscellaneous Chores
+
+* **@microsoft/kiota-serialization-form:** Synchronize microsoft-kiota versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.112 to ^1.0.0-preview.113
+
 ## [1.0.0-preview.112](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-form@1.0.0-preview.111...@microsoft/kiota-serialization-form@1.0.0-preview.112) (2026-11-03)
 
 
