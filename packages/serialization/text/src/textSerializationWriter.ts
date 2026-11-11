@@ -45,7 +45,7 @@ export class TextSerializationWriter implements SerializationWriter {
 			return this.writeNullValue(key);
 		}
 
-		if (value) {
+		if (value !== undefined && !Number.isNaN(value)) {
 			this.writeStringValue(key, `${value}`);
 		}
 	};
