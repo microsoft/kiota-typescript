@@ -43,6 +43,32 @@ describe("TextSerializationWriter", () => {
 		const writer3 = new TextSerializationWriter();
 		assert.throws(() => writer3.writeStringValue("structuredKey", "value"), "text does not support structured data");
 	});
+	it("writeNumberValue serializes zero, negative, positive and null values", () => {
+		const zeroWriter = new TextSerializationWriter();
+		zeroWriter.writeNumberValue(undefined, 0);
+		const zeroContent = new TextDecoder().decode(zeroWriter.getSerializedContent());
+		assert.equal(zeroContent, "0");
+
+		const negativeWriter = new TextSerializationWriter();
+		negativeWriter.writeNumberValue("", -42);
+		const negativeContent = new TextDecoder().decode(negativeWriter.getSerializedContent());
+		assert.equal(negativeContent, "-42");
+
+		const positiveWriter = new TextSerializationWriter();
+		positiveWriter.writeNumberValue(undefined, 100);
+		const positiveContent = new TextDecoder().decode(positiveWriter.getSerializedContent());
+		assert.equal(positiveContent, "100");
+
+		const nullWriter = new TextSerializationWriter();
+		nullWriter.writeNumberValue(undefined, null);
+		const nullContent = new TextDecoder().decode(nullWriter.getSerializedContent());
+		assert.equal(nullContent, "null");
+
+		const undefinedWriter = new TextSerializationWriter();
+		undefinedWriter.writeNumberValue(undefined, undefined);
+		const undefinedContent = new TextDecoder().decode(undefinedWriter.getSerializedContent());
+		assert.equal(undefinedContent, "");
+	});
 });
 
 export const LongRunningOperationStatusObject = {
