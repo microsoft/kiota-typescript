@@ -29,6 +29,20 @@ describe("TextSerializationWriter", () => {
 		const writer2 = factory.getSerializationWriter("  TEXT/PLAIN; charset=utf-8  ");
 		assert.isDefined(writer2);
 	});
+	it("writeStringValue with undefined and empty keys", () => {
+		const writer1 = new TextSerializationWriter();
+		writer1.writeStringValue(undefined, "test string");
+		const content1 = new TextDecoder().decode(writer1.getSerializedContent());
+		assert.equal(content1, "test string");
+
+		const writer2 = new TextSerializationWriter();
+		writer2.writeStringValue("", "empty key string");
+		const content2 = new TextDecoder().decode(writer2.getSerializedContent());
+		assert.equal(content2, "empty key string");
+
+		const writer3 = new TextSerializationWriter();
+		assert.throws(() => writer3.writeStringValue("structuredKey", "value"), "text does not support structured data");
+	});
 });
 
 export const LongRunningOperationStatusObject = {
