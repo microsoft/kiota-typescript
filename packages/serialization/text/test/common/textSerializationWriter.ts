@@ -69,6 +69,23 @@ describe("TextSerializationWriter", () => {
 		const undefinedContent = new TextDecoder().decode(undefinedWriter.getSerializedContent());
 		assert.equal(undefinedContent, "");
 	});
+	it("writeBooleanValue and writeByteArrayValue with undefined key", () => {
+		const trueWriter = new TextSerializationWriter();
+		trueWriter.writeBooleanValue(undefined, true);
+		const trueContent = new TextDecoder().decode(trueWriter.getSerializedContent());
+		assert.equal(trueContent, "true");
+
+		const falseWriter = new TextSerializationWriter();
+		falseWriter.writeBooleanValue(undefined, false);
+		const falseContent = new TextDecoder().decode(falseWriter.getSerializedContent());
+		assert.equal(falseContent, "false");
+
+		const byteWriter = new TextSerializationWriter();
+		const buffer = new TextEncoder().encode("Hello World").buffer;
+		byteWriter.writeByteArrayValue(undefined, buffer);
+		const byteContent = new TextDecoder().decode(byteWriter.getSerializedContent());
+		assert.equal(byteContent, btoa("Hello World"));
+	});
 });
 
 export const LongRunningOperationStatusObject = {
