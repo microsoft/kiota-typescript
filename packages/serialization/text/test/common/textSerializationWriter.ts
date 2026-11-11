@@ -1,3 +1,4 @@
+import { DateOnly, Duration, TimeOnly } from "@microsoft/kiota-abstractions";
 import { assert, describe, it } from "vitest";
 import { TextSerializationWriter, TextSerializationWriterFactory } from "../../src";
 
@@ -85,6 +86,38 @@ describe("TextSerializationWriter", () => {
 		byteWriter.writeByteArrayValue(undefined, buffer);
 		const byteContent = new TextDecoder().decode(byteWriter.getSerializedContent());
 		assert.equal(byteContent, btoa("Hello World"));
+	});
+	it("writeTemporal, writeGuidValue and writeNullValue with undefined key", () => {
+		const dateWriter = new TextSerializationWriter();
+		const date = new Date("2026-11-11T00:00:00.000Z");
+		dateWriter.writeDateValue(undefined, date);
+		const dateContent = new TextDecoder().decode(dateWriter.getSerializedContent());
+		assert.equal(dateContent, '"2026-11-11T00:00:00.000Z"');
+
+		const dateOnlyWriter = new TextSerializationWriter();
+		dateOnlyWriter.writeDateOnlyValue(undefined, DateOnly.parse("2026-11-11"));
+		const dateOnlyContent = new TextDecoder().decode(dateOnlyWriter.getSerializedContent());
+		assert.equal(dateOnlyContent, '"2026-11-11"');
+
+		const timeOnlyWriter = new TextSerializationWriter();
+		timeOnlyWriter.writeTimeOnlyValue(undefined, TimeOnly.parse("12:30:00"));
+		const timeOnlyContent = new TextDecoder().decode(timeOnlyWriter.getSerializedContent());
+		assert.equal(timeOnlyContent, '"12:30:00.0000000"');
+
+		const durationWriter = new TextSerializationWriter();
+		durationWriter.writeDurationValue(undefined, Duration.parse("PT1H"));
+		const durationContent = new TextDecoder().decode(durationWriter.getSerializedContent());
+		assert.equal(durationContent, '"PT1H"');
+
+		const guidWriter = new TextSerializationWriter();
+		guidWriter.writeGuidValue(undefined, "d3b07384-d113-4632-9c9e-4c4d5d36e014");
+		const guidContent = new TextDecoder().decode(guidWriter.getSerializedContent());
+		assert.equal(guidContent, '"d3b07384-d113-4632-9c9e-4c4d5d36e014"');
+
+		const nullWriter = new TextSerializationWriter();
+		nullWriter.writeNullValue(undefined);
+		const nullContent = new TextDecoder().decode(nullWriter.getSerializedContent());
+		assert.equal(nullContent, "null");
 	});
 });
 
