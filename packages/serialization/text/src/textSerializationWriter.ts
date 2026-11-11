@@ -23,7 +23,7 @@ export class TextSerializationWriter implements SerializationWriter {
 	public onAfterObjectSerialization: ((value: Parsable) => void) | undefined;
 	public onStartObjectSerialization: ((value: Parsable, writer: SerializationWriter) => void) | undefined;
 	public writeStringValue = (key?: string, value?: string | null): void => {
-		if (Boolean(key)) {
+		if (key) {
 			throw new Error(TextSerializationWriter.noStructuredDataMessage);
 		}
 		if (value !== undefined) {
