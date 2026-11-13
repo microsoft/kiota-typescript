@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.114](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.113...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.114) (2026-11-13)
+
+
+### Features
+
+* **http:** add option to retry only unprocessed mutations ([#2230](https://github.com/microsoft/kiota-typescript/issues/2230)) ([54e0562](https://github.com/microsoft/kiota-typescript/commit/54e0562e71e86d77fa0a35d664c58c76a59778cd))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.113 to ^1.0.0-preview.114
+
 ## [1.0.0-preview.113](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.112...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.113) (2026-11-10)
 
 
