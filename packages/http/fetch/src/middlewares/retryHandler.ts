@@ -33,6 +33,20 @@ export class RetryHandler implements Middleware {
 	]);
 
 	/**
+	 * Status codes that, by common service convention, mean the server didn't process the request,
+	 * so resending it is treated as safe for any method
+	 */
+	private static readonly UNPROCESSED_STATUS_CODES = new Set<number>([
+		429, // Too many requests
+		503, // Service unavailable
+	]);
+
+	/**
+	 * Methods that aren't idempotent, so a retry can repeat their side effect
+	 */
+	private static readonly NON_IDEMPOTENT_METHODS = new Set<string>([HttpMethod.POST, HttpMethod.PATCH]);
+
+	/**
 	 * A member holding the name of retry attempt header
 	 */
 	private static readonly RETRY_ATTEMPT_HEADER = "Retry-Attempt";
@@ -87,6 +101,27 @@ export class RetryHandler implements Middleware {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 *
+	 * To check whether the response allows resending the request, given its method.
+	 * With retryUnprocessedMutationsOnly set, POST and PATCH requests are retried only after a response
+	 * showing the server didn't process them, because a 504 may arrive after the server already acted on the request.
+	 * @param options - The options of the request that would be resent
+	 * @param response - The response object
+	 * @param currentOptions - The retry handler options in use
+	 * @returns Whether the request can be resent
+	 */
+	private isRetriableForMethod(options: FetchRequestInit, response: FetchResponse, currentOptions: RetryHandlerOptions): boolean {
+		if (currentOptions.retryUnprocessedMutationsOnly !== true) {
+			return true;
+		}
+		const method = options.method?.toUpperCase() ?? HttpMethod.GET;
+		if (!RetryHandler.NON_IDEMPOTENT_METHODS.has(method)) {
+			return true;
+		}
+		return RetryHandler.UNPROCESSED_STATUS_CODES.has(response.status);
 	}
 
 	/**
@@ -151,7 +186,7 @@ export class RetryHandler implements Middleware {
 		if (!response) {
 			throw new Error("Response is undefined");
 		}
-		if (retryAttempts < currentOptions.maxRetries && this.isRetry(response) && this.isBuffered(fetchRequestInit) && currentOptions.shouldRetry(currentOptions.delay, retryAttempts, url, fetchRequestInit as RequestInit, response)) {
+		if (retryAttempts < currentOptions.maxRetries && this.isRetry(response) && this.isBuffered(fetchRequestInit) && this.isRetriableForMethod(fetchRequestInit, response, currentOptions) && currentOptions.shouldRetry(currentOptions.delay, retryAttempts, url, fetchRequestInit as RequestInit, response)) {
 			++retryAttempts;
 			setRequestHeader(fetchRequestInit, RetryHandler.RETRY_ATTEMPT_HEADER, retryAttempts.toString());
 			let delay = null;

@@ -4,13 +4,14 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-import { HttpMethod } from "@microsoft/kiota-abstractions";
+import { HttpMethod, type RequestOption } from "@microsoft/kiota-abstractions";
 import { trace } from "@opentelemetry/api";
 import { assert, describe, it, vi } from "vitest";
 
 import { ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src";
 
 import { RetryHandlerOptionKey, RetryHandlerOptions, type ShouldRetry } from "../../../src/middlewares/options/retryHandlerOptions";
+import { RedirectHandler } from "../../../src/middlewares/redirectHandler";
 import { RetryHandler } from "../../../src/middlewares/retryHandler";
 import type { FetchRequestInit } from "../../../src/utils/fetchDefinitions";
 import { getResponse } from "../../testUtils";
@@ -455,6 +456,115 @@ describe("RetryHandler.ts", () => {
 			} finally {
 				getTracerSpy.mockRestore();
 			}
+		});
+	});
+	describe("retryUnprocessedMutationsOnly", () => {
+		const requestUrl = "https://example.org/send";
+		const sendWithStatuses = async (handlerOptions: RetryHandlerOptions, method: string, statusCodes: number[], requestOptions?: Record<string, RequestOption>) => {
+			const methods: string[] = [];
+			const handler = new RetryHandler(handlerOptions);
+			handler.next = {
+				next: undefined,
+				execute: async (_url: string, requestInit: RequestInit) => {
+					methods.push(requestInit.method ?? "");
+					const status = statusCodes[methods.length - 1] ?? 200;
+					return new Response(null, { status, headers: { "Retry-After": "0" } });
+				},
+			};
+			const fetchRequestInit: FetchRequestInit = { method, body: method === HttpMethod.GET || method === HttpMethod.DELETE ? undefined : '{"message":"hello"}' };
+			const response = await handler.execute(requestUrl, fetchRequestInit as RequestInit, requestOptions);
+			return { status: response.status, requestCount: methods.length };
+		};
+
+		it("Should default to false", () => {
+			assert.isFalse(new RetryHandlerOptions().retryUnprocessedMutationsOnly);
+			assert.isTrue(new RetryHandlerOptions({ retryUnprocessedMutationsOnly: true }).retryUnprocessedMutationsOnly);
+		});
+
+		for (const method of [HttpMethod.POST, HttpMethod.PATCH]) {
+			it(`Should retry ${method} on 504 by default`, async () => {
+				const result = await sendWithStatuses(new RetryHandlerOptions(), method, [504]);
+				assert.equal(result.status, 200);
+				assert.equal(result.requestCount, 2);
+			});
+		}
+
+		for (const method of [HttpMethod.POST, HttpMethod.PATCH, "post"]) {
+			it(`Should not retry ${method} on 504 when enabled`, async () => {
+				const result = await sendWithStatuses(new RetryHandlerOptions({ retryUnprocessedMutationsOnly: true }), method, [504]);
+				assert.equal(result.status, 504);
+				assert.equal(result.requestCount, 1);
+			});
+		}
+
+		for (const method of [HttpMethod.POST, HttpMethod.PATCH]) {
+			for (const status of [429, 503]) {
+				it(`Should retry ${method} on ${status} when enabled`, async () => {
+					const result = await sendWithStatuses(new RetryHandlerOptions({ retryUnprocessedMutationsOnly: true }), method, [status]);
+					assert.equal(result.status, 200);
+					assert.equal(result.requestCount, 2);
+				});
+			}
+		}
+
+		for (const method of [HttpMethod.GET, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.QUERY]) {
+			it(`Should retry ${method} on 504 when enabled`, async () => {
+				const result = await sendWithStatuses(new RetryHandlerOptions({ retryUnprocessedMutationsOnly: true }), method, [504]);
+				assert.equal(result.status, 200);
+				assert.equal(result.requestCount, 2);
+			});
+		}
+
+		it("Should stop retrying POST when a later response leaves the outcome unknown", async () => {
+			const result = await sendWithStatuses(new RetryHandlerOptions({ retryUnprocessedMutationsOnly: true }), HttpMethod.POST, [503, 504]);
+			assert.equal(result.status, 504);
+			assert.equal(result.requestCount, 2);
+		});
+
+		const sendThroughRedirect = async (handlerOptions: RetryHandlerOptions, redirectStatus: number, requestOptions?: Record<string, RequestOption>) => {
+			const methods: string[] = [];
+			const finalStatuses = [504, 200];
+			const retryHandler = new RetryHandler(handlerOptions);
+			const redirectHandler = new RedirectHandler();
+			retryHandler.next = redirectHandler;
+			// Only the first request is redirected, so the assertions don't depend on which URL a retry is sent to.
+			redirectHandler.next = {
+				next: undefined,
+				execute: async (_url: string, requestInit: RequestInit) => {
+					methods.push(requestInit.method ?? "");
+					if (methods.length === 1) {
+						return new Response(null, { status: redirectStatus, headers: { Location: "https://example.org/redirected" } });
+					}
+					return new Response(null, { status: finalStatuses.shift() ?? 200, headers: { "Retry-After": "0" } });
+				},
+			};
+			const fetchRequestInit: FetchRequestInit = { method: HttpMethod.POST, body: '{"message":"hello"}' };
+			const response = await retryHandler.execute(requestUrl, fetchRequestInit as RequestInit, requestOptions);
+			return { status: response.status, methods };
+		};
+
+		it("Should retry a POST that a redirect changed to GET when enabled", async () => {
+			const result = await sendThroughRedirect(new RetryHandlerOptions({ retryUnprocessedMutationsOnly: true }), 303);
+			assert.equal(result.status, 200);
+			assert.deepEqual(result.methods, ["POST", "GET", "GET"]);
+		});
+
+		it("Should not retry a POST that a redirect kept as POST when enabled from the request options", async () => {
+			const requestOptions: Record<string, RequestOption> = {
+				[RetryHandlerOptionKey]: new RetryHandlerOptions({ retryUnprocessedMutationsOnly: true }),
+			};
+			const result = await sendThroughRedirect(new RetryHandlerOptions(), 307, requestOptions);
+			assert.equal(result.status, 504);
+			assert.deepEqual(result.methods, ["POST", "POST"]);
+		});
+
+		it("Should honour the option from the request options", async () => {
+			const requestOptions: Record<string, RequestOption> = {
+				[RetryHandlerOptionKey]: new RetryHandlerOptions({ retryUnprocessedMutationsOnly: true }),
+			};
+			const result = await sendWithStatuses(new RetryHandlerOptions(), HttpMethod.POST, [504], requestOptions);
+			assert.equal(result.status, 504);
+			assert.equal(result.requestCount, 1);
 		});
 	});
 });
