@@ -142,4 +142,60 @@ describe("FormParseNode", () => {
 		const collection = new FormParseNode("one+two,three+four").getCollectionOfPrimitiveValues<string>("string");
 		assert.deepEqual(collection, ["one two", "three four"]);
 	});
+	it("preservesEqualsSignInValues", () => {
+		const raw = "client_secret=secret=with=equals&token=abc==&query=a=1&b=2";
+		const parseNode = new FormParseNode(raw);
+
+		const secret = parseNode.getChildNode("client_secret")?.getStringValue();
+		assert.equal(secret, "secret=with=equals");
+
+		const token = parseNode.getChildNode("token")?.getStringValue();
+		assert.equal(token, "abc==");
+
+		const query = parseNode.getChildNode("query")?.getStringValue();
+		assert.equal(query, "a=1");
+
+		const b = parseNode.getChildNode("b")?.getStringValue();
+		assert.equal(b, "2");
+	});
+	it("handlesEmptyValuesAndEmptyChildNodes", () => {
+		const raw = "key=&other=value";
+		const parseNode = new FormParseNode(raw);
+
+		const emptyChild = parseNode.getChildNode("key");
+		assert.isDefined(emptyChild);
+		assert.equal(emptyChild?.getStringValue(), "");
+
+		const otherChild = parseNode.getChildNode("other");
+		assert.isDefined(otherChild);
+		assert.equal(otherChild?.getStringValue(), "value");
+
+		const emptyNode = new FormParseNode("");
+		assert.equal(emptyNode.getStringValue(), "");
+	});
+	it("preservesEmptyValuesInRepeatedKeys", () => {
+		const parseNodeWithValues = new FormParseNode("items=&items=value");
+		const itemsWithValues = parseNodeWithValues.getChildNode("items")?.getCollectionOfPrimitiveValues<string>("string");
+		assert.deepEqual(itemsWithValues, ["", "value"]);
+
+		const parseNodeBothEmpty = new FormParseNode("items=&items=");
+		const itemsBothEmpty = parseNodeBothEmpty.getChildNode("items")?.getCollectionOfPrimitiveValues<string>("string");
+		assert.deepEqual(itemsBothEmpty, ["", ""]);
+	});
+	it("deserializesObjectWithEmptyFieldsWithoutThrowing", () => {
+		const raw = "id=&officeLocation=&jobTitle=Auditor";
+		const parseNode = new FormParseNode(raw);
+		const testEntity = parseNode.getObjectValue(createTestParserFromDiscriminatorValue) as TestEntity;
+		assert.isNotNull(testEntity);
+		assert.equal(testEntity.id, "");
+		assert.equal(testEntity.officeLocation, "");
+		assert.equal((testEntity as Record<string, unknown>)["jobTitle"], "Auditor");
+	});
+	it("getNumberValueHandlesZeroEmptyAndInvalidValues", () => {
+		assert.equal(new FormParseNode("0").getNumberValue(), 0);
+		assert.equal(new FormParseNode("42.5").getNumberValue(), 42.5);
+		assert.isUndefined(new FormParseNode("").getNumberValue());
+		assert.isUndefined(new FormParseNode("   ").getNumberValue());
+		assert.isUndefined(new FormParseNode("not-a-number").getNumberValue());
+	});
 });

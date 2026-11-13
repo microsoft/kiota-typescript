@@ -27,7 +27,7 @@ export class FormSerializationWriter implements SerializationWriter {
 		if (value === null) {
 			value = "null";
 		}
-		if (key && value) {
+		if (key && value !== undefined) {
 			this.writePropertyName(key);
 			this.writer.push(`=${encodeURIComponent(value)}`);
 			this.writer.push(FormSerializationWriter.propertySeparator);
@@ -50,7 +50,7 @@ export class FormSerializationWriter implements SerializationWriter {
 	};
 	public writeNumberValue = (key?: string, value?: number | null): void => {
 		if (this.shouldWriteValueOrNull(key, value)) {
-			value && this.writeStringValue(key, `${value}`);
+			value !== undefined && this.writeStringValue(key, `${value}`);
 		}
 	};
 	public writeGuidValue = (key?: string, value?: Guid | null): void => {
