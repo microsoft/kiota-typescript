@@ -38,6 +38,17 @@ export interface RetryHandlerOptionsParams {
 	 * The shouldRetry callback function
 	 */
 	shouldRetry?: ShouldRetry;
+	/**
+	 * Whether POST and PATCH requests are retried only after a response showing the server didn't process them.
+	 * POST and PATCH aren't idempotent, so resending one the server already processed can repeat its side effect, such as sending an email twice.
+	 * A 504 can arrive after the server processed the request.
+	 * When this is true, POST and PATCH requests are retried only after a 429 or 503 response, and a 504 is returned to the caller.
+	 * This relies on the common service convention, followed by Microsoft Graph, that a 429 or 503 response means the server didn't process the request.
+	 * HTTP doesn't guarantee this, so a service that returns 429 or 503 after acting on a request can still see it repeated.
+	 * PUT and DELETE also change state, but they're idempotent, so they aren't affected, and neither are other methods.
+	 * @default false
+	 */
+	retryUnprocessedMutationsOnly?: boolean;
 }
 
 /**
@@ -92,6 +103,17 @@ export class RetryHandlerOptions implements RequestOption {
 	public shouldRetry: ShouldRetry;
 
 	/**
+	 * Whether POST and PATCH requests are retried only after a response showing the server didn't process them.
+	 * POST and PATCH aren't idempotent, so resending one the server already processed can repeat its side effect, such as sending an email twice.
+	 * A 504 can arrive after the server processed the request.
+	 * When this is true, POST and PATCH requests are retried only after a 429 or 503 response, and a 504 is returned to the caller.
+	 * This relies on the common service convention, followed by Microsoft Graph, that a 429 or 503 response means the server didn't process the request.
+	 * HTTP doesn't guarantee this, so a service that returns 429 or 503 after acting on a request can still see it repeated.
+	 * PUT and DELETE also change state, but they're idempotent, so they aren't affected, and neither are other methods.
+	 */
+	public retryUnprocessedMutationsOnly: boolean;
+
+	/**
 	 *
 	 * To create an instance of RetryHandlerOptions
 	 * @param options - The RetryHandlerOptionsParams object
@@ -114,6 +136,7 @@ export class RetryHandlerOptions implements RequestOption {
 		this.delay = Math.min(options.delay ?? RetryHandlerOptions.DEFAULT_DELAY, RetryHandlerOptions.MAX_DELAY);
 		this.maxRetries = Math.min(options.maxRetries ?? RetryHandlerOptions.DEFAULT_MAX_RETRIES, RetryHandlerOptions.MAX_MAX_RETRIES);
 		this.shouldRetry = options.shouldRetry ?? RetryHandlerOptions.defaultShouldRetry;
+		this.retryUnprocessedMutationsOnly = options.retryUnprocessedMutationsOnly ?? false;
 	}
 
 	/**
