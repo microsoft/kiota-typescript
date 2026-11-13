@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.114](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-text@1.0.0-preview.113...@microsoft/kiota-serialization-text@1.0.0-preview.114) (2026-11-13)
+
+
+### Bug Fixes
+
+* **text:** allow undefined keys and serialize zero numeric values in TextSerializationWriter ([#2225](https://github.com/microsoft/kiota-typescript/issues/2225)) ([98fdb2a](https://github.com/microsoft/kiota-typescript/commit/98fdb2aaaf86b5a5684d2293402273d1b24aaad6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.113 to ^1.0.0-preview.114
+
 ## [1.0.0-preview.113](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-text@1.0.0-preview.112...@microsoft/kiota-serialization-text@1.0.0-preview.113) (2026-11-10)
 
 

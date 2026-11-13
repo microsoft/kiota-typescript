@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.114](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-form@1.0.0-preview.113...@microsoft/kiota-serialization-form@1.0.0-preview.114) (2026-11-13)
+
+
+### Bug Fixes
+
+* **form:** preserve equals delimiters, support empty values, and serialize zeros ([#2218](https://github.com/microsoft/kiota-typescript/issues/2218)) ([19e5f13](https://github.com/microsoft/kiota-typescript/commit/19e5f13af48f75fc56e20fbe5592a96e2a2d2c40))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.113 to ^1.0.0-preview.114
+
 ## [1.0.0-preview.113](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-form@1.0.0-preview.112...@microsoft/kiota-serialization-form@1.0.0-preview.113) (2026-11-10)
 
 
