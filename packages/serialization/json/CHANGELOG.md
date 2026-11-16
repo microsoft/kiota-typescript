@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.114](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-json@1.0.0-preview.113...@microsoft/kiota-serialization-json@1.0.0-preview.114) (2026-11-16)
+
+
+### Bug Fixes
+
+* **abstractions:** parse TimeOnly fractional seconds as decimal fraction ([#2232](https://github.com/microsoft/kiota-typescript/issues/2232)) ([153c014](https://github.com/microsoft/kiota-typescript/commit/153c0144fe902e874fe8180d61f590ad33f9f847))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.113 to ^1.0.0-preview.114
+
 ## [1.0.0-preview.113](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-serialization-json@1.0.0-preview.112...@microsoft/kiota-serialization-json@1.0.0-preview.113) (2026-11-10)
 
 
