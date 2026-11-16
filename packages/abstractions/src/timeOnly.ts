@@ -80,12 +80,13 @@ export class TimeOnly implements TimeOnlyInterface {
 				const hours = parseInt(exec[1] ?? "", 10);
 				const minutes = parseInt(exec[2] ?? "", 10);
 				const seconds = parseInt(exec[3] ?? "", 10);
-				const milliseconds = parseInt(exec[4] ?? "0", 10);
+				const fractionStr = exec[4] ? exec[4].padEnd(7, "0").slice(0, 7) : "0";
+				const picoseconds = parseInt(fractionStr, 10);
 				return new TimeOnly({
 					hours,
 					minutes,
 					seconds,
-					picoseconds: milliseconds,
+					picoseconds,
 				});
 			} else {
 				throw new Error("Value is not a valid time-only representation");
