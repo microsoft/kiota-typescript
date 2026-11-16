@@ -439,4 +439,24 @@ describe("JsonParseNode", () => {
 		).getObjectValue(createTestParserFromDiscriminatorValue) as TestParser;
 		assert.equal(result.testUnionObject, 1234);
 	});
+
+	it("parses time only with fractional seconds correctly", () => {
+		const node1 = new JsonParseNode("12:30:45.5", backingStoreFactory);
+		const time1 = node1.getTimeOnlyValue();
+		assert.isDefined(time1);
+		assert.equal(time1?.picoseconds, 5000000);
+		assert.equal(time1?.toString(), "12:30:45.5000000");
+
+		const node2 = new JsonParseNode("12:30:45.123", backingStoreFactory);
+		const time2 = node2.getTimeOnlyValue();
+		assert.isDefined(time2);
+		assert.equal(time2?.picoseconds, 1230000);
+		assert.equal(time2?.toString(), "12:30:45.1230000");
+
+		const node3 = new JsonParseNode("12:30:45.12345678", backingStoreFactory);
+		const time3 = node3.getTimeOnlyValue();
+		assert.isDefined(time3);
+		assert.equal(time3?.picoseconds, 1234567);
+		assert.equal(time3?.toString(), "12:30:45.1234567");
+	});
 });
