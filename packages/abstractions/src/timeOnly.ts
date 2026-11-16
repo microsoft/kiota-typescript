@@ -11,17 +11,16 @@ import { formatSegment } from "./dateOnly";
 export class TimeOnly implements TimeOnlyInterface {
 	/**
 	 * Creates a new TimeOnly from the given parameters.
-	 * @param root0 The hours, minutes, seconds, and milliseconds
+	 * @param root0 The hours, minutes, seconds, and fractional seconds (in 100-nanosecond units)
 	 * @param root0.hours The hours
 	 * @param root0.minutes The minutes
 	 * @param root0.seconds The seconds
-	 * @param root0.picoseconds The milliseconds
+	 * @param root0.picoseconds The fractional seconds in 100-nanosecond units (0 to 9999999)
 	 * @returns The new TimeOnly
-	 * @throws An error if the milliseconds are invalid
-	 * @throws An error if the seconds are invalid
-	 * @throws An error if the minutes are invalid
 	 * @throws An error if the hours are invalid
-	 * @throws An error if the milliseconds are invalid
+	 * @throws An error if the minutes are invalid
+	 * @throws An error if the seconds are invalid
+	 * @throws An error if the picoseconds are invalid
 	 */
 	public constructor({ hours = 0, minutes = 0, seconds = 0, picoseconds = 0 }: Partial<TimeOnlyInterface>) {
 		if (hours < 0 || hours > 23) {
@@ -72,28 +71,27 @@ export class TimeOnly implements TimeOnlyInterface {
 		if (!value || value.length === 0) {
 			return undefined;
 		}
+		// not using name groups as it's an ES2018 feature
+		const exec = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(?:[.](\d{1,12}))?$/gi.exec(value);
+		if (exec) {
+			const hours = parseInt(exec[1] ?? "", 10);
+			const minutes = parseInt(exec[2] ?? "", 10);
+			const seconds = parseInt(exec[3] ?? "", 10);
+			const fractionStr = exec[4] ? exec[4].padEnd(7, "0").slice(0, 7) : "0";
+			const picoseconds = parseInt(fractionStr, 10);
+			return new TimeOnly({
+				hours,
+				minutes,
+				seconds,
+				picoseconds,
+			});
+		}
 		const ticks = Date.parse(value);
-		if (isNaN(ticks)) {
-			// not using name groups as it's an ES2018 feature
-			const exec = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(?:[.](\d{1,12}))?$/gi.exec(value);
-			if (exec) {
-				const hours = parseInt(exec[1] ?? "", 10);
-				const minutes = parseInt(exec[2] ?? "", 10);
-				const seconds = parseInt(exec[3] ?? "", 10);
-				const milliseconds = parseInt(exec[4] ?? "0", 10);
-				return new TimeOnly({
-					hours,
-					minutes,
-					seconds,
-					picoseconds: milliseconds,
-				});
-			} else {
-				throw new Error("Value is not a valid time-only representation");
-			}
-		} else {
+		if (!isNaN(ticks)) {
 			const date = new Date(ticks);
 			return this.fromDate(date);
 		}
+		throw new Error("Value is not a valid time-only representation");
 	}
 	/**
 	 * Returns a string representation of the time in the format HH:MM:SS.SSSSSSS
@@ -121,7 +119,7 @@ interface TimeOnlyInterface {
 	 */
 	seconds: number;
 	/**
-	 * The milliseconds
+	 * The fractional seconds in 100-nanosecond units (0 to 9999999)
 	 * @default 0
 	 */
 	picoseconds: number;

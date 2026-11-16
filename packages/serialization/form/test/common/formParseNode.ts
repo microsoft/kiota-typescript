@@ -56,6 +56,21 @@ describe("FormParseNode", () => {
 		const imaginaryNode = parseNode.getChildNode("imaginaryNode");
 		assert.isUndefined(imaginaryNode);
 	});
+	it("parses time only with fractional seconds correctly", () => {
+		const node1 = new FormParseNode("startWorkTime=08%3A30%3A45.5");
+		const child1 = node1.getChildNode("startWorkTime");
+		const time1 = child1?.getTimeOnlyValue();
+		assert.isDefined(time1);
+		assert.equal(time1?.picoseconds, 5000000);
+		assert.equal(time1?.toString(), "08:30:45.5000000");
+
+		const node2 = new FormParseNode("startWorkTime=08%3A30%3A45.123");
+		const child2 = node2.getChildNode("startWorkTime");
+		const time2 = child2?.getTimeOnlyValue();
+		assert.isDefined(time2);
+		assert.equal(time2?.picoseconds, 1230000);
+		assert.equal(time2?.toString(), "08:30:45.1230000");
+	});
 	it("Test enum values with special or reserved characters", async () => {
 		type Test_status = (typeof Test_statusObject)[keyof typeof Test_statusObject];
 		const Test_statusObject = {
