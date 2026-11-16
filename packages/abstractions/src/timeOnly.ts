@@ -71,29 +71,27 @@ export class TimeOnly implements TimeOnlyInterface {
 		if (!value || value.length === 0) {
 			return undefined;
 		}
+		// not using name groups as it's an ES2018 feature
+		const exec = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(?:[.](\d{1,12}))?$/gi.exec(value);
+		if (exec) {
+			const hours = parseInt(exec[1] ?? "", 10);
+			const minutes = parseInt(exec[2] ?? "", 10);
+			const seconds = parseInt(exec[3] ?? "", 10);
+			const fractionStr = exec[4] ? exec[4].padEnd(7, "0").slice(0, 7) : "0";
+			const picoseconds = parseInt(fractionStr, 10);
+			return new TimeOnly({
+				hours,
+				minutes,
+				seconds,
+				picoseconds,
+			});
+		}
 		const ticks = Date.parse(value);
-		if (isNaN(ticks)) {
-			// not using name groups as it's an ES2018 feature
-			const exec = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(?:[.](\d{1,12}))?$/gi.exec(value);
-			if (exec) {
-				const hours = parseInt(exec[1] ?? "", 10);
-				const minutes = parseInt(exec[2] ?? "", 10);
-				const seconds = parseInt(exec[3] ?? "", 10);
-				const fractionStr = exec[4] ? exec[4].padEnd(7, "0").slice(0, 7) : "0";
-				const picoseconds = parseInt(fractionStr, 10);
-				return new TimeOnly({
-					hours,
-					minutes,
-					seconds,
-					picoseconds,
-				});
-			} else {
-				throw new Error("Value is not a valid time-only representation");
-			}
-		} else {
+		if (!isNaN(ticks)) {
 			const date = new Date(ticks);
 			return this.fromDate(date);
 		}
+		throw new Error("Value is not a valid time-only representation");
 	}
 	/**
 	 * Returns a string representation of the time in the format HH:MM:SS.SSSSSSS

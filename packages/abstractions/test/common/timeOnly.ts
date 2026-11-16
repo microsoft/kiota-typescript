@@ -77,6 +77,16 @@ describe("TimeOnly", () => {
 			assert.isUndefined(TimeOnly.parse(undefined));
 		});
 
+		it("falls back to parsing date string when given full ISO timestamp", () => {
+			const result = TimeOnly.parse("2023-01-01T12:30:45.500Z");
+			assert.isDefined(result);
+			const expectedDate = new Date(Date.parse("2023-01-01T12:30:45.500Z"));
+			assert.equal(result?.hours, expectedDate.getHours());
+			assert.equal(result?.minutes, expectedDate.getMinutes());
+			assert.equal(result?.seconds, expectedDate.getSeconds());
+			assert.equal(result?.picoseconds, expectedDate.getMilliseconds() * 10000);
+		});
+
 		it("throws for invalid time representations", () => {
 			assert.throws(() => TimeOnly.parse("invalid"), /not a valid time-only representation/);
 			assert.throws(() => TimeOnly.parse("25:00:00"), /not a valid time-only representation/);
