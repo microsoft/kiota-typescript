@@ -5,8 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { expect, describe, beforeEach, it } from "vitest";
-import { AllowedHostsValidator } from "../../../src/authentication";
+import { expect, describe, beforeEach, it, vi } from "vitest";
+import { AllowedHostsValidator, ApiKeyAuthenticationProvider, ApiKeyLocation } from "../../../src/authentication";
+import { RequestInformation } from "../../../src/requestInformation";
+import * as utils from "../../../src/utils";
 
 describe("AllowedHostsValidator", () => {
 	let validator: AllowedHostsValidator;
@@ -186,8 +188,15 @@ describe("AllowedHostsValidator", () => {
 				}
 				expect(emptyValidator.isUrlHostValid("httpbin.org/path")).to.be.true;
 				expect(emptyValidator.isUrlHostValid("//httpbin.org/path")).to.be.true;
-				expect(otherValidator.isUrlHostValid("other.com/path")).to.be.true;
+				// In a browser with host example.com, bare scheme-less paths resolve against example.com.
+				// Therefore otherValidator (allowlist other.com) rejects them, while validator (allowlist example.com) accepts.
+				expect(otherValidator.isUrlHostValid("other.com/path")).to.be.false;
 				expect(otherValidator.isUrlHostValid("example.com/path")).to.be.false;
+				expect(validator.isUrlHostValid("other.com/path")).to.be.true;
+				expect(validator.isUrlHostValid("example.com/path")).to.be.true;
+				// Explicit absolute and protocol-relative URLs retain their specified destination host.
+				expect(otherValidator.isUrlHostValid("https://other.com/path")).to.be.true;
+				expect(otherValidator.isUrlHostValid("//other.com/path")).to.be.true;
 			} finally {
 				delete (globalThis as any).window;
 			}
@@ -294,5 +303,214 @@ describe("AllowedHostsValidator", () => {
 		} finally {
 			baseElement.remove();
 		}
+	});
+
+	describe("Browser URL resolution and credential leakage prevention (P1)", () => {
+		const browserOrigin = "https://other.example/app/";
+
+		it("Test A: different browser origin rejects bare scheme-less host targeting other origin", () => {
+			const originalDocument = (globalThis as any).document;
+			const originalWindow = (globalThis as any).window;
+			try {
+				(globalThis as any).document = { baseURI: browserOrigin };
+				(globalThis as any).window = { location: { href: browserOrigin, protocol: "https:", host: "other.example", hostname: "other.example" } };
+
+				const httpbinValidator = new AllowedHostsValidator(new Set(["httpbin.org"]));
+				// On https://other.example/app/, 'httpbin.org/path' resolves to https://other.example/app/httpbin.org/path
+				// The destination is other.example, NOT httpbin.org, so httpbinValidator must return false.
+				expect(httpbinValidator.isUrlHostValid("httpbin.org/path")).to.be.false;
+
+				// Conversely, an allowlist matching other.example accepts the resolved destination.
+				const otherValidator = new AllowedHostsValidator(new Set(["other.example"]));
+				expect(otherValidator.isUrlHostValid("httpbin.org/path")).to.be.true;
+			} finally {
+				if (originalDocument === undefined) delete (globalThis as any).document;
+				else (globalThis as any).document = originalDocument;
+				if (originalWindow === undefined) delete (globalThis as any).window;
+				else (globalThis as any).window = originalWindow;
+			}
+		});
+
+		it("Test B: explicit absolute URL is approved regardless of browser base URL", () => {
+			const originalDocument = (globalThis as any).document;
+			const originalWindow = (globalThis as any).window;
+			try {
+				(globalThis as any).document = { baseURI: browserOrigin };
+				(globalThis as any).window = { location: { href: browserOrigin, protocol: "https:", host: "other.example", hostname: "other.example" } };
+
+				const httpbinValidator = new AllowedHostsValidator(new Set(["httpbin.org"]));
+				expect(httpbinValidator.isUrlHostValid("https://httpbin.org/path")).to.be.true;
+			} finally {
+				if (originalDocument === undefined) delete (globalThis as any).document;
+				else (globalThis as any).document = originalDocument;
+				if (originalWindow === undefined) delete (globalThis as any).window;
+				else (globalThis as any).window = originalWindow;
+			}
+		});
+
+		it("Test C: protocol-relative URL resolves with browser base protocol and target host", () => {
+			const originalDocument = (globalThis as any).document;
+			const originalWindow = (globalThis as any).window;
+			try {
+				(globalThis as any).document = { baseURI: browserOrigin };
+				(globalThis as any).window = { location: { href: browserOrigin, protocol: "https:", host: "other.example", hostname: "other.example" } };
+
+				const httpbinValidator = new AllowedHostsValidator(new Set(["httpbin.org"]));
+				const otherValidator = new AllowedHostsValidator(new Set(["other.example"]));
+
+				// //httpbin.org/path replaces authority with httpbin.org, using https: from browser base
+				expect(httpbinValidator.isUrlHostValid("//httpbin.org/path")).to.be.true;
+				expect(otherValidator.isUrlHostValid("//httpbin.org/path")).to.be.false;
+			} finally {
+				if (originalDocument === undefined) delete (globalThis as any).document;
+				else (globalThis as any).document = originalDocument;
+				if (originalWindow === undefined) delete (globalThis as any).window;
+				else (globalThis as any).window = originalWindow;
+			}
+		});
+
+		it("Test D: root-relative URL resolves against browser base origin", () => {
+			const originalDocument = (globalThis as any).document;
+			const originalWindow = (globalThis as any).window;
+			try {
+				(globalThis as any).document = { baseURI: browserOrigin };
+				(globalThis as any).window = { location: { href: browserOrigin, protocol: "https:", host: "other.example", hostname: "other.example" } };
+
+				const otherValidator = new AllowedHostsValidator(new Set(["other.example"]));
+				const httpbinValidator = new AllowedHostsValidator(new Set(["httpbin.org"]));
+
+				expect(otherValidator.isUrlHostValid("/api")).to.be.true;
+				expect(httpbinValidator.isUrlHostValid("/api")).to.be.false;
+			} finally {
+				if (originalDocument === undefined) delete (globalThis as any).document;
+				else (globalThis as any).document = originalDocument;
+				if (originalWindow === undefined) delete (globalThis as any).window;
+				else (globalThis as any).window = originalWindow;
+			}
+		});
+
+		it("Test E: path-relative URL resolves against browser base URL", () => {
+			const originalDocument = (globalThis as any).document;
+			const originalWindow = (globalThis as any).window;
+			try {
+				(globalThis as any).document = { baseURI: browserOrigin };
+				(globalThis as any).window = { location: { href: browserOrigin, protocol: "https:", host: "other.example", hostname: "other.example" } };
+
+				const otherValidator = new AllowedHostsValidator(new Set(["other.example"]));
+				const httpbinValidator = new AllowedHostsValidator(new Set(["httpbin.org"]));
+
+				expect(otherValidator.isUrlHostValid("api/users")).to.be.true;
+				expect(otherValidator.isUrlHostValid("./api")).to.be.true;
+				expect(otherValidator.isUrlHostValid("../api")).to.be.true;
+				expect(otherValidator.isUrlHostValid("?q=1")).to.be.true;
+				expect(otherValidator.isUrlHostValid("#section")).to.be.true;
+
+				expect(httpbinValidator.isUrlHostValid("api/users")).to.be.false;
+				expect(httpbinValidator.isUrlHostValid("./api")).to.be.false;
+				expect(httpbinValidator.isUrlHostValid("../api")).to.be.false;
+			} finally {
+				if (originalDocument === undefined) delete (globalThis as any).document;
+				else (globalThis as any).document = originalDocument;
+				if (originalWindow === undefined) delete (globalThis as any).window;
+				else (globalThis as any).window = originalWindow;
+			}
+		});
+
+		it("Test F: existing non-browser bare-host behavior is preserved in Node.js", () => {
+			const httpbinValidator = new AllowedHostsValidator(new Set(["httpbin.org"]));
+			const exampleValidator = new AllowedHostsValidator(new Set(["example.com"]));
+
+			expect(httpbinValidator.isUrlHostValid("httpbin.org/path")).to.be.true;
+			expect(httpbinValidator.isUrlHostValid("example.com/path")).to.be.false;
+			expect(httpbinValidator.isUrlHostValid("//httpbin.org/path")).to.be.true;
+			expect(httpbinValidator.isUrlHostValid("https://httpbin.org/path")).to.be.true;
+
+			expect(exampleValidator.isUrlHostValid("example.com/path")).to.be.true;
+			expect(exampleValidator.isUrlHostValid("httpbin.org/path")).to.be.false;
+
+			// In Node without a base URL, relative paths cannot be resolved
+			expect(httpbinValidator.isUrlHostValid("/api")).to.be.false;
+			expect(httpbinValidator.isUrlHostValid("./api")).to.be.false;
+			expect(httpbinValidator.isUrlHostValid("?q=1")).to.be.false;
+		});
+
+		it("Test G: credential safety rejects malformed schemes, userinfo, and control characters", () => {
+			const allowedValidator = new AllowedHostsValidator(new Set(["allowed.example", "example.com"]));
+			const emptyValidator = new AllowedHostsValidator();
+
+			expect(allowedValidator.isUrlHostValid("https:user:pass@example.com/path")).to.be.false;
+			expect(allowedValidator.isUrlHostValid("https:allowed.example/api")).to.be.false;
+			expect(allowedValidator.isUrlHostValid("https:/allowed.example/api")).to.be.false;
+			expect(allowedValidator.isUrlHostValid("http:allowed.example/api")).to.be.false;
+			expect(allowedValidator.isUrlHostValid("http:/allowed.example/api")).to.be.false;
+			expect(allowedValidator.isUrlHostValid("https://user:pass@allowed.example/api")).to.be.false;
+			expect(allowedValidator.isUrlHostValid("https://example.com:443@evil.com/path")).to.be.false;
+			expect(allowedValidator.isUrlHostValid("http%")).to.be.false;
+			expect(allowedValidator.isUrlHostValid("ht\ttps://allowed.example/api")).to.be.false;
+			expect(allowedValidator.isUrlHostValid("\u00a0https://allowed.example/api")).to.be.false;
+
+			expect(emptyValidator.isUrlHostValid("https:user:pass@example.com/path")).to.be.false;
+			expect(emptyValidator.isUrlHostValid("https:allowed.example/api")).to.be.false;
+			expect(emptyValidator.isUrlHostValid("https:/allowed.example/api")).to.be.false;
+			expect(emptyValidator.isUrlHostValid("http%")).to.be.false;
+		});
+
+		it("Test H: actual fetch destination consistency between authentication and request execution", async () => {
+			const originalDocument = (globalThis as any).document;
+			const originalWindow = (globalThis as any).window;
+			const inNodeSpy = vi.spyOn(utils, "inNodeEnv").mockReturnValue(false);
+			try {
+				(globalThis as any).document = { baseURI: browserOrigin };
+				(globalThis as any).window = { location: { href: browserOrigin, protocol: "https:", host: "other.example", hostname: "other.example" } };
+
+				// 1. Provider with allowlist containing ONLY httpbin.org
+				const httpbinProvider = new ApiKeyAuthenticationProvider("secret-api-key", "X-API-KEY", ApiKeyLocation.Header, new Set(["httpbin.org"]));
+				const req1 = new RequestInformation();
+				req1.URL = "httpbin.org/path";
+
+				await httpbinProvider.authenticateRequest(req1);
+
+				// Prove: credentials were NOT attached because the browser fetch destination would be other.example
+				expect(req1.headers.tryGetValue("X-API-KEY")).to.be.null;
+
+				// Verify actual destination browser fetch resolves to:
+				const actualDestination1 = new URL(req1.URL, browserOrigin);
+				expect(actualDestination1.hostname).to.equal("other.example");
+				expect(actualDestination1.href).to.equal("https://other.example/app/httpbin.org/path");
+
+				// 2. Provider with allowlist containing other.example (the actual destination)
+				const otherProvider = new ApiKeyAuthenticationProvider("secret-api-key", "X-API-KEY", ApiKeyLocation.Header, new Set(["other.example"]));
+				const req2 = new RequestInformation();
+				req2.URL = "httpbin.org/path";
+
+				await otherProvider.authenticateRequest(req2);
+
+				// Prove: credentials WERE attached because the browser destination is other.example
+				expect(req2.headers.tryGetValue("X-API-KEY")).to.deep.equal(["secret-api-key"]);
+
+				// Verify actual destination matches the validated host
+				const actualDestination2 = new URL(req2.URL, browserOrigin);
+				expect(actualDestination2.hostname).to.equal("other.example");
+				expect(otherProvider["validator"].isUrlHostValid(actualDestination2.href)).to.be.true;
+
+				// 3. Explicit absolute URL to httpbin.org
+				const req3 = new RequestInformation();
+				req3.URL = "https://httpbin.org/path";
+
+				await httpbinProvider.authenticateRequest(req3);
+
+				// Prove: credentials WERE attached because explicit absolute URL goes to httpbin.org
+				expect(req3.headers.tryGetValue("X-API-KEY")).to.deep.equal(["secret-api-key"]);
+				const actualDestination3 = new URL(req3.URL, browserOrigin);
+				expect(actualDestination3.hostname).to.equal("httpbin.org");
+				expect(httpbinProvider["validator"].isUrlHostValid(actualDestination3.href)).to.be.true;
+			} finally {
+				inNodeSpy.mockRestore();
+				if (originalDocument === undefined) delete (globalThis as any).document;
+				else (globalThis as any).document = originalDocument;
+				if (originalWindow === undefined) delete (globalThis as any).window;
+				else (globalThis as any).window = originalWindow;
+			}
+		});
 	});
 });

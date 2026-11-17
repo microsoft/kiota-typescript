@@ -53,30 +53,39 @@ export class AllowedHostsValidator {
 			return false;
 		}
 
+		// Reject malformed percent-encoding sequences (e.g. '%' not followed by two hex digits like 'http%').
+		if (/%(?![0-9a-fA-F]{2})/.test(trimmedUrl)) {
+			return false;
+		}
+
+		// Reject leading or trailing Unicode whitespace (e.g. '\u00a0' NBSP) not stripped by C0/ASCII whitespace trim.
+		if (/^\s|\s$/.test(trimmedUrl)) {
+			return false;
+		}
+
 		const hasDocument = typeof document !== "undefined";
 		const hasWindow = typeof window !== "undefined";
-		const browserBase = (hasDocument && document.baseURI) || (hasWindow && window.location ? window.location.href || (window.location.protocol && window.location.host ? `${window.location.protocol}//${window.location.host}` : undefined) : undefined);
-
-		let defaultProtocol = "https:";
-		if (browserBase) {
-			try {
-				defaultProtocol = new URL(browserBase).protocol || "https:";
-			} catch {
-				defaultProtocol = hasWindow && window.location?.protocol ? window.location.protocol : "https:";
-			}
-		} else if (hasWindow && window.location?.protocol) {
-			defaultProtocol = window.location.protocol;
-		}
+		const docBase = hasDocument && document.baseURI && document.baseURI !== "about:blank" ? document.baseURI : undefined;
+		const winBase = hasWindow && window.location ? window.location.href || (window.location.protocol && window.location.host ? `${window.location.protocol}//${window.location.host}` : undefined) : undefined;
+		const browserBase = docBase || winBase;
 
 		let parsed: URL;
 		try {
-			const isBrowserRelative = Boolean(browserBase) && ((trimmedUrl.startsWith("/") && !trimmedUrl.startsWith("//")) || trimmedUrl.startsWith("?") || trimmedUrl.startsWith("#") || trimmedUrl.startsWith("./") || trimmedUrl.startsWith("../"));
-
-			if (isBrowserRelative) {
+			if (browserBase) {
+				// In browser environments, WHATWG fetch resolves relative URLs (including root-relative '/api',
+				// path-relative 'api/users', and bare scheme-less paths like 'httpbin.org/path') against the document
+				// base URL. We resolve against browserBase so validation checks the exact destination fetch will use.
+				// Absolute URLs with a scheme and protocol-relative references (e.g. '//example.com') are also
+				// handled according to WHATWG URL resolution against the base.
 				parsed = new URL(trimmedUrl, browserBase);
 			} else {
+				// In non-browser environments (Node.js), relative paths without a base cannot be resolved.
+				if ((trimmedUrl.startsWith("/") && !trimmedUrl.startsWith("//")) || trimmedUrl.startsWith("./") || trimmedUrl.startsWith("../") || trimmedUrl.startsWith("?") || trimmedUrl.startsWith("#")) {
+					return false;
+				}
+				// Preserve existing supported scheme-less host behavior in Node.js.
 				const hasScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//i.test(trimmedUrl);
-				const candidate = hasScheme ? trimmedUrl : trimmedUrl.startsWith("//") ? `${defaultProtocol}${trimmedUrl}` : `${defaultProtocol}//${trimmedUrl}`;
+				const candidate = hasScheme ? trimmedUrl : trimmedUrl.startsWith("//") ? `https:${trimmedUrl}` : `https://${trimmedUrl}`;
 
 				parsed = new URL(candidate);
 			}
