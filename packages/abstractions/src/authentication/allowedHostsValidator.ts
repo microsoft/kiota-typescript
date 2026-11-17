@@ -53,13 +53,17 @@ export class AllowedHostsValidator {
 			return false;
 		}
 
-		// Reject malformed percent-encoding sequences (e.g. '%' not followed by two hex digits like 'http%').
-		if (/%(?![0-9a-fA-F]{2})/.test(trimmedUrl)) {
+		// Reject leading or trailing Unicode whitespace (e.g. '\u00a0' NBSP) not stripped by C0/ASCII whitespace trim.
+		if (/^\s|\s$/.test(trimmedUrl)) {
 			return false;
 		}
 
-		// Reject leading or trailing Unicode whitespace (e.g. '\u00a0' NBSP) not stripped by C0/ASCII whitespace trim.
-		if (/^\s|\s$/.test(trimmedUrl)) {
+		// Check authority / bare host for malformed percent-encoding sequences (e.g. 'http%').
+		// Literal percent signs in paths and queries (e.g. '/items/100%?q=50%') are valid and handled by WHATWG URL parser.
+		const schemeMatch = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\/(.*)$/.exec(trimmedUrl);
+		const authorityCandidate = schemeMatch ? schemeMatch[1].split(/[/?#]/)[0] : trimmedUrl.startsWith("//") ? trimmedUrl.slice(2).split(/[/?#]/)[0] : !trimmedUrl.startsWith("/") && !trimmedUrl.startsWith("?") && !trimmedUrl.startsWith("#") ? trimmedUrl.split(/[/?#]/)[0] : undefined;
+
+		if (authorityCandidate && /%(?![0-9a-fA-F]{2})/.test(authorityCandidate)) {
 			return false;
 		}
 
