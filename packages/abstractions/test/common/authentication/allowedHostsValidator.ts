@@ -466,6 +466,15 @@ describe("AllowedHostsValidator", () => {
 			expect(allowedValidator.isUrlHostValid("https://allowed.example/items/100%?q=50%")).to.be.true;
 			expect(emptyValidator.isUrlHostValid("https://example.com/items/100%?q=50%")).to.be.true;
 			expect(allowedValidator.isUrlHostValid("https://other.example/items/100%?q=50%")).to.be.false;
+
+			// Valid percent-encoded components in paths and query strings (%20, %2F, %25, %3F, %23)
+			expect(allowedValidator.isUrlHostValid("https://allowed.example/path/with%20space/and%2Fslash/and%25percent/and%3Fquestion/and%23hash?query=val%201&slash=a%2Fb&pct=100%25&q=a%3Fb&h=a%23b")).to.be.true;
+			expect(allowedValidator.isUrlHostValid("https://allowed.example/items/100%20test")).to.be.true;
+			expect(allowedValidator.isUrlHostValid("https://allowed.example/items/100%2Ftest")).to.be.true;
+			expect(allowedValidator.isUrlHostValid("https://allowed.example/items/100%25test")).to.be.true;
+			expect(allowedValidator.isUrlHostValid("https://allowed.example/items/100%3Ftest")).to.be.true;
+			expect(allowedValidator.isUrlHostValid("https://allowed.example/items/100%23test")).to.be.true;
+			expect(allowedValidator.isUrlHostValid("https://allowed.example/path?space=val%201&slash=a%2Fb&pct=100%25&q=a%3Fb&h=a%23b")).to.be.true;
 		});
 
 		it("Test H: actual fetch destination consistency between authentication and request execution", async () => {
@@ -510,6 +519,48 @@ describe("AllowedHostsValidator", () => {
 				const actualDestination3 = new URL(req3.URL, browserOrigin);
 				expect(actualDestination3.hostname).to.equal("httpbin.org");
 				expect(httpbinValidator.isUrlHostValid(actualDestination3.href)).to.be.true;
+
+				// 4. Same-origin browser-relative request with percent-encoded components (%20, %2F, %25, %3F, %23)
+				expect(otherValidator.isUrlHostValid("api/items/100%25/sub%20item?q=val%201&slash=a%2Fb&pct=50%25&qmark=%3F&hash=%23")).to.be.true;
+				expect(httpbinValidator.isUrlHostValid("api/items/100%25/sub%20item?q=val%201&slash=a%2Fb&pct=50%25&qmark=%3F&hash=%23")).to.be.false;
+
+				const otherProvider = new ApiKeyAuthenticationProvider("other-api-key", "X-OTHER-KEY", ApiKeyLocation.Header, new Set(["other.example"]));
+				if (!utils.inNodeEnv()) {
+					const reqRelative = new RequestInformation();
+					reqRelative.URL = "api/items/100%25/sub%20item?q=val%201&slash=a%2Fb&pct=50%25&qmark=%3F&hash=%23";
+					await otherProvider.authenticateRequest(reqRelative);
+					expect(reqRelative.headers.tryGetValue("X-OTHER-KEY")).to.deep.equal(["other-api-key"]);
+					const actualRelDestination = new URL(reqRelative.URL, browserOrigin);
+					expect(actualRelDestination.hostname).to.equal("other.example");
+				}
+
+				const req4 = new RequestInformation();
+				req4.URL = "https://other.example/app/api/items/100%25/sub%20item?q=val%201&slash=a%2Fb&pct=50%25&qmark=%3F&hash=%23";
+
+				await otherProvider.authenticateRequest(req4);
+
+				// Prove: credentials WERE attached because the resolved host other.example is in the allowlist
+				expect(req4.headers.tryGetValue("X-OTHER-KEY")).to.deep.equal(["other-api-key"]);
+				const actualDestination4 = new URL(req4.URL, browserOrigin);
+				expect(actualDestination4.hostname).to.equal("other.example");
+				expect(actualDestination4.href).to.equal("https://other.example/app/api/items/100%25/sub%20item?q=val%201&slash=a%2Fb&pct=50%25&qmark=%3F&hash=%23");
+				expect(otherValidator.isUrlHostValid(actualDestination4.href)).to.be.true;
+
+				// 5. Same percent-encoded request with httpbinProvider (unallowlisted resolved host)
+				const req5 = new RequestInformation();
+				req5.URL = "api/items/100%25/sub%20item?q=val%201&slash=a%2Fb&pct=50%25&qmark=%3F&hash=%23";
+				await httpbinProvider.authenticateRequest(req5);
+				// Prove: credentials NOT attached to unallowlisted host even with encoded components
+				expect(req5.headers.tryGetValue("X-API-KEY")).to.be.null;
+
+				// 6. Explicit allowlisted absolute URL with percent-encoded components receives credentials
+				const req6 = new RequestInformation();
+				req6.URL = "https://httpbin.org/items/100%25/sub%20item?q=val%201&pct=50%25";
+				await httpbinProvider.authenticateRequest(req6);
+				expect(req6.headers.tryGetValue("X-API-KEY")).to.deep.equal(["secret-api-key"]);
+				const actualDestination6 = new URL(req6.URL, browserOrigin);
+				expect(actualDestination6.hostname).to.equal("httpbin.org");
+				expect(httpbinValidator.isUrlHostValid(actualDestination6.href)).to.be.true;
 			});
 		});
 	});
