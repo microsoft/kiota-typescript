@@ -11,7 +11,7 @@ import { Span, trace } from "@opentelemetry/api";
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import type { Middleware } from "./middleware";
 import { CompressionHandlerOptions, CompressionHandlerOptionsKey } from "./options/compressionHandlerOptions";
-import type { FetchHeadersInit, FetchRequestInit } from "../utils/fetchDefinitions";
+import type { FetchRequestInit } from "../utils/fetchDefinitions";
 import { deleteRequestHeader, getRequestHeader, setRequestHeader } from "../utils/headersUtil";
 
 /**
@@ -67,7 +67,7 @@ export class CompressionHandler implements Middleware {
 	}
 
 	private async executeInternal(options: CompressionHandlerOptions, url: string, requestInit: FetchRequestInit, requestOptions?: Record<string, RequestOption>, span?: Span): Promise<Response> {
-		if (!options.ShouldCompress || this.contentRangeBytesIsPresent(requestInit.headers) || this.contentEncodingIsPresent(requestInit.headers) || requestInit.body === null || requestInit.body === undefined) {
+		if (!options.ShouldCompress || this.contentRangeBytesIsPresent(requestInit) || this.contentEncodingIsPresent(requestInit) || requestInit.body === null || requestInit.body === undefined) {
 			return this.next?.execute(url, requestInit as RequestInit, requestOptions) ?? Promise.reject(new Error("Response is undefined"));
 		}
 
@@ -109,19 +109,14 @@ export class CompressionHandler implements Middleware {
 		return response !== undefined && response !== null ? Promise.resolve(response) : Promise.reject(new Error("Response is undefined"));
 	}
 
-	private contentRangeBytesIsPresent(header: FetchHeadersInit | undefined): boolean {
-		if (!header) {
-			return false;
-		}
-		const contentRange = getRequestHeader(header, CompressionHandler.CONTENT_RANGE_HEADER);
+	private contentRangeBytesIsPresent(requestInit: FetchRequestInit): boolean {
+		const contentRange = getRequestHeader(requestInit, CompressionHandler.CONTENT_RANGE_HEADER);
 		return contentRange?.toLowerCase().includes("bytes") ?? false;
 	}
 
-	private contentEncodingIsPresent(header: FetchHeadersInit | undefined): boolean {
-		if (!header) {
-			return false;
-		}
-		return getRequestHeader(header, CompressionHandler.CONTENT_ENCODING_HEADER) !== undefined;
+	private contentEncodingIsPresent(requestInit: FetchRequestInit): boolean {
+		const contentEncoding = getRequestHeader(requestInit, CompressionHandler.CONTENT_ENCODING_HEADER);
+		return contentEncoding !== undefined && contentEncoding.trim().length > 0;
 	}
 
 	private getRequestBodySize(body: unknown): number {
