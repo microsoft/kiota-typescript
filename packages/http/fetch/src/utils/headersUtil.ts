@@ -64,13 +64,47 @@ export const getRequestHeader = (options: FetchRequestInit | RequestInit | undef
  * @param key - The header key string
  * @param value - The header value string
  */
-export const setRequestHeader = (options: FetchRequestInit | undefined, key: string, value: string): void => {
-	if (options) {
-		if (!options.headers) {
-			options.headers = {};
-		}
-		options.headers[key] = value;
+export const setRequestHeader = (options: FetchRequestInit | RequestInit | undefined, key: string, value: string): void => {
+	if (!options || !key) {
+		return;
 	}
+	if (!options.headers) {
+		options.headers = { [key]: value };
+		return;
+	}
+	if (isHeadersLike(options.headers)) {
+		options.headers.set(key, value);
+		return;
+	}
+	const lowerKey = key.toLowerCase();
+	if (Array.isArray(options.headers)) {
+		const entries = options.headers;
+		let firstIndex = -1;
+		for (let i = 0; i < entries.length; i++) {
+			if (Array.isArray(entries[i]) && typeof entries[i][0] === "string" && entries[i][0].toLowerCase() === lowerKey) {
+				firstIndex = i;
+				break;
+			}
+		}
+		if (firstIndex === -1) {
+			entries.push([key, value]);
+			return;
+		}
+		entries[firstIndex] = [key, value];
+		for (let i = entries.length - 1; i > firstIndex; i--) {
+			if (Array.isArray(entries[i]) && typeof entries[i][0] === "string" && entries[i][0].toLowerCase() === lowerKey) {
+				entries.splice(i, 1);
+			}
+		}
+		return;
+	}
+	const record = options.headers as Record<string, string>;
+	for (const existingKey of Object.keys(record)) {
+		if (existingKey !== key && existingKey.toLowerCase() === lowerKey) {
+			delete record[existingKey];
+		}
+	}
+	record[key] = value;
 };
 
 /**
@@ -78,12 +112,29 @@ export const setRequestHeader = (options: FetchRequestInit | undefined, key: str
  * @param options - The request options object
  * @param key - The header key string
  */
-export const deleteRequestHeader = (options: FetchRequestInit | undefined, key: string): void => {
-	if (options) {
-		if (!options.headers) {
-			options.headers = {};
+export const deleteRequestHeader = (options: FetchRequestInit | RequestInit | undefined, key: string): void => {
+	if (!options?.headers || !key) {
+		return;
+	}
+	if (isHeadersLike(options.headers)) {
+		options.headers.delete(key);
+		return;
+	}
+	const lowerKey = key.toLowerCase();
+	if (Array.isArray(options.headers)) {
+		const entries = options.headers;
+		for (let i = entries.length - 1; i >= 0; i--) {
+			if (Array.isArray(entries[i]) && typeof entries[i][0] === "string" && entries[i][0].toLowerCase() === lowerKey) {
+				entries.splice(i, 1);
+			}
 		}
-		delete options.headers[key];
+		return;
+	}
+	const record = options.headers as Record<string, string>;
+	for (const existingKey of Object.keys(record)) {
+		if (existingKey.toLowerCase() === lowerKey) {
+			delete record[existingKey];
+		}
 	}
 };
 
@@ -94,15 +145,57 @@ export const deleteRequestHeader = (options: FetchRequestInit | undefined, key: 
  * @param value - The header value string
  * @param separator - The separator string
  */
-export const appendRequestHeader = (options: FetchRequestInit | undefined, key: string, value: string, separator = ", "): void => {
-	if (options) {
-		if (!options.headers) {
-			options.headers = {};
+export const appendRequestHeader = (options: FetchRequestInit | RequestInit | undefined, key: string, value: string, separator = ", "): void => {
+	if (!options || !key) {
+		return;
+	}
+	if (!options.headers) {
+		options.headers = { [key]: value };
+		return;
+	}
+	if (isHeadersLike(options.headers)) {
+		const existing = options.headers.get(key);
+		options.headers.set(key, existing === null || existing === "" ? value : `${existing}${separator}${value}`);
+		return;
+	}
+	const lowerKey = key.toLowerCase();
+	if (Array.isArray(options.headers)) {
+		const entries = options.headers;
+		let firstIndex = -1;
+		const tupleValues: string[] = [];
+		for (let i = 0; i < entries.length; i++) {
+			if (Array.isArray(entries[i]) && typeof entries[i][0] === "string" && entries[i][0].toLowerCase() === lowerKey) {
+				if (firstIndex === -1) {
+					firstIndex = i;
+				}
+				if (entries[i][1]) {
+					tupleValues.push(entries[i][1]);
+				}
+			}
 		}
-		if (!options.headers[key]) {
-			options.headers[key] = value;
-		} else {
-			options.headers[key] += `${separator}${value}`;
+		if (firstIndex === -1) {
+			entries.push([key, value]);
+			return;
+		}
+		for (let i = entries.length - 1; i > firstIndex; i--) {
+			if (Array.isArray(entries[i]) && typeof entries[i][0] === "string" && entries[i][0].toLowerCase() === lowerKey) {
+				entries.splice(i, 1);
+			}
+		}
+		entries[firstIndex] = [key, tupleValues.length > 0 ? `${tupleValues.join(separator)}${separator}${value}` : value];
+		return;
+	}
+	const record = options.headers as Record<string, string>;
+	const existingValues: string[] = [];
+	for (const existingKey of Object.keys(record)) {
+		if (existingKey.toLowerCase() === lowerKey) {
+			if (record[existingKey]) {
+				existingValues.push(record[existingKey]);
+			}
+			if (existingKey !== key) {
+				delete record[existingKey];
+			}
 		}
 	}
+	record[key] = existingValues.length > 0 ? `${existingValues.join(separator)}${separator}${value}` : value;
 };
