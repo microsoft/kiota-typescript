@@ -120,11 +120,11 @@ export class CompressionHandler implements Middleware {
 	}
 
 	private getRequestBodySize(body: unknown): number {
-		if (!body) {
+		if (body === null || body === undefined) {
 			return 0;
 		}
 		if (typeof body === "string") {
-			return body.length;
+			return new TextEncoder().encode(body).byteLength;
 		}
 		if (body instanceof URLSearchParams) {
 			return new TextEncoder().encode(body.toString()).byteLength;
@@ -145,21 +145,23 @@ export class CompressionHandler implements Middleware {
 	}
 
 	private readBodyAsBytes(body: unknown): { stream: ReadableStream<Uint8Array>; size: number } {
-		if (!body) {
-			return { stream: new ReadableStream<Uint8Array>(), size: 0 };
-		}
-
 		const uint8ArrayToStream = (uint8Array: Uint8Array): ReadableStream<Uint8Array> => {
 			return new ReadableStream({
 				start: (controller) => {
-					controller.enqueue(uint8Array);
+					if (uint8Array.byteLength > 0) {
+						controller.enqueue(uint8Array);
+					}
 					controller.close();
 				},
 			});
 		};
 
+		if (body === null || body === undefined) {
+			return { stream: uint8ArrayToStream(new Uint8Array(0)), size: 0 };
+		}
 		if (typeof body === "string") {
-			return { stream: uint8ArrayToStream(new TextEncoder().encode(body)), size: body.length };
+			const bytes = new TextEncoder().encode(body);
+			return { stream: uint8ArrayToStream(bytes), size: bytes.byteLength };
 		}
 		if (body instanceof URLSearchParams) {
 			const bytes = new TextEncoder().encode(body.toString());
