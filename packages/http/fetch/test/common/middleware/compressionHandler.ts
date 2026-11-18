@@ -128,6 +128,94 @@ describe("CompressionHandler", () => {
 		expect(response).toBeInstanceOf(Response);
 	});
 
+	it("should not compress when Content-Range bytes header is present", async () => {
+		const headerVariants: HeadersInit[] = [{ "Content-Range": "bytes 0-3/10" }, { "content-range": "BYTES 0-3/10" }, new Headers({ "Content-Range": "bytes 0-3/10" }), [["content-range", "bytes 0-3/10"]]];
+
+		for (const headers of headerVariants) {
+			nextMiddleware = new DummyFetchHandler();
+			compressionHandler.next = nextMiddleware;
+			nextMiddleware.setResponses([new Response("ok", { status: 200 })]);
+
+			const requestInit: RequestInit = { method: "PUT", headers, body: "test" };
+			await compressionHandler.execute("https://example.com", requestInit);
+
+			expect(requestInit.body).toBe("test");
+			expect(new Headers(requestInit.headers).get("Content-Encoding")).toBeNull();
+		}
+	});
+
+	it("should not compress when Content-Encoding header is already present", async () => {
+		const headerVariants: HeadersInit[] = [{ "Content-Encoding": "br" }, { "content-encoding": "gzip" }, new Headers({ "Content-Encoding": "deflate" }), [["content-encoding", "br"]]];
+
+		for (const headers of headerVariants) {
+			nextMiddleware = new DummyFetchHandler();
+			compressionHandler.next = nextMiddleware;
+			nextMiddleware.setResponses([new Response("ok", { status: 200 })]);
+
+			const requestInit: RequestInit = { method: "POST", headers, body: "already-encoded" };
+			await compressionHandler.execute("https://example.com", requestInit);
+
+			expect(requestInit.body).toBe("already-encoded");
+		}
+	});
+
+	it("should compress an empty string body without deadlocking", async () => {
+		nextMiddleware.setResponses([new Response("ok", { status: 200 })]);
+		const requestInit: RequestInit = { method: "POST", headers: {}, body: "" };
+
+		const response = await compressionHandler.execute("https://example.com", requestInit);
+
+		expect(response.status).toBe(200);
+		expect(new Headers(requestInit.headers).get("Content-Encoding")).toBe("gzip");
+		expect(requestInit.body).toBeInstanceOf(ArrayBuffer);
+		const decompressedBody = await decompressUsingDecompressionStream(requestInit.body as ArrayBuffer);
+		expect(decompressedBody).toBe("");
+	});
+
+	it("should set and remove Content-Encoding on Headers instances during 415 retry", async () => {
+		const headers = new Headers({ Accept: "application/json" });
+		const observedEncodings: (string | null)[] = [];
+		nextMiddleware.execute = async (_url, init) => {
+			observedEncodings.push(new Headers(init.headers).get("Content-Encoding"));
+			return new Response(null, { status: observedEncodings.length === 1 ? 415 : 200 });
+		};
+
+		const requestInit: RequestInit = { method: "POST", headers, body: "payload" };
+		const response = await compressionHandler.execute("https://example.com", requestInit);
+
+		expect(response.status).toBe(200);
+		expect(requestInit.headers).toBe(headers);
+		expect(observedEncodings).toEqual(["gzip", null]);
+		expect(headers.get("Content-Encoding")).toBeNull();
+		expect(headers.get("Accept")).toBe("application/json");
+	});
+
+	it("should preserve Headers instance and clean up synthesized Content-Type for URLSearchParams on 415 retry", async () => {
+		const headers = new Headers({ "X-Custom": "keep-me" });
+		const body = new URLSearchParams({ key: "value" });
+		const observed: { contentType: string | null; contentEncoding: string | null; isUrlSearchParams: boolean }[] = [];
+		nextMiddleware.execute = async (_url, init) => {
+			const currentHeaders = new Headers(init.headers);
+			observed.push({
+				contentType: currentHeaders.get("Content-Type"),
+				contentEncoding: currentHeaders.get("Content-Encoding"),
+				isUrlSearchParams: init.body instanceof URLSearchParams,
+			});
+			return new Response(null, { status: observed.length === 1 ? 415 : 200 });
+		};
+
+		const requestInit: RequestInit = { method: "POST", headers, body };
+		const response = await compressionHandler.execute("https://example.com", requestInit);
+
+		expect(response.status).toBe(200);
+		expect(requestInit.headers).toBe(headers);
+		expect(headers.get("X-Custom")).toBe("keep-me");
+		expect(observed).toEqual([
+			{ contentType: "application/x-www-form-urlencoded;charset=UTF-8", contentEncoding: "gzip", isUrlSearchParams: false },
+			{ contentType: null, contentEncoding: null, isUrlSearchParams: true },
+		]);
+	});
+
 	describe("observability", () => {
 		it("encloses downstream execution and records exception on failure", async () => {
 			let spanEnded = false;
@@ -197,6 +285,35 @@ describe("CompressionHandler", () => {
 			try {
 				await disabledHandler.execute("https://example.com", { method: "POST", body: "payload" }, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
 				assert.isFalse(enabledAttribute);
+			} finally {
+				getTracerSpy.mockRestore();
+			}
+		});
+
+		it("records UTF-8 byte length for multi-byte string bodies on 415 fallback", async () => {
+			let recordedBodySize: unknown;
+			const testSpan = {
+				setAttribute: (name: string, value: unknown) => {
+					if (name === "http.request.body.size") {
+						recordedBodySize = value;
+					}
+				},
+				recordException: () => {},
+				end: () => {},
+			};
+			const tracer = {
+				startActiveSpan: (_name: string, callback: (span: typeof testSpan) => Promise<Response>) => {
+					return callback(testSpan);
+				},
+			};
+			const getTracerSpy = vi.spyOn(trace, "getTracer").mockReturnValue(tracer as any);
+			nextMiddleware.setResponses([new Response("unsupported", { status: 415 }), new Response("ok", { status: 200 })]);
+			const multiByteBody = "héllo 🌍";
+
+			try {
+				await compressionHandler.execute("https://example.com", { method: "POST", headers: {}, body: multiByteBody }, { [ObservabilityOptionKey]: new ObservabilityOptionsImpl() });
+				assert.equal(recordedBodySize, new TextEncoder().encode(multiByteBody).byteLength);
+				assert.notEqual(recordedBodySize, multiByteBody.length);
 			} finally {
 				getTracerSpy.mockRestore();
 			}
