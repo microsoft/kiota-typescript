@@ -31,6 +31,11 @@ export class CompressionHandler implements Middleware {
 	private static readonly CONTENT_ENCODING_HEADER = "Content-Encoding";
 
 	/**
+	 * A member holding the name of content type header
+	 */
+	private static readonly CONTENT_TYPE_HEADER = "Content-Type";
+
+	/**
 	 * Creates a new instance of the CompressionHandler class
 	 * @param handlerOptions The options for the compression handler.
 	 * @returns An instance of the CompressionHandler class
@@ -78,12 +83,10 @@ export class CompressionHandler implements Middleware {
 
 		// compress the request body
 		const compressedBody = await this.compressRequestBody(unCompressedBody);
-		if (unCompressedBody instanceof URLSearchParams) {
-			const headers = new Headers(requestInit.headers);
-			if (!headers.has("Content-Type")) {
-				headers.set("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
-			}
-			requestInit.headers = Object.fromEntries(headers.entries());
+		let addedUrlEncodedContentType = false;
+		if (unCompressedBody instanceof URLSearchParams && !getRequestHeader(requestInit, CompressionHandler.CONTENT_TYPE_HEADER)) {
+			setRequestHeader(requestInit, CompressionHandler.CONTENT_TYPE_HEADER, "application/x-www-form-urlencoded;charset=UTF-8");
+			addedUrlEncodedContentType = true;
 		}
 
 		// add Content-Encoding to request header
@@ -100,6 +103,9 @@ export class CompressionHandler implements Middleware {
 		if (response.status === 415) {
 			// remove the Content-Encoding header
 			deleteRequestHeader(requestInit, CompressionHandler.CONTENT_ENCODING_HEADER);
+			if (addedUrlEncodedContentType) {
+				deleteRequestHeader(requestInit, CompressionHandler.CONTENT_TYPE_HEADER);
+			}
 			requestInit.body = unCompressedBody;
 			span?.setAttribute("http.request.body.compressed", false);
 			span?.setAttribute("http.request.body.size", unCompressedBodySize);
