@@ -107,6 +107,23 @@ describe("RetryHandler.ts", () => {
 			};
 			assert.isFalse(retryHandler["isBuffered"](options));
 		});
+
+		it("Should detect Title-Case and Headers instance octet-stream as unbuffered", () => {
+			assert.isFalse(
+				retryHandler["isBuffered"]({
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/octet-stream",
+					},
+				}),
+			);
+			assert.isFalse(
+				retryHandler["isBuffered"]({
+					method: "POST",
+					headers: new Headers({ "Content-Type": "application/octet-stream" }) as unknown as Record<string, string>,
+				}),
+			);
+		});
 	});
 
 	describe("getDelay", () => {

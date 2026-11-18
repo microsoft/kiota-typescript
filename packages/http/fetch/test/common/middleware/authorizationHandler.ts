@@ -53,6 +53,38 @@ describe("AuthorizationHandler", () => {
 		expect((requestInit.headers as Record<string, string>)["Authorization"]).toBe("Bearer New Token");
 	});
 
+	it("should detect existing lowercase authorization header without re-authenticating or duplicating keys", async () => {
+		const url = "https://example.com";
+		const getTokenSpy = vi.spyOn(tokenProvider, "getAuthorizationToken");
+		const requestInit = {
+			headers: {
+				authorization: "Bearer Existing Token",
+			},
+		};
+		nextMiddleware.setResponses([new Response("ok", { status: 200 })]);
+
+		await authorizationHandler.execute(url, requestInit);
+
+		expect(getTokenSpy).not.toHaveBeenCalled();
+		expect(Object.keys(requestInit.headers)).toEqual(["authorization"]);
+		expect(requestInit.headers.authorization).toBe("Bearer Existing Token");
+	});
+
+	it("should read and write Authorization header on Headers instances", async () => {
+		const url = "https://example.com";
+		const existingHeaders = new Headers({ authorization: "Bearer Existing Token" });
+		const getTokenSpy = vi.spyOn(tokenProvider, "getAuthorizationToken");
+		nextMiddleware.setResponses([new Response("ok", { status: 200 }), new Response("ok", { status: 200 })]);
+
+		await authorizationHandler.execute(url, { headers: existingHeaders });
+		expect(getTokenSpy).not.toHaveBeenCalled();
+
+		const emptyHeaders = new Headers();
+		await authorizationHandler.execute(url, { headers: emptyHeaders });
+		expect(getTokenSpy).toHaveBeenCalledTimes(1);
+		expect(emptyHeaders.get("Authorization")).toBe("Bearer New Token");
+	});
+
 	describe("observability", () => {
 		it("encloses downstream execution and records exception on failure", async () => {
 			let spanEnded = false;

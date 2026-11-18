@@ -721,4 +721,56 @@ describe("RedirectHandler.ts", () => {
 			}
 		});
 	});
+
+	it("strips body headers on POST-to-GET redirect for Headers instances and tuple arrays", async () => {
+		const handler = new RedirectHandler();
+		const headers = new Headers({
+			"Content-Type": "application/json",
+			"Content-Encoding": "gzip",
+			"Content-Length": "18",
+			"X-Keep": "retained",
+		});
+		const observedHeaders: Headers[] = [];
+		const dummyNext = new DummyFetchHandler();
+		dummyNext.execute = async (_url: string, init: RequestInit) => {
+			observedHeaders.push(new Headers(init.headers));
+			if (observedHeaders.length === 1) {
+				return new Response("", { status: 303, headers: { Location: "https://example.com/target" } });
+			}
+			return new Response("OK", { status: 200 });
+		};
+		handler.next = dummyNext;
+
+		const response = await handler.execute("https://example.com/start", {
+			method: "POST",
+			headers,
+			body: JSON.stringify({ hello: "world" }),
+		});
+		assert.equal(response.status, 200);
+		assert.equal(observedHeaders.length, 2);
+		assert.isNull(observedHeaders[1].get("Content-Type"));
+		assert.isNull(observedHeaders[1].get("Content-Encoding"));
+		assert.isNull(observedHeaders[1].get("Content-Length"));
+		assert.equal(observedHeaders[1].get("X-Keep"), "retained");
+
+		const tupleHeaders: [string, string][] = [
+			["Content-Type", "application/json"],
+			["Content-Encoding", "gzip"],
+			["X-Keep", "retained"],
+		];
+		let tupleCalls = 0;
+		dummyNext.execute = async () => {
+			tupleCalls++;
+			if (tupleCalls === 1) {
+				return new Response("", { status: 303, headers: { Location: "https://example.com/target" } });
+			}
+			return new Response("OK", { status: 200 });
+		};
+		await handler.execute("https://example.com/start", {
+			method: "POST",
+			headers: tupleHeaders,
+			body: "{}",
+		});
+		assert.deepEqual(tupleHeaders, [["X-Keep", "retained"]]);
+	});
 });
