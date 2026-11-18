@@ -132,10 +132,8 @@ export class RedirectHandler implements Middleware {
 
 		fetchRequestInit.method = HttpMethod.GET;
 		delete fetchRequestInit.body;
-		for (const header of Object.keys(fetchRequestInit.headers ?? {})) {
-			if (RedirectHandler.BODY_HEADERS.has(header.toLowerCase())) {
-				deleteRequestHeader(fetchRequestInit, header);
-			}
+		for (const header of RedirectHandler.BODY_HEADERS) {
+			deleteRequestHeader(fetchRequestInit, header);
 		}
 	}
 
