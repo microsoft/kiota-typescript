@@ -577,6 +577,99 @@ describe("RedirectHandler.ts", () => {
 			assert.isDefined(headers.find(([key]) => key.toLowerCase() === "x-custom"));
 			assert.equal(response.status, 200);
 		});
+
+		it("Should adapt Headers instance and propagate deletions from custom record scrubber", async () => {
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const headers = new Headers();
+			headers.set("Authorization", "Bearer TEST");
+			headers.set("X-Custom-Secret", "secret-value");
+			headers.set("X-Keep-Me", "keep-value");
+			const fetchRequestInit = {
+				method: "GET",
+				headers,
+			};
+
+			// Custom record-based scrubber that deletes custom secret header
+			const customScrubber = (hdrRecord: Record<string, string>, originalUrl: string, newUrl: string) => {
+				const isDiff = new URL(originalUrl).host !== new URL(newUrl).host;
+				if (isDiff) {
+					for (const key of Object.keys(hdrRecord)) {
+						if (key.toLowerCase() === "authorization" || key.toLowerCase() === "x-custom-secret") {
+							delete hdrRecord[key];
+						}
+					}
+					hdrRecord["x-redirected"] = "true";
+				}
+			};
+
+			const options = new RedirectHandlerOptions({ scrubSensitiveHeaders: customScrubber });
+			const customHandler = new RedirectHandler(options);
+			customHandler.next = dummyFetchHandler;
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "https://evil.attacker.com/steal",
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+
+			const response = await customHandler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, options);
+			assert.isNull(headers.get("authorization"));
+			assert.isNull(headers.get("x-custom-secret"));
+			assert.equal(headers.get("x-keep-me"), "keep-value");
+			assert.equal(headers.get("x-redirected"), "true");
+			assert.equal(response.status, 200);
+		});
+
+		it("Should adapt tuple array and propagate deletions from custom record scrubber", async () => {
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const headers: [string, string][] = [
+				["Authorization", "Bearer TEST"],
+				["X-Custom-Secret", "secret-value"],
+				["X-Keep-Me", "keep-value"],
+			];
+			const fetchRequestInit = {
+				method: "GET",
+				headers,
+			};
+
+			const customScrubber = (hdrRecord: Record<string, string>, originalUrl: string, newUrl: string) => {
+				const isDiff = new URL(originalUrl).host !== new URL(newUrl).host;
+				if (isDiff) {
+					for (const key of Object.keys(hdrRecord)) {
+						if (key.toLowerCase() === "authorization" || key.toLowerCase() === "x-custom-secret") {
+							delete hdrRecord[key];
+						}
+					}
+					hdrRecord["x-redirected"] = "true";
+				}
+			};
+
+			const options = new RedirectHandlerOptions({ scrubSensitiveHeaders: customScrubber });
+			const customHandler = new RedirectHandler(options);
+			customHandler.next = dummyFetchHandler;
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "https://evil.attacker.com/steal",
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+
+			const response = await customHandler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, options);
+			const finalHeaders = fetchRequestInit.headers as [string, string][];
+			assert.isUndefined(finalHeaders.find(([k]) => k.toLowerCase() === "authorization"));
+			assert.isUndefined(finalHeaders.find(([k]) => k.toLowerCase() === "x-custom-secret"));
+			assert.isDefined(finalHeaders.find(([k]) => k.toLowerCase() === "x-keep-me"));
+			assert.isDefined(finalHeaders.find(([k]) => k.toLowerCase() === "x-redirected"));
+			assert.equal(response.status, 200);
+		});
 	});
 
 	describe("execute", async () => {
