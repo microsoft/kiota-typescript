@@ -528,8 +528,13 @@ describe("AllowedHostsValidator", () => {
 				if (!utils.inNodeEnv()) {
 					const reqRelative = new RequestInformation();
 					reqRelative.URL = "api/items/100%25/sub%20item?q=val%201&slash=a%2Fb&pct=50%25&qmark=%3F&hash=%23";
-					await otherProvider.authenticateRequest(reqRelative);
-					expect(reqRelative.headers.tryGetValue("X-OTHER-KEY")).to.deep.equal(["other-api-key"]);
+					if (typeof window !== "undefined" && window.location?.protocol?.toLowerCase() === "https:") {
+						await otherProvider.authenticateRequest(reqRelative);
+						expect(reqRelative.headers.tryGetValue("X-OTHER-KEY")).to.deep.equal(["other-api-key"]);
+					} else {
+						await expect(otherProvider.authenticateRequest(reqRelative)).rejects.toThrow("Authentication scheme can only be used with https requests");
+						expect(reqRelative.headers.tryGetValue("X-OTHER-KEY")).to.be.null;
+					}
 					const actualRelDestination = new URL(reqRelative.URL, browserOrigin);
 					expect(actualRelDestination.hostname).to.equal("other.example");
 				}
