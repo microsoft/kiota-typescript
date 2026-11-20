@@ -261,9 +261,14 @@ export class RedirectHandler implements Middleware {
 				if (!origKey) {
 					tupleHeaders.push([key, value]);
 				} else if (originalRecord[origKey] !== value) {
-					const idx = tupleHeaders.findIndex(([k]) => k.toLowerCase() === key.toLowerCase());
-					if (idx >= 0) {
-						tupleHeaders[idx] = [key, value];
+					const firstIdx = tupleHeaders.findIndex(([k]) => k.toLowerCase() === key.toLowerCase());
+					if (firstIdx >= 0) {
+						tupleHeaders[firstIdx] = [key, value];
+						for (let i = tupleHeaders.length - 1; i > firstIdx; i--) {
+							if (tupleHeaders[i][0].toLowerCase() === key.toLowerCase()) {
+								tupleHeaders.splice(i, 1);
+							}
+						}
 					} else {
 						tupleHeaders.push([key, value]);
 					}

@@ -670,6 +670,54 @@ describe("RedirectHandler.ts", () => {
 			assert.isDefined(finalHeaders.find(([k]) => k.toLowerCase() === "x-redirected"));
 			assert.equal(response.status, 200);
 		});
+
+		it("Should remove remaining matching tuples when custom scrubber replaces duplicate case-insensitive header", async () => {
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const headers: [string, string][] = [
+				["X-Api-Key", "first-secret"],
+				["other-header", "keep-me"],
+				["x-api-key", "second-secret"],
+			];
+			const fetchRequestInit = {
+				method: "GET",
+				headers,
+			};
+
+			const customScrubber = (hdrRecord: Record<string, string>, originalUrl: string, newUrl: string) => {
+				const isDiff = new URL(originalUrl).host !== new URL(newUrl).host;
+				if (isDiff) {
+					for (const key of Object.keys(hdrRecord)) {
+						if (key.toLowerCase() === "x-api-key") {
+							hdrRecord[key] = "redacted";
+						}
+					}
+				}
+			};
+
+			const options = new RedirectHandlerOptions({ scrubSensitiveHeaders: customScrubber });
+			const customHandler = new RedirectHandler(options);
+			customHandler.next = dummyFetchHandler;
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "https://evil.attacker.com/steal",
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+
+			const response = await customHandler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, options);
+			const finalHeaders = fetchRequestInit.headers as [string, string][];
+			const apiKeyHeaders = finalHeaders.filter(([k]) => k.toLowerCase() === "x-api-key");
+			assert.lengthOf(apiKeyHeaders, 1);
+			assert.equal(apiKeyHeaders[0][1], "redacted");
+			assert.isUndefined(finalHeaders.find(([_, v]) => v === "second-secret"));
+			assert.isUndefined(finalHeaders.find(([_, v]) => v === "first-secret"));
+			assert.isDefined(finalHeaders.find(([k]) => k.toLowerCase() === "other-header"));
+			assert.equal(response.status, 200);
+		});
 	});
 
 	describe("execute", async () => {

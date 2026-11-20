@@ -139,20 +139,20 @@ describe("RetryHandler.ts", () => {
 
 		it("Should return delay without exponential backoff", () => {
 			const delay = retryHandler["getDelay"](gatewayTimeoutResponse, 1, 10);
-			assert.isAbove(delay, 10);
-			assert.isBelow(delay, 11);
+			assert.isAtLeast(delay, 10);
+			assert.isAtMost(delay, 11);
 		});
 
 		it("Should return delay with exponential backoff", () => {
 			const delay = retryHandler["getDelay"](gatewayTimeoutResponse, 2, 10);
-			assert.isAbove(delay, 12);
-			assert.isBelow(delay, 13);
+			assert.isAtLeast(delay, 12);
+			assert.isAtMost(delay, 13);
 		});
 
 		it("Should return max delay for if the calculated delay is more", () => {
 			const delay = retryHandler["getDelay"](gatewayTimeoutResponse, 10, 100);
-			assert.isAbove(delay, 180);
-			assert.isBelow(delay, 181);
+			assert.isAtLeast(delay, 180);
+			assert.isAtMost(delay, 181);
 		});
 	});
 
