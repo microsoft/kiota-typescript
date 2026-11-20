@@ -11,6 +11,8 @@
 
 import type { RequestOption } from "@microsoft/kiota-abstractions";
 
+import { deleteRequestHeader } from "../../utils/headersUtil";
+
 /**
  *
  * A type declaration for shouldRetry callback
@@ -23,7 +25,7 @@ export type ShouldRedirect = (response: Response) => boolean;
  * @param originalUrl - The original request URL
  * @param newUrl - The new redirect URL
  */
-export type ScrubSensitiveHeaders = (headers: Record<string, string>, originalUrl: string, newUrl: string) => void;
+export type ScrubSensitiveHeaders = (headers: HeadersInit, originalUrl: string, newUrl: string) => void;
 
 export const RedirectHandlerOptionKey = "RedirectHandlerOption";
 
@@ -47,7 +49,7 @@ export interface RedirectHandlerOptionsParams {
  * @param originalUrl - The original request URL
  * @param newUrl - The new redirect URL
  */
-export const defaultScrubSensitiveHeaders: ScrubSensitiveHeaders = (headers: Record<string, string>, originalUrl: string, newUrl: string) => {
+export const defaultScrubSensitiveHeaders: ScrubSensitiveHeaders = (headers: HeadersInit, originalUrl: string, newUrl: string) => {
 	if (!headers || !originalUrl || !newUrl) {
 		return;
 	}
@@ -63,12 +65,10 @@ export const defaultScrubSensitiveHeaders: ScrubSensitiveHeaders = (headers: Rec
 		const isDifferentHostOrScheme = originalUri.host.toLowerCase() !== newUri.host.toLowerCase() || originalUri.protocol.toLowerCase() !== newUri.protocol.toLowerCase();
 
 		if (isDifferentHostOrScheme) {
-			for (const key of Object.keys(headers)) {
-				const lower = key.toLowerCase();
-				if (lower === "authorization" || lower === "cookie" || lower === "proxy-authorization") {
-					delete headers[key];
-				}
-			}
+			const dummyInit = { headers };
+			deleteRequestHeader(dummyInit, "authorization");
+			deleteRequestHeader(dummyInit, "cookie");
+			deleteRequestHeader(dummyInit, "proxy-authorization");
 		}
 	} catch {
 		// If URL parsing fails, don't modify headers

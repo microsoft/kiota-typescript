@@ -522,6 +522,61 @@ describe("RedirectHandler.ts", () => {
 			assert.isDefined(fetchRequestInit.headers["Cookie"]);
 			assert.equal(response.status, 200);
 		});
+
+		it("Should drop Authorization and Cookie from Headers instance when host changes", async () => {
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const headers = new Headers();
+			headers.set("Authorization", "Bearer TEST");
+			headers.set("Cookie", "session=SECRET");
+			headers.set("X-Custom", "keep-me");
+			const fetchRequestInit = {
+				method: "GET",
+				headers,
+			};
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "https://evil.attacker.com/steal",
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+			const response = await handler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, new RedirectHandlerOptions());
+			assert.isNull(headers.get("authorization"));
+			assert.isNull(headers.get("cookie"));
+			assert.equal(headers.get("x-custom"), "keep-me");
+			assert.equal(response.status, 200);
+		});
+
+		it("Should drop Authorization and Cookie from tuple array when host changes", async () => {
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const headers: [string, string][] = [
+				["Authorization", "Bearer TEST"],
+				["Cookie", "session=SECRET"],
+				["X-Custom", "keep-me"],
+			];
+			const fetchRequestInit = {
+				method: "GET",
+				headers,
+			};
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "https://evil.attacker.com/steal",
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+			const response = await handler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, new RedirectHandlerOptions());
+			assert.isUndefined(headers.find(([key]) => key.toLowerCase() === "authorization"));
+			assert.isUndefined(headers.find(([key]) => key.toLowerCase() === "cookie"));
+			assert.isDefined(headers.find(([key]) => key.toLowerCase() === "x-custom"));
+			assert.equal(response.status, 200);
+		});
 	});
 
 	describe("execute", async () => {

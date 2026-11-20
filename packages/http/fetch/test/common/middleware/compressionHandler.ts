@@ -216,6 +216,25 @@ describe("CompressionHandler", () => {
 		]);
 	});
 
+	it("should preserve explicitly empty Content-Type header for URLSearchParams on both attempts", async () => {
+		const headers = { "Content-Type": "", "X-Custom": "keep-me" };
+		const body = new URLSearchParams({ key: "value" });
+		const observedContentTypes: (string | undefined)[] = [];
+		nextMiddleware.execute = async (_url, init) => {
+			const current = (init.headers as Record<string, string>)["Content-Type"];
+			observedContentTypes.push(current);
+			return new Response(null, { status: observedContentTypes.length === 1 ? 415 : 200 });
+		};
+
+		const requestInit: RequestInit = { method: "POST", headers, body };
+		const response = await compressionHandler.execute("https://example.com", requestInit);
+
+		expect(response.status).toBe(200);
+		expect(observedContentTypes).toEqual(["", ""]);
+		expect((requestInit.headers as Record<string, string>)["Content-Type"]).toBe("");
+		expect((requestInit.headers as Record<string, string>)["X-Custom"]).toBe("keep-me");
+	});
+
 	describe("observability", () => {
 		it("encloses downstream execution and records exception on failure", async () => {
 			let spanEnded = false;

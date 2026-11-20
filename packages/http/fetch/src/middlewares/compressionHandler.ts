@@ -84,7 +84,7 @@ export class CompressionHandler implements Middleware {
 		// compress the request body
 		const compressedBody = await this.compressRequestBody(unCompressedBody);
 		let addedUrlEncodedContentType = false;
-		if (unCompressedBody instanceof URLSearchParams && !getRequestHeader(requestInit, CompressionHandler.CONTENT_TYPE_HEADER)) {
+		if (unCompressedBody instanceof URLSearchParams && getRequestHeader(requestInit, CompressionHandler.CONTENT_TYPE_HEADER) === undefined) {
 			setRequestHeader(requestInit, CompressionHandler.CONTENT_TYPE_HEADER, "application/x-www-form-urlencoded;charset=UTF-8");
 			addedUrlEncodedContentType = true;
 		}

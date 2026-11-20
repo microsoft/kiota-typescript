@@ -169,5 +169,36 @@ describe("RedirectHandlerOptions.ts", () => {
 			assert.isUndefined(headers["x-custom-auth"]);
 			assert.isDefined(headers["content-type"]);
 		});
+
+		it("Should remove sensitive headers from Headers instance when host changes", () => {
+			const headers = new Headers();
+			headers.set("Authorization", "Bearer token");
+			headers.set("Cookie", "session=SECRET");
+			headers.set("Proxy-Authorization", "Basic secret");
+			headers.set("Content-Type", "application/json");
+
+			defaultScrubSensitiveHeaders(headers, "https://graph.microsoft.com/v1.0/me", "https://evil.attacker.com/steal");
+
+			assert.isNull(headers.get("authorization"));
+			assert.isNull(headers.get("cookie"));
+			assert.isNull(headers.get("proxy-authorization"));
+			assert.equal(headers.get("content-type"), "application/json");
+		});
+
+		it("Should remove sensitive headers from tuple array when host changes", () => {
+			const headers: [string, string][] = [
+				["Authorization", "Bearer token"],
+				["cookie", "session=SECRET"],
+				["Proxy-Authorization", "Basic secret"],
+				["Content-Type", "application/json"],
+			];
+
+			defaultScrubSensitiveHeaders(headers, "https://graph.microsoft.com/v1.0/me", "https://evil.attacker.com/steal");
+
+			assert.isUndefined(headers.find(([key]) => key.toLowerCase() === "authorization"));
+			assert.isUndefined(headers.find(([key]) => key.toLowerCase() === "cookie"));
+			assert.isUndefined(headers.find(([key]) => key.toLowerCase() === "proxy-authorization"));
+			assert.isDefined(headers.find(([key]) => key.toLowerCase() === "content-type"));
+		});
 	});
 });

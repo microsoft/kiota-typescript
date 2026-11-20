@@ -47,15 +47,13 @@ export const getRequestHeader = (options: FetchRequestInit | RequestInit | undef
 		return values.length > 0 ? values.join(", ") : undefined;
 	}
 	const record = headers as Record<string, string>;
-	if (Object.prototype.hasOwnProperty.call(record, key)) {
-		return record[key];
-	}
+	const recordValues: string[] = [];
 	for (const existingKey of Object.keys(record)) {
 		if (existingKey.toLowerCase() === lowerKey) {
-			return record[existingKey];
+			recordValues.push(record[existingKey]);
 		}
 	}
-	return undefined;
+	return recordValues.length > 0 ? recordValues.join(", ") : undefined;
 };
 
 /**

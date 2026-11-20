@@ -90,6 +90,23 @@ describe("HeaderUtil", async () => {
 			assert.equal(getRequestHeader(options, "X-CUSTOM"), "first, second");
 			assert.isUndefined(getRequestHeader(options, "X-Missing"));
 		});
+
+		it("Should get header case-insensitively from record and join duplicates with different casings", () => {
+			const options: FetchRequestInit = {
+				method: "GET",
+				headers: {
+					"Content-Encoding": "",
+					"content-encoding": "br",
+					Accept: "text/html",
+					accept: "application/json",
+				},
+			};
+			assert.equal(getRequestHeader(options, "Content-Encoding"), ", br");
+			assert.equal(getRequestHeader(options, "content-encoding"), ", br");
+			assert.equal(getRequestHeader(options, "CONTENT-ENCODING"), ", br");
+			assert.equal(getRequestHeader(options, "accept"), "text/html, application/json");
+			assert.equal(getRequestHeader(options, "Accept"), "text/html, application/json");
+		});
 	});
 
 	describe("setRequestHeader", () => {
