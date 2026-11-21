@@ -522,6 +522,202 @@ describe("RedirectHandler.ts", () => {
 			assert.isDefined(fetchRequestInit.headers["Cookie"]);
 			assert.equal(response.status, 200);
 		});
+
+		it("Should drop Authorization and Cookie from Headers instance when host changes", async () => {
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const headers = new Headers();
+			headers.set("Authorization", "Bearer TEST");
+			headers.set("Cookie", "session=SECRET");
+			headers.set("X-Custom", "keep-me");
+			const fetchRequestInit = {
+				method: "GET",
+				headers,
+			};
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "https://evil.attacker.com/steal",
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+			const response = await handler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, new RedirectHandlerOptions());
+			assert.isNull(headers.get("authorization"));
+			assert.isNull(headers.get("cookie"));
+			assert.equal(headers.get("x-custom"), "keep-me");
+			assert.equal(response.status, 200);
+		});
+
+		it("Should drop Authorization and Cookie from tuple array when host changes", async () => {
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const headers: [string, string][] = [
+				["Authorization", "Bearer TEST"],
+				["Cookie", "session=SECRET"],
+				["X-Custom", "keep-me"],
+			];
+			const fetchRequestInit = {
+				method: "GET",
+				headers,
+			};
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "https://evil.attacker.com/steal",
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+			const response = await handler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, new RedirectHandlerOptions());
+			assert.isUndefined(headers.find(([key]) => key.toLowerCase() === "authorization"));
+			assert.isUndefined(headers.find(([key]) => key.toLowerCase() === "cookie"));
+			assert.isDefined(headers.find(([key]) => key.toLowerCase() === "x-custom"));
+			assert.equal(response.status, 200);
+		});
+
+		it("Should adapt Headers instance and propagate deletions from custom record scrubber", async () => {
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const headers = new Headers();
+			headers.set("Authorization", "Bearer TEST");
+			headers.set("X-Custom-Secret", "secret-value");
+			headers.set("X-Keep-Me", "keep-value");
+			const fetchRequestInit = {
+				method: "GET",
+				headers,
+			};
+
+			// Custom record-based scrubber that deletes custom secret header
+			const customScrubber = (hdrRecord: Record<string, string>, originalUrl: string, newUrl: string) => {
+				const isDiff = new URL(originalUrl).host !== new URL(newUrl).host;
+				if (isDiff) {
+					for (const key of Object.keys(hdrRecord)) {
+						if (key.toLowerCase() === "authorization" || key.toLowerCase() === "x-custom-secret") {
+							delete hdrRecord[key];
+						}
+					}
+					hdrRecord["x-redirected"] = "true";
+				}
+			};
+
+			const options = new RedirectHandlerOptions({ scrubSensitiveHeaders: customScrubber });
+			const customHandler = new RedirectHandler(options);
+			customHandler.next = dummyFetchHandler;
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "https://evil.attacker.com/steal",
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+
+			const response = await customHandler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, options);
+			assert.isNull(headers.get("authorization"));
+			assert.isNull(headers.get("x-custom-secret"));
+			assert.equal(headers.get("x-keep-me"), "keep-value");
+			assert.equal(headers.get("x-redirected"), "true");
+			assert.equal(response.status, 200);
+		});
+
+		it("Should adapt tuple array and propagate deletions from custom record scrubber", async () => {
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const headers: [string, string][] = [
+				["Authorization", "Bearer TEST"],
+				["X-Custom-Secret", "secret-value"],
+				["X-Keep-Me", "keep-value"],
+			];
+			const fetchRequestInit = {
+				method: "GET",
+				headers,
+			};
+
+			const customScrubber = (hdrRecord: Record<string, string>, originalUrl: string, newUrl: string) => {
+				const isDiff = new URL(originalUrl).host !== new URL(newUrl).host;
+				if (isDiff) {
+					for (const key of Object.keys(hdrRecord)) {
+						if (key.toLowerCase() === "authorization" || key.toLowerCase() === "x-custom-secret") {
+							delete hdrRecord[key];
+						}
+					}
+					hdrRecord["x-redirected"] = "true";
+				}
+			};
+
+			const options = new RedirectHandlerOptions({ scrubSensitiveHeaders: customScrubber });
+			const customHandler = new RedirectHandler(options);
+			customHandler.next = dummyFetchHandler;
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "https://evil.attacker.com/steal",
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+
+			const response = await customHandler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, options);
+			const finalHeaders = fetchRequestInit.headers as [string, string][];
+			assert.isUndefined(finalHeaders.find(([k]) => k.toLowerCase() === "authorization"));
+			assert.isUndefined(finalHeaders.find(([k]) => k.toLowerCase() === "x-custom-secret"));
+			assert.isDefined(finalHeaders.find(([k]) => k.toLowerCase() === "x-keep-me"));
+			assert.isDefined(finalHeaders.find(([k]) => k.toLowerCase() === "x-redirected"));
+			assert.equal(response.status, 200);
+		});
+
+		it("Should remove remaining matching tuples when custom scrubber replaces duplicate case-insensitive header", async () => {
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const headers: [string, string][] = [
+				["X-Api-Key", "first-secret"],
+				["other-header", "keep-me"],
+				["x-api-key", "second-secret"],
+			];
+			const fetchRequestInit = {
+				method: "GET",
+				headers,
+			};
+
+			const customScrubber = (hdrRecord: Record<string, string>, originalUrl: string, newUrl: string) => {
+				const isDiff = new URL(originalUrl).host !== new URL(newUrl).host;
+				if (isDiff) {
+					for (const key of Object.keys(hdrRecord)) {
+						if (key.toLowerCase() === "x-api-key") {
+							hdrRecord[key] = "redacted";
+						}
+					}
+				}
+			};
+
+			const options = new RedirectHandlerOptions({ scrubSensitiveHeaders: customScrubber });
+			const customHandler = new RedirectHandler(options);
+			customHandler.next = dummyFetchHandler;
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "https://evil.attacker.com/steal",
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+
+			const response = await customHandler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, options);
+			const finalHeaders = fetchRequestInit.headers as [string, string][];
+			const apiKeyHeaders = finalHeaders.filter(([k]) => k.toLowerCase() === "x-api-key");
+			assert.lengthOf(apiKeyHeaders, 1);
+			assert.equal(apiKeyHeaders[0][1], "redacted");
+			assert.isUndefined(finalHeaders.find(([_, v]) => v === "second-secret"));
+			assert.isUndefined(finalHeaders.find(([_, v]) => v === "first-secret"));
+			assert.isDefined(finalHeaders.find(([k]) => k.toLowerCase() === "other-header"));
+			assert.equal(response.status, 200);
+		});
 	});
 
 	describe("execute", async () => {
@@ -720,5 +916,57 @@ describe("RedirectHandler.ts", () => {
 				getTracerSpy.mockRestore();
 			}
 		});
+	});
+
+	it("strips body headers on POST-to-GET redirect for Headers instances and tuple arrays", async () => {
+		const handler = new RedirectHandler();
+		const headers = new Headers({
+			"Content-Type": "application/json",
+			"Content-Encoding": "gzip",
+			"Content-Length": "18",
+			"X-Keep": "retained",
+		});
+		const observedHeaders: Headers[] = [];
+		const dummyNext = new DummyFetchHandler();
+		dummyNext.execute = async (_url: string, init: RequestInit) => {
+			observedHeaders.push(new Headers(init.headers));
+			if (observedHeaders.length === 1) {
+				return new Response("", { status: 303, headers: { Location: "https://example.com/target" } });
+			}
+			return new Response("OK", { status: 200 });
+		};
+		handler.next = dummyNext;
+
+		const response = await handler.execute("https://example.com/start", {
+			method: "POST",
+			headers,
+			body: JSON.stringify({ hello: "world" }),
+		});
+		assert.equal(response.status, 200);
+		assert.equal(observedHeaders.length, 2);
+		assert.isNull(observedHeaders[1].get("Content-Type"));
+		assert.isNull(observedHeaders[1].get("Content-Encoding"));
+		assert.isNull(observedHeaders[1].get("Content-Length"));
+		assert.equal(observedHeaders[1].get("X-Keep"), "retained");
+
+		const tupleHeaders: [string, string][] = [
+			["Content-Type", "application/json"],
+			["Content-Encoding", "gzip"],
+			["X-Keep", "retained"],
+		];
+		let tupleCalls = 0;
+		dummyNext.execute = async () => {
+			tupleCalls++;
+			if (tupleCalls === 1) {
+				return new Response("", { status: 303, headers: { Location: "https://example.com/target" } });
+			}
+			return new Response("OK", { status: 200 });
+		};
+		await handler.execute("https://example.com/start", {
+			method: "POST",
+			headers: tupleHeaders,
+			body: "{}",
+		});
+		assert.deepEqual(tupleHeaders, [["X-Keep", "retained"]]);
 	});
 });

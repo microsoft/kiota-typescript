@@ -58,6 +58,32 @@ describe("userAgentHandler.ts", function () {
 			await handler.execute(requestUrl, fetchRequestInit, undefined);
 			assert.isUndefined((fetchRequestInit as any).headers);
 		});
+		it("Appends to existing lowercase user-agent header without duplicating keys", async () => {
+			const options = new UserAgentHandlerOptions();
+			const handler = new UserAgentHandler(options);
+			handler.next = dummyFetchHandler;
+			dummyFetchHandler.setResponses([new Response("ok", { status: 200 }), new Response("ok", { status: 200 })]);
+			const fetchRequestInit: RequestInit = {
+				method: "GET",
+				headers: {
+					"user-agent": "custom-client/2.0",
+				},
+			};
+			await handler.execute("https://example.com", fetchRequestInit, undefined);
+			await handler.execute("https://example.com", fetchRequestInit, undefined);
+			const headers = fetchRequestInit.headers as Record<string, string>;
+			assert.deepEqual(Object.keys(headers), ["User-Agent"]);
+			assert.equal(headers["User-Agent"], `custom-client/2.0 ${options.productName}/${options.productVersion}`);
+		});
+		it("Appends space-separated product token on Headers instance", async () => {
+			const options = new UserAgentHandlerOptions();
+			const handler = new UserAgentHandler(options);
+			handler.next = dummyFetchHandler;
+			dummyFetchHandler.setResponses([new Response("ok", { status: 200 })]);
+			const headers = new Headers({ "user-agent": "custom-client/2.0" });
+			await handler.execute("https://example.com", { method: "GET", headers }, undefined);
+			assert.equal(headers.get("User-Agent"), `custom-client/2.0 ${options.productName}/${options.productVersion}`);
+		});
 	});
 	describe("observability", () => {
 		it("encloses downstream execution and records exception on failure", async () => {

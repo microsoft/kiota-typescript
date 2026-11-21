@@ -13,7 +13,6 @@ import type { RequestOption } from "@microsoft/kiota-abstractions";
 import { trace } from "@opentelemetry/api";
 
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
-import type { FetchRequestInit } from "../utils/fetchDefinitions";
 import { appendRequestHeader, getRequestHeader } from "../utils/headersUtil";
 import type { Middleware } from "./middleware";
 import { UserAgentHandlerOptions, UserAgentHandlerOptionsKey } from "./options/userAgentHandlerOptions";
@@ -53,9 +52,9 @@ export class UserAgentHandler implements Middleware {
 	private async addValue(currentOptions: UserAgentHandlerOptions, url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		if (currentOptions.enable) {
 			const additionalValue = `${currentOptions.productName}/${currentOptions.productVersion}`;
-			const currentValue = getRequestHeader(requestInit as FetchRequestInit, USER_AGENT_HEADER_KEY);
+			const currentValue = getRequestHeader(requestInit, USER_AGENT_HEADER_KEY);
 			if (!currentValue?.includes(additionalValue)) {
-				appendRequestHeader(requestInit as FetchRequestInit, USER_AGENT_HEADER_KEY, additionalValue, " ");
+				appendRequestHeader(requestInit, USER_AGENT_HEADER_KEY, additionalValue, " ");
 			}
 		}
 		const response = await this.next?.execute(url, requestInit, requestOptions);

@@ -107,6 +107,23 @@ describe("RetryHandler.ts", () => {
 			};
 			assert.isFalse(retryHandler["isBuffered"](options));
 		});
+
+		it("Should detect Title-Case and Headers instance octet-stream as unbuffered", () => {
+			assert.isFalse(
+				retryHandler["isBuffered"]({
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/octet-stream",
+					},
+				}),
+			);
+			assert.isFalse(
+				retryHandler["isBuffered"]({
+					method: "POST",
+					headers: new Headers({ "Content-Type": "application/octet-stream" }) as unknown as Record<string, string>,
+				}),
+			);
+		});
 	});
 
 	describe("getDelay", () => {
@@ -122,20 +139,20 @@ describe("RetryHandler.ts", () => {
 
 		it("Should return delay without exponential backoff", () => {
 			const delay = retryHandler["getDelay"](gatewayTimeoutResponse, 1, 10);
-			assert.isAbove(delay, 10);
-			assert.isBelow(delay, 11);
+			assert.isAtLeast(delay, 10);
+			assert.isAtMost(delay, 11);
 		});
 
 		it("Should return delay with exponential backoff", () => {
 			const delay = retryHandler["getDelay"](gatewayTimeoutResponse, 2, 10);
-			assert.isAbove(delay, 12);
-			assert.isBelow(delay, 13);
+			assert.isAtLeast(delay, 12);
+			assert.isAtMost(delay, 13);
 		});
 
 		it("Should return max delay for if the calculated delay is more", () => {
 			const delay = retryHandler["getDelay"](gatewayTimeoutResponse, 10, 100);
-			assert.isAbove(delay, 180);
-			assert.isBelow(delay, 181);
+			assert.isAtLeast(delay, 180);
+			assert.isAtMost(delay, 181);
 		});
 	});
 
