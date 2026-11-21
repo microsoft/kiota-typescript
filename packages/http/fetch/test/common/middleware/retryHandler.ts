@@ -361,8 +361,8 @@ describe("RetryHandler.ts", () => {
 								resendCounts.push(v as number);
 							}
 						},
-						recordException: () => { },
-						end: () => { },
+						recordException: () => {},
+						end: () => {},
 					});
 				},
 			};
@@ -405,7 +405,7 @@ describe("RetryHandler.ts", () => {
 				startActiveSpan: (name: string, callback: (span: any) => Promise<Response>) => {
 					if (name === "retryHandler - execute") {
 						const parentSpan = {
-							setAttribute: () => { },
+							setAttribute: () => {},
 							recordException: (err: unknown) => {
 								parentRecordedException = err;
 							},
