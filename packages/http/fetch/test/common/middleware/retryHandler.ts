@@ -567,4 +567,85 @@ describe("RetryHandler.ts", () => {
 			assert.equal(result.requestCount, 1);
 		});
 	});
+
+	describe("Retry after a redirect", () => {
+		const location = (path: string) => ({ Location: `https://example.org${path}` });
+		const retryAfterZero = { "Retry-After": "0" };
+
+		const sendThroughRedirects = async (url: string, fetchRequestInit: FetchRequestInit, responses: Array<{ status: number; headers?: Record<string, string> }>, handlerOptions = new RetryHandlerOptions()) => {
+			const requests: string[] = [];
+			const retryHandler = new RetryHandler(handlerOptions);
+			const redirectHandler = new RedirectHandler();
+			retryHandler.next = redirectHandler;
+			redirectHandler.next = {
+				next: undefined,
+				execute: async (requestUrl: string, requestInit: RequestInit) => {
+					requests.push(`${requestInit.method} ${new URL(requestUrl).pathname} body=${requestInit.body === undefined ? "none" : "yes"}`);
+					const next = responses.shift() ?? { status: 200 };
+					return new Response(null, { status: next.status, headers: next.headers });
+				},
+			};
+			const response = await retryHandler.execute(url, fetchRequestInit as RequestInit);
+			return { status: response.status, requests };
+		};
+
+		it("Should resend a POST that a 303 changed to GET to the redirect target", async () => {
+			const result = await sendThroughRedirects("https://example.org/send", { method: HttpMethod.POST, body: '{"message":"hello"}' }, [
+				{ status: 303, headers: location("/redirected") },
+				{ status: 504, headers: retryAfterZero },
+			]);
+			assert.equal(result.status, 200);
+			assert.deepEqual(result.requests, ["POST /send body=yes", "GET /redirected body=none", "GET /redirected body=none"]);
+		});
+
+		it("Should resend a POST that a 307 kept as POST to the redirect target", async () => {
+			const result = await sendThroughRedirects("https://example.org/send", { method: HttpMethod.POST, body: '{"message":"hello"}' }, [
+				{ status: 307, headers: location("/redirected") },
+				{ status: 503, headers: retryAfterZero },
+			]);
+			assert.equal(result.status, 200);
+			assert.deepEqual(result.requests, ["POST /send body=yes", "POST /redirected body=yes", "POST /redirected body=yes"]);
+		});
+
+		it("Should resend to the last target of a redirect chain", async () => {
+			const result = await sendThroughRedirects("https://example.org/start", { method: HttpMethod.GET }, [
+				{ status: 302, headers: location("/middle") },
+				{ status: 301, headers: location("/end") },
+				{ status: 503, headers: retryAfterZero },
+			]);
+			assert.equal(result.status, 200);
+			assert.deepEqual(result.requests, ["GET /start body=none", "GET /middle body=none", "GET /end body=none", "GET /end body=none"]);
+		});
+
+		it("Should pass the redirect target to shouldRetry", async () => {
+			const urls: string[] = [];
+			const shouldRetry: ShouldRetry = (_delay, _attempt, url) => {
+				urls.push(url);
+				return true;
+			};
+			await sendThroughRedirects(
+				"https://example.org/send",
+				{ method: HttpMethod.GET },
+				[
+					{ status: 302, headers: location("/redirected") },
+					{ status: 503, headers: retryAfterZero },
+				],
+				new RetryHandlerOptions({ shouldRetry }),
+			);
+			assert.deepEqual(urls, ["https://example.org/redirected"]);
+		});
+
+		it("Should not reuse a redirect from an earlier request with the same options object", async () => {
+			const fetchRequestInit: FetchRequestInit = { method: HttpMethod.GET };
+			const first = await sendThroughRedirects("https://example.org/first", fetchRequestInit, [{ status: 302, headers: location("/redirected") }]);
+			assert.deepEqual(first.requests, ["GET /first body=none", "GET /redirected body=none"]);
+			const second = await sendThroughRedirects("https://example.org/second", fetchRequestInit, [{ status: 503, headers: retryAfterZero }]);
+			assert.deepEqual(second.requests, ["GET /second body=none", "GET /second body=none"]);
+		});
+
+		it("Should resend to the original URL when there was no redirect", async () => {
+			const result = await sendThroughRedirects("https://example.org/send", { method: HttpMethod.POST, body: '{"message":"hello"}' }, [{ status: 503, headers: retryAfterZero }]);
+			assert.deepEqual(result.requests, ["POST /send body=yes", "POST /send body=yes"]);
+		});
+	});
 });

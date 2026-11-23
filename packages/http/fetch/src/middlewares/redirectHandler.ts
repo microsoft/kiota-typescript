@@ -15,6 +15,7 @@ import { trace } from "@opentelemetry/api";
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import type { FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions";
 import { deleteRequestHeader } from "../utils/headersUtil";
+import { setRedirectedUrl } from "../utils/redirectedUrl";
 import type { Middleware } from "./middleware";
 import { RedirectHandlerOptionKey, RedirectHandlerOptions } from "./options/redirectHandlerOptions";
 
@@ -172,6 +173,7 @@ export class RedirectHandler implements Middleware {
 			this.updateRequestForRedirect(response.status, fetchRequestInit);
 
 			url = newUrl;
+			setRedirectedUrl(fetchRequestInit, url);
 			if (tracerName) {
 				return await trace.getTracer(tracerName).startActiveSpan(`redirectHandler - redirect ${redirectCount}`, async (span) => {
 					try {

@@ -15,6 +15,7 @@ import { trace } from "@opentelemetry/api";
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import type { FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions";
 import { getRequestHeader, setRequestHeader } from "../utils/headersUtil";
+import { clearRedirectedUrl, getRedirectedUrl } from "../utils/redirectedUrl";
 import { type Middleware } from "./middleware";
 import { RetryHandlerOptionKey, RetryHandlerOptions } from "./options/retryHandlerOptions";
 
@@ -186,6 +187,8 @@ export class RetryHandler implements Middleware {
 		if (!response) {
 			throw new Error("Response is undefined");
 		}
+		// A redirect handler later in the chain updates fetchRequestInit in place for a redirect, so resend it to the redirect target too
+		url = getRedirectedUrl(fetchRequestInit) ?? url;
 		if (retryAttempts < currentOptions.maxRetries && this.isRetry(response) && this.isBuffered(fetchRequestInit) && this.isRetriableForMethod(fetchRequestInit, response, currentOptions) && currentOptions.shouldRetry(currentOptions.delay, retryAttempts, url, fetchRequestInit as RequestInit, response)) {
 			++retryAttempts;
 			setRequestHeader(fetchRequestInit, RetryHandler.RETRY_ATTEMPT_HEADER, retryAttempts.toString());
@@ -227,6 +230,8 @@ export class RetryHandler implements Middleware {
 	 */
 	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		const retryAttempts = 0;
+		// Ignore a redirect recorded while the same options object was used for an earlier request
+		clearRedirectedUrl(requestInit as FetchRequestInit);
 
 		let currentOptions = this.options;
 		if (requestOptions?.[RetryHandlerOptionKey]) {
