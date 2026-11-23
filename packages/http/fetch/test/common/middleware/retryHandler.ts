@@ -687,6 +687,30 @@ describe("RetryHandler.ts", () => {
 			assert.equal(fetchRequestInit.body, '{"message":"hello"}');
 		});
 
+		it("Should leave the caller's headers unchanged after a redirect and a retry", async () => {
+			const fetchRequestInit: FetchRequestInit = { method: HttpMethod.POST, body: '{"message":"hello"}', headers: { "content-type": "application/json" } };
+			await sendThroughRedirects("https://example.org/send", fetchRequestInit, [
+				{ status: 303, headers: location("/redirected") },
+				{ status: 503, headers: retryAfterZero },
+			]);
+			assert.deepEqual(fetchRequestInit.headers, { "content-type": "application/json" });
+		});
+
+		it("Should keep headers passed as a Headers object", async () => {
+			const sentHeaders: Array<string | null> = [];
+			const retryHandler = new RetryHandler();
+			retryHandler.next = {
+				next: undefined,
+				execute: async (_url: string, requestInit: RequestInit) => {
+					sentHeaders.push(new Headers(requestInit.headers).get("x-test"));
+					return new Response(null, { status: 200 });
+				},
+			};
+			const headers = new Headers({ "x-test": "value" });
+			await retryHandler.execute("https://example.org/send", { method: HttpMethod.GET, headers });
+			assert.deepEqual(sentHeaders, ["value"]);
+		});
+
 		it("Should resend to the original URL when there was no redirect", async () => {
 			const result = await sendThroughRedirects("https://example.org/send", { method: HttpMethod.POST, body: '{"message":"hello"}' }, [{ status: 503, headers: retryAfterZero }]);
 			assert.deepEqual(result.requests, ["POST /send body=yes", "POST /send body=yes"]);

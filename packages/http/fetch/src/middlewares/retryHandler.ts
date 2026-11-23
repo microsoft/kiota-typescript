@@ -222,6 +222,24 @@ export class RetryHandler implements Middleware {
 	}
 
 	/**
+	 * To copy the request options and their headers for one execution
+	 * @param requestInit - The request options passed by the caller
+	 * @returns A copy that the middleware chain can update without changing the caller's object
+	 */
+	private copyRequestInit(requestInit: FetchRequestInit): FetchRequestInit {
+		const copy: FetchRequestInit = { ...requestInit };
+		const headers: unknown = requestInit.headers;
+		if (typeof Headers !== "undefined" && headers instanceof Headers) {
+			copy.headers = new Headers(headers) as unknown as FetchRequestInit["headers"];
+		} else if (Array.isArray(headers)) {
+			copy.headers = (headers as unknown[]).map((header) => (Array.isArray(header) ? [...(header as unknown[])] : header)) as unknown as FetchRequestInit["headers"];
+		} else if (headers) {
+			copy.headers = { ...(headers as Record<string, string>) };
+		}
+		return copy;
+	}
+
+	/**
 	 * To execute the current middleware
 	 * @param url - The request url
 	 * @param requestInit - The request options
@@ -230,8 +248,8 @@ export class RetryHandler implements Middleware {
 	 */
 	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		const retryAttempts = 0;
-		// Work on a copy, so a redirect recorded for this execution can't be seen by another request that shares the caller's options object
-		const fetchRequestInit: FetchRequestInit = { ...(requestInit as FetchRequestInit) };
+		// Work on a copy, so changes made while following redirects and retrying stay within this execution and can't affect another request that shares the caller's options object
+		const fetchRequestInit = this.copyRequestInit(requestInit as FetchRequestInit);
 
 		let currentOptions = this.options;
 		if (requestOptions?.[RetryHandlerOptionKey]) {
