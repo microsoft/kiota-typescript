@@ -696,19 +696,47 @@ describe("RetryHandler.ts", () => {
 			assert.deepEqual(fetchRequestInit.headers, { "content-type": "application/json" });
 		});
 
-		it("Should keep headers passed as a Headers object", async () => {
-			const sentHeaders: Array<string | null> = [];
+		const sendOnce = async (fetchRequestInit: RequestInit) => {
+			const sent: RequestInit[] = [];
 			const retryHandler = new RetryHandler();
 			retryHandler.next = {
 				next: undefined,
 				execute: async (_url: string, requestInit: RequestInit) => {
-					sentHeaders.push(new Headers(requestInit.headers).get("x-test"));
+					sent.push(requestInit);
 					return new Response(null, { status: 200 });
 				},
 			};
+			await retryHandler.execute("https://example.org/send", fetchRequestInit);
+			return sent[0];
+		};
+
+		it("Should pass on headers given as a Headers object", async () => {
 			const headers = new Headers({ "x-test": "value" });
-			await retryHandler.execute("https://example.org/send", { method: HttpMethod.GET, headers });
-			assert.deepEqual(sentHeaders, ["value"]);
+			const sent = await sendOnce({ method: HttpMethod.GET, headers });
+			assert.equal(new Headers(sent.headers).get("x-test"), "value");
+		});
+
+		it("Should pass on headers from another fetch implementation unchanged", async () => {
+			class OtherHeaders {
+				private readonly entries: Array<[string, string]> = [["x-test", "value"]];
+				get(name: string) {
+					return this.entries.find(([key]) => key === name)?.[1] ?? null;
+				}
+				[Symbol.iterator]() {
+					return this.entries[Symbol.iterator]();
+				}
+			}
+			const headers = new OtherHeaders();
+			const sent = await sendOnce({ method: HttpMethod.GET, headers: headers as unknown as HeadersInit });
+			assert.strictEqual(sent.headers, headers as unknown as HeadersInit);
+		});
+
+		it("Should keep request options inherited from a prototype", async () => {
+			const fetchRequestInit = Object.create({ method: HttpMethod.POST, body: '{"message":"hello"}', credentials: "include" }) as RequestInit;
+			const sent = await sendOnce(fetchRequestInit);
+			assert.equal(sent.method, HttpMethod.POST);
+			assert.equal(sent.body, '{"message":"hello"}');
+			assert.equal(sent.credentials, "include");
 		});
 
 		it("Should resend to the original URL when there was no redirect", async () => {

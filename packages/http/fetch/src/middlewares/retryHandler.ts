@@ -227,15 +227,19 @@ export class RetryHandler implements Middleware {
 	 * @returns A copy that the middleware chain can update without changing the caller's object
 	 */
 	private copyRequestInit(requestInit: FetchRequestInit): FetchRequestInit {
-		const copy: FetchRequestInit = { ...requestInit };
-		const headers: unknown = requestInit.headers;
-		if (typeof Headers !== "undefined" && headers instanceof Headers) {
-			copy.headers = new Headers(headers) as unknown as FetchRequestInit["headers"];
-		} else if (Array.isArray(headers)) {
-			copy.headers = (headers as unknown[]).map((header) => (Array.isArray(header) ? [...(header as unknown[])] : header)) as unknown as FetchRequestInit["headers"];
-		} else if (headers) {
+		const copy: Record<string, unknown> = {};
+		// Include inherited options, so an init built on a prototype keeps them
+		// eslint-disable-next-line guard-for-in -- inherited properties are copied on purpose
+		for (const key in requestInit) {
+			copy[key] = (requestInit as Record<string, unknown>)[key];
+		}
+		const headers = copy.headers;
+		if (Array.isArray(headers)) {
+			copy.headers = (headers as unknown[]).map((header) => (Array.isArray(header) ? [...(header as unknown[])] : header));
+		} else if (typeof headers === "object" && headers !== null && [Object.prototype, null].includes(Object.getPrototypeOf(headers) as object | null)) {
 			copy.headers = { ...(headers as Record<string, string>) };
 		}
+		// Any other headers container, such as a Headers object from any fetch implementation, is passed on unchanged
 		return copy;
 	}
 
