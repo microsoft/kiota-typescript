@@ -15,7 +15,7 @@ import { trace } from "@opentelemetry/api";
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import type { FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions";
 import { getRequestHeader, setRequestHeader } from "../utils/headersUtil";
-import { clearRedirectedUrl, getRedirectedUrl } from "../utils/redirectedUrl";
+import { getRedirectedUrl } from "../utils/redirectedUrl";
 import { type Middleware } from "./middleware";
 import { RetryHandlerOptionKey, RetryHandlerOptions } from "./options/retryHandlerOptions";
 
@@ -230,8 +230,8 @@ export class RetryHandler implements Middleware {
 	 */
 	public execute(url: string, requestInit: RequestInit, requestOptions?: Record<string, RequestOption>): Promise<Response> {
 		const retryAttempts = 0;
-		// Ignore a redirect recorded while the same options object was used for an earlier request
-		clearRedirectedUrl(requestInit as FetchRequestInit);
+		// Work on a copy, so a redirect recorded for this execution can't be seen by another request that shares the caller's options object
+		const fetchRequestInit: FetchRequestInit = { ...(requestInit as FetchRequestInit) };
 
 		let currentOptions = this.options;
 		if (requestOptions?.[RetryHandlerOptionKey]) {
@@ -242,7 +242,7 @@ export class RetryHandler implements Middleware {
 			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("retryHandler - execute", async (span) => {
 				try {
 					span.setAttribute("com.microsoft.kiota.handler.retry.enable", true);
-					return await this.executeWithRetry(url, requestInit as FetchRequestInit, retryAttempts, currentOptions, requestOptions, obsOptions.getTracerInstrumentationName());
+					return await this.executeWithRetry(url, fetchRequestInit, retryAttempts, currentOptions, requestOptions, obsOptions.getTracerInstrumentationName());
 				} catch (error) {
 					span.recordException(error as Error);
 					throw error;
@@ -251,6 +251,6 @@ export class RetryHandler implements Middleware {
 				}
 			});
 		}
-		return this.executeWithRetry(url, requestInit as FetchRequestInit, retryAttempts, currentOptions, requestOptions);
+		return this.executeWithRetry(url, fetchRequestInit, retryAttempts, currentOptions, requestOptions);
 	}
 }

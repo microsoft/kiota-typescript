@@ -643,6 +643,50 @@ describe("RetryHandler.ts", () => {
 			assert.deepEqual(second.requests, ["GET /second body=none", "GET /second body=none"]);
 		});
 
+		it("Should not resend to a redirect from a concurrent request with the same options object", async () => {
+			const requests: string[] = [];
+			let redirectFollowed: () => void = () => undefined;
+			const firstRedirected = new Promise<void>((resolve) => {
+				redirectFollowed = resolve;
+			});
+			let secondRequestCount = 0;
+			const retryHandler = new RetryHandler();
+			const redirectHandler = new RedirectHandler();
+			retryHandler.next = redirectHandler;
+			redirectHandler.next = {
+				next: undefined,
+				execute: async (requestUrl: string) => {
+					const path = new URL(requestUrl).pathname;
+					requests.push(path);
+					if (path === "/first") {
+						return new Response(null, { status: 302, headers: location("/redirected") });
+					}
+					if (path === "/redirected") {
+						redirectFollowed();
+						return new Response(null, { status: 200 });
+					}
+					// The second request gets a 503 only after the first has followed its redirect
+					if (++secondRequestCount === 1) {
+						await firstRedirected;
+						return new Response(null, { status: 503, headers: retryAfterZero });
+					}
+					return new Response(null, { status: 200 });
+				},
+			};
+			const fetchRequestInit: FetchRequestInit = { method: HttpMethod.GET };
+			const [first, second] = await Promise.all([retryHandler.execute("https://example.org/first", fetchRequestInit as RequestInit), retryHandler.execute("https://example.org/second", fetchRequestInit as RequestInit)]);
+			assert.equal(first.status, 200);
+			assert.equal(second.status, 200);
+			assert.deepEqual(requests.sort(), ["/first", "/redirected", "/second", "/second"]);
+		});
+
+		it("Should leave the caller's method and body unchanged after a redirect", async () => {
+			const fetchRequestInit: FetchRequestInit = { method: HttpMethod.POST, body: '{"message":"hello"}' };
+			await sendThroughRedirects("https://example.org/send", fetchRequestInit, [{ status: 303, headers: location("/redirected") }]);
+			assert.equal(fetchRequestInit.method, HttpMethod.POST);
+			assert.equal(fetchRequestInit.body, '{"message":"hello"}');
+		});
+
 		it("Should resend to the original URL when there was no redirect", async () => {
 			const result = await sendThroughRedirects("https://example.org/send", { method: HttpMethod.POST, body: '{"message":"hello"}' }, [{ status: 503, headers: retryAfterZero }]);
 			assert.deepEqual(result.requests, ["POST /send body=yes", "POST /send body=yes"]);

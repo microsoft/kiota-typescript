@@ -33,11 +33,3 @@ export const setRedirectedUrl = (fetchRequestInit: FetchRequestInit, url: string
  * @returns The URL of the last redirect target, or undefined if the request wasn't redirected
  */
 export const getRedirectedUrl = (fetchRequestInit: FetchRequestInit): string | undefined => redirectedUrls.get(fetchRequestInit);
-
-/**
- * Forgets any redirect recorded for the request
- * @param fetchRequestInit - The request options
- */
-export const clearRedirectedUrl = (fetchRequestInit: FetchRequestInit): void => {
-	redirectedUrls.delete(fetchRequestInit);
-};
