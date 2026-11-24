@@ -16,7 +16,8 @@ import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import type { FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions";
 import { deleteRequestHeader } from "../utils/headersUtil";
 import type { Middleware } from "./middleware";
-import { RedirectHandlerOptionKey, RedirectHandlerOptions } from "./options/redirectHandlerOptions";
+import { defaultScrubSensitiveHeaders, RedirectHandlerOptionKey, RedirectHandlerOptions } from "./options/redirectHandlerOptions";
+import { isHeadersLike } from "../utils/headersUtil";
 
 /**
  *
@@ -132,10 +133,8 @@ export class RedirectHandler implements Middleware {
 
 		fetchRequestInit.method = HttpMethod.GET;
 		delete fetchRequestInit.body;
-		for (const header of Object.keys(fetchRequestInit.headers ?? {})) {
-			if (RedirectHandler.BODY_HEADERS.has(header.toLowerCase())) {
-				deleteRequestHeader(fetchRequestInit, header);
-			}
+		for (const header of RedirectHandler.BODY_HEADERS) {
+			deleteRequestHeader(fetchRequestInit, header);
 		}
 	}
 
@@ -166,7 +165,7 @@ export class RedirectHandler implements Middleware {
 
 			// Scrub sensitive headers before following the redirect
 			if (fetchRequestInit.headers) {
-				currentOptions.scrubSensitiveHeaders(fetchRequestInit.headers, url, newUrl);
+				this.scrubHeaders(fetchRequestInit, currentOptions, url, newUrl);
 			}
 
 			this.updateRequestForRedirect(response.status, fetchRequestInit);
@@ -189,6 +188,119 @@ export class RedirectHandler implements Middleware {
 			return await this.executeWithRedirect(url, fetchRequestInit, redirectCount, currentOptions, requestOptions, tracerName);
 		} else {
 			return response;
+		}
+	}
+
+	/**
+	 * Scrubs sensitive headers prior to following a redirect.
+	 * If the configured scrubber is the default implementation, it operates directly on all
+	 * HeadersInit formats (Headers, tuple arrays, and records) case-insensitively.
+	 * If a custom scrubber adhering to the record-based ScrubSensitiveHeaders contract is configured,
+	 * non-record header representations are adapted to a record and any modifications (deletions or updates)
+	 * are propagated back to the underlying headers structure.
+	 * @param fetchRequestInit - The fetch request init object.
+	 * @param currentOptions - The redirect handler options.
+	 * @param originalUrl - The original request URL.
+	 * @param newUrl - The new redirect URL.
+	 */
+	private scrubHeaders(fetchRequestInit: FetchRequestInit, currentOptions: RedirectHandlerOptions, originalUrl: string, newUrl: string): void {
+		const headers = fetchRequestInit.headers;
+		if (!headers) {
+			return;
+		}
+
+		if (currentOptions.scrubSensitiveHeaders === defaultScrubSensitiveHeaders) {
+			defaultScrubSensitiveHeaders(headers, originalUrl, newUrl);
+			return;
+		}
+
+		if (isHeadersLike(headers)) {
+			const record: Record<string, string> = {};
+			if (typeof headers.forEach === "function") {
+				headers.forEach((value, key) => {
+					record[key] = value;
+				});
+			} else if (typeof headers[Symbol.iterator] === "function") {
+				for (const [key, value] of headers as Iterable<[string, string]>) {
+					record[key] = value;
+				}
+			} else if (typeof headers.entries === "function") {
+				for (const [key, value] of headers.entries()) {
+					record[key] = value;
+				}
+			}
+			const originalRecord = { ...record };
+			currentOptions.scrubSensitiveHeaders(record, originalUrl, newUrl);
+			const remainingKeysLower = new Set(Object.keys(record).map((k) => k.toLowerCase()));
+			const toDelete: string[] = [];
+			if (typeof headers.forEach === "function") {
+				headers.forEach((_, key) => {
+					if (!remainingKeysLower.has(key.toLowerCase())) {
+						toDelete.push(key);
+					}
+				});
+			} else if (typeof headers[Symbol.iterator] === "function") {
+				for (const [key] of headers as Iterable<[string, string]>) {
+					if (!remainingKeysLower.has(key.toLowerCase())) {
+						toDelete.push(key);
+					}
+				}
+			} else if (typeof headers.entries === "function") {
+				for (const [key] of headers.entries()) {
+					if (!remainingKeysLower.has(key.toLowerCase())) {
+						toDelete.push(key);
+					}
+				}
+			}
+			for (const key of toDelete) {
+				headers.delete(key);
+			}
+			for (const [key, value] of Object.entries(record)) {
+				const origKey = Object.keys(originalRecord).find((k) => k.toLowerCase() === key.toLowerCase());
+				if (!origKey || originalRecord[origKey] !== value) {
+					headers.set(key, value);
+				}
+			}
+		} else if (Array.isArray(headers)) {
+			const tupleHeaders = headers as [string, string][];
+			const record: Record<string, string> = {};
+			for (const [key, value] of tupleHeaders) {
+				const existingKey = Object.keys(record).find((k) => k.toLowerCase() === key.toLowerCase());
+				if (existingKey) {
+					record[existingKey] = `${record[existingKey]}, ${value}`;
+				} else {
+					record[key] = value;
+				}
+			}
+			const originalRecord = { ...record };
+			currentOptions.scrubSensitiveHeaders(record, originalUrl, newUrl);
+			const remainingKeysLower = new Set(Object.keys(record).map((k) => k.toLowerCase()));
+			for (let i = tupleHeaders.length - 1; i >= 0; i--) {
+				const key = tupleHeaders[i][0];
+				if (!remainingKeysLower.has(key.toLowerCase())) {
+					tupleHeaders.splice(i, 1);
+				}
+			}
+			for (const [key, value] of Object.entries(record)) {
+				const origKey = Object.keys(originalRecord).find((k) => k.toLowerCase() === key.toLowerCase());
+				if (!origKey) {
+					tupleHeaders.push([key, value]);
+				} else if (originalRecord[origKey] !== value) {
+					const firstIdx = tupleHeaders.findIndex(([k]) => k.toLowerCase() === key.toLowerCase());
+					if (firstIdx >= 0) {
+						tupleHeaders[firstIdx] = [key, value];
+						for (let i = tupleHeaders.length - 1; i > firstIdx; i--) {
+							if (tupleHeaders[i][0].toLowerCase() === key.toLowerCase()) {
+								tupleHeaders.splice(i, 1);
+							}
+						}
+					} else {
+						tupleHeaders.push([key, value]);
+					}
+				}
+			}
+		} else {
+			currentOptions.scrubSensitiveHeaders(headers, originalUrl, newUrl);
 		}
 	}
 

@@ -11,7 +11,7 @@ import { Span, trace } from "@opentelemetry/api";
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import type { Middleware } from "./middleware";
 import { CompressionHandlerOptions, CompressionHandlerOptionsKey } from "./options/compressionHandlerOptions";
-import type { FetchHeadersInit, FetchRequestInit } from "../utils/fetchDefinitions";
+import type { FetchRequestInit } from "../utils/fetchDefinitions";
 import { deleteRequestHeader, getRequestHeader, setRequestHeader } from "../utils/headersUtil";
 
 /**
@@ -29,6 +29,11 @@ export class CompressionHandler implements Middleware {
 	 * A member holding the name of content encoding header
 	 */
 	private static readonly CONTENT_ENCODING_HEADER = "Content-Encoding";
+
+	/**
+	 * A member holding the name of content type header
+	 */
+	private static readonly CONTENT_TYPE_HEADER = "Content-Type";
 
 	/**
 	 * Creates a new instance of the CompressionHandler class
@@ -67,7 +72,7 @@ export class CompressionHandler implements Middleware {
 	}
 
 	private async executeInternal(options: CompressionHandlerOptions, url: string, requestInit: FetchRequestInit, requestOptions?: Record<string, RequestOption>, span?: Span): Promise<Response> {
-		if (!options.ShouldCompress || this.contentRangeBytesIsPresent(requestInit.headers) || this.contentEncodingIsPresent(requestInit.headers) || requestInit.body === null || requestInit.body === undefined) {
+		if (!options.ShouldCompress || this.contentRangeBytesIsPresent(requestInit) || this.contentEncodingIsPresent(requestInit) || requestInit.body === null || requestInit.body === undefined) {
 			return this.next?.execute(url, requestInit as RequestInit, requestOptions) ?? Promise.reject(new Error("Response is undefined"));
 		}
 
@@ -78,12 +83,10 @@ export class CompressionHandler implements Middleware {
 
 		// compress the request body
 		const compressedBody = await this.compressRequestBody(unCompressedBody);
-		if (unCompressedBody instanceof URLSearchParams) {
-			const headers = new Headers(requestInit.headers);
-			if (!headers.has("Content-Type")) {
-				headers.set("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
-			}
-			requestInit.headers = Object.fromEntries(headers.entries());
+		let addedUrlEncodedContentType = false;
+		if (unCompressedBody instanceof URLSearchParams && getRequestHeader(requestInit, CompressionHandler.CONTENT_TYPE_HEADER) === undefined) {
+			setRequestHeader(requestInit, CompressionHandler.CONTENT_TYPE_HEADER, "application/x-www-form-urlencoded;charset=UTF-8");
+			addedUrlEncodedContentType = true;
 		}
 
 		// add Content-Encoding to request header
@@ -100,6 +103,9 @@ export class CompressionHandler implements Middleware {
 		if (response.status === 415) {
 			// remove the Content-Encoding header
 			deleteRequestHeader(requestInit, CompressionHandler.CONTENT_ENCODING_HEADER);
+			if (addedUrlEncodedContentType) {
+				deleteRequestHeader(requestInit, CompressionHandler.CONTENT_TYPE_HEADER);
+			}
 			requestInit.body = unCompressedBody;
 			span?.setAttribute("http.request.body.compressed", false);
 			span?.setAttribute("http.request.body.size", unCompressedBodySize);
@@ -109,27 +115,22 @@ export class CompressionHandler implements Middleware {
 		return response !== undefined && response !== null ? Promise.resolve(response) : Promise.reject(new Error("Response is undefined"));
 	}
 
-	private contentRangeBytesIsPresent(header: FetchHeadersInit | undefined): boolean {
-		if (!header) {
-			return false;
-		}
-		const contentRange = getRequestHeader(header, CompressionHandler.CONTENT_RANGE_HEADER);
+	private contentRangeBytesIsPresent(requestInit: FetchRequestInit): boolean {
+		const contentRange = getRequestHeader(requestInit, CompressionHandler.CONTENT_RANGE_HEADER);
 		return contentRange?.toLowerCase().includes("bytes") ?? false;
 	}
 
-	private contentEncodingIsPresent(header: FetchHeadersInit | undefined): boolean {
-		if (!header) {
-			return false;
-		}
-		return getRequestHeader(header, CompressionHandler.CONTENT_ENCODING_HEADER) !== undefined;
+	private contentEncodingIsPresent(requestInit: FetchRequestInit): boolean {
+		const contentEncoding = getRequestHeader(requestInit, CompressionHandler.CONTENT_ENCODING_HEADER);
+		return contentEncoding !== undefined && contentEncoding.trim().length > 0;
 	}
 
 	private getRequestBodySize(body: unknown): number {
-		if (!body) {
+		if (body === null || body === undefined) {
 			return 0;
 		}
 		if (typeof body === "string") {
-			return body.length;
+			return new TextEncoder().encode(body).byteLength;
 		}
 		if (body instanceof URLSearchParams) {
 			return new TextEncoder().encode(body.toString()).byteLength;
@@ -150,21 +151,23 @@ export class CompressionHandler implements Middleware {
 	}
 
 	private readBodyAsBytes(body: unknown): { stream: ReadableStream<Uint8Array>; size: number } {
-		if (!body) {
-			return { stream: new ReadableStream<Uint8Array>(), size: 0 };
-		}
-
 		const uint8ArrayToStream = (uint8Array: Uint8Array): ReadableStream<Uint8Array> => {
 			return new ReadableStream({
 				start: (controller) => {
-					controller.enqueue(uint8Array);
+					if (uint8Array.byteLength > 0) {
+						controller.enqueue(uint8Array);
+					}
 					controller.close();
 				},
 			});
 		};
 
+		if (body === null || body === undefined) {
+			return { stream: uint8ArrayToStream(new Uint8Array(0)), size: 0 };
+		}
 		if (typeof body === "string") {
-			return { stream: uint8ArrayToStream(new TextEncoder().encode(body)), size: body.length };
+			const bytes = new TextEncoder().encode(body);
+			return { stream: uint8ArrayToStream(bytes), size: bytes.byteLength };
 		}
 		if (body instanceof URLSearchParams) {
 			const bytes = new TextEncoder().encode(body.toString());
