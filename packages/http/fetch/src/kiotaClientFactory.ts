@@ -9,6 +9,7 @@ import { Middleware, MiddlewareFactory } from ".";
 import { HttpClient } from "./httpClient";
 import { BaseBearerTokenAuthenticationProvider } from "@microsoft/kiota-abstractions";
 import { AuthorizationHandler } from "./middlewares/authorizationHandler";
+import { UserAgentHandler } from "./middlewares/userAgentHandler";
 
 /**
  *
@@ -47,9 +48,10 @@ export class KiotaClientFactory {
 	 * ```
 	 */
 	public static create(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args), middlewares?: Middleware[], authenticationProvider?: BaseBearerTokenAuthenticationProvider): HttpClient {
-		const middleware = middlewares || MiddlewareFactory.getDefaultMiddlewares(customFetch);
+		const middleware = middlewares ? [...middlewares] : MiddlewareFactory.getDefaultMiddlewares(customFetch);
 		if (authenticationProvider) {
-			middleware.unshift(new AuthorizationHandler(authenticationProvider));
+			const index = middlewares ? 0 : middleware.findIndex((handler) => handler instanceof UserAgentHandler) + 1;
+			middleware.splice(index, 0, new AuthorizationHandler(authenticationProvider));
 		}
 		return new HttpClient(customFetch, ...middleware);
 	}

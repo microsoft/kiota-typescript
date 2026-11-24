@@ -5,23 +5,23 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { inNodeEnv } from "@microsoft/kiota-abstractions";
 import { assert, describe, it } from "vitest";
 
-import { CustomFetchHandler, HeadersInspectionHandler, BodyInspectionHandler, KiotaClientFactory, ParametersNameDecodingHandler, RedirectHandler, RetryHandler, UrlReplaceHandler, UserAgentHandler } from "../../src";
+import { CustomFetchHandler, HeadersInspectionHandler, BodyInspectionHandler, KiotaClientFactory, ParametersNameDecodingHandler, RedirectHandler, RetryHandler, UrlReplaceHandler, UserAgentHandler } from "../../src/browser";
 
 describe("browser - KiotaClientFactory", () => {
 	it("Should return the http client", () => {
 		const httpClient = KiotaClientFactory.create();
 		assert.isDefined(httpClient);
 		assert.isDefined(httpClient["middleware"]);
-		const middleware = httpClient["middleware"];
-		assert.isTrue(middleware instanceof RetryHandler);
-		assert.isTrue(middleware?.next instanceof RedirectHandler);
-		assert.isTrue(middleware?.next?.next instanceof ParametersNameDecodingHandler);
-		assert.isTrue(middleware?.next?.next?.next instanceof UserAgentHandler);
-		assert.isTrue(middleware?.next?.next?.next?.next instanceof HeadersInspectionHandler);
-		assert.isTrue(middleware?.next?.next?.next?.next?.next instanceof BodyInspectionHandler);
-		assert.isTrue(middleware?.next?.next?.next?.next?.next?.next instanceof UrlReplaceHandler);
-		assert.isTrue(middleware?.next?.next?.next?.next?.next?.next?.next instanceof CustomFetchHandler);
+		let middleware = httpClient["middleware"];
+		const handlers = [];
+		while (middleware && !(middleware instanceof CustomFetchHandler)) {
+			handlers.push(middleware.constructor);
+			middleware = middleware.next;
+		}
+		assert.deepEqual(handlers, [UrlReplaceHandler, ParametersNameDecodingHandler, UserAgentHandler, ...(inNodeEnv() ? [RedirectHandler] : []), RetryHandler, HeadersInspectionHandler, BodyInspectionHandler]);
+		assert.instanceOf(middleware, CustomFetchHandler);
 	});
 });

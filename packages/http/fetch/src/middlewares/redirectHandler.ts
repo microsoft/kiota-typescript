@@ -206,6 +206,10 @@ export class RedirectHandler implements Middleware {
 			currentOptions = requestOptions[RedirectHandlerOptionKey] as RedirectHandlerOptions;
 		}
 		(requestInit as FetchRequestInit).redirect = RedirectHandler.MANUAL_REDIRECT;
+		if (requestInit.headers && Symbol.iterator in requestInit.headers) {
+			// Use a mutable record so redirects can scrub Fetch Headers and header tuples.
+			requestInit.headers = Object.fromEntries(new Headers(requestInit.headers));
+		}
 		const obsOptions = getObservabilityOptionsFromRequest(requestOptions);
 		if (obsOptions) {
 			return trace.getTracer(obsOptions.getTracerInstrumentationName()).startActiveSpan("redirectHandler - execute", async (span) => {

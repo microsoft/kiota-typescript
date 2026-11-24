@@ -14,7 +14,7 @@ import { trace } from "@opentelemetry/api";
 
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
 import type { FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions";
-import { getRequestHeader, setRequestHeader } from "../utils/headersUtil";
+import { deleteRequestHeader, getRequestHeader, setRequestHeader } from "../utils/headersUtil";
 import { type Middleware } from "./middleware";
 import { RetryHandlerOptionKey, RetryHandlerOptions } from "./options/retryHandlerOptions";
 
@@ -188,31 +188,36 @@ export class RetryHandler implements Middleware {
 		}
 		if (retryAttempts < currentOptions.maxRetries && this.isRetry(response) && this.isBuffered(fetchRequestInit) && this.isRetriableForMethod(fetchRequestInit, response, currentOptions) && currentOptions.shouldRetry(currentOptions.delay, retryAttempts, url, fetchRequestInit as RequestInit, response)) {
 			++retryAttempts;
+			const previousAttempt = getRequestHeader(fetchRequestInit, RetryHandler.RETRY_ATTEMPT_HEADER);
 			setRequestHeader(fetchRequestInit, RetryHandler.RETRY_ATTEMPT_HEADER, retryAttempts.toString());
-			let delay = null;
-			if (response) {
-				delay = this.getDelay(response, retryAttempts, currentOptions.delay);
+			try {
+				const delay = this.getDelay(response, retryAttempts, currentOptions.delay);
 				await this.sleep(delay);
-			}
-			if (tracerName) {
-				return await trace.getTracer(tracerName).startActiveSpan(`retryHandler - attempt ${retryAttempts}`, async (span) => {
-					try {
-						span.setAttribute("http.request.resend_count", retryAttempts);
-						if (delay) {
-							span.setAttribute("http.request.resend_delay", delay);
+				if (tracerName) {
+					return await trace.getTracer(tracerName).startActiveSpan(`retryHandler - attempt ${retryAttempts}`, async (span) => {
+						try {
+							span.setAttribute("http.request.resend_count", retryAttempts);
+							if (delay) {
+								span.setAttribute("http.request.resend_delay", delay);
+							}
+							span.setAttribute("http.response.status_code", response.status);
+							return await this.executeWithRetry(url, fetchRequestInit, retryAttempts, currentOptions, requestOptions, tracerName);
+						} catch (error) {
+							span.recordException(error as Error);
+							throw error;
+						} finally {
+							span.end();
 						}
-						span.setAttribute("http.response.status_code", response.status);
-						return await this.executeWithRetry(url, fetchRequestInit, retryAttempts, currentOptions, requestOptions, tracerName);
-					} catch (error) {
-						span.recordException(error as Error);
-						throw error;
-					} finally {
-						span.end();
-					}
-				});
+					});
+				}
+				return await this.executeWithRetry(url, fetchRequestInit, retryAttempts, currentOptions, requestOptions, tracerName);
+			} finally {
+				if (previousAttempt === undefined) {
+					deleteRequestHeader(fetchRequestInit, RetryHandler.RETRY_ATTEMPT_HEADER);
+				} else {
+					setRequestHeader(fetchRequestInit, RetryHandler.RETRY_ATTEMPT_HEADER, previousAttempt);
+				}
 			}
-
-			return await this.executeWithRetry(url, fetchRequestInit, retryAttempts, currentOptions, requestOptions, tracerName);
 		} else {
 			return response;
 		}

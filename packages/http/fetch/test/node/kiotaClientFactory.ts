@@ -6,23 +6,28 @@
  */
 
 import { assert, describe, it } from "vitest";
-import { CustomFetchHandler, HeadersInspectionHandler, BodyInspectionHandler, KiotaClientFactory, ParametersNameDecodingHandler, RedirectHandler, RetryHandler, UrlReplaceHandler, UserAgentHandler, AuthorizationHandler } from "../../src";
+import { HeadersInspectionHandler, KiotaClientFactory, ParametersNameDecodingHandler, RedirectHandler, RetryHandler, UrlReplaceHandler, UserAgentHandler, AuthorizationHandler } from "../../src";
 import { BaseBearerTokenAuthenticationProvider } from "@microsoft/kiota-abstractions";
 
-describe("browser - KiotaClientFactory", () => {
+describe("KiotaClientFactory", () => {
 	it("Should return the http client", () => {
 		const httpClient = KiotaClientFactory.create();
 		assert.isDefined(httpClient);
 		assert.isDefined(httpClient["middleware"]);
 		const middleware = httpClient["middleware"];
-		assert.isTrue(middleware instanceof RetryHandler);
-		assert.isTrue(middleware?.next instanceof RedirectHandler);
-		assert.isTrue(middleware?.next?.next instanceof ParametersNameDecodingHandler);
-		assert.isTrue(middleware?.next?.next?.next instanceof UserAgentHandler);
-		assert.isTrue(middleware?.next?.next?.next?.next instanceof HeadersInspectionHandler);
-		assert.isTrue(middleware?.next?.next?.next?.next?.next instanceof BodyInspectionHandler);
-		assert.isTrue(middleware?.next?.next?.next?.next?.next?.next instanceof UrlReplaceHandler);
-		assert.isTrue(middleware?.next?.next?.next?.next?.next?.next?.next instanceof CustomFetchHandler);
+		assert.isTrue(middleware instanceof UrlReplaceHandler);
+		assert.isTrue(middleware?.next instanceof ParametersNameDecodingHandler);
+		assert.isTrue(middleware?.next?.next instanceof UserAgentHandler);
+	});
+
+	it("Should add authorization after URL processing and the user agent in the default pipeline", () => {
+		const authenticationProvider = new BaseBearerTokenAuthenticationProvider({} as any);
+		const httpClient = KiotaClientFactory.create(undefined, undefined, authenticationProvider);
+		const middleware = httpClient["middleware"];
+		assert.isTrue(middleware instanceof UrlReplaceHandler);
+		assert.isTrue(middleware?.next instanceof ParametersNameDecodingHandler);
+		assert.isTrue(middleware?.next?.next instanceof UserAgentHandler);
+		assert.isTrue(middleware?.next?.next?.next instanceof AuthorizationHandler);
 	});
 
 	it("Should maintain the middleware array order", () => {
@@ -52,5 +57,7 @@ describe("browser - KiotaClientFactory", () => {
 		assert.isTrue(middleware?.next?.next instanceof ParametersNameDecodingHandler);
 		assert.isTrue(middleware?.next?.next?.next instanceof RetryHandler);
 		assert.isTrue(middleware?.next?.next?.next?.next instanceof RedirectHandler);
+		assert.lengthOf(middlewares, 5);
+		assert.isTrue(middlewares[0] instanceof UserAgentHandler);
 	});
 });
