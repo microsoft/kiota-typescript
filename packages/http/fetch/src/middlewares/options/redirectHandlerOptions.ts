@@ -25,7 +25,7 @@ export type ShouldRedirect = (response: Response) => boolean;
  * @param originalUrl - The original request URL
  * @param newUrl - The new redirect URL
  */
-export type ScrubSensitiveHeaders = (headers: Record<string, string>, originalUrl: string, newUrl: string) => void;
+export type ScrubSensitiveHeaders = (headers: HeadersInit, originalUrl: string, newUrl: string) => void;
 
 export const RedirectHandlerOptionKey = "RedirectHandlerOption";
 
@@ -49,7 +49,7 @@ export interface RedirectHandlerOptionsParams {
  * @param originalUrl - The original request URL
  * @param newUrl - The new redirect URL
  */
-export const defaultScrubSensitiveHeaders = (headers: HeadersInit, originalUrl: string, newUrl: string): void => {
+export const defaultScrubSensitiveHeaders: ScrubSensitiveHeaders = (headers: HeadersInit, originalUrl: string, newUrl: string): void => {
 	if (!headers || !originalUrl || !newUrl) {
 		return;
 	}
@@ -103,7 +103,7 @@ export class RedirectHandlerOptions implements RequestOption {
 	 * The default {@link ScrubSensitiveHeaders} callback used when none is supplied.
 	 * Delegates to the exported {@link defaultScrubSensitiveHeaders} function.
 	 */
-	private static readonly defaultScrubSensitiveHeaders = defaultScrubSensitiveHeaders;
+	private static readonly defaultScrubSensitiveHeaders: ScrubSensitiveHeaders = defaultScrubSensitiveHeaders;
 
 	/**
 	 *
