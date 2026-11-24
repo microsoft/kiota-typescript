@@ -624,6 +624,108 @@ describe("RedirectHandler.ts", () => {
 			assert.equal(response.status, 200);
 		});
 
+		class CrossRealmHeaders {
+			private map = new Map<string, string>();
+			public get(key: string): string | null {
+				return this.map.get(key.toLowerCase()) ?? null;
+			}
+			public set(key: string, value: string): void {
+				this.map.set(key.toLowerCase(), value);
+			}
+			public delete(key: string): void {
+				this.map.delete(key.toLowerCase());
+			}
+			public forEach(cb: (value: string, key: string) => void): void {
+				this.map.forEach(cb);
+			}
+			public *entries(): IterableIterator<[string, string]> {
+				yield* this.map.entries();
+			}
+			public *[Symbol.iterator](): IterableIterator<[string, string]> {
+				yield* this.map.entries();
+			}
+		}
+
+		it("Should adapt cross-realm Headers instance and propagate deletions from custom record scrubber", async () => {
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const headers = new CrossRealmHeaders();
+			assert.isFalse(headers instanceof Headers);
+			headers.set("Authorization", "Bearer TEST");
+			headers.set("X-Custom-Secret", "secret-value");
+			headers.set("X-Keep-Me", "keep-value");
+			const fetchRequestInit = {
+				method: "GET",
+				headers: headers as unknown as Headers,
+			};
+
+			const customScrubber = (hdrRecord: Record<string, string>, originalUrl: string, newUrl: string) => {
+				const isDiff = new URL(originalUrl).host !== new URL(newUrl).host;
+				if (isDiff) {
+					for (const key of Object.keys(hdrRecord)) {
+						if (key.toLowerCase() === "authorization" || key.toLowerCase() === "x-custom-secret") {
+							delete hdrRecord[key];
+						}
+					}
+					hdrRecord["x-redirected"] = "true";
+				}
+			};
+
+			const options = new RedirectHandlerOptions({ scrubSensitiveHeaders: customScrubber });
+			const customHandler = new RedirectHandler(options);
+			customHandler.next = dummyFetchHandler;
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "https://evil.attacker.com/steal",
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+
+			const response = await customHandler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, options);
+			assert.isNull(headers.get("authorization"));
+			assert.isNull(headers.get("x-custom-secret"));
+			assert.equal(headers.get("x-keep-me"), "keep-value");
+			assert.equal(headers.get("x-redirected"), "true");
+			assert.equal(response.status, 200);
+		});
+
+		it("Should scrub default sensitive headers on cross-host redirects with cross-realm Headers instance", async () => {
+			const requestUrl = "https://graph.microsoft.com/v1.0/me";
+			const headers = new CrossRealmHeaders();
+			assert.isFalse(headers instanceof Headers);
+			headers.set("Authorization", "Bearer TEST");
+			headers.set("Cookie", "session=123");
+			headers.set("Proxy-Authorization", "Basic proxy");
+			headers.set("X-Keep-Me", "keep-value");
+			const fetchRequestInit = {
+				method: "GET",
+				headers: headers as unknown as Headers,
+			};
+
+			const handler = new RedirectHandler();
+			handler.next = dummyFetchHandler;
+
+			dummyFetchHandler.setResponses([
+				new Response(null, {
+					status: 301,
+					headers: {
+						[RedirectHandler["LOCATION_HEADER"]]: "https://evil.attacker.com/steal",
+					},
+				}),
+				new Response("ok", { status: 200 }),
+			] as any);
+
+			const response = await handler["executeWithRedirect"](requestUrl, fetchRequestInit, 0, new RedirectHandlerOptions());
+			assert.isNull(headers.get("authorization"));
+			assert.isNull(headers.get("cookie"));
+			assert.isNull(headers.get("proxy-authorization"));
+			assert.equal(headers.get("x-keep-me"), "keep-value");
+			assert.equal(response.status, 200);
+		});
+
 		it("Should adapt tuple array and propagate deletions from custom record scrubber", async () => {
 			const requestUrl = "https://graph.microsoft.com/v1.0/me";
 			const headers: [string, string][] = [

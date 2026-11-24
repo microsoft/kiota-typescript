@@ -17,6 +17,7 @@ import type { FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions"
 import { deleteRequestHeader } from "../utils/headersUtil";
 import type { Middleware } from "./middleware";
 import { defaultScrubSensitiveHeaders, RedirectHandlerOptionKey, RedirectHandlerOptions } from "./options/redirectHandlerOptions";
+import { isHeadersLike } from "../utils/headersUtil";
 
 /**
  *
@@ -213,20 +214,44 @@ export class RedirectHandler implements Middleware {
 			return;
 		}
 
-		if (typeof Headers !== "undefined" && headers instanceof Headers) {
+		if (isHeadersLike(headers)) {
 			const record: Record<string, string> = {};
-			headers.forEach((value, key) => {
-				record[key] = value;
-			});
+			if (typeof headers.forEach === "function") {
+				headers.forEach((value, key) => {
+					record[key] = value;
+				});
+			} else if (typeof headers[Symbol.iterator] === "function") {
+				for (const [key, value] of headers as Iterable<[string, string]>) {
+					record[key] = value;
+				}
+			} else if (typeof headers.entries === "function") {
+				for (const [key, value] of headers.entries()) {
+					record[key] = value;
+				}
+			}
 			const originalRecord = { ...record };
 			currentOptions.scrubSensitiveHeaders(record, originalUrl, newUrl);
 			const remainingKeysLower = new Set(Object.keys(record).map((k) => k.toLowerCase()));
 			const toDelete: string[] = [];
-			headers.forEach((_, key) => {
-				if (!remainingKeysLower.has(key.toLowerCase())) {
-					toDelete.push(key);
+			if (typeof headers.forEach === "function") {
+				headers.forEach((_, key) => {
+					if (!remainingKeysLower.has(key.toLowerCase())) {
+						toDelete.push(key);
+					}
+				});
+			} else if (typeof headers[Symbol.iterator] === "function") {
+				for (const [key] of headers as Iterable<[string, string]>) {
+					if (!remainingKeysLower.has(key.toLowerCase())) {
+						toDelete.push(key);
+					}
 				}
-			});
+			} else if (typeof headers.entries === "function") {
+				for (const [key] of headers.entries()) {
+					if (!remainingKeysLower.has(key.toLowerCase())) {
+						toDelete.push(key);
+					}
+				}
+			}
 			for (const key of toDelete) {
 				headers.delete(key);
 			}

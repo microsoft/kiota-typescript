@@ -11,13 +11,16 @@ import type { FetchRequestInit } from "./fetchDefinitions";
  * @module MiddlewareUtil
  */
 
-interface HeadersLike {
+export interface HeadersLike {
 	get(name: string): string | null;
 	set(name: string, value: string): void;
 	delete(name: string): void;
+	forEach?(callbackfn: (value: string, key: string, parent: unknown) => void, thisArg?: unknown): void;
+	entries?(): IterableIterator<[string, string]>;
+	[Symbol.iterator]?(): IterableIterator<[string, string]>;
 }
 
-const isHeadersLike = (headers: unknown): headers is HeadersLike => {
+export const isHeadersLike = (headers: unknown): headers is HeadersLike => {
 	return typeof headers === "object" && headers !== null && typeof (headers as Partial<HeadersLike>).get === "function" && typeof (headers as Partial<HeadersLike>).set === "function" && typeof (headers as Partial<HeadersLike>).delete === "function";
 };
 
