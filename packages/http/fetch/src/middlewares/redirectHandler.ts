@@ -17,6 +17,7 @@ import type { FetchRequestInit, FetchResponse } from "../utils/fetchDefinitions"
 import { deleteRequestHeader } from "../utils/headersUtil";
 import type { Middleware } from "./middleware";
 import { RedirectHandlerOptionKey, RedirectHandlerOptions } from "./options/redirectHandlerOptions";
+import { followedRedirects } from "./requestRedirectState";
 
 /**
  *
@@ -171,6 +172,7 @@ export class RedirectHandler implements Middleware {
 
 			this.updateRequestForRedirect(response.status, fetchRequestInit);
 
+			followedRedirects.set(fetchRequestInit, (followedRedirects.get(fetchRequestInit) ?? 0) + 1);
 			url = newUrl;
 			if (tracerName) {
 				return await trace.getTracer(tracerName).startActiveSpan(`redirectHandler - redirect ${redirectCount}`, async (span) => {

@@ -127,6 +127,26 @@ describe("node - MiddlewareFactory", () => {
 		assert.equal(calls[0].encoding, "gzip");
 		assert.deepEqual(calls[1], { url: "https://example.com/redirected", method: "GET", body: undefined, encoding: null });
 	});
+	it.skipIf(!inNodeEnv()).each([307, 308])("Should not replay the original compressed POST after a %i redirect receives a 415 without a response URL", async (status) => {
+		const calls: { url: string; method?: string; body: BodyInit | null | undefined; encoding: string | null }[] = [];
+		const unsupported = new Response(null, { status: 415 });
+		const client = new HttpClient(
+			undefined,
+			...MiddlewareFactory.getPerformanceMiddlewares(async (url, init) => {
+				calls.push({ url, method: init.method, body: init.body, encoding: new Headers(init.headers).get("Content-Encoding") });
+				return calls.length === 1 ? new Response(null, { status, headers: { Location: "/redirected" } }) : unsupported;
+			}),
+		);
+		const url = "https://example.com/send";
+		const response = await client.executeFetch(url, { method: "POST", body: "payload" });
+		assert.strictEqual(response, unsupported);
+		assert.lengthOf(calls, 2);
+		assert.instanceOf(calls[0].body, ArrayBuffer);
+		assert.deepEqual(calls, [
+			{ url, method: "POST", body: calls[0].body, encoding: "gzip" },
+			{ url: "https://example.com/redirected", method: "POST", body: calls[0].body, encoding: "gzip" },
+		]);
+	});
 	it("Should preserve URL-encoded bodies and content type in the performance pipeline", async () => {
 		const options = new BodyInspectionOptions({ inspectRequestBody: true });
 		let sentBody: BodyInit | null | undefined;

@@ -16,6 +16,8 @@ Read more about Kiota [here](https://github.com/microsoft/kiota/blob/main/README
 
 The pipelines rewrite the URL, decode query parameter names, and set the user agent first. `KiotaClientFactory.create()` then adds authorization if an authentication provider is supplied and the default pipeline is used. The opt-in performance pipeline adds request compression before redirects and retries. Native Fetch handles response decompression; there is no separate decompression or Sunset middleware. Node uses redirect middleware so retries apply only to the current redirect hop. Browser Fetch follows redirects itself, so a browser retry starts at the original request. Headers and body are inspected immediately before transport, including on retries.
 
+If the original request receives a `415 Unsupported Media Type`, the compression middleware can resend it without compression. It does not resend the original request if the `415` follows a redirect handled by the pipeline.
+
 ## Send cookies with a custom fetch function
 
 To send cookies to an API from a browser, configure a custom fetch function with `credentials: "include"` and pass it to `KiotaClientFactory.create()`. Use the resulting HTTP client when constructing your request adapter:

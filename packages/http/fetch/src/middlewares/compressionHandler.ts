@@ -9,11 +9,12 @@ import { type RequestOption, inNodeEnv } from "@microsoft/kiota-abstractions";
 import { Span, trace } from "@opentelemetry/api";
 
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
+import type { FetchRequestInit } from "../utils/fetchDefinitions";
+import { deleteRequestHeader, setRequestHeader } from "../utils/headersUtil";
 import type { Middleware } from "./middleware";
 import { BodyInspectionOptions, BodyInspectionOptionsKey } from "./options/bodyInspectionOptions";
 import { CompressionHandlerOptions, CompressionHandlerOptionsKey } from "./options/compressionHandlerOptions";
-import type { FetchRequestInit } from "../utils/fetchDefinitions";
-import { deleteRequestHeader, setRequestHeader } from "../utils/headersUtil";
+import { followedRedirects } from "./requestRedirectState";
 
 /**
  * Compress the url content.
@@ -86,27 +87,31 @@ export class CompressionHandler implements Middleware {
 		const unCompressedBodySize = this.getRequestBodySize(unCompressedBody);
 
 		const compressedBody = await this.compressRequestBody(unCompressedBody);
+		const originalHeaders = requestInit.headers;
+		requestInit.headers = !originalHeaders || Symbol.iterator in originalHeaders ? Object.fromEntries(headers) : { ...originalHeaders };
 		if (unCompressedBody instanceof URLSearchParams && !headers.has("Content-Type")) {
-			headers.set("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+			setRequestHeader(requestInit, "Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
 		}
 
-		const contentLength = headers.get("Content-Length");
-		headers.delete("Content-Length");
-		requestInit.headers = Object.fromEntries(headers.entries());
+		const contentLengthHeaders = Object.entries(requestInit.headers).filter(([name]) => name.toLowerCase() === "content-length");
+		for (const [name] of contentLengthHeaders) {
+			deleteRequestHeader(requestInit, name);
+		}
 		setRequestHeader(requestInit, CompressionHandler.CONTENT_ENCODING_HEADER, "gzip");
 		requestInit.body = compressedBody.compressedBody;
 
 		span?.setAttribute("http.request.body.size", compressedBody.size);
 
+		const redirectCount = followedRedirects.get(requestInit);
 		let response = await this.next?.execute(url, requestInit as RequestInit, requestOptions);
 		if (!response) {
 			throw new Error("Response is undefined");
 		}
 		// A 415 from a later hop must not replay the original request, which may have already been processed.
-		if (response.status === 415 && requestInit.body === compressedBody.compressedBody && this.isResponseFromRequestUrl(url, response)) {
+		if (response.status === 415 && followedRedirects.get(requestInit) === redirectCount && requestInit.body === compressedBody.compressedBody && this.isResponseFromRequestUrl(url, response)) {
 			deleteRequestHeader(requestInit, CompressionHandler.CONTENT_ENCODING_HEADER);
-			if (contentLength !== null) {
-				setRequestHeader(requestInit, "content-length", contentLength);
+			for (const [name, value] of contentLengthHeaders) {
+				setRequestHeader(requestInit, name, value);
 			}
 			requestInit.body = unCompressedBody;
 			span?.setAttribute("http.request.body.compressed", false);
