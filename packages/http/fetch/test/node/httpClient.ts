@@ -7,12 +7,19 @@
 
 import { assert, describe, it } from "vitest";
 
-import { CustomFetchHandler, HeadersInspectionHandler, BodyInspectionHandler, HttpClient, MiddlewareFactory, ParametersNameDecodingHandler, RedirectHandler, RetryHandler, UrlReplaceHandler, UserAgentHandler, CompressionHandler } from "../../src";
+import { CustomFetchHandler, HttpClient, Middleware, MiddlewareFactory, UrlReplaceHandler } from "../../src";
 import { DummyFetchHandler } from "../common/middleware/dummyFetchHandler";
 
 describe("node - HTTPClient.ts", () => {
 	describe("constructor", () => {
 		const dummyFetchHandler: DummyFetchHandler = new DummyFetchHandler();
+		const assertPipeline = (client: HttpClient, expected: Middleware[]) => {
+			let handler = client["middleware"];
+			for (const expectedHandler of expected) {
+				assert.equal(handler?.constructor, expectedHandler.constructor);
+				handler = handler?.next;
+			}
+		};
 
 		const dummyCustomFetch = (): Promise<Response> => {
 			return null;
@@ -32,17 +39,7 @@ describe("node - HTTPClient.ts", () => {
 		it("Should set default middleware array if middleware parameter is undefined && customFetch is undefined", () => {
 			const client = new HttpClient();
 
-			assert.isNotNull(client["middleware"]);
-			const next = client["middleware"].next;
-
-			assert.isTrue(client["middleware"] instanceof RetryHandler);
-			assert.isTrue(next instanceof RedirectHandler);
-			assert.isTrue(next?.next instanceof ParametersNameDecodingHandler);
-			assert.isTrue(next?.next?.next instanceof UserAgentHandler);
-			assert.isTrue(next?.next?.next?.next instanceof HeadersInspectionHandler);
-			assert.isTrue(next?.next?.next?.next?.next instanceof BodyInspectionHandler);
-			assert.isTrue(next?.next?.next?.next?.next?.next instanceof UrlReplaceHandler);
-			assert.isTrue(next?.next?.next?.next?.next?.next?.next instanceof CustomFetchHandler);
+			assertPipeline(client, MiddlewareFactory.getDefaultMiddlewares());
 		});
 
 		it("Should set default middleware array with customFetchHandler if middleware parameter is undefined && customFetch is defined", () => {
@@ -51,16 +48,7 @@ describe("node - HTTPClient.ts", () => {
 			assert.isNotNull(client["middleware"]);
 			assert.isNotNull(client[""]);
 
-			const next = client["middleware"].next;
-
-			assert.isTrue(client["middleware"] instanceof RetryHandler);
-			assert.isTrue(next instanceof RedirectHandler);
-			assert.isTrue(next?.next instanceof ParametersNameDecodingHandler);
-			assert.isTrue(next?.next?.next instanceof UserAgentHandler);
-			assert.isTrue(next?.next?.next?.next instanceof HeadersInspectionHandler);
-			assert.isTrue(next?.next?.next?.next?.next instanceof BodyInspectionHandler);
-			assert.isTrue(next?.next?.next?.next?.next?.next instanceof UrlReplaceHandler);
-			assert.isTrue(next?.next?.next?.next?.next?.next?.next instanceof CustomFetchHandler);
+			assertPipeline(client, MiddlewareFactory.getDefaultMiddlewares());
 		});
 
 		it("Should set to default fetch handler middleware array if middleware parameter is null && customFetch is undefined", () => {
@@ -68,7 +56,7 @@ describe("node - HTTPClient.ts", () => {
 
 			assert.isNotNull(client["middleware"]);
 
-			assert.isTrue(client["middleware"] instanceof RetryHandler);
+			assert.isTrue(client["middleware"] instanceof UrlReplaceHandler);
 		});
 
 		it("Should only set custom fetch if middleware parameter is null && customFetch is defined", () => {
@@ -81,18 +69,7 @@ describe("node - HTTPClient.ts", () => {
 		it("Should set performance middleware for the http client", () => {
 			const client = new HttpClient(null, ...MiddlewareFactory.getPerformanceMiddlewares());
 
-			assert.isNotNull(client["middleware"]);
-			const next = client["middleware"].next;
-
-			assert.isTrue(client["middleware"] instanceof RetryHandler);
-			assert.isTrue(next instanceof RedirectHandler);
-			assert.isTrue(next?.next instanceof ParametersNameDecodingHandler);
-			assert.isTrue(next?.next?.next instanceof UserAgentHandler);
-			assert.isTrue(next?.next?.next?.next instanceof BodyInspectionHandler);
-			assert.isTrue(next?.next?.next?.next?.next instanceof CompressionHandler);
-			assert.isTrue(next?.next?.next?.next?.next?.next instanceof HeadersInspectionHandler);
-			assert.isTrue(next?.next?.next?.next?.next?.next?.next instanceof UrlReplaceHandler);
-			assert.isTrue(next?.next?.next?.next?.next?.next?.next?.next instanceof CustomFetchHandler);
+			assertPipeline(client, MiddlewareFactory.getPerformanceMiddlewares());
 		});
 	});
 });

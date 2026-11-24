@@ -9,7 +9,7 @@ import { AccessTokenProvider, AllowedHostsValidator, BaseBearerTokenAuthenticati
 import { trace } from "@opentelemetry/api";
 import { assert, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { AuthorizationHandler, ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src";
+import { AuthorizationHandler, CompressionHandler, ObservabilityOptionKey, ObservabilityOptionsImpl } from "../../../src";
 import { DummyFetchHandler } from "./dummyFetchHandler";
 
 describe("AuthorizationHandler", () => {
@@ -51,6 +51,27 @@ describe("AuthorizationHandler", () => {
 		await authorizationHandler.execute(url, requestInit);
 
 		expect((requestInit.headers as Record<string, string>)["Authorization"]).toBe("Bearer New Token");
+	});
+
+	it("replaces the bearer token on claims replay when the request body is compressed", async () => {
+		const claims = "required-claims";
+		tokenProvider.getAuthorizationToken = async (_url, context) => (context?.claims === claims ? "claims-token" : "initial-token");
+		const compression = new CompressionHandler();
+		authorizationHandler.next = compression;
+		compression.next = nextMiddleware;
+		const sent: { authorization: string | null; encoding: string | null }[] = [];
+		nextMiddleware.execute = async (_url, init) => {
+			const headers = new Headers(init.headers);
+			sent.push({ authorization: headers.get("Authorization"), encoding: headers.get("Content-Encoding") });
+			return sent.length === 1 ? new Response(null, { status: 401, headers: { "WWW-Authenticate": `Bearer claims="${claims}"` } }) : new Response(null, { status: 200 });
+		};
+
+		const response = await authorizationHandler.execute("https://example.com", { method: "POST", body: "payload" });
+		expect(response.status).toBe(200);
+		expect(sent).toEqual([
+			{ authorization: "Bearer initial-token", encoding: "gzip" },
+			{ authorization: "Bearer claims-token", encoding: "gzip" },
+		]);
 	});
 
 	describe("observability", () => {

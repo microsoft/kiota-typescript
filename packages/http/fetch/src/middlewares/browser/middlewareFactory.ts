@@ -27,8 +27,7 @@ export class MiddlewareFactory {
 	 */
 
 	public static getDefaultMiddlewares(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args)): Middleware[] {
-		// Browsers handles redirection automatically and do not require the redirectionHandler
-		return [new RetryHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new HeadersInspectionHandler(), new BodyInspectionHandler(), new UrlReplaceHandler(), new CustomFetchHandler(customFetch)];
+		return MiddlewareFactory.buildPipeline(customFetch, false);
 	}
 	/**
 	 * @param customFetch - The custom fetch implementation
@@ -37,11 +36,10 @@ export class MiddlewareFactory {
 	 */
 
 	public static getPerformanceMiddlewares(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args)): Middleware[] {
-		const middlewares = MiddlewareFactory.getDefaultMiddlewares(customFetch);
-		const bodyInspectionIndex = middlewares.findIndex((m) => m instanceof BodyInspectionHandler);
-		const [bodyInspection] = middlewares.splice(bodyInspectionIndex, 1);
-		const headersIndex = middlewares.findIndex((m) => m instanceof HeadersInspectionHandler);
-		middlewares.splice(headersIndex, 0, bodyInspection, new CompressionHandler());
-		return middlewares;
+		return MiddlewareFactory.buildPipeline(customFetch, true);
+	}
+
+	private static buildPipeline(customFetch: (request: string, init: RequestInit) => Promise<Response>, compress: boolean): Middleware[] {
+		return [new UrlReplaceHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), ...(compress ? [new CompressionHandler()] : []), new RetryHandler(), new HeadersInspectionHandler(), new BodyInspectionHandler(), new CustomFetchHandler(customFetch)];
 	}
 }

@@ -5,16 +5,11 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { BodyInspectionHandler } from "./bodyInspectionHandler";
-import { CustomFetchHandler } from "./customFetchHandler";
-import { HeadersInspectionHandler } from "./headersInspectionHandler";
+import { inNodeEnv } from "@microsoft/kiota-abstractions";
+import { MiddlewareFactory as BrowserMiddlewareFactory } from "./browser/middlewareFactory";
 import { Middleware } from "./middleware";
-import { ParametersNameDecodingHandler } from "./parametersNameDecodingHandler";
 import { RedirectHandler } from "./redirectHandler";
 import { RetryHandler } from "./retryHandler";
-import { UserAgentHandler } from "./userAgentHandler";
-import { CompressionHandler } from "./compressionHandler";
-import { UrlReplaceHandler } from "./urlReplaceHandler";
 
 /**
  *
@@ -28,7 +23,7 @@ export class MiddlewareFactory {
 	 */
 
 	public static getDefaultMiddlewares(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args)): Middleware[] {
-		return [new RetryHandler(), new RedirectHandler(), new ParametersNameDecodingHandler(), new UserAgentHandler(), new HeadersInspectionHandler(), new BodyInspectionHandler(), new UrlReplaceHandler(), new CustomFetchHandler(customFetch)];
+		return MiddlewareFactory.addRedirectHandler(BrowserMiddlewareFactory.getDefaultMiddlewares(customFetch));
 	}
 	/**
 	 * @param customFetch - The custom fetch implementation
@@ -37,11 +32,15 @@ export class MiddlewareFactory {
 	 */
 
 	public static getPerformanceMiddlewares(customFetch: (request: string, init: RequestInit) => Promise<Response> = (...args) => fetch(...args)): Middleware[] {
-		const middlewares = MiddlewareFactory.getDefaultMiddlewares(customFetch);
-		const bodyInspectionIndex = middlewares.findIndex((m) => m instanceof BodyInspectionHandler);
-		const [bodyInspection] = middlewares.splice(bodyInspectionIndex, 1);
-		const headersIndex = middlewares.findIndex((m) => m instanceof HeadersInspectionHandler);
-		middlewares.splice(headersIndex, 0, bodyInspection, new CompressionHandler());
+		return MiddlewareFactory.addRedirectHandler(BrowserMiddlewareFactory.getPerformanceMiddlewares(customFetch));
+	}
+
+	private static addRedirectHandler(middlewares: Middleware[]): Middleware[] {
+		// Browser Fetch follows redirects itself and hides manual redirect responses.
+		if (inNodeEnv()) {
+			const retryIndex = middlewares.findIndex((handler) => handler instanceof RetryHandler);
+			middlewares.splice(retryIndex, 0, new RedirectHandler());
+		}
 		return middlewares;
 	}
 }

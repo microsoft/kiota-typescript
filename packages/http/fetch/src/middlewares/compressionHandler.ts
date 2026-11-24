@@ -9,10 +9,12 @@ import { type RequestOption, inNodeEnv } from "@microsoft/kiota-abstractions";
 import { Span, trace } from "@opentelemetry/api";
 
 import { getObservabilityOptionsFromRequest } from "../observabilityOptions";
+import type { FetchRequestInit } from "../utils/fetchDefinitions";
+import { deleteRequestHeader, setRequestHeader } from "../utils/headersUtil";
 import type { Middleware } from "./middleware";
+import { BodyInspectionOptions, BodyInspectionOptionsKey } from "./options/bodyInspectionOptions";
 import { CompressionHandlerOptions, CompressionHandlerOptionsKey } from "./options/compressionHandlerOptions";
-import type { FetchHeadersInit, FetchRequestInit } from "../utils/fetchDefinitions";
-import { deleteRequestHeader, getRequestHeader, setRequestHeader } from "../utils/headersUtil";
+import { followedRedirects } from "./requestRedirectState";
 
 /**
  * Compress the url content.
@@ -67,39 +69,50 @@ export class CompressionHandler implements Middleware {
 	}
 
 	private async executeInternal(options: CompressionHandlerOptions, url: string, requestInit: FetchRequestInit, requestOptions?: Record<string, RequestOption>, span?: Span): Promise<Response> {
-		if (!options.ShouldCompress || this.contentRangeBytesIsPresent(requestInit.headers) || this.contentEncodingIsPresent(requestInit.headers) || requestInit.body === null || requestInit.body === undefined) {
+		if (!options.ShouldCompress || requestInit.body === null || requestInit.body === undefined) {
+			return this.next?.execute(url, requestInit as RequestInit, requestOptions) ?? Promise.reject(new Error("Response is undefined"));
+		}
+		const headers = new Headers(requestInit.headers);
+		if (headers.get(CompressionHandler.CONTENT_RANGE_HEADER)?.toLowerCase().includes("bytes") || headers.has(CompressionHandler.CONTENT_ENCODING_HEADER)) {
 			return this.next?.execute(url, requestInit as RequestInit, requestOptions) ?? Promise.reject(new Error("Response is undefined"));
 		}
 
 		span?.setAttribute("http.request.body.compressed", true);
 
-		const unCompressedBody = requestInit.body;
+		let unCompressedBody = requestInit.body;
+		if ((requestOptions?.[BodyInspectionOptionsKey] as BodyInspectionOptions | undefined)?.inspectRequestBody && this.isStream(unCompressedBody)) {
+			// Inspection already opts in to buffering single-use bodies; buffer before encoding so both sends can reuse the bytes.
+			unCompressedBody = new Uint8Array(await new Response(unCompressedBody as BodyInit).arrayBuffer());
+		}
 		const unCompressedBodySize = this.getRequestBodySize(unCompressedBody);
 
-		// compress the request body
 		const compressedBody = await this.compressRequestBody(unCompressedBody);
-		if (unCompressedBody instanceof URLSearchParams) {
-			const headers = new Headers(requestInit.headers);
-			if (!headers.has("Content-Type")) {
-				headers.set("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
-			}
-			requestInit.headers = Object.fromEntries(headers.entries());
+		const originalHeaders = requestInit.headers;
+		requestInit.headers = !originalHeaders || Symbol.iterator in originalHeaders ? Object.fromEntries(headers) : { ...originalHeaders };
+		if (unCompressedBody instanceof URLSearchParams && !headers.has("Content-Type")) {
+			setRequestHeader(requestInit, "Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
 		}
 
-		// add Content-Encoding to request header
+		const contentLengthHeaders = Object.entries(requestInit.headers).filter(([name]) => name.toLowerCase() === "content-length");
+		for (const [name] of contentLengthHeaders) {
+			deleteRequestHeader(requestInit, name);
+		}
 		setRequestHeader(requestInit, CompressionHandler.CONTENT_ENCODING_HEADER, "gzip");
 		requestInit.body = compressedBody.compressedBody;
 
 		span?.setAttribute("http.request.body.size", compressedBody.size);
 
-		// execute the next middleware and check if the response code is 415
+		const redirectCount = followedRedirects.get(requestInit);
 		let response = await this.next?.execute(url, requestInit as RequestInit, requestOptions);
 		if (!response) {
 			throw new Error("Response is undefined");
 		}
-		if (response.status === 415) {
-			// remove the Content-Encoding header
+		// A 415 from a later hop must not replay the original request, which may have already been processed.
+		if (response.status === 415 && followedRedirects.get(requestInit) === redirectCount && requestInit.body === compressedBody.compressedBody && this.isResponseFromRequestUrl(url, response)) {
 			deleteRequestHeader(requestInit, CompressionHandler.CONTENT_ENCODING_HEADER);
+			for (const [name, value] of contentLengthHeaders) {
+				setRequestHeader(requestInit, name, value);
+			}
 			requestInit.body = unCompressedBody;
 			span?.setAttribute("http.request.body.compressed", false);
 			span?.setAttribute("http.request.body.size", unCompressedBodySize);
@@ -109,19 +122,24 @@ export class CompressionHandler implements Middleware {
 		return response !== undefined && response !== null ? Promise.resolve(response) : Promise.reject(new Error("Response is undefined"));
 	}
 
-	private contentRangeBytesIsPresent(header: FetchHeadersInit | undefined): boolean {
-		if (!header) {
-			return false;
-		}
-		const contentRange = getRequestHeader(header, CompressionHandler.CONTENT_RANGE_HEADER);
-		return contentRange?.toLowerCase().includes("bytes") ?? false;
+	private isStream(body: unknown): boolean {
+		return (typeof ReadableStream !== "undefined" && body instanceof ReadableStream) || (inNodeEnv() && typeof body === "object" && body !== null && Symbol.asyncIterator in body);
 	}
 
-	private contentEncodingIsPresent(header: FetchHeadersInit | undefined): boolean {
-		if (!header) {
+	private isResponseFromRequestUrl(url: string, response: Response): boolean {
+		if (response.redirected) {
 			return false;
 		}
-		return getRequestHeader(header, CompressionHandler.CONTENT_ENCODING_HEADER) !== undefined;
+		if (!response.url) {
+			return true;
+		}
+		try {
+			const requestUrl = new URL(url, globalThis.location?.href);
+			requestUrl.hash = "";
+			return response.url === requestUrl.href;
+		} catch {
+			return false;
+		}
 	}
 
 	private getRequestBodySize(body: unknown): number {
