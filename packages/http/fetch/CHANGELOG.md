@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.115](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.114...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.115) (2026-11-26)
+
+
+### Bug Fixes
+
+* **http:** align built-in middleware order ([#2239](https://github.com/microsoft/kiota-typescript/issues/2239)) ([1ce9429](https://github.com/microsoft/kiota-typescript/commit/1ce9429ad264f78d9d5acfb460be2c06b3d41d0f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.114 to ^1.0.0-preview.115
+
 ## [1.0.0-preview.114](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.113...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.114) (2026-11-16)
 
 
