@@ -122,6 +122,42 @@ describe("RedirectHandler.ts", () => {
 			const url = "https://graph.microsoft.com/v1.0/graphproxy/me";
 			assert.isFalse(redirectHandler["isRelativeURL"](url));
 		});
+
+		it("Should return true for a relative url containing an absolute url in its query string", () => {
+			const url = "/graphproxy/login?returnUrl=https://contoso.com/home";
+			assert.isTrue(redirectHandler["isRelativeURL"](url));
+		});
+
+		it("Should return true for a relative url containing an absolute url in its path", () => {
+			const url = "graphproxy/https://contoso.com";
+			assert.isTrue(redirectHandler["isRelativeURL"](url));
+		});
+
+		it("Should return false for an absolute url with an upper case scheme", () => {
+			const url = "HTTPS://graph.microsoft.com/v1.0/me";
+			assert.isFalse(redirectHandler["isRelativeURL"](url));
+		});
+	});
+
+	describe("relative redirect url resolution", () => {
+		it("Should resolve a relative Location against the request url when its query string contains an absolute url", async () => {
+			const handler = new RedirectHandler();
+			const requestedUrls: string[] = [];
+			const dummyNext = new DummyFetchHandler();
+			dummyNext.execute = async (url: string) => {
+				requestedUrls.push(url);
+				if (requestedUrls.length === 1) {
+					return new Response("", { status: 302, headers: { Location: "/v1.0/login?returnUrl=https://contoso.com/home" } });
+				}
+				return new Response("ok", { status: 200 });
+			};
+			handler.next = dummyNext;
+
+			const response = await handler.execute("https://graph.microsoft.com/v1.0/me", { method: "GET" });
+
+			assert.equal(response.status, 200);
+			assert.deepEqual(requestedUrls, ["https://graph.microsoft.com/v1.0/me", "https://graph.microsoft.com/v1.0/login?returnUrl=https://contoso.com/home"]);
+		});
 	});
 
 	describe("set RedirectOptions in RequestInformation", () => {
