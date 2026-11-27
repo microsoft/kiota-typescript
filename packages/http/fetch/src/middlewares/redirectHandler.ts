@@ -65,7 +65,7 @@ export class RedirectHandler implements Middleware {
 	/**
 	 * A member holding the pattern for an absolute url, which starts with a scheme (RFC 3986 section 3.1) followed by "://"
 	 */
-	private static readonly ABSOLUTE_URL_PATTERN = /^[a-z][a-z\d+\-.]*:\/\//i;
+	private static readonly ABSOLUTE_URL_PATTERN = /^[a-z][a-z0-9+\-.]*:\/\//i;
 
 	/** Next middleware to be executed*/
 	next: Middleware | undefined;
