@@ -62,6 +62,11 @@ export class RedirectHandler implements Middleware {
 	 */
 	private static readonly MANUAL_REDIRECT = "manual";
 
+	/**
+	 * A member holding the pattern for an absolute url, which starts with a scheme (RFC 3986 section 3.1) followed by "://"
+	 */
+	private static readonly ABSOLUTE_URL_PATTERN = /^[a-z][a-z0-9+\-.]*:\/\//i;
+
 	/** Next middleware to be executed*/
 	next: Middleware | undefined;
 	/**
@@ -114,7 +119,7 @@ export class RedirectHandler implements Middleware {
 	 * @returns A boolean representing whether the given url is a relative url or not
 	 */
 	private isRelativeURL(url: string): boolean {
-		return !url.includes("://");
+		return !RedirectHandler.ABSOLUTE_URL_PATTERN.test(url);
 	}
 
 	/**
