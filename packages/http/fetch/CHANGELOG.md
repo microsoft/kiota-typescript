@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-preview.116](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.115...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.116) (2026-11-27)
+
+
+### Bug Fixes
+
+* **http:** resolve relative redirect locations that contain "://" ([#2243](https://github.com/microsoft/kiota-typescript/issues/2243)) ([32bf54b](https://github.com/microsoft/kiota-typescript/commit/32bf54b8b0c41515a691c2966d8d4d5bfd154934))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @microsoft/kiota-abstractions bumped from ^1.0.0-preview.115 to ^1.0.0-preview.116
+
 ## [1.0.0-preview.115](https://github.com/microsoft/kiota-typescript/compare/@microsoft/kiota-http-fetchlibrary@1.0.0-preview.114...@microsoft/kiota-http-fetchlibrary@1.0.0-preview.115) (2026-11-26)
 
 
